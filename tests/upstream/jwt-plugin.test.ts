@@ -1,0 +1,548 @@
+// Generated from pinned upstream source; do not edit assertions here.
+import { beforeEach, describe, expect, expectTypeOf, it, vi } from "vitest";
+import { createAuthClient } from "better-auth/client";
+import { jwtClient } from "better-auth/client/plugins";
+import { createLocalJWKSet, jwtVerify, decodeJwt, exportJWK, generateKeyPair, SignJWT } from "jose";
+import { parseCookies } from "better-auth/cookies";
+import type { JWKOptions, JwtOptions, Jwk } from "better-auth/plugins/jwt";
+import type { JSONWebKeySet } from "jose";
+import type { GenericEndpointContext } from "@better-auth/core";
+import { generateExportedKeyPair, createCookieCacheSigner, SESSION_COOKIE_JWT_TYPE } from "../harness/jwt.js";
+import { getTestInstance } from "../harness/test-instance.js";
+import { jwt } from "../harness/plugins.js";
+
+describe("jwt", async () => {
+	// Testing the default behavior
+	const { auth, signInWithTestUser } = await getTestInstance({
+		plugins: [jwt()],
+		logger: {
+			level: "error",
+		},
+	});
+
+	const { headers } = await signInWithTestUser();
+	const client = createAuthClient({
+		plugins: [jwtClient()],
+		baseURL: "http://localhost:3000/api/auth",
+		fetchOptions: {
+			customFetchImpl: async (url, init) => {
+				return auth.handler(new Request(url, init));
+			},
+		},
+	});
+
+	it("Client gets a token from session", async () => {
+		let token = "";
+		await client.getSession({
+			fetchOptions: {
+				headers,
+				onSuccess(context) {
+					token = context.response.headers.get("set-auth-jwt") || "";
+				},
+			},
+		});
+
+		expect(token.length).toBeGreaterThan(10);
+	});
+
+	it("Client gets a token", async () => {
+		const token = await client.token({
+			fetchOptions: {
+				headers,
+			},
+		});
+
+		expect(token.data?.token).toBeDefined();
+	});
+
+	it("Get JWKS", async () => {
+		// If no JWK exists, this makes sure it gets added.
+		// TODO: Replace this with a generate JWKS endpoint once it exists.
+		const token = await client.token({
+			fetchOptions: {
+				headers,
+			},
+		});
+
+		expect(token.data?.token).toBeDefined();
+
+		const jwks = await client.jwks();
+
+		expect(jwks.data?.keys).length.above(0);
+		expect(jwks.data?.keys[0]!.alg).toBe("EdDSA");
+	});
+
+	it("Signed tokens can be validated with the JWKS", async () => {
+		const token = await client.token({
+			fetchOptions: {
+				headers,
+			},
+		});
+
+		const jwks = await client.jwks();
+
+		const localJwks = createLocalJWKSet(jwks.data!);
+		const decoded = await jwtVerify(token.data?.token!, localJwks);
+
+		expect(decoded).toBeDefined();
+	});
+
+	it("should set subject to user id by default", async () => {
+		const token = await client.token({
+			fetchOptions: {
+				headers,
+			},
+		});
+
+		const jwks = await client.jwks();
+
+		const localJwks = createLocalJWKSet(jwks.data!);
+		const decoded = await jwtVerify(token.data?.token!, localJwks);
+		expect(decoded.payload.sub).toBeDefined();
+		expect(decoded.payload.sub).toBe(decoded.payload.id);
+	});
+
+	const algorithmsToTest: {
+		keyPairConfig: JWKOptions;
+		expectedOutcome: {
+			ec: string;
+			length: number;
+			crv?: string | undefined;
+			alg: string;
+		};
+	}[] = [
+		{
+			keyPairConfig: {
+				alg: "EdDSA",
+				crv: "Ed25519",
+			},
+			expectedOutcome: {
+				ec: "OKP",
+				length: 43,
+				crv: "Ed25519",
+				alg: "EdDSA",
+			},
+		},
+		{
+			keyPairConfig: {
+				alg: "ES256",
+			},
+			expectedOutcome: {
+				ec: "EC",
+				length: 43,
+				crv: "P-256",
+				alg: "ES256",
+			},
+		},
+		{
+			keyPairConfig: {
+				alg: "ES512",
+			},
+			expectedOutcome: {
+				ec: "EC",
+				length: 88,
+				crv: "P-521",
+				alg: "ES512",
+			},
+		},
+		{
+			keyPairConfig: {
+				alg: "PS256",
+			},
+			expectedOutcome: {
+				ec: "RSA",
+				length: 342,
+				alg: "PS256",
+			},
+		},
+		{
+			keyPairConfig: {
+				alg: "RS256",
+			},
+			expectedOutcome: {
+				ec: "RSA",
+				length: 342,
+				alg: "RS256",
+			},
+		},
+	];
+
+	for (const algorithm of algorithmsToTest) {
+		const expectedOutcome = algorithm.expectedOutcome;
+		for (const disablePrivateKeyEncryption of [false, true]) {
+			const jwtOptions: JwtOptions = {
+				jwks: {
+					keyPairConfig: {
+						...algorithm.keyPairConfig,
+					},
+					disablePrivateKeyEncryption: disablePrivateKeyEncryption,
+				},
+			};
+			try {
+				const { auth, signInWithTestUser } = await getTestInstance({
+					plugins: [jwt(jwtOptions)],
+					logger: {
+						level: "error",
+					},
+				});
+
+				const alg: string =
+					algorithm.keyPairConfig.alg +
+					("crv" in algorithm.keyPairConfig
+						? `(${algorithm.keyPairConfig.crv})`
+						: "");
+				const enc: string = disablePrivateKeyEncryption
+					? " without private key encryption"
+					: "";
+
+				it(`${alg} algorithm${enc} can be used to generate JWKS`, async () => {
+					// Unit test (JWS Supported key)
+					const { publicWebKey, privateWebKey } =
+						await generateExportedKeyPair(jwtOptions);
+					for (const key of [publicWebKey, privateWebKey]) {
+						expect(key.kty).toBe(expectedOutcome.ec);
+						if (key.x) expect(key.x).toHaveLength(expectedOutcome.length);
+						if (key.y) expect(key.y).toHaveLength(expectedOutcome.length);
+						if (key.n) expect(key.n).toHaveLength(expectedOutcome.length);
+					}
+
+					// Functional test (JWKS)
+					const jwks = await auth.api.getJwks();
+					expect(jwks.keys.at(0)?.kty).toBe(expectedOutcome.ec);
+					if (jwks.keys.at(0)?.crv)
+						expect(jwks.keys.at(0)?.crv).toBe(expectedOutcome.crv);
+					expect(jwks.keys.at(0)?.alg).toBe(expectedOutcome.alg);
+					if (jwks.keys.at(0)?.x)
+						expect(jwks.keys.at(0)?.x).toHaveLength(expectedOutcome.length);
+					if (jwks.keys.at(0)?.y)
+						expect(jwks.keys.at(0)?.y).toHaveLength(expectedOutcome.length);
+					if (jwks.keys.at(0)?.n)
+						expect(jwks?.keys.at(0)?.n).toHaveLength(expectedOutcome.length);
+				});
+
+				const client = createAuthClient({
+					plugins: [jwtClient()],
+					baseURL: "http://localhost:3000/api/auth",
+					fetchOptions: {
+						customFetchImpl: async (url, init) => {
+							return auth.handler(new Request(url, init));
+						},
+					},
+				});
+				let headers: Headers | undefined = undefined;
+
+				it(`${alg} algorithm${enc}: Client can sign in`, async () => {
+					try {
+						const { headers: heads } = await signInWithTestUser();
+						headers = heads;
+						expect(headers).toBeDefined();
+					} catch (err) {
+						console.error(err);
+						expect.unreachable();
+					}
+				});
+
+				it(`${alg} algorithm${enc}: Client gets a token`, async () => {
+					const token = await client.token({
+						fetchOptions: {
+							headers,
+						},
+					});
+
+					expect(token.data?.token).toBeDefined();
+				});
+
+				it(`${alg} algorithm${enc}: Client gets a token from session`, async () => {
+					let token = "";
+					await client.getSession({
+						fetchOptions: {
+							headers,
+							onSuccess(context) {
+								token = context.response.headers.get("set-auth-jwt") || "";
+							},
+						},
+					});
+
+					expect(token.length).toBeGreaterThan(10);
+				});
+
+				it(`${alg} algorithm${enc}: Signed tokens can be validated with the JWKS`, async () => {
+					const token = await client.token({
+						fetchOptions: {
+							headers,
+						},
+					});
+
+					const jwks = await client.jwks();
+
+					const localJwks = createLocalJWKSet(jwks.data!);
+					const decoded = await jwtVerify(token.data?.token!, localJwks);
+
+					expect(decoded).toBeDefined();
+				});
+
+				it(`${alg} algorithm${enc}: Should set subject to user id by default`, async () => {
+					const token = await client.token({
+						fetchOptions: {
+							headers,
+						},
+					});
+
+					const jwks = await client.jwks();
+
+					const localJwks = createLocalJWKSet(jwks.data!);
+					const decoded = await jwtVerify(token.data?.token!, localJwks);
+					expect(decoded.payload.sub).toBeDefined();
+					expect(decoded.payload.sub).toBe(decoded.payload.id);
+				});
+			} catch (err) {
+				console.error(err);
+				expect.unreachable();
+			}
+		}
+	}
+});
+
+describe.for([
+	{
+		alg: "EdDSA",
+		crv: "Ed25519",
+	},
+	{
+		alg: "ES256",
+	},
+	{
+		alg: "ES512",
+	},
+	{
+		alg: "PS256",
+	},
+	{
+		alg: "RS256",
+	},
+] as JWKOptions[])("signJWT - alg: $alg", async (keyPairConfig) => {
+	const { auth } = await getTestInstance({
+		plugins: [
+			jwt({
+				jwks: {
+					keyPairConfig,
+				},
+			}),
+		],
+		logger: {
+			level: "error",
+		},
+	});
+
+	it("should sign a JWT", async () => {
+		const jwt = await auth.api.signJWT({
+			body: {
+				payload: {
+					sub: "123",
+					exp: 1000,
+					iat: 1000,
+					iss: "https://example.com",
+					aud: "https://example.com",
+					custom: "custom",
+				},
+			},
+		});
+		expect(jwt?.token).toBeDefined();
+	});
+
+	it("should be a valid JWT", async () => {
+		const jwt = await auth.api.signJWT({
+			body: {
+				payload: {
+					sub: "123",
+					exp: Math.floor(Date.now() / 1000) + 600,
+					iat: Math.floor(Date.now() / 1000),
+					iss: "https://example.com",
+					aud: "https://example.com",
+					custom: "custom",
+				},
+			},
+		});
+		const jwks = await auth.api.getJwks();
+		const localJwks = createLocalJWKSet(jwks);
+		const decoded = await jwtVerify(jwt?.token!, localJwks);
+
+		// Verify the kid from the JWT exists in the JWKS
+		const kidFromJwt = decoded.protectedHeader.kid;
+		const keyExists = jwks.keys.some((key) => key.kid === kidFromJwt);
+		expect(keyExists).toBe(true);
+
+		expect(decoded).toMatchObject({
+			payload: {
+				iss: "https://example.com",
+				aud: "https://example.com",
+				sub: "123",
+				exp: expect.any(Number),
+				iat: expect.any(Number),
+				custom: "custom",
+			},
+			protectedHeader: {
+				alg: keyPairConfig.alg,
+				kid: expect.any(String),
+			},
+		});
+	});
+
+	it("shouldn't let you sign from a client", async () => {
+		const client = createAuthClient({
+			plugins: [jwtClient()],
+			baseURL: "http://localhost:3000/api/auth",
+			fetchOptions: {
+				customFetchImpl: async (url, init) => {
+					return auth.handler(new Request(url, init));
+				},
+			},
+		});
+		const jwt = await client.$fetch("/sign-jwt", {
+			method: "POST",
+			body: {
+				payload: { sub: "123" },
+			},
+		});
+		expect(jwt.error?.status).toBe(404);
+	});
+});
+
+describe("jwt - custom adapter", async () => {
+	it("should use custom adapter", async () => {
+		const storage: Jwk[] = [];
+		const { auth } = await getTestInstance({
+			plugins: [
+				jwt({
+					adapter: {
+						getJwks: async () => {
+							return storage;
+						},
+						createJwk: async (data) => {
+							const key = {
+								...data,
+								id: crypto.randomUUID(),
+								createdAt: new Date(),
+							};
+							storage.push(key);
+							return key;
+						},
+					},
+				}),
+			],
+		});
+		const token = await auth.api.signJWT({
+			body: {
+				payload: {
+					sub: "123",
+				},
+			},
+		});
+		expect(token?.token).toBeDefined();
+		expect(storage.length).toBe(1);
+	});
+});
+
+describe("jwt - custom jwksPath", async () => {
+	it("should use custom jwksPath when specified", async () => {
+		const { auth } = await getTestInstance({
+			plugins: [
+				jwt({
+					jwks: {
+						jwksPath: "/.well-known/jwks.json",
+					},
+				}),
+			],
+		});
+
+		const client = createAuthClient({
+			plugins: [jwtClient({ jwks: { jwksPath: "/.well-known/jwks.json" } })],
+			baseURL: "http://localhost:3000/api/auth",
+			fetchOptions: {
+				customFetchImpl: async (url, init) => {
+					return auth.handler(new Request(url, init));
+				},
+			},
+		});
+
+		const jwks = await client.jwks();
+		expect(jwks.error).toBeNull();
+		expect(jwks.data?.keys).toBeDefined();
+		expect(jwks.data?.keys.length).toBeGreaterThan(0);
+
+		// Verify old /jwks endpoint is not found
+		const oldJwks = await client.$fetch<JSONWebKeySet>("/jwks");
+		expect(oldJwks.error?.status).toBe(404);
+	});
+});
+
+describe("jwt - signing algorithm comes from the key", async () => {
+	const edKey = await generateKeyPair("EdDSA", { extractable: true });
+	const rsaKey = await generateKeyPair("RS256", { extractable: true });
+	const storage: Jwk[] = [
+		{
+			id: "ed-key",
+			publicKey: JSON.stringify(await exportJWK(edKey.publicKey)),
+			privateKey: JSON.stringify(await exportJWK(edKey.privateKey)),
+			createdAt: new Date(),
+			alg: "EdDSA",
+		},
+		{
+			id: "rsa-key-without-alg",
+			publicKey: JSON.stringify(await exportJWK(rsaKey.publicKey)),
+			privateKey: JSON.stringify(await exportJWK(rsaKey.privateKey)),
+			createdAt: new Date(0),
+		},
+	];
+	const jwtOptions = {
+		sessionCookieCache: true,
+		jwks: { disablePrivateKeyEncryption: true },
+		adapter: { getJwks: async () => storage },
+	} satisfies JwtOptions;
+	const { auth, client, testUser, cookieSetter } = await getTestInstance({
+		session: { cookieCache: { enabled: true, strategy: "jwt" } },
+		plugins: [jwt(jwtOptions)],
+	});
+
+	it("verifyJWT rejects a token whose header names another algorithm for the key", async () => {
+		const { token } = await auth.api.signJWT({
+			body: { payload: { sub: "u1" } },
+		});
+		const relabeled = await new SignJWT(decodeJwt(token))
+			.setProtectedHeader({ alg: "Ed25519", kid: "ed-key" })
+			.sign(edKey.privateKey);
+
+		await expect(
+			auth.api.verifyJWT({ body: { token } }),
+		).resolves.toMatchObject({ payload: { sub: "u1" } });
+		await expect(
+			auth.api.verifyJWT({ body: { token: relabeled } }),
+		).resolves.toEqual({ payload: null });
+	});
+
+	it("does not take the cookie-cache algorithm from the token header", async () => {
+		const headers = new Headers();
+		await client.signIn.email(
+			{ email: testUser.email, password: testUser.password },
+			{ onSuccess: cookieSetter(headers) },
+		);
+		const token = parseCookies(headers.get("cookie") || "").get(
+			"better-auth.session_data",
+		);
+		if (!token) {
+			throw new Error("Cookie-cache JWT not found");
+		}
+		const headerSigned = await new SignJWT(decodeJwt(token))
+			.setProtectedHeader({
+				alg: "RS256",
+				kid: "rsa-key-without-alg",
+				typ: SESSION_COOKIE_JWT_TYPE,
+			})
+			.sign(rsaKey.privateKey);
+		const ctx = { context: await auth.$context } as GenericEndpointContext;
+		const signer = createCookieCacheSigner(jwtOptions);
+
+		await expect(signer.verify(ctx, token)).resolves.not.toBeNull();
+		await expect(signer.verify(ctx, headerSigned)).resolves.toBeNull();
+	});
+});

@@ -1,0 +1,270 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/api/routes/sign-in.test.ts",
+  "sha256": "e3a95758b155f436a34a1192149c273c751c7765e16da78e03bcdbcee4191df1",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "sign-in",
+      "suites": [
+        "sign-in"
+      ],
+      "test": "should return a response with a set-cookie header",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in",
+      "suites": [
+        "sign-in"
+      ],
+      "test": "should read the ip address and user agent from the headers",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in",
+      "suites": [
+        "sign-in"
+      ],
+      "test": "verification email will be sent if sendOnSignIn is enabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in",
+      "suites": [
+        "sign-in"
+      ],
+      "test": "verification email will not be sent if sendOnSignIn is disabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in",
+      "suites": [
+        "sign-in"
+      ],
+      "test": "logs expected auth validation failures below error level",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "url checks",
+      "suites": [
+        "url checks"
+      ],
+      "test": "should reject untrusted origins",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in CSRF protection",
+      "suites": [
+        "sign-in CSRF protection"
+      ],
+      "test": "should block cross-site navigation login attempts (no cookies)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in CSRF protection",
+      "suites": [
+        "sign-in CSRF protection"
+      ],
+      "test": "should allow same-origin navigation login attempts",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in CSRF protection",
+      "suites": [
+        "sign-in CSRF protection"
+      ],
+      "test": "should allow fetch/XHR requests (cors mode)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in CSRF protection",
+      "suites": [
+        "sign-in CSRF protection"
+      ],
+      "test": "should use origin validation when cookies exist",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in with additionalFields",
+      "suites": [
+        "sign-in with additionalFields"
+      ],
+      "test": "should return additionalFields in signInEmail response",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in with form data",
+      "suites": [
+        "sign-in with form data"
+      ],
+      "test": "should accept form-urlencoded content type",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in with form data",
+      "suites": [
+        "sign-in with form data"
+      ],
+      "test": "accepts a null Origin when Fetch Metadata confirms a trusted target",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in with form data",
+      "suites": [
+        "sign-in with form data"
+      ],
+      "test": "accepts a null Origin through a trusted reverse proxy",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in with form data",
+      "suites": [
+        "sign-in with form data"
+      ],
+      "test": "ignores forwarded origins when proxy headers are not trusted",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in with form data",
+      "suites": [
+        "sign-in with form data"
+      ],
+      "test": "rejects a null Origin when the same-origin target is not trusted",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in with form data",
+      "suites": [
+        "sign-in with form data"
+      ],
+      "test": "rejects a null Origin for a %s form submission",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in with form data",
+      "suites": [
+        "sign-in with form data"
+      ],
+      "test": "rejects a null Origin without Fetch Metadata",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in with form data",
+      "suites": [
+        "sign-in with form data"
+      ],
+      "test": "rejects a missing Origin even when Fetch Metadata says same-origin",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in with form data",
+      "suites": [
+        "sign-in with form data"
+      ],
+      "test": "should block cross-site form submissions",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in with form data",
+      "suites": [
+        "sign-in with form data"
+      ],
+      "test": "should allow same-site form submissions from trusted origins",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "email case insensitivity",
+      "suites": [
+        "email case insensitivity"
+      ],
+      "test": "should sign in with different email casing than sign-up",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "email case insensitivity",
+      "suites": [
+        "email case insensitivity"
+      ],
+      "test": "should store email as lowercase regardless of input casing",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "email case insensitivity",
+      "suites": [
+        "email case insensitivity"
+      ],
+      "test": "should not allow duplicate sign-ups with different email casing",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in password length",
+      "suites": [
+        "sign-in password length"
+      ],
+      "test": "should reject a password longer than maxPasswordLength before hashing",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-in password length",
+      "suites": [
+        "sign-in password length"
+      ],
+      "test": "should reject the same length for an unknown email",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

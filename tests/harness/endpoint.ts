@@ -1,0 +1,15 @@
+import type { createAuthEndpoint as upstreamCreateAuthEndpoint } from '@better-auth/core/api';
+
+type Descriptor = { path: string; options: {method?: string; use?: unknown[]}; handler: (context: any) => unknown };
+const descriptors = new WeakMap<Function, Descriptor>();
+// Middleware descriptors are interpreted by V and never executed in JS.
+export const freshSessionMiddleware: any = Object.freeze({nativeMiddleware: 'fresh-session'});
+export const createAuthEndpoint = ((path: string, options: Descriptor['options'], handler: Descriptor['handler']) => {
+  const endpoint = Object.assign(async () => { throw new Error('Native endpoint descriptors cannot execute in JS'); }, {path, options});
+  descriptors.set(endpoint, {path, options, handler});
+  return endpoint;
+}) as unknown as typeof upstreamCreateAuthEndpoint;
+
+export function nativeEndpoint(value: unknown): Descriptor | undefined {
+  return typeof value === 'function' ? descriptors.get(value) : undefined;
+}

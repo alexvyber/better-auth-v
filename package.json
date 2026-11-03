@@ -1,0 +1,23 @@
+{
+  "name": "better-auth-v-conformance",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:bridge": "mkdir -p build && \"${V:-v}\" -o build/auth-bridge cmd/bridge",
+    "test": "pnpm build:bridge && vitest run",
+    "typecheck": "tsc --noEmit",
+    "upstream:fetch": "node scripts/fetch-upstream.mjs",
+    "upstream:import": "node scripts/import-upstream.mjs",
+    "upstream:inventory": "node scripts/inventory-upstream.mjs"
+  },
+  "devDependencies": {
+    "@better-auth/core": "1.7.15",
+    "@better-auth/utils": "0.5.1",
+    "@noble/hashes": "2.4.0",
+    "@types/node": "24.10.0",
+    "better-auth": "1.7.15",
+    "jose": "6.2.15",
+    "typescript": "5.9.3",
+    "vitest": "5.0.0"
+  }
+}

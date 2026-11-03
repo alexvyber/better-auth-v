@@ -1,0 +1,30 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/jwt/rotation.test.ts",
+  "sha256": "d2a563edc10da0958d3809976a1d2a1c07906a31f3f00ccb4a546ee2955fde10",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "jwt rotation",
+      "suites": [
+        "jwt rotation"
+      ],
+      "test": "should rotate keys when expired",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "jwt rotation",
+      "suites": [
+        "jwt rotation"
+      ],
+      "test": "should return keys within grace period",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

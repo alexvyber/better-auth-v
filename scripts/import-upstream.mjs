@@ -1,0 +1,193 @@
+import ts from "typescript";
+import { testFunctionNames } from './upstream-test-discovery.mjs';
+import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+const commit = "0e75ddcf36489aa3a191ea902a82d1892034dc74";
+const repo = resolve(process.argv[2] ?? ".upstream/better-auth");
+const marker = resolve(repo, ".source-commit");
+const head = existsSync(marker)
+  ? readFileSync(marker, "utf8").trim()
+  : execFileSync("git", ["-C", repo, "rev-parse", "HEAD"], {
+      encoding: "utf8",
+    }).trim();
+if (head !== commit)
+  throw new Error(`Expected upstream ${commit}, got ${head}`);
+const plans = [
+  { file: "sign-in", suites: null },
+  { file: "password", directory: "crypto", suites: null },
+  {
+    file: 'jwt-plugin', source_file: 'jwt', directory: 'plugins/jwt',
+    suites: new Set(['jwt', 'signJWT - alg: $alg', 'jwt - custom adapter', 'jwt - custom jwksPath', 'jwt - signing algorithm comes from the key']),
+    imports: 'import { beforeEach, describe, expect, expectTypeOf, it, vi } from "vitest";\nimport { createAuthClient } from "better-auth/client";\nimport { jwtClient } from "better-auth/client/plugins";\nimport { createLocalJWKSet, jwtVerify, decodeJwt, exportJWK, generateKeyPair, SignJWT } from "jose";\nimport { parseCookies } from "better-auth/cookies";\nimport type { JWKOptions, JwtOptions, Jwk } from "better-auth/plugins/jwt";\nimport type { JSONWebKeySet } from "jose";\nimport type { GenericEndpointContext } from "@better-auth/core";\nimport { generateExportedKeyPair, createCookieCacheSigner, SESSION_COOKIE_JWT_TYPE } from "../harness/jwt.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { jwt } from "../harness/plugins.js";\n',
+  },
+  {
+    file: 'jwt-rotation', source_file: 'rotation', directory: 'plugins/jwt', suites: null,
+    imports: 'import { afterEach, describe, expect, it, vi } from "vitest";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { jwt } from "../harness/plugins.js";\nimport type { Jwk } from "better-auth/plugins/jwt";\n',
+  },
+  {
+    file: "session-api",
+    helpers: new Set(['refreshCacheTest', 'COOKIE_CACHE_JWT_TYPE', 'COOKIE_CACHE_JWT_AUDIENCE']),
+    suites: new Set([
+      "session",
+      "session storage",
+      "cookie cache",
+      "cookie cache with JWT strategy",
+      "cookie cache with JWT strategy backed by JWKS",
+      "cookie cache with JWE strategy",
+      "cookie cache refreshCache",
+      "cookie cache versioning",
+      "date field type consistency",
+      "update-session cookie cache revocation",
+      "forced strict session validation",
+      "deferSessionRefresh",
+      "updateSession",
+      "get-session cache headers",
+      "updateSession plugin authority fields",
+    ]),
+    imports:
+      'import { afterEach, beforeEach, describe, expect, expectTypeOf, it, test, onTestFinished, vi } from "vitest";\nimport type { GenericEndpointContext } from "@better-auth/core";\nimport { runWithEndpointContext, runWithRequestState } from "@better-auth/core/context";\nimport { parseCookies, parseSetCookieHeader } from "better-auth/cookies";\nimport { createLocalJWKSet, decodeProtectedHeader, jwtVerify } from "jose";\nimport { jwt, admin, organization } from "../harness/plugins.js";\nimport { signJWT, verifyJWT } from "better-auth/crypto";\nimport { memoryAdapter } from "../harness/memory-adapter.js";\nimport { createAuthEndpoint, freshSessionMiddleware } from "../harness/endpoint.js";\nimport { getSessionFromCtx, getAuthoritativeSessionFromCtx } from "../harness/session.js";\nimport { getDate } from "../harness/date.js";\nimport { getTestInstance } from "../harness/test-instance.js";\n',
+    skippedTests: new Set([
+    ]),
+  },
+  {
+    file: "sign-up",
+    suites: new Set([
+      "validateUserInfo sign-up",
+      "sign-up user enumeration protection",
+      "sign-up session caching",
+      "sign-up with custom fields",
+      "sign-up CSRF protection",
+      "sign-up with form data",
+      "sign-up sendOnSignUp option behavior",
+      "sign-up enumeration protection — indistinguishable response",
+      "sign-up enumeration protection — customSyntheticUser with admin plugin",
+    ]),
+  },
+];
+for (const plan of plans) {
+  const relativePath = `packages/better-auth/src/${plan.directory ?? "api/routes"}/${plan.source_file ?? plan.file}.test.ts`;
+  const source = readFileSync(resolve(repo, relativePath), "utf8");
+  const sourceFile = ts.createSourceFile(
+    plan.file + ".test.ts",
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+  );
+  const inventory = [];
+  const testNames = testFunctionNames(sourceFile);
+  let output =
+    "// Generated from pinned upstream source; do not edit assertions here.\n" +
+    (plan.imports ?? "");
+  for (const statement of sourceFile.statements) {
+    if (ts.isVariableStatement(statement) && statement.declarationList.declarations.some(declaration => plan.helpers?.has(declaration.name.getText(sourceFile)))) {
+      output += '\n' + statement.getText(sourceFile) + '\n';
+      continue;
+    }
+    if (ts.isImportDeclaration(statement)) {
+      if (plan.imports) continue;
+      let text = statement
+        .getText(sourceFile)
+        .replace('"../../cookies"', '"better-auth/cookies"')
+        .replace('"./password"', '"../harness/password.js"')
+        .replace(
+          '"../../test-utils/test-instance"',
+          '"../harness/test-instance.js"',
+        )
+        .replace('"../../plugins/admin/admin"', '"../harness/plugins.js"');
+      output += text + "\n";
+      continue;
+    }
+    if (
+      !ts.isExpressionStatement(statement) ||
+      !ts.isCallExpression(statement.expression)
+    )
+      continue;
+    const call = statement.expression;
+    let rootExpression = call.expression;
+    while (ts.isCallExpression(rootExpression)) rootExpression = rootExpression.expression;
+    if (!/^(describe|suite)(\.|$)/.test(rootExpression.getText(sourceFile))) continue;
+    const name = call.arguments[0].text;
+    const callback = call.arguments[1];
+    const selected = plan.suites === null || plan.suites.has(name);
+    const removals = [];
+    function collect(node, path = [name]) {
+      if (ts.isCallExpression(node)) {
+        let expression = node.expression;
+        while (ts.isCallExpression(expression))
+          expression = expression.expression;
+        const callee = expression.getText(sourceFile);
+        const callbacks = node.arguments.filter(
+          (arg) => ts.isArrowFunction(arg) || ts.isFunctionExpression(arg),
+        );
+        if (/^(describe|suite)(\.|$)/.test(callee) && callbacks.length) {
+          const title =
+            node.arguments[0]?.text ??
+            node.arguments[0]?.getText(sourceFile) ??
+            "<dynamic>";
+          for (const fn of callbacks) collect(fn.body, [...path, title]);
+          return;
+        }
+        if (
+          testNames.has(callee.split('.')[0]) &&
+          (callbacks.length || callee.endsWith(".todo"))
+        ) {
+          const title =
+            node.arguments[0]?.text ??
+            node.arguments[0]?.getText(sourceFile) ??
+            "<dynamic>";
+          const include = selected && !plan.skippedTests?.has(title);
+          inventory.push({
+            suite: name,
+            suites: path,
+            test: title,
+            selected: include,
+            upstreamDisabled: /\.(skip|todo|fails)(\.|$)/.test(callee),
+            reason: include
+              ? null
+              : "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration",
+          });
+          if (selected && !include)
+            removals.push([node.getFullStart(), node.end]);
+          return;
+        }
+      }
+      ts.forEachChild(node, (child) => collect(child, path));
+    }
+    collect(callback.body);
+    if (selected) {
+      const start = statement.getStart(sourceFile);
+      let text = source.slice(start, statement.end);
+      for (const [from, to] of removals.reverse())
+        text = text.slice(0, from - start) + text.slice(to - start);
+      output += "\n" + text + "\n";
+    }
+  }
+  mkdirSync("tests/upstream/sources", { recursive: true });
+  writeFileSync(`tests/upstream/sources/${plan.file}.test.ts.txt`, source);
+  writeFileSync(`tests/upstream/${plan.file}.test.ts`, output);
+  const manifest =
+    plan.file === "sign-in" ? "manifest.json" : `${plan.file}.manifest.json`;
+  writeFileSync(
+    `tests/upstream/${manifest}`,
+    JSON.stringify(
+      {
+        repository: "https://github.com/better-auth/better-auth",
+        commit,
+        packageVersion: "1.7.15",
+        path: relativePath,
+        sha256: createHash("sha256").update(source).digest("hex"),
+        changes:
+          "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+        tests: inventory,
+      },
+      null,
+      2,
+    ) + "\n",
+  );
+  console.log(
+    `${plan.file}: ${inventory.filter((test) => test.selected).length} selected declarations, ${inventory.filter((test) => !test.selected).length} unported. Parameterized declarations may run multiple cases.`,
+  );
+}

@@ -1,0 +1,427 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/jwt/jwt.test.ts",
+  "sha256": "de3adb46f1ee4e1b143ad26919622f23a0065c2184508d45093182d324bf8d29",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "jwt",
+      "suites": [
+        "jwt"
+      ],
+      "test": "Client gets a token from session",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "jwt",
+      "suites": [
+        "jwt"
+      ],
+      "test": "Client gets a token",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "jwt",
+      "suites": [
+        "jwt"
+      ],
+      "test": "Get JWKS",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "jwt",
+      "suites": [
+        "jwt"
+      ],
+      "test": "Signed tokens can be validated with the JWKS",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "jwt",
+      "suites": [
+        "jwt"
+      ],
+      "test": "should set subject to user id by default",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "jwt",
+      "suites": [
+        "jwt"
+      ],
+      "test": "`${alg} algorithm${enc} can be used to generate JWKS`",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "jwt",
+      "suites": [
+        "jwt"
+      ],
+      "test": "`${alg} algorithm${enc}: Client can sign in`",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "jwt",
+      "suites": [
+        "jwt"
+      ],
+      "test": "`${alg} algorithm${enc}: Client gets a token`",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "jwt",
+      "suites": [
+        "jwt"
+      ],
+      "test": "`${alg} algorithm${enc}: Client gets a token from session`",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "jwt",
+      "suites": [
+        "jwt"
+      ],
+      "test": "`${alg} algorithm${enc}: Signed tokens can be validated with the JWKS`",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "jwt",
+      "suites": [
+        "jwt"
+      ],
+      "test": "`${alg} algorithm${enc}: Should set subject to user id by default`",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signJWT - alg: $alg",
+      "suites": [
+        "signJWT - alg: $alg"
+      ],
+      "test": "should sign a JWT",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signJWT - alg: $alg",
+      "suites": [
+        "signJWT - alg: $alg"
+      ],
+      "test": "should be a valid JWT",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signJWT - alg: $alg",
+      "suites": [
+        "signJWT - alg: $alg"
+      ],
+      "test": "shouldn't let you sign from a client",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "jwt - remote signing",
+      "suites": [
+        "jwt - remote signing"
+      ],
+      "test": "should fail if sign is defined and remoteUrl is not",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "jwt - remote url",
+      "suites": [
+        "jwt - remote url"
+      ],
+      "test": "should require specifying the alg when using remoteUrl",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "jwt - remote url",
+      "suites": [
+        "jwt - remote url"
+      ],
+      "test": "should accept remoteUrl with alg specified",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "jwt - remote url",
+      "suites": [
+        "jwt - remote url"
+      ],
+      "test": "should disable /jwks endpoint when remoteUrl is configured",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "jwt - remote url",
+      "suites": [
+        "jwt - remote url"
+      ],
+      "test": "should work with different algorithms when remoteUrl is set",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "jwt - remote url",
+      "suites": [
+        "jwt - remote url"
+      ],
+      "test": "should still allow token generation when remoteUrl is set",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "jwt - remote url",
+      "suites": [
+        "jwt - remote url"
+      ],
+      "test": "should work with custom sign function and remoteUrl",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "jwt - remote url",
+      "suites": [
+        "jwt - remote url"
+      ],
+      "test": "should validate that remoteUrl is a valid URL format",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "jwt - remote url",
+      "suites": [
+        "jwt - remote url"
+      ],
+      "test": "should work with remoteUrl pointing to different paths",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "jwt - remote url",
+      "suites": [
+        "jwt - remote url"
+      ],
+      "test": "should handle remoteUrl with query parameters",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "jwt - remote url",
+      "suites": [
+        "jwt - remote url"
+      ],
+      "test": "should not interfere with other JWT endpoints when remoteUrl is set",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "jwt - custom adapter",
+      "suites": [
+        "jwt - custom adapter"
+      ],
+      "test": "should use custom adapter",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "jwt - custom jwksPath",
+      "suites": [
+        "jwt - custom jwksPath"
+      ],
+      "test": "should use custom jwksPath when specified",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "jwt - JWKS minting inside an active transaction",
+      "suites": [
+        "jwt - JWKS minting inside an active transaction"
+      ],
+      "test": "mints the first signing key through the transaction-scoped adapter instead of deadlocking on the connection",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "toExpJWT",
+      "suites": [
+        "toExpJWT",
+        "with number input"
+      ],
+      "test": "should return the number as-is",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "toExpJWT",
+      "suites": [
+        "toExpJWT",
+        "with Date input"
+      ],
+      "test": "should convert Date to seconds timestamp",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "toExpJWT",
+      "suites": [
+        "toExpJWT",
+        "with Date input"
+      ],
+      "test": "should floor milliseconds",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "toExpJWT",
+      "suites": [
+        "toExpJWT",
+        "with valid TimeString input"
+      ],
+      "test": "should parse short format and add to iat",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "toExpJWT",
+      "suites": [
+        "toExpJWT",
+        "with valid TimeString input"
+      ],
+      "test": "should parse long format and add to iat",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "toExpJWT",
+      "suites": [
+        "toExpJWT",
+        "with valid TimeString input"
+      ],
+      "test": "should handle negative values",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "toExpJWT",
+      "suites": [
+        "toExpJWT",
+        "with invalid string input"
+      ],
+      "test": "should throw TypeError for invalid format",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "jwtClient types",
+      "suites": [
+        "jwtClient types"
+      ],
+      "test": "should be assignable to BetterAuthClientPlugin",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "jwtClient types",
+      "suites": [
+        "jwtClient types"
+      ],
+      "test": "should preserve additional user fields when combined with inferAdditionalFields",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "jwt - signing algorithm comes from the key",
+      "suites": [
+        "jwt - signing algorithm comes from the key"
+      ],
+      "test": "verifyJWT rejects a token whose header names another algorithm for the key",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "jwt - signing algorithm comes from the key",
+      "suites": [
+        "jwt - signing algorithm comes from the key"
+      ],
+      "test": "does not take the cookie-cache algorithm from the token header",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "jwt - unresolved issuer and audience",
+      "suites": [
+        "jwt - unresolved issuer and audience"
+      ],
+      "test": "warns when it signs a token without an issuer or audience",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "jwt - unresolved issuer and audience",
+      "suites": [
+        "jwt - unresolved issuer and audience"
+      ],
+      "test": "warns when it accepts a token without checking its issuer or audience",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    }
+  ]
+}

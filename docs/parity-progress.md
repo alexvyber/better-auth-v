@@ -1,0 +1,145 @@
+# Full-parity work log
+
+The active objective is full Better Auth parity, including the remaining features
+and upstream tests. The project is not complete while the compatibility contract
+or corpus inventory contains unimplemented behavior.
+
+## Fixed baselines
+
+- Source commit: `0e75ddcf36489aa3a191ea902a82d1892034dc74`.
+- Published reference implementation/client: `better-auth@1.7.15`.
+- V toolchain: 0.5.2. Test runner: Node 24 / Vitest 5.0.0.
+- Unicode normalization: Unicode 17.0.0, matching the verified Node runtime.
+- `upstream.lock.json` pins the source archive checksum. Per-file manifests pin
+  imported source hashes and enumerate selected/unported declarations.
+- `tests/upstream/corpus.json` covers the entire repository, including demos,
+  tooling, adapters, plugins, browser E2E, and type-only files. Its 436 files and
+  6,817 static declarations are an inventory, not a passing runtime-case count.
+  Named `test.extend` fixture declarations are now included; this discovered 22
+  previously uncounted declarations without changing the source baseline.
+
+## Implemented since the initial core
+
+- Removed all exclusions from the original sign-in test file.
+- Added all original password tests, running against V scrypt, with independent
+  Node verification and legacy `@noble/hashes` compatibility.
+- Implemented Unicode NFKC and passed all 20,034 official conformance vectors.
+- Switched the default hasher to upstream-compatible scrypt; kept explicit Argon2.
+- Matched password length limits to UTF-16 units and avoided unnecessary hashing
+  at auth initialization. Credential lookup selects the canonical account.
+- Added persistent user fields: required/default/type validation, protected input,
+  hidden output, flat JSON, and native typed API round trips.
+- Added transaction-time callback RPC for hashing, verification, email delivery,
+  registration policy, and existing-user signup notifications. Failures can roll
+  database writes back. Logger events and user-record inspection reach the fixture.
+- Implemented generic duplicate responses that reflect the new request, preserve
+  response shape, and do not reveal the stored profile. Registration policy also
+  applies to new OAuth users.
+- Added all 37 original sign-up cases covering policy validation, enumeration
+  protection, verification-email options, forms, CSRF, session caching/rollback,
+  custom fields, and account-column mapping.
+- Added deferred refresh, POST refresh, refresh suppression, read-only GET
+  transactions, nonpersistent-session refresh suppression, fresh device listing,
+  browser cookie Max-Age limits, and persistent custom session fields/update APIs.
+- Added all 80 original session cases, plus native read-only SQLite verification and
+  direct V API checks. Session/helper coverage now includes `returnHeaders`, method
+  overrides, official client plugins, and request-local user headers.
+- Added primary secondary-store sessions, optional database copies/fallback,
+  preserved-row revocation, cached user refresh, TTLs, and atomic consumption and
+  counters in the native memory implementation.
+- Added transaction-aware database mutation hooks and after-commit tasks. Nested
+  hook and internal-adapter calls execute in V through a correlated callback
+  protocol; private session metadata survives callbacks without entering HTTP JSON.
+- Added purpose-bound AES-GCM token storage so database session listings return
+  actual tokens while database lookup continues to use digests. Legacy rows remain
+  readable; their tokens cannot be recovered retroactively.
+- Added schema-v3 migrations and real SQLite account identity-column aliases,
+  including quoted names. The adapter fixture can inspect users/accounts and
+  update session rows by ID without changing hooks or caches.
+- Added compact HMAC, HS256 JWT, and HKDF/A256CBC-HS512 JWE cache codecs, plus
+  legacy A256GCM decoding. Independent HMAC/JOSE tests verify emitted tokens and
+  independently encrypted tokens accepted by V.
+- Added cache version strings/callbacks, hidden-field filtering, token binding,
+  cache bypass/expiry/fallback, bounded cookie chunks, and stale-chunk cleanup.
+  Corrected ECMAScript number serialization for compact signatures and cookie-jar
+  merging in the fixture.
+- Added native stateless defaults/refresh, preserved session expiry, nonpersistent
+  cache cookies, strict stateful revocation checks, and endpoint-context session
+  lookup/header forwarding. Stateless updates can use their signed cookie when
+  the ephemeral adapter has no session row.
+- Added a V map-based primary adapter with transaction rollback and key constraints.
+  Explicit upstream memory-adapter fixtures select this adapter without executing
+  a TS database. Adapter `findOne` observations reach real native reads; store
+  failures are sanitized for HTTP and preserve callback causes for direct TS calls.
+- Added an Ed25519 JWT/JWKS plugin, persisted signing keys, native AES-GCM private
+  key protection, schema-v4 migration, rotation/grace periods, local cache signing,
+  strict cache-JWT identity claims, authenticated token issuance, automatic JWT
+  response headers, and trusted server signing/verification APIs.
+- Added plugin field contributions, creation defaults, protected admin/organization
+  authority fields, and custom synthetic-user callbacks. These schema plugins are
+  partial foundations; admin/organization operations and permission enforcement
+  remain unimplemented and their endpoints are not registered.
+- Added native endpoint session/freshness requirements and fixture descriptors for
+  JS business callbacks. Removed the final sign-up/session exclusions: both source
+  files run in full, including original JWKS/rotation and plugin-dependent cases.
+- Added custom JWK-store get/create overrides and imported the complete upstream
+  rotation file. Added ID-independent encrypted key envelopes while preserving
+  older ID-bound records, plus missing-algorithm fallback and primary-key preference.
+- Added OpenSSL 3 RSA/PSS and ECDSA key generation, JWK import, signing, verification,
+  ECDSA JOSE signature encoding, and public/private key checks. The JWT algorithm
+  matrix and general signing now run against V, including their key-generator
+  helper. Node-generated keys/tokens are tested in both directions across nine
+  RSA/PSS/ECDSA algorithms, including signature tampering rejection.
+- Extended the importer to recognize top-level parameterized suites; the partial
+  JWT plugin manifest records all selected/unported declarations. Added custom
+  adapter/path and stored-algorithm authority suites. The JWT plugin source file
+  still has 23 unported declarations; this is not full JWT plugin parity.
+
+## Next infrastructure work
+
+The completed `make check` passes 330 TypeScript runtime cases across 13 files,
+42 native V test functions across 7 files (including all 20,034 Unicode vectors),
+TypeScript checking, and real HTTP migration/authentication/CSRF/restart checks.
+This includes the final custom-store publication and encrypted-key regressions.
+The complete suite was rerun successfully before committing and publishing the
+repository. TypeScript checking, V formatting, and `git diff --check` pass.
+The complete session run contains 80 cases and the complete sign-up run contains
+37. Additional tests check cache cryptography, binding, chunk cleanup, stateless
+behavior, JWT verification, key persistence, and API boundaries. V formatting and
+`git diff --check` also pass. These counts do not imply that the full upstream
+corpus passes.
+
+The user requested concluding the current run. Work is paused at this checkpoint;
+the full-parity objective remains incomplete. Changes are left in the worktree.
+
+1. Complete hook and secondary-storage parity: partial-update payloads, precise
+   cancellation results, full context, transaction-disabled behavior, and remaining
+   adapter operations/observability. Cache effects are not distributed transactions;
+   rollback cleanup is best effort and cannot reverse existing updates/deletes.
+2. Complete the remaining JWT plugin suites: remote signing, signing overrides, full option/callback
+   handling, and upstream encryption formats. Verify combinations with deferred
+   read-only session GET and other hooks; JWT header issuance can rotate keys.
+3. Implement complete admin and organization plugins beyond their schema/creation
+   foundations, plus account-cookie and secret-rotation behavior. The complete
+   sign-up/session source runs do not establish full plugin or stateless parity.
+   Preserve every original assertion when importing additional suites.
+4. Expand the adapter contract/schema/migrations to PostgreSQL, MySQL, MongoDB,
+   secondary stores, and plugin schemas. The existing SQLite payload schema is
+   not the upstream physical schema.
+5. Implement the remaining provider, plugin, client-contract, browser integration,
+   and tooling surfaces listed in the corpus and compatibility contract.
+
+## Guardrails for continuing
+
+- Authentication decisions and persistence belong in V. TS code translates test
+  configuration, requests, callback values, and response/error representations.
+- Do not replace expected values, remove assertions, or count excluded/disabled
+  declarations as passing. Partial imports must remain visible in manifests.
+- Tests that depend on JS internals or compile-time types require explicit native
+  contract coverage and/or a faithful TS facade; do not mark them passed merely
+  because the existing TS implementation passes them.
+- Read-only deferred session GET must keep working with `PRAGMA query_only=ON`.
+- Preserve transaction rollback, one-time token consumption, protected fields,
+  browser-bound OAuth state, and canonical credential-account selection.
+- Use `make check` for the complete current verification set. Real scrypt tests
+  take substantially longer than fast fixture authentication tests.

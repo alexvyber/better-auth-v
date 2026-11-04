@@ -679,8 +679,22 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   Three native functions cover RFC vectors, imported Base32/window handling and
   typed sign-in challenge responses. No application database was touched.
 
-The latest verification passes 1711 TypeScript cases across 90 files, all 94 native
-V test functions across 31 files (including all 20,034 Unicode vectors), TypeScript
+- Added native additional-field input validators/transforms with Standard Schema
+  result/error precedence and explicit async validation rejection. Field uniqueness
+  is enforced in maps and SQLite/PostgreSQL indexes; SQLite configured unique fields
+  require explicit migration before writes. PostgreSQL uses fieldName aliases when
+  adapter mappings do not override them. Four native functions cover parser policy,
+  migration idempotence/fail-closed writes and rollback behavior.
+- Added mapped provider fields, protected-field filtering/defaults and optional
+  implicit-link profile sync. PostgreSQL savepoints recover rejected profile updates
+  while retaining provider account bindings. Five unchanged upstream profile-input
+  cases run on SQLite and PostgreSQL. Seven owned cases verify Brand Map username
+  rules, validator/transform ordering, async rejection, uniqueness across adapters,
+  PostgreSQL races/aliases and rejected-sync recovery. Broader linking, output
+  transforms, functional defaults and complete query/schema support remain open.
+
+The latest verification passes 1728 TypeScript cases across 93 files, all 98 native
+V test functions across 32 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus
@@ -689,7 +703,7 @@ passes.
 The user resumed work and authorized incremental commits and pushes to
 `alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.
 The objective remains incomplete. The corpus currently records 32 completely
-imported files, eight partial imports and 396 unported files; imported status describes source
+imported files, nine partial imports and 395 unported files; imported status describes source
 preservation, not broad feature completion.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise

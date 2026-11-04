@@ -363,7 +363,7 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
 Complete PostgreSQL query/plugin-schema support, MySQL/MongoDB adapters,
 schema generation/introspection, full secondary
 storage parity, full stateless/account-cookie behavior, complete JWT/JWKS plugin parity,
-custom-field validators/transforms,
+remaining output field transforms/validators and functional defaults,
 remaining database-column mapping options, richer hooks,
 username/phone authentication, remaining two-factor integration details, passkeys, admin,
 organizations/teams/RBAC, API keys, OAuth/OIDC server functionality,
@@ -548,3 +548,37 @@ replays, expiry, concurrency and mixed-factor account limits. Three integration
 contracts cover JWT/OTT ordering, application fixed-code storage and cross-process
 PostgreSQL redemption; another checks the HTTP plugin rate rule. This does not prove
 all plugin/framework/database combinations or live Brand Map integration.
+
+
+## Additional-field input rules and uniqueness
+
+`AdditionalField.validate_input` and `transform_input` accept/return native JSON
+values through `FieldInputResult`. V applies validator precedence, validation
+messages and the synchronous Standard Schema restriction. Validators run before
+native type checks so they may produce the typed stored value. Defaults and
+protected input follow the existing create/update policy. The TypeScript fixture
+invokes supplied Standard Schema schemas or application transforms; it does not
+implement the authentication/field decision flow.
+
+`unique` configures native map checks and SQLite/PostgreSQL unique indexes for
+user/session additional fields. Optional absent/null values remain distinct from
+owned values. SQLite unique indexes require an explicit `auth.migrate_storage()`
+after configuration; writes fail closed until configured indexes exist. Migrations
+are idempotent. PostgreSQL supports `field_name` (`fieldName` metadata in fixtures)
+as a fallback column alias when no explicit adapter field mapping is supplied.
+Existing application schemas remain the application's migration responsibility.
+
+Provider profile input now filters protected fields, applies validators/transforms
+and preserves create-time defaults. Google and generic provider mapping retain
+configured additional fields. Optional `update_user_info_on_link` syncs allowed
+fields on implicit account linking and seeds the new session with the updated row;
+identity email/verification remain separate. Invalid profile updates do not cancel
+the link. PostgreSQL wraps this optional sync in a savepoint so a constraint error
+does not abort the new account binding. It does not update every subsequent login.
+
+Five original upstream profile-input/linking cases pass unchanged on SQLite and
+PostgreSQL. Seven independent cases cover Brand Map username validation, input
+transform precedence, async rejection, map/SQLite uniqueness, concurrent PostgreSQL
+uniqueness/aliases and failed profile-sync recovery. Output transformations,
+functional defaults, complete schema/query support and exhaustive index/type/error
+mapping remain open. These tests do not establish full linking or provider parity.

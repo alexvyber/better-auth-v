@@ -20,6 +20,7 @@ struct Options {
 	generic_oauth                     []better_auth.GenericOAuthConfig
 	generic_callbacks                 map[string][]string
 	account_linking_enabled           bool
+	update_user_info_on_link          bool
 	trusted_linking_providers         []string
 	disable_email_sign_up             bool
 	app_name                          string = 'Better Auth'
@@ -40,6 +41,7 @@ struct Options {
 	organization_schema               bool
 	organization_teams                bool
 	logout_providers                  []better_auth.GenericOAuthLogoutProvider
+	google_profile_callback           bool
 	google_provider                   ?better_auth.GoogleProvider
 	store_account_cookie              bool
 	account_cookie_bind_user          ?bool
@@ -97,6 +99,7 @@ struct Options {
 	fail_delivery                     bool
 	magic_link                        bool
 	trust_proxy_origin_headers        bool
+	field_callbacks                   []string
 	user_fields_json                  string = '{}'
 	session_fields_json               string = '{}'
 	callback_methods                  []string
@@ -585,11 +588,11 @@ fn main() {
 	if opts.remote_passwords { hasher = RemoteHasher{
 			fallback: fallback_hasher
 		} }
-	user_fields := json2.decode[map[string]better_auth.AdditionalField](opts.user_fields_json) or {
+	user_fields := field_schema(opts.user_fields_json, 'user', opts.field_callbacks) or {
 		emit(Reply{ id: init.id, error: err.msg() })
 		return
 	}
-	session_fields := json2.decode[map[string]better_auth.AdditionalField](opts.session_fields_json) or {
+	session_fields := field_schema(opts.session_fields_json, 'session', opts.field_callbacks) or {
 		emit(Reply{ id: init.id, error: err.msg() })
 		return
 	}
@@ -853,6 +856,13 @@ fn main() {
 	if google := opts.google_provider {
 		providers << better_auth.GoogleProvider{
 			...google
+			map_profile:  if opts.google_profile_callback {
+				fn (profile string) !string {
+					return callback_rpc('google.map', profile)
+				}
+			} else {
+				google.map_profile
+			}
 			transport:    RemoteOAuthTransport{}
 			clock_millis: fn [state] () i64 {
 				return state.now_millis
@@ -900,6 +910,7 @@ fn main() {
 		}
 		generic_oauth:             generic
 		account_linking_enabled:   opts.account_linking_enabled
+		update_user_info_on_link:  opts.update_user_info_on_link
 		trusted_linking_providers: opts.trusted_linking_providers
 		disable_email_sign_up:     opts.disable_email_sign_up
 
@@ -1090,7 +1101,7 @@ fn main() {
 		return
 	}
 	defer { auth.close() or {} }
-	if opts.storage == 'postgres' && !opts.defer_migrations {
+	if opts.storage in ['postgres', 'sqlite'] && !opts.defer_migrations {
 		auth.migrate_storage() or {
 			emit(Reply{ id: init.id, error: err.msg() })
 			return
@@ -1354,4 +1365,25 @@ fn otp_callback(method string, data string, mut context better_auth.EndpointCont
 	return callback_with_context(method,
 		'{"data":${data},"request":${encoded_request},"headers":${json.encode(request.headers)},"session":${session}}', mut
 		context)
+}
+
+fn field_schema(encoded string, model string, callbacks []string) !map[string]better_auth.AdditionalField {
+	mut fields := json2.decode[map[string]better_auth.AdditionalField](encoded)!
+	for name, field in fields.clone() {
+		mut configured := field
+		validation := 'field.' + model + '.' + name + '.validate'
+		transformation := 'field.' + model + '.' + name + '.transform'
+		if validation in callbacks { configured = better_auth.AdditionalField{
+				...configured
+				validate_input: fn [validation] (value json2.Any) !better_auth.FieldInputResult {
+					return json2.decode[better_auth.FieldInputResult](callback_rpc(validation, value.json_str())!)}
+			} }
+		if transformation in callbacks { configured = better_auth.AdditionalField{
+				...configured
+				transform_input: fn [transformation] (value json2.Any) !better_auth.FieldInputResult {
+					return json2.decode[better_auth.FieldInputResult](callback_rpc(transformation, value.json_str())!)}
+			} }
+		fields[name] = configured
+	}
+	return fields
 }

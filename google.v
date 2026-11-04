@@ -7,10 +7,11 @@ import x.json2
 // Google's code exchange and ID-token verifier use separate trust policies.
 pub struct GoogleProvider {
 pub:
-	client_id                string   @[json: clientId]
-	client_ids               []string @[json: clientIds]
-	client_secret            string   @[json: clientSecret]
-	authorization_endpoint   string   @[json: authorizationEndpoint]
+	map_profile              fn (string) !string = default_generic_map_profile @[skip]
+	client_id                string              @[json: clientId]
+	client_ids               []string            @[json: clientIds]
+	client_secret            string              @[json: clientSecret]
+	authorization_endpoint   string              @[json: authorizationEndpoint]
 	scope                    []string
 	disable_default_scope    bool   @[json: disableDefaultScope]
 	access_type              string @[json: accessType]
@@ -123,7 +124,7 @@ pub fn (provider GoogleProvider) exchange(code string, verifier string, redirect
 	if !google_hosted_domain_allowed(provider.hd, profile['hd'] or { json2.Any(json2.Null{}) }) {
 		return fail(403, 'OAUTH_HOSTED_DOMAIN_MISMATCH', 'Google hosted domain does not match')
 	}
-	return google_profile_identity(profile, tokens)
+	return provider.mapped_identity(profile, tokens)
 }
 
 pub fn parse_oauth_tokens(encoded string, now_millis i64) !OAuthTokens {

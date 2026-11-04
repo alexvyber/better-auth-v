@@ -211,6 +211,7 @@ pub:
 	generic_oauth                     []GenericOAuthConfig
 	trusted_linking_providers         []string
 	account_linking_enabled           bool
+	update_user_info_on_link          bool
 	require_email_verification        bool
 	send_verification_on_sign_up      ?bool
 	send_verification_on_sign_in      bool
@@ -401,11 +402,15 @@ pub:
 
 pub struct AdditionalField {
 pub:
-	field_type    string @[json: 'type']
-	required      bool
-	input         bool = true
-	returned      bool = true
-	default_value ?json2.Any @[json: 'defaultValue']
+	field_name      string @[json: fieldName]
+	unique          bool
+	validate_input  fn (json2.Any) !FieldInputResult = passthrough_field_input @[skip]
+	transform_input fn (json2.Any) !FieldInputResult = passthrough_field_input @[skip]
+	field_type      string @[json: 'type']
+	required        bool
+	input           bool = true
+	returned        bool = true
+	default_value   ?json2.Any @[json: 'defaultValue']
 }
 
 fn discard_email(_ EmailMessage) ! {

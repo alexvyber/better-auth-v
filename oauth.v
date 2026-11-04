@@ -295,6 +295,7 @@ fn (mut a Auth) oauth_identity_account_with_signup(identity OAuthIdentity, provi
 	mut user := User{}
 	mut selected_account := Account{}
 	mut new_user := false
+	mut linked_existing_user := false
 	if account := (a.storage.account_by_provider(provider_id, identity.id)!).value {
 		user = (a.storage.user(account.user_id)!).value or {
 			return fail(400, 'USER_NOT_FOUND', 'User not found')
@@ -313,13 +314,13 @@ fn (mut a Auth) oauth_identity_account_with_signup(identity OAuthIdentity, provi
 					'Sign in to your existing account to link this provider')
 			}
 			user = existing
+			linked_existing_user = true
 		} else {
 			if !allow_signup { return fail(403, 'SIGNUP_DISABLED', 'Sign up is disabled') }
 			new_user = true
 			now := stamp_millis(a.clock_millis())
 			user = User{
-				additional_fields: a.parse_user_fields(identity.additional_fields,
-					map[string]json2.Any{}, true)!
+				additional_fields: a.provider_user_fields(identity.additional_fields, true)!
 				id:                a.new_id('user')!
 				email:             email
 				email_verified:    identity.email_verified
@@ -353,6 +354,10 @@ fn (mut a Auth) oauth_identity_account_with_signup(identity OAuthIdentity, provi
 		selected_account = a.persist_account(decode_account(merge_record_json(json.encode(base_account),
 			json2.Any(patch).json_str())!)!)!
 	}
+	if linked_existing_user && a.config.update_user_info_on_link {
+		user = a.try_sync_oauth_profile(user, identity)!
+	}
+
 	if selected_account.account_id != identity.id || selected_account.provider_id != provider_id
 		|| selected_account.user_id != user.id {
 		return fail(409, 'account_hook_binding_conflict',

@@ -15,7 +15,8 @@ There is no dependency on a web framework.
   remains available as an explicit alternative.
 - UUID and model-aware custom record ID generators, plus deterministic reservation IDs.
 - Additional user fields with scalar/array/date/JSON types, defaults, required
-  fields, protected input, hidden output, and persistent storage.
+  fields, protected input, hidden output, input validators/transforms, unique values
+  and persistent storage; PostgreSQL additional-field column aliases.
 - Registration-policy validation, duplicate-account enumeration protection,
   existing-user signup callbacks, and structured logger events.
 - Signed HTTP-only session cookies, refresh, expiration, freshness checks, device

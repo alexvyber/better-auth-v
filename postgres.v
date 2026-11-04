@@ -18,12 +18,13 @@ pub:
 // independent Auth instances use independent connections and database atomics.
 pub struct PostgresStorage {
 mut:
-	connection     &pg.Conn
-	options        PostgresOptions
-	user_fields    map[string]AdditionalField
-	session_fields map[string]AdditionalField
-	snapshots      map[string]string
-	transaction    bool
+	connection        &pg.Conn
+	options           PostgresOptions
+	user_fields       map[string]AdditionalField
+	session_fields    map[string]AdditionalField
+	snapshots         map[string]string
+	profile_snapshots map[string]string
+	transaction       bool
 }
 
 pub interface ConfigurableStorage {
@@ -99,6 +100,9 @@ fn (storage &PostgresStorage) table(model string) string {
 fn (storage &PostgresStorage) column(model string, field string) string {
 	if mapping := storage.options.fields[model] {
 		if value := mapping[field] { return value }
+	}
+	if extra := storage.additional(model)[field] {
+		if extra.field_name != '' { return extra.field_name }
 	}
 	return field
 }

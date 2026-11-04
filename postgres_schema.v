@@ -93,10 +93,15 @@ pub fn (mut storage PostgresStorage) migrate() ! {
 			definitions << storage.column_sql(model, field) + ' ' + kind + constraints
 		}
 		storage.connection.exec('CREATE TABLE IF NOT EXISTS ${storage.table(model)} (${definitions.join(',')})')!
-		for field, _ in storage.additional(model) {
+		for field, attribute in storage.additional(model) {
 			kind := storage.sql_type(model, field)!
 			storage.connection.exec('ALTER TABLE ${storage.table(model)} ADD COLUMN IF NOT EXISTS ${storage.column_sql(model,
 				field)} ${kind}')!
+			if attribute.unique {
+				index := storage.index_name(model, 'unique_' + digest(field)[..12])
+				storage.connection.exec('CREATE UNIQUE INDEX IF NOT EXISTS ${index} ON ${storage.table(model)} (${storage.column_sql(model,
+					field)})')!
+			}
 		}
 	}
 	storage.connection.exec('CREATE UNIQUE INDEX IF NOT EXISTS ${storage.index_name('user', 'email')} ON ${storage.table('user')} (${storage.column_sql('user',

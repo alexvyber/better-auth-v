@@ -16,6 +16,12 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+ {file:'oauth-profile-input',path:'packages/better-auth/src/oauth2/link-account.test.ts',
+ suites:new Set(['oauth2 - updateUserInfoOnLink on implicit sign-in link','oauth2 - first sign-in provisioning applies user input rules']),
+ includeHelpers:true,setupCalls:new Set(['beforeAll','afterEach','afterAll']),
+ imports:'import type { GoogleProfile } from "@better-auth/core/social-providers";\nimport type { User } from "better-auth";\nimport { HttpResponse, http } from "msw";\nimport { setupServer } from "msw/node";\nimport { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";\nimport * as z from "zod";\nimport { signJWT } from "../harness/crypto.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { DEFAULT_SECRET } from "../harness/constants.js";\n',
+ unportedReason:'Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected',
+ },
  ...['attempt-cap', 'account-lockout', 'security'].map(kind => ({
  file:'two-factor-'+kind, path:'packages/better-auth/src/plugins/two-factor/two-factor.'+kind+'.test.ts',
  suites: kind === 'security' ? new Set([
@@ -199,7 +205,7 @@ plans.push({...attemptPlan, file: 'two-factor-attempt-server-error',
  executionSurface: 'native-isolated-account-server-error',
  unportedReason: 'Other attempt cases run separately; serialized bridge exhausts shared account budget in the original suite ordering'});
 // Repeat intact assertions over native PostgreSQL; these copies do not expand the unique corpus.
-for (const name of ['one-time-token', 'email-otp', 'password-reset', 'session-api', 'two-factor', 'two-factor-account-lockout', 'two-factor-security', 'two-factor-attempt-cap', 'two-factor-attempt-server-error']) {
+for (const name of ['one-time-token', 'email-otp', 'password-reset', 'session-api', 'two-factor', 'two-factor-account-lockout', 'two-factor-security', 'two-factor-attempt-cap', 'two-factor-attempt-server-error', 'oauth-profile-input']) {
  const original = plans.find(plan => plan.file === name);
  plans.push({...original, file: 'postgres-' + name, source_file: original.source_file ?? name,
   ...(name === 'session-api' ? {suites: new Set(['session'])} : {}),

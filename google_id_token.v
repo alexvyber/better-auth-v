@@ -92,7 +92,7 @@ pub fn (provider GoogleProvider) user_info(tokens OAuthTokens) !Lookup[OAuthIden
 		return Lookup[OAuthIdentity]{}
 	}
 	return Lookup[OAuthIdentity]{
-		value: google_profile_identity(profile, tokens)
+		value: provider.mapped_identity(profile, tokens)!
 	}
 }
 

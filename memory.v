@@ -17,12 +17,14 @@ mut:
 @[heap]
 pub struct MemoryStorage {
 mut:
-	rate_limits map[string]RateLimitRecord
-	records     MemoryRecords
-	backup      MemoryRecords
-	transaction bool
-	read_only   bool
-	closed      bool
+	rate_limits    map[string]RateLimitRecord
+	user_fields    map[string]AdditionalField
+	session_fields map[string]AdditionalField
+	records        MemoryRecords
+	backup         MemoryRecords
+	transaction    bool
+	read_only      bool
+	closed         bool
 }
 
 pub fn open_memory() &MemoryStorage {
@@ -118,6 +120,7 @@ pub fn (mut s MemoryStorage) users() ![]User {
 
 pub fn (mut s MemoryStorage) create_user(user User) ! {
 	s.check_write()!
+	s.unique_user_fields(user)!
 	if user.id in s.records.users || (s.user_by_email(user.email)!).value != none {
 		return error('duplicate user id or email')
 	}
@@ -126,6 +129,7 @@ pub fn (mut s MemoryStorage) create_user(user User) ! {
 
 pub fn (mut s MemoryStorage) update_user(user User) ! {
 	s.check_write()!
+	s.unique_user_fields(user)!
 	if existing := (s.user_by_email(user.email)!).value {
 		if existing.id != user.id { return error('duplicate user email') }
 	}
@@ -207,6 +211,7 @@ pub fn (mut s MemoryStorage) set_password(user_id string, password string) ! {
 
 pub fn (mut s MemoryStorage) create_session(session Session, token_hash string) ! {
 	s.check_write()!
+	s.unique_session_fields(session)!
 	if session.user_id !in s.records.users { return error('session user does not exist') }
 	if session.id in s.records.sessions || token_hash in s.records.token_hashes {
 		return error('duplicate session id or token')
@@ -239,6 +244,7 @@ pub fn (mut s MemoryStorage) sessions(user_id string) ![]Session {
 
 pub fn (mut s MemoryStorage) update_session(session Session) ! {
 	s.check_write()!
+	s.unique_session_fields(session)!
 	if session.user_id !in s.records.users { return error('session user does not exist') }
 	if session.id in s.records.sessions { s.records.sessions[session.id] = Session{
 			...session

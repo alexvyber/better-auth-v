@@ -349,13 +349,14 @@ fn (provider GenericOAuthProvider) profile_identity(tokens OAuthTokens, nonce st
 			raw['sub'] or { json2.Any('') }} }
 	image := user['image'] or { json2.Any(json2.Null{}) }
 	return OAuthIdentity{
-		id:             subject.str()
-		email:          (user['email'] or { json2.Any('') }).str()
-		email_verified: (user['emailVerified'] or { json2.Any(false) }).bool()
-		name:           (user['name'] or { json2.Any('') }).str()
-		image:          if image is string { ?string(image.str()) } else { none }
-		profile:        raw
-		tokens:         tokens
+		id:                subject.str()
+		email:             (user['email'] or { json2.Any('') }).str()
+		email_verified:    (user['emailVerified'] or { json2.Any(false) }).bool()
+		name:              (user['name'] or { json2.Any('') }).str()
+		image:             if image is string { ?string(image.str()) } else { none }
+		additional_fields: oauth_extra_fields(mapped)
+		profile:           raw
+		tokens:            tokens
 	}
 }
 

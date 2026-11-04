@@ -5,8 +5,11 @@ import json
 
 pub struct SQLiteStorage {
 mut:
-	db      sqlite.DB
-	options SQLiteOptions
+	db                  sqlite.DB
+	options             SQLiteOptions
+	user_fields         map[string]AdditionalField
+	session_fields      map[string]AdditionalField
+	unique_fields_ready bool = true
 }
 
 pub struct SQLiteOptions {
@@ -100,7 +103,9 @@ pub fn (mut s SQLiteStorage) migrate() ! {
 		s.db.exec('CREATE INDEX auth_two_factor_user_id ON auth_two_factor(user_id)')!
 		s.db.exec('INSERT INTO auth_migration VALUES (6)')!
 	}
+	s.configured_unique_indexes(true)!
 	s.commit()!
+	s.unique_fields_ready = true
 	committed = true
 }
 
@@ -188,6 +193,7 @@ pub fn (mut s SQLiteStorage) user_by_email(email string) !Lookup[User] {
 }
 
 pub fn (mut s SQLiteStorage) create_user(u User) ! {
+	s.require_unique_indexes()!
 	s.db.exec_param_many('INSERT INTO auth_user (id,email,data) VALUES (?,?,?)', [u.id, u.email,
 		encode_user(u)])!
 }
@@ -202,6 +208,7 @@ pub fn (mut s SQLiteStorage) users() ![]User {
 }
 
 pub fn (mut s SQLiteStorage) update_user(u User) ! {
+	s.require_unique_indexes()!
 	s.db.exec_param_many('UPDATE auth_user SET email=?,data=? WHERE id=?', [u.email, encode_user(u),
 		u.id])!
 }
@@ -256,6 +263,7 @@ pub fn (mut s SQLiteStorage) set_password(user_id string, hash string) ! {
 }
 
 pub fn (mut s SQLiteStorage) create_session(session Session, token_hash string) ! {
+	s.require_unique_indexes()!
 	stored := Session{
 		...session
 		token: ''
@@ -314,6 +322,7 @@ pub fn (mut s SQLiteStorage) session_by_id(id string) !Lookup[Session] {
 }
 
 pub fn (mut s SQLiteStorage) update_session(session Session) ! {
+	s.require_unique_indexes()!
 	stored := Session{
 		...session
 		token: ''

@@ -1,3 +1,4 @@
+import type {DBFieldAttribute} from "@better-auth/core/db";
 import {nativeRedisConfiguration} from './redis-storage.js';
 import { APIError } from "@better-auth/core/error";
 import type { BetterAuthClientOptions, BetterAuthOptions } from "@better-auth/core";
@@ -19,7 +20,7 @@ type FixtureOptions = Record<string, any>;
 interface FixtureUserOptions extends FixtureOptions {
   deleteUser?: NonNullable<BetterAuthOptions['user']>['deleteUser'];
   changeEmail?: NonNullable<BetterAuthOptions['user']>['changeEmail'];
-  additionalFields?: FixtureOptions;
+  additionalFields?: Record<string,DBFieldAttribute>;
   validateUserInfo?: NonNullable<BetterAuthOptions['user']>['validateUserInfo'];
 }
 interface FixtureLoggerOptions extends FixtureOptions {
@@ -66,9 +67,9 @@ interface FixtureInternalAdapter extends Record<string, (...args: any[]) => Prom
   findSession(token: string): Promise<{session: FixtureSession; user: FixtureOptions} | null>;
 }
 interface FixtureTransactionAdapter {
-  findOne(query: FixtureOptions): Promise<any>;
+  findOne<T = any>(query: FixtureOptions): Promise<T | null>;
   create<I, O>(query: {model: string; data: I}): Promise<O>;
-  findMany<T>(query: {model: string}): Promise<T[]>;
+  findMany<T>(query: {model: string;where?:FixtureOptions[]}): Promise<T[]>;
   nativeRunWithTransaction<T>(callback: () => Promise<T>): Promise<T>;
   options: {adapterConfig: {transaction: boolean}};
   transaction(callback: (transaction: FixtureTransactionAdapter) => Promise<unknown>): Promise<unknown>;
@@ -438,9 +439,12 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     for (const field of Object.values(schema) as FixtureOptions[]) {
       assertKeys(
         field,
-        ["type", "required", "input", "returned", "defaultValue"],
+        ["type", "required", "input", "returned", "defaultValue", "fieldName", "unique", "validator", "transform"],
         "additionalField",
       );
+      assertKeys(field.validator ?? {}, ['input'], 'additionalField.validator');
+      assertKeys(field.transform ?? {}, ['input'], 'additionalField.transform');
+      if (field.validator?.input && typeof field.validator.input['~standard']?.validate !== 'function') throw new Error('Field validator requires Standard Schema');
       if (typeof field.defaultValue === "function")
         throw new Error("Functional field defaults are not bridged yet");
     }
@@ -448,7 +452,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
 
   assertKeys(options.account ?? {}, ['fields', 'storeAccountCookie', 'encryptOAuthTokens', 'accountLinking'], 'account');
   if (options.account?.accountLinking) {
-    assertKeys(options.account.accountLinking, ['enabled', 'trustedProviders', 'allowDifferentEmails'], 'account.accountLinking');
+    assertKeys(options.account.accountLinking, ['enabled', 'trustedProviders', 'allowDifferentEmails', 'updateUserInfoOnLink'], 'account.accountLinking');
     if (options.account.accountLinking.allowDifferentEmails) throw new Error('Different-email account linking remains unported');
     if (options.account.accountLinking.trustedProviders && !Array.isArray(options.account.accountLinking.trustedProviders)) throw new Error('Dynamic trusted providers remain unported');
   }
@@ -457,7 +461,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   const google = options.socialProviders?.google;
   if (typeof google === 'function') throw new Error('Unported provider option callback');
   if (google) {
-    assertKeys(google, ['clientId', 'clientSecret', 'enabled', 'scope', 'disableDefaultScope', 'accessType', 'display', 'hd', 'prompt', 'includeGrantedScopes', 'redirectURI', 'authorizationEndpoint', 'disableIdTokenSignIn'], 'socialProviders.google');
+    assertKeys(google, ['clientId', 'clientSecret', 'enabled', 'scope', 'disableDefaultScope', 'accessType', 'display', 'hd', 'prompt', 'includeGrantedScopes', 'redirectURI', 'authorizationEndpoint', 'disableIdTokenSignIn', 'mapProfileToUser'], 'socialProviders.google');
   }
   assertKeys(options.account?.fields ?? {}, ['id', 'userId', 'providerId', 'accountId'], 'account.fields');
   if (options.baseURL !== undefined && typeof options.baseURL !== 'string') throw new Error('Live dynamic baseURL configuration remains unported');
@@ -493,11 +497,19 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       return result!;
     },
     async create<I, O>(query: {model: string; data: I}): Promise<O> {
+      if (query.model === 'user') {
+       const reply = await bridge.send('internal', {method:'createUser',arguments_json:transportJSON([query.data])});
+       return hydrate(JSON.parse(reply.value_json));
+      }
       if (query.model !== 'jwks') throw new Error('Unsupported adapter create model');
       const reply = await bridge.send('internal', {method: 'adapterCreateJWK', arguments_json: transportJSON([query.data])});
       return hydrate(JSON.parse(reply.value_json));
     },
     async findMany<T>(query: {model: string}): Promise<T[]> {
+      if (query.model === 'account') {
+       const reply = await bridge.send('inspect', {model:query.model,where_json:transportJSON((query as FixtureOptions).where ?? [])});
+       return hydrate(JSON.parse(reply.records_json));
+      }
       if (query.model !== 'jwks') throw new Error('Unsupported adapter findMany model');
       const reply = await bridge.send('internal', {method: 'jwkLookup', arguments_json: transportJSON(['getAllKeys', '', ''])});
       return hydrate(JSON.parse(reply.value_json));
@@ -615,6 +627,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   if (typeof session.cookieCache?.version === 'function') {
     callbacks['cache.version'] = (payload) => (session.cookieCache!.version as Function)(hydrate(payload.session), hydrate(payload.user));
   }
+  if (google?.mapProfileToUser) callbacks['google.map'] = profile => google.mapProfileToUser!(profile);
   if ((google && google.enabled !== false) || genericProviders.length) callbacks['oauth.fetch'] = async request => {
     const response = await fetch(request.url, {method: request.method, headers: request.headers, body: request.method === 'GET' ? undefined : request.body, redirect: 'manual'});
     return {status: response.status, body: await response.text(), headers: [...response.headers].map(([name, value]) => ({name, value}))};
@@ -709,6 +722,27 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     if (provider.mapProfileToUser) { methods.push('map'); callbacks['generic.map.' + provider.providerId] = profile => provider.mapProfileToUser(profile); }
     genericCallbacks[provider.providerId] = methods;
   }
+  const fieldCallbackNames: string[] = [];
+  const fieldValue = (value: unknown) => ({value: value ?? null, undefinedValue: value === undefined});
+  for (const [model, fields] of Object.entries({user:options.user?.additionalFields ?? {},session:session.additionalFields ?? {}})) {
+   for (const [name, field] of Object.entries(fields) as Array<[string,FixtureOptions]>) {
+    if (field.validator?.input) {
+     const method = 'field.'+model+'.'+name+'.validate'; fieldCallbackNames.push(method);
+     callbacks[method] = value => {
+      const result = field.validator.input['~standard'].validate(value);
+      if (result instanceof Promise) {void result.catch(()=>undefined);return {...fieldValue(undefined),asynchronous:true};}
+      return {...fieldValue(result.value),invalid:!!result.issues,message:result.issues?.[0]?.message ?? ''};
+     };
+    }
+    if (field.transform?.input) {
+     const method = 'field.'+model+'.'+name+'.transform'; fieldCallbackNames.push(method);
+     callbacks[method] = async value => fieldValue(await field.transform.input(value));
+    }
+   }
+  }
+  const encodeFields = (fields: FixtureOptions) => JSON.stringify(Object.fromEntries(Object.entries(fields).map(([name,field]:[string,FixtureOptions])=>{
+   const {validator:_validator,transform:_transform,...metadata} = field;return [name,metadata];
+  })));
   const otpCallbackNames: string[] = [];
   const otpContext = (payload: FixtureOptions) => {
     const request = payload.request ? new Request(payload.request.url, {method: payload.request.method, headers: payload.request.headers, body: payload.request.method === 'POST' ? payload.request.body : undefined}) : undefined;
@@ -748,6 +782,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       generic_oauth: genericProviders.map(({getToken: _getToken, mapProfileToUser: _mapProfile, ...provider}) => provider),
       generic_callbacks: genericCallbacks,
       account_linking_enabled: options.account?.accountLinking?.enabled ?? false,
+      update_user_info_on_link: options.account?.accountLinking?.updateUserInfoOnLink ?? false,
       trusted_linking_providers: options.account?.accountLinking?.trustedProviders ?? [],
       disable_email_sign_up: ep.disableSignUp ?? false,
       app_name: options.appName,
@@ -813,6 +848,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       disable_origin_check: advanced.disableOriginCheck === true,
       skip_origin_check_paths: [...skippedOriginPaths, ...(Array.isArray(advanced.disableOriginCheck) ? advanced.disableOriginCheck : [])],
       cookie_names: cookieNames,
+      google_profile_callback: !!google?.mapProfileToUser,
       google_provider: google && google.enabled !== false ? {...google, clientId: Array.isArray(google.clientId) ? '' : google.clientId, clientIds: Array.isArray(google.clientId) ? google.clientId : undefined} : null,
       store_account_cookie: options.account?.storeAccountCookie ?? false,
       encrypt_oauth_tokens: options.account?.encryptOAuthTokens ?? false,
@@ -864,8 +900,9 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       revoke_sessions_on_password_reset: ep.revokeSessionsOnPasswordReset ?? false,
       callback_methods: Object.keys(callbacks),
       account_fields_json: JSON.stringify(options.account?.fields ?? {}),
-      user_fields_json: JSON.stringify(options.user?.additionalFields ?? {}),
-      session_fields_json: JSON.stringify(session.additionalFields ?? {}),
+      field_callbacks: fieldCallbackNames,
+      user_fields_json: encodeFields(options.user?.additionalFields ?? {}),
+      session_fields_json: encodeFields(session.additionalFields ?? {}),
     },
   });
 

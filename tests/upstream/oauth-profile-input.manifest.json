@@ -1,0 +1,393 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/oauth2/link-account.test.ts",
+  "sha256": "8ba83ad570824fc654b967c80ca1c24a7ed7772a44df7d894c939da547e7b1ac",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "oauth2 - email verification on link",
+      "suites": [
+        "oauth2 - email verification on link"
+      ],
+      "test": "should reject implicit link when local user is unverified, even if provider email is verified",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - email verification on link",
+      "suites": [
+        "oauth2 - email verification on link"
+      ],
+      "test": "should link account and preserve emailVerified when local user is already verified",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - email verification on link",
+      "suites": [
+        "oauth2 - email verification on link"
+      ],
+      "test": "should not update emailVerified when provider reports unverified",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - email verification on link",
+      "suites": [
+        "oauth2 - email verification on link"
+      ],
+      "test": "should not update emailVerified when email addresses don't match",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - email verification on link",
+      "suites": [
+        "oauth2 - email verification on link"
+      ],
+      "test": "should handle already verified emails gracefully",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - account linking with case insensitive email",
+      "suites": [
+        "oauth2 - account linking with case insensitive email"
+      ],
+      "test": "should link account when email casing differs using callback",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - account linking with case insensitive email",
+      "suites": [
+        "oauth2 - account linking with case insensitive email"
+      ],
+      "test": "should link account when email casing differs using idToken",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - account linking without trustedProviders",
+      "suites": [
+        "oauth2 - account linking without trustedProviders"
+      ],
+      "test": "should deny account linking when provider is not trusted and email is not verified",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - account linking without trustedProviders",
+      "suites": [
+        "oauth2 - account linking without trustedProviders"
+      ],
+      "test": "should allow account linking when email is verified by provider and local user",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - disableImplicitLinking",
+      "suites": [
+        "oauth2 - disableImplicitLinking"
+      ],
+      "test": "should block implicit linking on sign-in even for trusted providers",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - disableImplicitLinking",
+      "suites": [
+        "oauth2 - disableImplicitLinking"
+      ],
+      "test": "should allow new user sign-up even with disableImplicitLinking",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - disableImplicitLinking",
+      "suites": [
+        "oauth2 - disableImplicitLinking"
+      ],
+      "test": "should allow explicit linkSocial when disableImplicitLinking is true",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - updateUserInfoOnLink via callback",
+      "suites": [
+        "oauth2 - updateUserInfoOnLink via callback"
+      ],
+      "test": "should update user name and image when linking via OAuth callback",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - updateUserInfoOnLink via callback",
+      "suites": [
+        "oauth2 - updateUserInfoOnLink via callback"
+      ],
+      "test": "should not update user info when updateUserInfoOnLink is not set",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - updateUserInfoOnLink on implicit sign-in link",
+      "suites": [
+        "oauth2 - updateUserInfoOnLink on implicit sign-in link"
+      ],
+      "test": "returns the freshly linked name and image in the new session",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2 - updateUserInfoOnLink on implicit sign-in link",
+      "suites": [
+        "oauth2 - updateUserInfoOnLink on implicit sign-in link"
+      ],
+      "test": "syncs mapProfileToUser fields on link, not only name and image",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2 - updateUserInfoOnLink on implicit sign-in link",
+      "suites": [
+        "oauth2 - updateUserInfoOnLink on implicit sign-in link"
+      ],
+      "test": "does not copy fields marked input: false from the provider on link",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2 - updateUserInfoOnLink on implicit sign-in link",
+      "suites": [
+        "oauth2 - updateUserInfoOnLink on implicit sign-in link"
+      ],
+      "test": "continues linking when mapped profile fields fail validation",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2 - first sign-in provisioning applies user input rules",
+      "suites": [
+        "oauth2 - first sign-in provisioning applies user input rules"
+      ],
+      "test": "does not copy fields marked input: false from the provider on first sign-in",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2 - override user info on sign-in",
+      "suites": [
+        "oauth2 - override user info on sign-in"
+      ],
+      "test": "should update user info when overrideUserInfo is enabled",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - override user info on sign-in",
+      "suites": [
+        "oauth2 - override user info on sign-in"
+      ],
+      "test": "should preserve the resolved user when overrideUserInfo update returns null",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - override user info on sign-in",
+      "suites": [
+        "oauth2 - override user info on sign-in"
+      ],
+      "test": "does not copy fields marked input: false from the provider when overriding",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - sign-up account creation rollback",
+      "suites": [
+        "oauth2 - sign-up account creation rollback"
+      ],
+      "test": "rolls back the user row when the first OAuth account cannot be created",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - link-social uses issuer-scoped account lookup",
+      "suites": [
+        "oauth2 - link-social uses issuer-scoped account lookup"
+      ],
+      "test": "does not match a different issuer with the same provider account id",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - ambiguous account identity",
+      "suites": [
+        "oauth2 - ambiguous account identity"
+      ],
+      "test": "does not issue a session for an ambiguous provider key",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - orphaned account identity",
+      "suites": [
+        "oauth2 - orphaned account identity"
+      ],
+      "test": "does not fall back to email when a matching account has no user",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - providers without email",
+      "suites": [
+        "oauth2 - providers without email",
+        "with mapProfileToUser attempting to redefine provider identity"
+      ],
+      "test": "uses the verified raw profile subject instead of a mapped id",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - providers without email",
+      "suites": [
+        "oauth2 - providers without email",
+        "with mapProfileToUser creating a placeholder email"
+      ],
+      "test": "signs in a Discord phone-only user with a placeholder email",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - providers without email",
+      "suites": [
+        "oauth2 - providers without email",
+        "without mapProfileToUser"
+      ],
+      "test": "rejects sign-in with email_not_found when the provider returns a null email",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - accountLinking.requireLocalEmailVerified: false opt-out",
+      "suites": [
+        "oauth2 - accountLinking.requireLocalEmailVerified: false opt-out"
+      ],
+      "test": "links the account when local user is unverified and the option opts out",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - per-provider requireEmailVerification gate",
+      "suites": [
+        "oauth2 - per-provider requireEmailVerification gate"
+      ],
+      "test": "blocks the session for a new user whose provider email is unverified",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - per-provider requireEmailVerification gate",
+      "suites": [
+        "oauth2 - per-provider requireEmailVerification gate"
+      ],
+      "test": "creates a session for a new user whose provider email is verified",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - per-provider requireEmailVerification gate",
+      "suites": [
+        "oauth2 - per-provider requireEmailVerification gate"
+      ],
+      "test": "re-sends and blocks a returning unverified user when sendOnSignIn is set",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - per-provider requireEmailVerification gate",
+      "suites": [
+        "oauth2 - per-provider requireEmailVerification gate"
+      ],
+      "test": "does not gate social sign-in from emailAndPassword.requireEmailVerification",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - per-provider requireEmailVerification gate",
+      "suites": [
+        "oauth2 - per-provider requireEmailVerification gate"
+      ],
+      "test": "lets a returning verified user through the gate without re-sending",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - per-provider requireEmailVerification gate",
+      "suites": [
+        "oauth2 - per-provider requireEmailVerification gate"
+      ],
+      "test": "blocks a returning unverified user without re-sending when sendOnSignIn is unset",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - per-provider requireEmailVerification gate",
+      "suites": [
+        "oauth2 - per-provider requireEmailVerification gate"
+      ],
+      "test": "blocks an unverified user even when no sendVerificationEmail is configured",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    },
+    {
+      "suite": "oauth2 - account-linking logs use the configured logger",
+      "suites": [
+        "oauth2 - account-linking logs use the configured logger"
+      ],
+      "test": "forwards the failed-link error to the custom logger",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported explicit account linking, remaining provider binding/security/schema scenarios; implicit profile sync and provider input rules are selected"
+    }
+  ]
+}

@@ -14,7 +14,7 @@
     "utilities-and-tooling": {
       "files": 275,
       "declarations": 4594,
-      "importedFiles": 17
+      "importedFiles": 18
     },
     "e2e": {
       "files": 71,
@@ -15525,7 +15525,7 @@
       "path": "packages/better-auth/src/oauth2/link-account.test.ts",
       "sha256": "8ba83ad570824fc654b967c80ca1c24a7ed7772a44df7d894c939da547e7b1ac",
       "group": "utilities-and-tooling",
-      "status": "unported",
+      "status": "imported-partial-file",
       "kind": "runtime",
       "declarations": [
         {

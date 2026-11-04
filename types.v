@@ -160,6 +160,7 @@ mut:
 	delete_sessions(string, string) !
 	create_verification(Verification) !
 	verification(string) !Lookup[Verification]
+	verifications() ![]Verification
 	delete_verification(string) !
 }
 
@@ -204,6 +205,11 @@ pub:
 	auto_sign_in_after_verification   bool
 	before_email_verification         fn (User, RequestContext) ! = discard_verification_callback
 	after_email_verification          fn (User, RequestContext) ! = discard_verification_callback
+	delete_user_enabled               bool
+	delete_token_expires_in           i64                         = 86400
+	send_delete_verification          fn (EmailMessage) !         = discard_email
+	before_delete                     fn (User, RequestContext) ! = discard_verification_callback
+	after_delete                      fn (User, RequestContext) ! = discard_verification_callback
 	change_email_enabled              bool
 	update_email_without_verification bool
 	send_change_email_confirmation    fn (EmailMessage) ! = discard_email

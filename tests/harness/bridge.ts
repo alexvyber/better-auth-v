@@ -30,6 +30,8 @@ export interface WireEmail {
 interface Reply {
   id: number;
   error: string | null;
+  error_status?: number;
+  error_code?: string;
   response: WireResponse | null;
   emails: WireEmail[];
   logs: { level: string; message: string }[];
@@ -95,7 +97,7 @@ export class Bridge {
         clearTimeout(pending.timer);
         this.pending.delete(reply.id);
         if (reply.error) {
-          const error = new Error(reply.error);
+          const error = Object.assign(new Error(reply.error), {statusCode: reply.error_status, body: {code: reply.error_code, message: reply.error}});
           pending.reject(error);
           if (pending.op === 'init') this.abort(error);
         }

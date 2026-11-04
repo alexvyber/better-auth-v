@@ -32,6 +32,8 @@ struct Options {
 	trusted_origins                   []string
 	verification_delivery_enabled     bool
 	auto_sign_in_after_verification   bool
+	delete_user_enabled               bool
+	delete_token_expires_in           i64 = 86400
 	change_email_enabled              bool
 	update_email_without_verification bool
 	require_email_verification        bool
@@ -147,6 +149,8 @@ struct Command {
 struct Reply {
 	id           int
 	error        ?string
+	error_status int
+	error_code   string
 	response     ?better_auth.Response
 	emails       []better_auth.EmailMessage @[skip]
 	logs         []better_auth.LogEvent
@@ -537,6 +541,25 @@ fn main() {
 		trusted_origins:                   opts.trusted_origins
 		verification_delivery_enabled:     opts.verification_delivery_enabled
 		auto_sign_in_after_verification:   opts.auto_sign_in_after_verification
+		delete_user_enabled:               opts.delete_user_enabled
+		delete_token_expires_in:           opts.delete_token_expires_in
+		send_delete_verification:          if 'email.delete-account' in opts.callback_methods {
+			fn (message better_auth.EmailMessage) ! {
+				callback_rpc('email.delete-account', better_auth.encode_email(message))!
+			}
+		} else {
+			defaults.send_delete_verification
+		}
+		before_delete:                     fn [opts] (user better_auth.User, _ better_auth.RequestContext) ! {
+			if 'user.delete.before' in opts.callback_methods {
+				callback_rpc('user.delete.before', better_auth.encode_user(user))!
+			}
+		}
+		after_delete:                      fn [opts] (user better_auth.User, _ better_auth.RequestContext) ! {
+			if 'user.delete.after' in opts.callback_methods {
+				callback_rpc('user.delete.after', better_auth.encode_user(user))!
+			}
+		}
 		change_email_enabled:              opts.change_email_enabled
 		update_email_without_verification: opts.update_email_without_verification
 		send_change_email_confirmation:    if 'email.change-confirmation' in opts.callback_methods {
@@ -676,7 +699,16 @@ fn main() {
 				value := auth.with_internal(fn [command] (mut context better_auth.EndpointContext) !string {
 					return context.invoke_internal(command.method, command.arguments_json)
 				}) or {
-					emit(Reply{ id: command.id, error: err.msg() })
+					emit(Reply{
+						id:           command.id
+						error:        err.msg()
+						error_status: if err is better_auth.APIError { err.status } else { 500 }
+						error_code:   if err is better_auth.APIError {
+							err.code
+						} else {
+							'INTERNAL_SERVER_ERROR'
+						}
+					})
 					continue
 				}
 				emit(Reply{ id: command.id, value_json: value, logs: state.logs[log_start..].clone() })
@@ -725,6 +757,18 @@ fn main() {
 				})
 			}
 			'inspect' {
+				if command.model == 'verification' {
+					records := storage.verifications() or {
+						emit(Reply{ id: command.id, error: err.msg() })
+						continue
+					}
+					encoded := filter_inspection(json.encode(records), command.where_json) or {
+						emit(Reply{ id: command.id, error: err.msg() })
+						continue
+					}
+					emit(Reply{ id: command.id, records_json: encoded })
+					continue
+				}
 				if command.model == 'account' {
 					records := storage.accounts('') or {
 						emit(Reply{ id: command.id, error: err.msg() })

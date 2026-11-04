@@ -7871,7 +7871,7 @@
       "path": "packages/better-auth/src/api/routes/update-user.test.ts",
       "sha256": "672be15b9def852b5c0f39222da716f1bfde9bd74c21181a1496a7c00564f502",
       "group": "core-api",
-      "status": "imported-partial-file",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {

@@ -21,7 +21,8 @@ There is no dependency on a web framework.
   listing/revocation, logout, and an opt-in bearer plugin.
 - Deferred GET/POST refresh, refresh suppression, nonpersistent sessions, a
   400-day cookie ceiling, and configurable session fields with update support.
-- Email verification, password reset/change, profile updates, and account deletion.
+- Email verification, password reset/change, profile updates, opt-in account deletion
+  with one-use verification links, and a server-only password-setting API.
 - SQLite storage, explicit versioned migrations, transactions, and a typed storage
   interface for additional adapters.
 - Secondary session storage with database fallback, TTLs, and an in-memory

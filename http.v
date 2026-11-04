@@ -42,6 +42,7 @@ fn core_routes() map[string][]string {
 		'/verify-password':         ['POST']
 		'/change-password':         ['POST']
 		'/delete-user':             ['POST']
+		'/delete-user/callback':    ['GET']
 		'/request-password-reset':  ['POST']
 		'/reset-password':          ['POST']
 		'/send-verification-email': ['POST']
@@ -259,7 +260,7 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 			}
 		}
 	}
-	a.commit_transaction()!
+	if a.transaction_active { a.commit_transaction()! }
 	return result
 }
 
@@ -581,16 +582,13 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 			}
 		}
 		'/delete-user' {
-			current := a.require_session(ctx, true)!
-			if account := (a.storage.account(current.user.id, 'credential')!).value {
-				if !a.config.password_hasher.verify(p.password, account.password)! {
-					return fail(400, 'INVALID_PASSWORD', 'Invalid password')
-				}
-			}
-			a.remove_user(current.user.id)!
-			return a.clear_cookie(json_response({
-				'success': true
-			}))
+			return a.delete_user_request(p, ctx)!
+		}
+		'/delete-user/callback' {
+			return a.delete_user_callback(Payload{
+				token:        u.query().get('token') or { '' }
+				callback_url: u.query().get('callbackURL') or { '' }
+			}, ctx)!
 		}
 		'/request-password-reset' {
 			email := normalize_email(p.email)!

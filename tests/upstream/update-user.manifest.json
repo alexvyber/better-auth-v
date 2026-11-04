@@ -187,9 +187,9 @@
         "delete user"
       ],
       "test": "should not delete user if deleteUser is disabled",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "delete user",
@@ -197,9 +197,9 @@
         "delete user"
       ],
       "test": "should delete the user with a fresh session",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "delete user",
@@ -207,9 +207,9 @@
         "delete user"
       ],
       "test": "should require password when session is no longer fresh",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "delete user",
@@ -217,9 +217,9 @@
         "delete user"
       ],
       "test": "should delete every session from deleted user",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "delete user",
@@ -227,9 +227,9 @@
         "delete user"
       ],
       "test": "should delete with verification flow and password",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "delete user",
@@ -237,9 +237,9 @@
         "delete user"
       ],
       "test": "should delete only once when the same token is used concurrently",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "delete user",
@@ -247,9 +247,9 @@
         "delete user"
       ],
       "test": "should ignore cookie cache for sensitive operations like changePassword",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "delete user",
@@ -257,9 +257,9 @@
         "delete user"
       ],
       "test": "rejects /delete-user/callback when the backing session was revoked",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "change-email enumeration protection",
@@ -267,9 +267,9 @@
         "change-email enumeration protection"
       ],
       "test": "should return 200 when target email already exists",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "change-email enumeration protection",
@@ -277,9 +277,9 @@
         "change-email enumeration protection"
       ],
       "test": "should not change the user's email",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "change-email without sendVerificationEmail",
@@ -287,9 +287,9 @@
         "change-email without sendVerificationEmail"
       ],
       "test": "should return the same error for existing and non-existing emails",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "change-email callbackURL preservation",
@@ -297,9 +297,9 @@
         "change-email callbackURL preservation"
       ],
       "test": "preserves a callbackURL that carries its own query string",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "change-email rejects confirmation-only config for verified users",
@@ -307,9 +307,9 @@
         "change-email rejects confirmation-only config for verified users"
       ],
       "test": "returns 400 when sendVerificationEmail is not configured",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "credential identity across email changes",
@@ -317,9 +317,9 @@
         "credential identity across email changes"
       ],
       "test": "keeps one credential account when the user changes their sign-in email",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "setPassword",
@@ -327,9 +327,9 @@
         "setPassword"
       ],
       "test": "sets the password on the existing passwordless credential account",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "password length on verify-only fields",
@@ -337,9 +337,9 @@
         "password length on verify-only fields"
       ],
       "test": "change-password should reject a currentPassword longer than maxPasswordLength before hashing",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "password length on verify-only fields",
@@ -347,9 +347,9 @@
         "password length on verify-only fields"
       ],
       "test": "delete-user should reject a password longer than maxPasswordLength before hashing",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     }
   ]
 }

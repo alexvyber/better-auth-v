@@ -1,6 +1,6 @@
 import { APIError } from "@better-auth/core/error";
 import type { BetterAuthClientOptions, BetterAuthOptions } from "@better-auth/core";
-import type { Auth } from "better-auth";
+import type { Account, Auth } from "better-auth";
 import type { JSONWebKeySet } from 'jose';
 import { AsyncLocalStorage } from "node:async_hooks";
 import { createAuthClient } from "better-auth/client";
@@ -15,6 +15,7 @@ import { schemaPluginOptions } from './plugins.js';
 // their objects; unsupported server configuration fails rather than being ignored.
 type FixtureOptions = Record<string, any>;
 interface FixtureUserOptions extends FixtureOptions {
+  deleteUser?: NonNullable<BetterAuthOptions['user']>['deleteUser'];
   changeEmail?: NonNullable<BetterAuthOptions['user']>['changeEmail'];
   additionalFields?: FixtureOptions;
   validateUserInfo?: (context: {
@@ -55,6 +56,7 @@ interface FixtureSession extends FixtureOptions {
   updatedAt: Date;
 }
 interface FixtureInternalAdapter extends Record<string, (...args: any[]) => Promise<any>> {
+  findAccounts(userId: string): Promise<Account[]>;
   listSessions(userId: string): Promise<FixtureSession[]>;
   createSession(userId: string, dontRememberMe?: boolean): Promise<FixtureSession>;
   findSession(token: string): Promise<{session: FixtureSession; user: FixtureOptions} | null>;
@@ -299,9 +301,10 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
   );
   assertKeys(
     options.user ?? {},
-    ["additionalFields", "validateUserInfo", "changeEmail"],
+    ["additionalFields", "validateUserInfo", "changeEmail", "deleteUser"],
     "user",
   );
+  assertKeys(options.user?.deleteUser ?? {}, ['enabled', 'sendDeleteAccountVerification', 'deleteTokenExpiresIn', 'beforeDelete', 'afterDelete'], 'user.deleteUser');
   assertKeys(options.user?.changeEmail ?? {}, ['enabled', 'sendChangeEmailConfirmation', 'updateEmailWithoutVerification'], 'user.changeEmail');
   assertKeys(options.logger ?? {}, ["level", "log", "disabled"], "logger");
   assertKeys(
@@ -476,6 +479,10 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       ep.sendResetPassword!({user: hydrate(payload.user), url: payload.url, token: payload.token}, callbackRequest());
   if (typeof ev.beforeEmailVerification === 'function') callbacks['email.verify.before'] = user => ev.beforeEmailVerification!(hydrate(user), callbackRequest());
   if (typeof ev.afterEmailVerification === 'function') callbacks['email.verify.after'] = user => ev.afterEmailVerification!(hydrate(user), callbackRequest());
+  const deleteUser = options.user?.deleteUser;
+  if (deleteUser?.sendDeleteAccountVerification) callbacks['email.delete-account'] = data => deleteUser.sendDeleteAccountVerification!({user: hydrate(data.user), token: data.token, url: data.url}, callbackRequest());
+  if (deleteUser?.beforeDelete) callbacks['user.delete.before'] = user => deleteUser.beforeDelete!(hydrate(user), callbackRequest());
+  if (deleteUser?.afterDelete) callbacks['user.delete.after'] = user => deleteUser.afterDelete!(hydrate(user), callbackRequest());
   const changeEmail = options.user?.changeEmail;
   if (typeof changeEmail?.sendChangeEmailConfirmation === 'function') callbacks['email.change-confirmation'] = message => changeEmail.sendChangeEmailConfirmation!({user: hydrate(message.user), newEmail: message.newEmail, url: message.url, token: message.token}, callbackRequest());
   if (typeof ev.sendVerificationEmail === "function")
@@ -546,6 +553,8 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       email_and_password: ep.enabled ?? true,
       verification_delivery_enabled: typeof ev.sendVerificationEmail === 'function',
       auto_sign_in_after_verification: ev.autoSignInAfterVerification ?? false,
+      delete_user_enabled: deleteUser?.enabled ?? false,
+      delete_token_expires_in: deleteUser?.deleteTokenExpiresIn ?? 86400,
       change_email_enabled: options.user?.changeEmail?.enabled ?? false,
       update_email_without_verification: options.user?.changeEmail?.updateEmailWithoutVerification ?? false,
       require_email_verification: ep.requireEmailVerification ?? false,
@@ -668,6 +677,16 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       return args.returnHeaders ? {response: hydrate(value), headers: new Headers()} : hydrate(value);
     };
   }
+  api.setPassword = async (args = {}) => {
+    const headers = new Headers(args.headers ?? currentUserHeaders.getStore());
+    try {
+      const reply = await bridge.send('internal', {method: 'setPassword', arguments_json: transportJSON([args.body?.newPassword ?? '', Object.fromEntries(headers)])});
+      return JSON.parse(reply.value_json);
+    } catch (error) {
+      const native = error as Error & {statusCode: number; body: {code: string; message: string}};
+      throw APIError.fromStatus((statuses[native.statusCode] ?? 'INTERNAL_SERVER_ERROR') as any, native.body);
+    }
+  };
   const auth = {
     $context: Promise.resolve(context),
     api: api as typeof api & { signUpEmail: SignUpAPI<O>; getSession: SessionAPI<O>; getJwks(args?: FixtureOptions): Promise<JSONWebKeySet> },
@@ -750,6 +769,11 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     return {...result, headers, runWithUser: <T>(callback: (headers: Headers) => T) => currentUserHeaders.run(headers, () => callback(headers))};
   }
   const db = {
+    async delete(args: FixtureOptions) {
+      assertKeys(args, ['model', 'where'], 'db.delete');
+      if (args.model !== 'session' || args.where?.length !== 1 || args.where[0].field !== 'token' || (args.where[0].operator && args.where[0].operator !== 'eq')) throw new Error('V db.delete requires a session token equality filter');
+      await bridge.send('internal', {method: 'adapterDeleteSession', arguments_json: transportJSON([args.where[0].value])});
+    },
     async update<T = Record<string, unknown>>(args: FixtureOptions): Promise<T | null> {
       assertKeys(args, ["model", "where", "update"], "db.update");
       if (args.model === 'user' && args.where?.length === 1 && ['email', 'id'].includes(args.where[0].field) && (!args.where[0].operator || args.where[0].operator === 'eq')) {
@@ -775,7 +799,12 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     client,
     testUser,
     cookieSetter,
-    sessionSetter: cookieSetter,
+    sessionSetter: (headers: Headers) => ({response}: {response: Response}) => {
+      const setCookie = response.headers.get('set-cookie');
+      if (!setCookie) return;
+      const token = parseSetCookieHeader(setCookie).get('better-auth.session_token')?.value;
+      headers.set('cookie', `better-auth.session_token=${token}`);
+    },
     signInWithTestUser,
     signInWithUser,
     runWithUser: async <T>(email: string, password: string, callback: (headers: Headers) => T) => {

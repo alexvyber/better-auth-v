@@ -196,6 +196,22 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 			c.auth.remove_session(args[0].str())!
 			return 'null'
 		}
+		'setPassword' {
+			if args.len != 2 { return error('setPassword requires password and headers') }
+			mut headers := map[string]string{}
+			for key, value in args[1].as_map() {
+				headers[key.to_lower()] = value.str()
+			}
+			c.set_password(args[0].str(), RequestContext{ headers: headers })!
+			return '{"status":true}'
+		}
+		'adapterDeleteSession' {
+			if args.len != 1 { return error('adapterDeleteSession requires token') }
+			if session := (c.auth.storage.session(digest(args[0].str()))!).value {
+				c.auth.storage.delete_session(session.id)!
+			}
+			return 'null'
+		}
 		'updateAccount' {
 			if args.len != 2 { return error('updateAccount requires id and patch') }
 			account := (c.auth.storage.account_by_id(args[0].str())!).value or { return 'null' }

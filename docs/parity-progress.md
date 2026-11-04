@@ -200,11 +200,23 @@ or corpus inventory contains unimplemented behavior.
   the transaction. Database-backed secondary deletions and replacement writes wait
   for commit; the source tests cover failures at every step. Trusted adapter user
   updates preserve custom fields without reapplying defaults. The remaining 17
-  declarations in this source file are explicitly unported in its manifest.
+  declarations in this source file were completed in the following batch.
+
+- Completed all 34 declarations in `update-user.test.ts`, retaining every source
+  assertion. Deletion is opt-in, accepts a fresh session or verified password, and
+  supports expiring single-use verification links, GET callbacks, redirect queries,
+  and before/after hooks. Tokens stay consumed after owner mismatch or callback
+  failure; successful deletion survives an after-hook error. Stateful authorization
+  bypasses cookie caches. Added native server-only password setting that reuses an
+  existing passwordless credential account. Corrected the fixture's `sessionSetter`
+  to match upstream token-only behavior; `cookieSetter` retains all cookies.
+  Six independent tests check default-disabled behavior, expiry, wrong-owner token
+  burning, retained stale cache cookies, hook failure durability, and server-only
+  policy errors. Trusted verification inspection reads actual native records.
 
 ## Next infrastructure work
 
-The latest `make check` passes 529 TypeScript cases across 25 files, all 52 native
+The latest `make check` passes 552 TypeScript cases across 26 files, all 52 native
 V test functions across 10 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and

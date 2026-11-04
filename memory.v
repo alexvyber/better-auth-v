@@ -284,3 +284,9 @@ pub fn (mut s MemoryStorage) update_account(updated Account) ! {
 	s.check_write()!
 	s.records.accounts[updated.id] = updated
 }
+
+// Trusted adapter inspection, never exposed through an HTTP endpoint.
+pub fn (mut s MemoryStorage) verifications() ![]Verification {
+	s.check_open()!
+	return s.records.verifications.values()
+}

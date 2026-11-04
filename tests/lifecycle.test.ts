@@ -242,7 +242,7 @@ describe("V account lifecycle", () => {
   });
 
   it("deletes a user and cascades account and session removal", async () => {
-    const { auth, testUser, signInWithTestUser } = await getTestInstance();
+    const { auth, testUser, signInWithTestUser } = await getTestInstance({user: {deleteUser: {enabled: true}}});
     const { headers } = await signInWithTestUser();
     await auth.api.deleteUser({
       headers,

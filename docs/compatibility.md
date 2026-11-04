@@ -22,7 +22,8 @@ The default base path is `/api/auth`.
 | POST   | `/update-user`             | Update name/image; protected fields rejected              |
 | POST   | `/update-session`          | Update configured session fields; protect core fields    |
 | POST   | `/change-password`         | Verify current password; optional full revocation/replacement |
-| POST   | `/delete-user`             | Verify password where present; cascade accounts/sessions  |
+| POST   | `/delete-user`             | Opt-in fresh/password/token flow; cascade accounts/sessions  |
+| GET    | `/delete-user/callback`    | Consume a deletion token using an authoritative session    |
 | POST   | `/request-password-reset`  | Send a single-use reset link                              |
 | GET    | `/reset-password/:token`   | Validate link and redirect to trusted callback            |
 | POST   | `/reset-password`          | Consume reset token, change password, optional revocation |
@@ -74,6 +75,13 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   a fresh session token and cookies. Database/account writes roll back together;
   database-backed secondary revocation and replacement caching wait for commit.
   Secondary-only stores cannot restore deleted sessions after later failures.
+- Deletion is disabled by default. `delete_user_enabled` opts in to fresh-session
+  deletion, password-confirmed deletion, or expiring verification links through
+  `send_delete_verification`. Tokens are consumed before destructive callbacks;
+  wrong-owner attempts burn them, and after-hook failures do not restore the user.
+  Callback routes require an authoritative session on stateful configurations.
+  Server-only `EndpointContext.set_password` runs through `Auth.with_internal` and
+  preserves existing passwordless credential account identity; it has no HTTP route.
 - Magic links sign in existing users only. Registration through a magic link is
   not implemented.
 - OAuth currently has a GitHub provider. The provider interface supports other

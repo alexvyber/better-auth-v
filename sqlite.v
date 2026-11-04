@@ -375,3 +375,12 @@ pub fn (mut s SQLiteStorage) update_account(updated Account) ! {
 	s.db.exec_param2('UPDATE auth_account SET data=? WHERE ${s.account_column('id')}=?',
 		json.encode(updated), updated.id)!
 }
+
+pub fn (mut s SQLiteStorage) verifications() ![]Verification {
+	rows := s.db.exec('SELECT data FROM auth_verification ORDER BY rowid')!
+	mut values := []Verification{}
+	for row in rows {
+		values << json.decode(Verification, row.vals[0])!
+	}
+	return values
+}

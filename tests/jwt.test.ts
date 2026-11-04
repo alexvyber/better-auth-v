@@ -113,3 +113,67 @@ describe('native JWT expiration options', () => {
     expect(overrideClaims.exp).toBe(12345);
   });
 });
+
+describe('native JWT session callbacks', () => {
+  it('uses async payload/subject callbacks with hydrated session records on token and session endpoints', async () => {
+    const seen: string[] = [];
+    const {auth, signInWithTestUser} = await getTestInstance({plugins: [jwt({jwt: {
+      async definePayload(current) {
+        expect(current.session.createdAt).toBeInstanceOf(Date);
+        expect(current.user.createdAt).toBeInstanceOf(Date);
+        seen.push(current.user.id);
+        return {role: 'reader', sessionId: current.session.id, sub: 'overridden-by-getSubject', iat: 1000};
+      },
+      async getSubject(current) { return 'external:' + current.user.id; },
+    }})]});
+    const {headers} = await signInWithTestUser();
+    seen.length = 0; // The sign-in fixture also performs a session lookup.
+    const token = (await auth.api.getToken({headers})).token;
+    const session = await auth.api.getSession({headers, asResponse: true});
+    const jwks = await auth.api.getJwks();
+    for (const value of [token, session.headers.get('set-auth-jwt')!]) {
+      // The explicit historical iat makes the generated token expired. Decode
+      // separately so this test can assert exact claim precedence.
+      const claims = JSON.parse(Buffer.from(value.split('.')[1], 'base64url').toString());
+      expect(claims).toMatchObject({role: 'reader', sub: 'external:' + seen[0], iat: 1000, exp: 1900});
+      expect(claims.sessionId).toBeTypeOf('string');
+      expect(claims).not.toHaveProperty('email');
+    }
+    expect(seen).toHaveLength(2);
+    expect(jwks.keys).toHaveLength(1);
+  });
+
+  it('falls back to the user ID for a null subject and verifies customized claims independently', async () => {
+    const {auth, signInWithTestUser} = await getTestInstance({plugins: [jwt({jwt: {
+      definePayload: async current => ({scope: 'read', owner: current.user.id}),
+      getSubject: async () => null as any,
+    }})]});
+    const {headers} = await signInWithTestUser();
+    const {token} = await auth.api.getToken({headers});
+    const {payload} = await jwtVerify(token, createLocalJWKSet(await auth.api.getJwks()));
+    expect(payload.sub).toBe(payload.owner);
+    expect(payload.scope).toBe('read');
+    expect(payload.exp! - payload.iat!).toBe(900);
+  });
+
+  it('propagates payload callback failures before minting a key and remains usable afterward', async () => {
+    const keys: Jwk[] = [];
+    let fail = true;
+    const {auth} = await getTestInstance({plugins: [jwt({
+      adapter: {getJwks: async () => keys, createJwk: async key => {
+        const row = {...key, id: 'callback-test-key'}; keys.push(row); return row;
+      }},
+      jwt: {definePayload: async () => {
+        if (fail) throw new Error('Payload callback failed');
+        return {scope: 'read'};
+      }},
+    })]});
+    const signin = await auth.api.signInEmail({body: {email: 'test@test.com', password: 'test123456'}, returnHeaders: true});
+    const headers = new Headers({cookie: signin.headers.getSetCookie()[0]});
+    await expect(auth.api.getToken({headers})).rejects.toMatchObject({statusCode: 500});
+    expect(keys).toHaveLength(0);
+    fail = false;
+    const {token} = await auth.api.getToken({headers});
+    expect((await jwtVerify(token, createLocalJWKSet(await auth.api.getJwks()))).payload.scope).toBe('read');
+  });
+});

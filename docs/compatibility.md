@@ -103,7 +103,8 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   the configured local key store). Trusted signing supports key-ID and algorithm
   pins, configured extra-algorithm lazy minting, and protected profile headers.
   Resolved alg/kid override caller header fields; custom signers receive all three
-  callback arguments. Complete options, upstream encryption formats, and remaining
+  callback arguments. Session JWTs support payload and subject callbacks, including
+  null-subject fallback to the user ID. Per-call option replacement, upstream encryption formats, and remaining
   JWT plugin tests are unported.
 - `stateless_sessions` treats the signed cookie as authoritative when no secondary
   store is configured. Native defaults enable JWE caching and refresh; refreshing

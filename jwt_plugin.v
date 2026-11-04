@@ -12,6 +12,8 @@ import x.json2
 pub struct JWTOptions {
 pub:
 	algorithm                      string
+	define_payload                 fn (SessionResult) !string         = default_jwt_payload         @[skip]
+	get_subject                    fn (SessionResult) !Lookup[string] = default_jwt_subject @[skip]
 	key_pair_configs               []JWTKeyPairConfig
 	remote_url                     string
 	sign                           fn (string) !string = local_jwt_sign @[skip]
@@ -30,6 +32,14 @@ pub:
 	disable_private_key_encryption bool
 	disable_setting_jwt_header     bool
 	jwks_path                      string = '/jwks'
+}
+
+fn default_jwt_payload(_ SessionResult) !string {
+	return error('custom JWT payload is not configured')
+}
+
+fn default_jwt_subject(_ SessionResult) !Lookup[string] {
+	return Lookup[string]{}
 }
 
 pub struct JWTKeyPairConfig {
@@ -535,9 +545,15 @@ fn jwt_jwks_endpoint(mut context EndpointContext, _ Request) !Response {
 }
 
 fn (mut a Auth) session_jwt(current SessionResult) !string {
-	mut payload := json2.decode[map[string]json2.Any](a.user_json(current.user))!
-	payload['iat'] = a.config.clock()
-	payload['sub'] = current.user.id
+	options := a.jwt_options()!
+	encoded := if options.define_payload == default_jwt_payload {
+		a.user_json(current.user)
+	} else {
+		options.define_payload(current)!
+	}
+	mut payload := json2.decode[map[string]json2.Any](encoded)!
+	if 'iat' !in payload { payload['iat'] = a.config.clock() }
+	payload['sub'] = (options.get_subject(current)!).value or { current.user.id }
 	return a.sign_jwks_payload(payload, '', false)
 }
 

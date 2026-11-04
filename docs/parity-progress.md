@@ -118,9 +118,15 @@ or corpus inventory contains unimplemented behavior.
   key-generation helpers execute in V. Native tests cover mint rollback inside
   an existing transaction and resolved key authority over caller alg/kid headers.
 
+- Added native session JWT payload/subject callbacks, including async fixture
+  transport, null-subject fallback, payload issue-time precedence, and callback
+  error propagation before key minting. Both token issuance and automatic session
+  JWT headers use the same native claim-building path. Independent JOSE checks
+  verify customized claims.
+
 ## Next infrastructure work
 
-The completed `make check` passes 384 TypeScript runtime cases across 15 files,
+The completed `make check` passes 387 TypeScript runtime cases across 15 files,
 46 native V test functions across 8 files (including all 20,034 Unicode vectors),
 TypeScript checking, and real HTTP migration/authentication/CSRF/restart checks.
 This includes the final custom-store publication and encrypted-key regressions.

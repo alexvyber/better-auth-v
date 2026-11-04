@@ -408,6 +408,30 @@ fn main() {
 				expiration_time: expiration
 			}
 		}
+		if 'jwt.definePayload' in opts.callback_methods {
+			jwt_options = better_auth.JWTOptions{
+				...jwt_options
+				define_payload: fn (current better_auth.SessionResult) !string {
+					return callback_rpc('jwt.definePayload', '{"user":' +
+						better_auth.encode_user(current.user) + ',"session":' +
+						better_auth.encode_session(current.session) + '}')
+				}
+			}
+		}
+		if 'jwt.getSubject' in opts.callback_methods {
+			jwt_options = better_auth.JWTOptions{
+				...jwt_options
+				get_subject: fn (current better_auth.SessionResult) !better_auth.Lookup[string] {
+					encoded := callback_rpc('jwt.getSubject', '{"user":' +
+						better_auth.encode_user(current.user) + ',"session":' +
+						better_auth.encode_session(current.session) + '}')!
+					if encoded == 'null' { return better_auth.Lookup[string]{} }
+					return better_auth.Lookup[string]{
+						value: json2.decode[string](encoded)!
+					}
+				}
+			}
+		}
 		if 'jwt.sign' in opts.callback_methods {
 			jwt_options = better_auth.JWTOptions{
 				...jwt_options

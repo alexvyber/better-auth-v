@@ -237,7 +237,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     }
     assertKeys(jwtOptions.jwks ?? {}, ['rotationInterval', 'gracePeriod', 'disablePrivateKeyEncryption', 'jwksPath', 'keyPairConfig', 'remoteUrl', 'keyPairConfigs'], 'jwt.jwks');
     assertKeys(jwtOptions.jwks?.keyPairConfig ?? {}, ['alg', 'crv', 'modulusLength'], 'jwt.jwks.keyPairConfig');
-    assertKeys(jwtOptions.jwt ?? {}, ['issuer', 'audience', 'sign', 'expirationTime'], 'jwt.jwt');
+    assertKeys(jwtOptions.jwt ?? {}, ['issuer', 'audience', 'sign', 'expirationTime', 'definePayload', 'getSubject'], 'jwt.jwt');
   }
   const stateless = Object.hasOwn(options, 'database') && options.database === undefined && !options.secondaryStorage;
   const cacheOptions = session.cookieCache ?? {};
@@ -376,6 +376,11 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     try { return await adapter.findOne(query); }
     catch (error) { const state = currentOperation.getStore(); if (state) state.storeFailure = error; throw error; }
   };
+  for (const name of ['definePayload', 'getSubject']) {
+    const callback = jwtOptions?.jwt?.[name];
+    if (callback !== undefined && typeof callback !== 'function') throw new Error('Invalid JWT callback: ' + name);
+    if (callback) callbacks['jwt.' + name] = current => callback(hydrate(current));
+  }
   if (jwtOptions?.jwt?.sign) callbacks['jwt.sign'] = ({payload, header, config}) => jwtOptions!.jwt.sign(payload, Object.keys(header).length ? header : undefined, {signingKeyId: config.signingKeyId ?? undefined, signingAlgorithm: config.signingAlgorithm ?? undefined});
   if (jwtOptions?.adapter) {
     const store = jwtOptions.adapter;

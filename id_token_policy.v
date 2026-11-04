@@ -55,9 +55,10 @@ pub fn (policy ProviderIDTokenPolicy) verify(token string, nonce string, now i64
 pub fn id_token_config_from_json(encoded string) !IDTokenVerifyConfig {
 	fields := json2.decode[map[string]json2.Any](encoded)!
 	mut maximum := ?f64(none)
+	mut maximum_text := ?string(none)
 	if value := fields['maxTokenAge'] {
 		if value is string {
-			maximum = f64(duration_seconds(value)!)
+			maximum_text = value
 		} else if value is i64 || value is int || value is f64 {
 			maximum = value.f64()
 		} else {
@@ -70,11 +71,13 @@ pub fn id_token_config_from_json(encoded string) !IDTokenVerifyConfig {
 		algorithms = id_token_strings(value)
 	}
 	return IDTokenVerifyConfig{
-		issuers:          id_token_strings(fields['issuer'] or { json2.Any(json2.Null{}) })
-		audiences:        id_token_strings(fields['audience'] or { json2.Any(json2.Null{}) })
-		algorithms:       algorithms
-		max_token_age:    maximum
-		nonce_comparison: (fields['nonceComparison'] or { json2.Any('exact') }).str()
+		issuers:            id_token_strings(fields['issuer'] or { json2.Any(json2.Null{}) })
+		issuer_required:    'issuer' in fields
+		audiences:          id_token_strings(fields['audience'] or { json2.Any(json2.Null{}) })
+		algorithms:         algorithms
+		max_token_age:      maximum
+		max_token_age_text: maximum_text
+		nonce_comparison:   (fields['nonceComparison'] or { json2.Any('exact') }).str()
 	}
 }
 

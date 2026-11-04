@@ -8,14 +8,16 @@ import x.json2
 
 pub struct IDTokenVerifyConfig {
 pub:
-	issuers          []string
-	audiences        []string
-	algorithms       []string
-	required_claims  []string = ['iss', 'sub', 'aud', 'exp', 'iat']
-	clock_tolerance  f64      = 30
-	max_token_age    ?f64
-	nonce            string
-	nonce_comparison string = 'exact'
+	issuers            []string
+	issuer_required    bool
+	audiences          []string
+	algorithms         []string
+	required_claims    []string = ['iss', 'sub', 'aud', 'exp', 'iat']
+	clock_tolerance    f64      = 30
+	max_token_age      ?f64
+	max_token_age_text ?string
+	nonce              string
+	nonce_comparison   string = 'exact'
 }
 
 fn id_token_header(token string) !map[string]json2.Any {
@@ -121,7 +123,7 @@ pub fn verify_id_token_with_jwk(token string, key_json string, config IDTokenVer
 	for required in config.required_claims {
 		if required !in claims { return error('missing required ID-token claim ${required}') }
 	}
-	if config.issuers.len > 0 {
+	if config.issuer_required || config.issuers.len > 0 {
 		issuer := claims['iss'] or { return error('missing ID-token issuer') }
 		if issuer !is string || issuer.str() !in config.issuers {
 			return error('ID-token issuer mismatch')
@@ -137,7 +139,12 @@ pub fn verify_id_token_with_jwk(token string, key_json string, config IDTokenVer
 		return error('ID token not yet valid')
 	}
 	if 'iat' in claims { numeric_date_field(claims, 'iat')! }
-	if age := config.max_token_age {
+	maximum := if text := config.max_token_age_text {
+		?f64(id_token_duration_seconds(text)!)
+	} else {
+		config.max_token_age
+	}
+	if age := maximum {
 		issued := numeric_date_field(claims, 'iat')!
 		elapsed := f64(now) - issued
 		if elapsed - config.clock_tolerance > age { return error('ID token is too old') }

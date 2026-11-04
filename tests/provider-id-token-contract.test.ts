@@ -127,6 +127,31 @@ describe('native shared ID-token policy and verification profiles', () => {
     expect(await verifyProviderIdToken({id: 'test', idToken: {audience: 'client', jwks: async () => key}}, token)).toBe(false);
   });
 
+  it.each(['-0.5s', '0.5s ago', '+0.5s', '1 month', '1month', '1000000000000000000000000s'])('matches JOSE max-token-age parsing for %s', async (maxTokenAge) => {
+    const now = 2000000000;
+    const token = await new SignJWT({sub: 'subject'}).setProtectedHeader({alg: 'RS256', kid: 'key'}).setIssuer('issuer').setAudience('client').setIssuedAt(now - 30).setExpirationTime(now + 3600).sign(privateKey);
+    const resolver = createLocalJWKSet({keys: [jwk]});
+    let expected = false;
+    try { await jwtVerify(token, resolver, {issuer: 'issuer', audience: 'client', maxTokenAge, clockTolerance: 30, currentDate: new Date(now * 1000)}); expected = true; } catch {}
+    const clock = vi.spyOn(Date, 'now').mockReturnValue(now * 1000);
+    try { expect(await verifyProviderIdToken({id: 'test', idToken: {jwks: resolver, issuer: 'issuer', audience: 'client', maxTokenAge}}, token)).toBe(expected); }
+    finally { clock.mockRestore(); }
+  });
+
+  it('rejects an explicitly empty issuer allowlist', async () => {
+    const resolver = createLocalJWKSet({keys: [jwk]});
+    const token = await sign('issuer');
+    await expect(jwtVerify(token, resolver, {issuer: [], audience: 'client'})).rejects.toThrow();
+    expect(await verifyProviderIdToken({id: 'test', idToken: {jwks: resolver, issuer: [], audience: 'client'}}, token)).toBe(false);
+  });
+
+  it('resolves keys before parsing max-token-age strings, matching callback order', async () => {
+    const key = await importJWK(jwk, 'RS256');
+    const resolver = vi.fn(async () => key);
+    expect(await verifyProviderIdToken({id: 'test', idToken: {jwks: resolver, audience: 'client', maxTokenAge: 'invalid'}}, await sign('issuer'))).toBe(false);
+    expect(resolver).toHaveBeenCalledOnce();
+  });
+
   it('keeps opaque opt-in independent of unused verifier configuration', async () => {
     const config: OAuthIdTokenConfig = {audience: '', jwks: async () => { throw new Error('unused'); }, allowOpaqueToken: true, maxTokenAge: 'invalid'};
     expect(await verifyProviderIdToken({id: 'test', idToken: config}, 'opaque', 'ignored')).toBe(true);

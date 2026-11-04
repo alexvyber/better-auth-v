@@ -1,0 +1,246 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/core/src/db/adapter/get-id-field.test.ts",
+  "sha256": "8d5776f031c44ec63310a638f05567846a5873fc103db00b4f7c68fe57e38594",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "defaultValue priority",
+      "suites": [
+        "defaultValue priority"
+      ],
+      "test": "should return undefined when disableIdGeneration is true",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "defaultValue priority",
+      "suites": [
+        "defaultValue priority"
+      ],
+      "test": "should return undefined when generateId is false",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "defaultValue priority",
+      "suites": [
+        "defaultValue priority"
+      ],
+      "test": "should return undefined when generateId is 'serial'",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "defaultValue priority",
+      "suites": [
+        "defaultValue priority"
+      ],
+      "test": "should use generateId function over 'uuid' and customIdGenerator",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "defaultValue priority",
+      "suites": [
+        "defaultValue priority"
+      ],
+      "test": "should use 'uuid' over customIdGenerator",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "defaultValue priority",
+      "suites": [
+        "defaultValue priority"
+      ],
+      "test": "should use customIdGenerator when generateId is not set",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "defaultValue priority",
+      "suites": [
+        "defaultValue priority"
+      ],
+      "test": "should fall back to default id generation",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "type and required",
+      "suites": [
+        "type and required"
+      ],
+      "test": "should have type 'number' when generateId is 'serial'",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "type and required",
+      "suites": [
+        "type and required"
+      ],
+      "test": "should have type 'string' by default",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "type and required",
+      "suites": [
+        "type and required"
+      ],
+      "test": "should not generate id when useUUIDs and supportsUUIDs",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "transform.input",
+      "suites": [
+        "transform.input"
+      ],
+      "test": "should return undefined for falsy value",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "transform.input",
+      "suites": [
+        "transform.input"
+      ],
+      "test": "should return value as-is by default",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "transform.input",
+      "suites": [
+        "transform.input",
+        "serial"
+      ],
+      "test": "should convert string to number",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "transform.input",
+      "suites": [
+        "transform.input",
+        "serial"
+      ],
+      "test": "should return undefined for non-numeric string",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "transform.input",
+      "suites": [
+        "transform.input",
+        "uuid"
+      ],
+      "test": "should return value as-is when shouldGenerateId and not forceAllowId",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "transform.input",
+      "suites": [
+        "transform.input",
+        "uuid"
+      ],
+      "test": "should return undefined when supportsUUIDs (DB handles it)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "transform.input",
+      "suites": [
+        "transform.input",
+        "uuid"
+      ],
+      "test": "should accept valid UUID when forceAllowId is true",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "transform.input",
+      "suites": [
+        "transform.input",
+        "uuid"
+      ],
+      "test": "should generate new UUID for non-string value when DB doesn't support UUIDs",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "encodeDeterministicId",
+      "suites": [
+        "encodeDeterministicId"
+      ],
+      "test": "keeps the id under the %s strategy",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "encodeDeterministicId",
+      "suites": [
+        "encodeDeterministicId"
+      ],
+      "test": "formats a uuid when ids are uuids",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "encodeDeterministicId",
+      "suites": [
+        "encodeDeterministicId"
+      ],
+      "test": "warns once and keeps the base64url id when ids are database-generated numbers",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "transform.output",
+      "suites": [
+        "transform.output"
+      ],
+      "test": "should return undefined for falsy value",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "transform.output",
+      "suites": [
+        "transform.output"
+      ],
+      "test": "should convert value to string",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

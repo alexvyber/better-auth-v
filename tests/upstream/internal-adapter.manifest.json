@@ -685,9 +685,9 @@
         "with configured id strategies"
       ],
       "test": "yields exactly one winner when ids are uuids",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported adapter/session/schema and ID strategies; consume and default-ID reservation suites are selected"
+      "reason": null
     },
     {
       "suite": "internal adapter test",

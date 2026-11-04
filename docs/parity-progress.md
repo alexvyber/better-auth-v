@@ -522,7 +522,7 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   atomic secondary-store getAndDelete with optional database copies. Read cleanup
   preserves upstream's captured expired row for the first read. Custom identifier
   hashing and default-string-ID reservation gates are now implemented; configured
-  UUID/serial ID strategies and complete integration of legacy token helpers remain open. These are distinct from OTT's supported custom hasher.
+  persisted serial ID strategies and complete integration of legacy token helpers remain open. These are distinct from OTT's supported custom hasher.
 - Imported all fourteen one-time-token source cases unchanged and all twelve cases
   from the internal-adapter consumeVerificationValue suite unchanged. The other
   58 internal-adapter declarations remain explicitly unported. Nine independent
@@ -615,8 +615,22 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   now sets an explicit two-request sign-in rule; upstream sensitive-path defaults
   override the global max with three. Its assertions are unchanged.
 
-The latest verification passes 1270 TypeScript cases across 69 files, all 90 native
-V test functions across 29 files (including all 20,034 Unicode vectors), TypeScript
+- Added native record ID generation with 32-character alphanumeric defaults, UUIDs
+  and supplied model-aware generators across users/sessions/accounts/JWKs/trusted
+  verifications. Opaque session/reset tokens retain their independent entropy.
+  UUID reservation gates format deterministic digests as version-five UUIDs so
+  forced IDs remain stable; custom application IDs are preserved through hooks.
+- Imported the complete core ID-field source file unchanged (27 runtime cases),
+  including generator precedence, forced transforms and deterministic ID warnings.
+  The fixture carries opaque native helper state and invokes supplied generators;
+  field policy remains in V. Added the original UUID reservation case, three
+  independent persisted-generation/digest cases and one native typed API case.
+  Persisted serial/database-generated IDs, full physical schema mapping and legacy
+  opaque-verification digest IDs remain open; passing helper tests does not provide
+  a serial database adapter.
+
+The latest verification passes 1301 TypeScript cases across 71 files, all 91 native
+V test functions across 30 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus
@@ -624,8 +638,8 @@ passes.
 
 The user resumed work and authorized incremental commits and pushes to
 `alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.
-The objective remains incomplete. The corpus currently records 30 completely
-imported files, five partial imports and 401 unported files; imported status describes source
+The objective remains incomplete. The corpus currently records 31 completely
+imported files, five partial imports and 400 unported files; imported status describes source
 preservation, not broad feature completion.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise

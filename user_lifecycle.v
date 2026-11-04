@@ -125,7 +125,7 @@ pub fn (mut c EndpointContext) set_password(password string, ctx RequestContext)
 		c.auth.update_account_record(account, '{"password":${json.encode(hash)}}')!
 	} else {
 		c.auth.persist_account(Account{
-			id:          random_token()!
+			id:          c.auth.new_id('account')!
 			user_id:     current.user.id
 			provider_id: 'credential'
 			account_id:  current.user.id

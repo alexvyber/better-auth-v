@@ -12,6 +12,8 @@ import time
 import x.json2
 
 struct Options {
+	id_strategy                       string = 'random'
+	custom_id_generator               bool
 	redis_tcp                         ?better_auth.RedisTCPOptions
 	redis_key_prefix                  string = 'better-auth:'
 	generic_oauth                     []better_auth.GenericOAuthConfig
@@ -470,6 +472,13 @@ fn expiration_command() ! {
 }
 
 fn main() {
+	if os.args.len == 2 && os.args[1] == '--id-field' {
+		id_field_command() or {
+			eprintln(err.msg())
+			exit(1)
+		}
+		return
+	}
 	if os.args.len == 2 && os.args[1] == '--redis' {
 		redis_bridge() or {
 			eprintln(err.msg())
@@ -815,6 +824,16 @@ fn main() {
 		generic << settings
 	}
 	mut auth := better_auth.new(better_auth.Config{
+		id_strategy:               opts.id_strategy
+		generate_id:               if opts.custom_id_generator {
+			fn (model string) !string {
+				return json2.decode[string](callback_rpc('id.generate', json.encode({
+					'model': model
+				}))!)
+			}
+		} else {
+			defaults.generate_id
+		}
 		generic_oauth:             generic
 		account_linking_enabled:   opts.account_linking_enabled
 		trusted_linking_providers: opts.trusted_linking_providers

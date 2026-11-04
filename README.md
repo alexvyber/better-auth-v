@@ -13,6 +13,7 @@ There is no dependency on a web framework.
 - Email/password registration and login, configurable password hashing, and an
   upstream-compatible scrypt default with Unicode 17 NFKC normalization. Argon2id
   remains available as an explicit alternative.
+- UUID and model-aware custom record ID generators, plus deterministic reservation IDs.
 - Additional user fields with scalar/array/date/JSON types, defaults, required
   fields, protected input, hidden output, and persistent storage.
 - Registration-policy validation, duplicate-account enumeration protection,

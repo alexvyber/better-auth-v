@@ -16,6 +16,9 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+ {file: 'id-field', path: 'packages/core/src/db/adapter/get-id-field.test.ts', suites: null, includeHelpers: true,
+ imports: 'import { describe, expect, it, vi } from "vitest";\nimport { logger } from "@better-auth/core/env";\nimport type { BetterAuthOptions } from "@better-auth/core";\nimport type { BetterAuthDBSchema } from "@better-auth/core/db";\nimport { encodeDeterministicId, initGetIdField } from "../harness/id-field.js";\n',
+ },
  {file: 'rate-limiter', path: 'packages/better-auth/src/api/rate-limiter/rate-limiter.test.ts', suites: new Set(['rate-limiter', 'atomic concurrent enforcement', 'should work with custom rules']),
  imports: 'import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";\nimport { getTestInstance } from "../harness/test-instance.js";\n',
  unportedReason: 'Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected',
@@ -37,7 +40,7 @@ const plans = [
    imports: 'import { afterEach, describe, expect, it, vi } from "vitest";\nimport { createAuthClient } from "better-auth/client";\nimport { getCookieCache, parseSetCookieHeader } from "../harness/cookies.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { bearer, emailOTP } from "../harness/plugins.js";\nimport { emailOTPClient } from "better-auth/client/plugins";\nimport { splitAtLastColon } from "../harness/crypto.js";\n',
   },
   {file: 'internal-adapter', path: 'packages/better-auth/src/db/internal-adapter.test.ts', suites: new Set(), extractSuites: ['consumeVerificationValue', 'reserveVerificationValue'], includeHelpers: true,
-   skippedSuites: new Set(['with configured id strategies']),
+   skippedTests: new Set(['keeps reserving when ids are database-generated numbers']),
    imports: 'import { describe, expect, it, vi } from "vitest";\nimport type { SecondaryStorage } from "@better-auth/core/db";\nimport { DatabaseSync, init, getMigrations } from "../harness/verification-fixture.js";\nimport type { BetterAuthOptions } from "../harness/verification-fixture.js";\n',
    unportedReason: 'Unported adapter/session/schema and ID strategies; consume and default-ID reservation suites are selected',
   },

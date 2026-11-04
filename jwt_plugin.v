@@ -243,7 +243,7 @@ fn generate_exported_keypair(input JWTOptions) !(string, string) {
 fn (mut a Auth) create_signing_key(options JWTOptions) !Jwk {
 	public_json, private_json := generate_exported_keypair(options)!
 
-	id := random_token()!
+	id := a.new_id('jwks')!
 	public_fields := json2.decode[map[string]json2.Any](public_json)!
 	key := Jwk{
 		alg:         options.algorithm

@@ -677,7 +677,7 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 					user_id:     user.id
 					provider_id: 'credential'
 					account_id:  user.id
-					id:          random_token()!
+					id:          a.new_id('account')!
 					password:    hash
 				})!
 			} else {

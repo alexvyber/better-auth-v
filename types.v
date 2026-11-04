@@ -188,6 +188,8 @@ pub:
 
 pub struct Config {
 pub:
+	id_strategy                       string              = 'random'
+	generate_id                       fn (string) !string = no_id_generator
 	verification                      VerificationOptions
 	cookie_cache                      CookieCacheConfig
 	stateless_sessions                bool

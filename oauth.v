@@ -319,7 +319,7 @@ fn (mut a Auth) oauth_identity_account_with_signup(identity OAuthIdentity, provi
 			user = User{
 				additional_fields: a.parse_user_fields(identity.additional_fields,
 					map[string]json2.Any{}, true)!
-				id:                random_token()!
+				id:                a.new_id('user')!
 				email:             email
 				email_verified:    identity.email_verified
 				name:              identity.name
@@ -343,7 +343,7 @@ fn (mut a Auth) oauth_identity_account_with_signup(identity OAuthIdentity, provi
 			user = a.persist_user(user)!
 		}
 		base_account := Account{
-			id:          random_token()!
+			id:          a.new_id('account')!
 			user_id:     user.id
 			provider_id: provider_id
 			account_id:  identity.id

@@ -74,7 +74,7 @@ fn sign_in_anonymous(mut context EndpointContext, _ Request) !Response {
 	custom := options.generate_email()!
 	mut email := custom
 	if email == '' {
-		id := random_token()!
+		id := generate_auth_id(32)!
 		email = if options.email_domain_name != '' {
 			'temp-' + id + '@' + options.email_domain_name
 		} else {
@@ -94,7 +94,7 @@ fn sign_in_anonymous(mut context EndpointContext, _ Request) !Response {
 		map[string]json2.Any{}, true)!
 	additional['isAnonymous'] = true
 	proposed := User{
-		id:                random_token()!
+		id:                context.auth.new_id('user')!
 		email:             email
 		name:              if generated_name == '' { 'Anonymous' } else { generated_name }
 		additional_fields: additional

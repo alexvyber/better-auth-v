@@ -69,7 +69,13 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   JWT expiry uses JOSE's separate NumericDate rule. Secondary TTLs are whole seconds
   floored from the remaining millisecond duration. The native memory KV supports
   `memory_secondary_storage_with_millis` for precise test/application clocks.
-- IDs and tokens are random 32-byte hex values. Database session lookup uses token
+- New record IDs default to 32 alphanumeric characters; session/opaque tokens remain
+  random 32-byte hex values. UUID and application generators are supported for
+  users, sessions, accounts, JWKs and trusted verification records. UUID reservation
+  IDs deterministically format the digest with version-five/variant bits; user
+  callbacks receive logical model names. Legacy opaque reset/OAuth/deletion records
+  still use digest lookup IDs until their storage paths are unified. Persisted serial
+  and database-generated ID strategies remain unsupported. Database session lookup uses token
   digests; AES-GCM seals recoverable tokens with a purpose-derived key and binds
   them to the session/user identity. Listings return actual tokens for new rows.
   Legacy rows without sealed tokens retain their session-ID revocation handles.
@@ -168,7 +174,7 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   operations are available. Verification APIs support ordered plain/hashed prefix
   policies, metadata, hook patches/vetoes, latest-record selection/stale cleanup,
   atomic secondary consumption and optional DB copies. Custom identifier hashing and default-string-ID reservation
-  gates are implemented; UUID/serial ID strategies and legacy reset/OAuth storage
+  gates support UUID IDs too; persisted serial IDs and legacy reset/OAuth storage
   unification remain incomplete; the verification settings currently govern these trusted APIs and
   the OTT and email-OTP plugins. Update/delete-by-identifier APIs are also available.
   A native Redis secondary store is now available; application-specific fallback

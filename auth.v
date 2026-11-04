@@ -93,6 +93,9 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 		|| config.max_password_length < config.min_password_length {
 		return error('invalid auth limits')
 	}
+	if config.id_strategy !in ['random', 'uuid'] {
+		return error('unsupported persisted ID strategy')
+	}
 	if config.rate_limit_storage !in ['memory', 'database'] {
 		return error('unsupported rate limit storage')
 	}
@@ -280,7 +283,7 @@ fn (mut a Auth) make_session(user_id string, ctx RequestContext, remember bool) 
 		additional_fields: parse_fields(a.config.session_fields, map[string]json2.Any{},
 			map[string]json2.Any{}, true)!
 		persistent:        remember
-		id:                random_token()!
+		id:                a.new_id('session')!
 		user_id:           user_id
 		token:             token
 		expires_at:        stamp_millis(now + lifetime * 1000)
@@ -308,7 +311,7 @@ fn (mut a Auth) sign_up(input SignUpInput, ctx RequestContext) !AuthResult {
 	now := stamp_millis(a.clock_millis())
 	mut user := User{
 		additional_fields: additional
-		id:                random_token()!
+		id:                a.new_id('user')!
 		name:              input.name
 		email:             email
 		image:             input.image
@@ -341,7 +344,7 @@ fn (mut a Auth) sign_up(input SignUpInput, ctx RequestContext) !AuthResult {
 	}
 	user = a.persist_user(user)!
 	a.persist_account(Account{
-		id:          random_token()!
+		id:          a.new_id('account')!
 		user_id:     user.id
 		provider_id: 'credential'
 		account_id:  user.id

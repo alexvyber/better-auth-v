@@ -59,7 +59,7 @@ pub fn (mut context EndpointContext) create_verification_value(input Verificatio
 	value := Verification{
 		...input
 		identifier: identifiers[0]
-		id:         if input.id == '' { random_token()! } else { input.id }
+		id:         if input.id == '' { context.auth.new_id('verification')! } else { input.id }
 		created_at: if input.created_at == '' {
 			stamp_millis(context.auth.clock_millis())
 		} else {
@@ -260,7 +260,8 @@ pub fn (mut context EndpointContext) reserve_verification_value(input Verificati
 		return error('reserveVerificationValue requires database-backed verification storage. Set verification.storeInDatabase to true for flows that reserve verification values.')
 	}
 	identifiers := context.auth.verification_identifiers(input.identifier)!
-	id := base64url(sha256.sum(('reserve:' + input.identifier).bytes()))
+	id := encode_deterministic_id(sha256.sum(('reserve:' + input.identifier).bytes()),
+		context.auth.config.id_strategy)!
 	now := stamp_millis(context.auth.clock_millis())
 	value := Verification{
 		...input

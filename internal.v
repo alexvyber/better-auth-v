@@ -99,7 +99,7 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 			input := json.decode(Jwk, args[0].json_str())!
 			key := Jwk{
 				...input
-				id: if input.id == '' { random_token()! } else { input.id }
+				id: if input.id == '' { c.auth.new_id('jwks')! } else { input.id }
 			}
 			c.auth.storage.create_jwk(key)!
 			return json.encode(key)
@@ -331,7 +331,7 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 		'createUser' {
 			if args.len < 1 { return error('createUser requires user data') }
 			mut fields := args[0].as_map()
-			if 'id' !in fields { fields['id'] = random_token()! }
+			if 'id' !in fields { fields['id'] = c.auth.new_id('user')! }
 			if 'createdAt' !in fields { fields['createdAt'] = stamp_millis(c.auth.clock_millis()) }
 			if 'updatedAt' !in fields { fields['updatedAt'] = stamp_millis(c.auth.clock_millis()) }
 			user := c.auth.persist_user(decode_user(json2.Any(fields).json_str())!)!
@@ -359,7 +359,7 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 		'createAccount' {
 			if args.len < 1 { return error('createAccount requires account data') }
 			mut fields := args[0].as_map()
-			if 'id' !in fields { fields['id'] = random_token()! }
+			if 'id' !in fields { fields['id'] = c.auth.new_id('account')! }
 			account := c.auth.persist_account(decode_account(json2.Any(fields).json_str())!)!
 			return json.encode(account)
 		}

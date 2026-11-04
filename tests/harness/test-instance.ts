@@ -372,9 +372,12 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   );
   assertKeys(
     advanced,
-    ["disableCSRFCheck", "disableOriginCheck", "trustedProxyHeaders", "cookies", "cookiePrefix", "useSecureCookies", "crossSubDomainCookies", "defaultCookieAttributes"],
+    ["database", "disableCSRFCheck", "disableOriginCheck", "trustedProxyHeaders", "cookies", "cookiePrefix", "useSecureCookies", "crossSubDomainCookies", "defaultCookieAttributes"],
     "advanced",
   );
+  assertKeys(advanced.database ?? {}, ['generateId'], 'advanced.database');
+  const configuredId = advanced.database?.generateId;
+  if (configuredId !== undefined && configuredId !== 'uuid' && typeof configuredId !== 'function') throw new Error('Persisted serial/database-generated IDs remain unported');
   assertKeys(advanced.crossSubDomainCookies ?? {}, ['enabled', 'domain'], 'advanced.crossSubDomainCookies');
   const cookieNames: Record<string, string> = {};
   const cookieAttributes: Record<string, Record<string, unknown>> = {};
@@ -652,6 +655,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       return ep.customSyntheticUser!({coreFields, additionalFields: hydrate(payload.additionalFields), id: payload.id});
     };
   }
+  if (typeof configuredId === 'function') callbacks['id.generate'] = input => configuredId(input);
   const identifierPolicy = options.verification?.storeIdentifier;
   const identifierMode = (policy: any) => typeof policy === 'object' && policy && 'hash' in policy ? 'custom' : policy;
   const defaultIdentifierPolicy = typeof identifierPolicy === 'object' && identifierPolicy && 'default' in identifierPolicy ? identifierPolicy.default : identifierPolicy;
@@ -693,6 +697,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     bridge.setCallback(method, callback);
   await bridge.send("init", {
     options: {
+      id_strategy: configuredId === 'uuid' ? 'uuid' : 'random',
+      custom_id_generator: typeof configuredId === 'function',
       generic_oauth: genericProviders.map(({getToken: _getToken, mapProfileToUser: _mapProfile, ...provider}) => provider),
       generic_callbacks: genericCallbacks,
       account_linking_enabled: options.account?.accountLinking?.enabled ?? false,

@@ -131,7 +131,7 @@ fn email_otp_sign_in(mut context EndpointContext, request Request) !Response {
 		name := if 'name' in fields { email_otp_string(fields, 'name')! } else { '' }
 		image := if 'image' in fields { ?string(email_otp_string(fields, 'image')!) } else { none }
 		proposed := User{
-			id:                random_token()!
+			id:                context.auth.new_id('user')!
 			email:             email
 			email_verified:    true
 			name:              name
@@ -207,7 +207,7 @@ fn email_otp_reset_password(mut context EndpointContext, request Request) !Respo
 		context.auth.update_password(user.id, hash)!
 	} else {
 		context.auth.persist_account(Account{
-			id:          random_token()!
+			id:          context.auth.new_id('account')!
 			user_id:     user.id
 			provider_id: 'credential'
 			account_id:  user.id

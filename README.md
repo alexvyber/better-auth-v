@@ -29,8 +29,12 @@ There is no dependency on a web framework.
 - Sealed database session tokens and migration-aware account-column aliases.
 - Compact, JWT, and JWE cookie caching with versioning, bounded cookie chunks,
   stateless cache refresh, and a native map-based storage adapter.
-- A JWT/JWKS plugin supporting Ed25519, RSA/PSS, and ECDSA, with sealed persisted keys, rotation, session-cache
-  signing, authenticated token issuance, and trusted signing/verification APIs.
+- A JWT/JWKS plugin supporting Ed25519, RSA/PSS, and ECDSA, persisted keys,
+  rotation, signing pins, remote signing, session-cache signing, payload/subject
+  callbacks, authenticated token issuance, and trusted signing/verification APIs.
+- Upstream-compatible symmetric encryption, ordered versioned secrets, retained
+  encryption-key reads, and isolated OAuth-purpose keys. Cookie signatures use
+  the current secret.
 - Plugin user/session schemas, protected authority fields, creation defaults,
   synthetic-user callbacks, and native endpoint freshness checks.
 - HTTP method/body validation, origin and Fetch Metadata checks, exact trusted
@@ -160,9 +164,11 @@ pnpm test
 ```
 
 The archive checksum is pinned in `upstream.lock.json`. The importer changes
-imports and the test fixture. Sign-in and password test files are included in full;
-sign-up and session suite selections and remaining exclusions are recorded in
-their manifests.
+imports and the test fixture. Sign-in, password, sign-up, session, JWT rotation,
+JWT signing-override/multi-algorithm, crypto secret-rotation, and encryption-purpose
+files are included in full. The main JWT file includes all runtime declarations;
+its two client type declarations remain unported. Per-file manifests record these
+boundaries.
 Selected test bodies and assertions remain unchanged. `tests/upstream/corpus.json`
 inventories the full pinned source test corpus, including currently unported files.
 The separately pinned npm package `better-auth@1.7.15` supplies the real client,

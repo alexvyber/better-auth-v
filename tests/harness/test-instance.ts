@@ -30,6 +30,7 @@ interface ServerOptions {
   baseURL?: string;
   basePath?: string;
   secret?: string;
+  secrets?: BetterAuthOptions['secrets'];
   trustedOrigins?: string[];
   emailAndPassword?: Partial<NonNullable<BetterAuthOptions['emailAndPassword']>> & FixtureOptions;
   emailVerification?: FixtureOptions;
@@ -143,6 +144,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       "database",
       "basePath",
       "secret",
+      "secrets",
       "trustedOrigins",
       "emailAndPassword",
       "emailVerification",
@@ -369,7 +371,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
   };
   const context = {
     adapter, internalAdapter, options,
-    secret: options.secret ?? 'better-auth-secret-that-is-long-enough-for-validation-test',
+    secret: options.secrets?.[0]?.value ?? options.secret ?? 'better-auth-secret-that-is-long-enough-for-validation-test',
     session: null as unknown,
     authCookies: {} as {sessionToken: {name: string}; sessionData: {name: string}},
     async nativeSignJWT(payload: unknown, signing: unknown) {
@@ -512,9 +514,10 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       preserve_session_in_database: session.preserveSessionInDatabase ?? false,
       base_url: Object.hasOwn(options, 'baseURL') && options.baseURL === undefined ? '' : baseURL,
       base_path: basePath,
+      secrets_json: options.secrets === undefined ? '' : JSON.stringify(options.secrets),
       secret:
         options.secret ??
-        "better-auth-secret-that-is-long-enough-for-validation-test",
+        (options.secrets ? '' : "better-auth-secret-that-is-long-enough-for-validation-test"),
       trusted_origins: options.trustedOrigins ?? [],
       email_and_password: ep.enabled ?? true,
       require_email_verification: ep.requireEmailVerification ?? false,

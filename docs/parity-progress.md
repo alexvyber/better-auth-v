@@ -149,7 +149,7 @@ or corpus inventory contains unimplemented behavior.
   files now run (43 declarations, 52 runtime cases). New private JWK writes use
   upstream ciphertext while older native envelopes remain readable. Independent
   TS crypto tests exchange ciphertext, JWEs, and encrypted JWKs in both directions.
-  Main auth cookie/persistence secret rotation still requires separate integration.
+  Main auth integration is recorded below.
 
 - Corrected signing-key creation/expiration/grace decisions to use millisecond
   time. The full run exposed a second-boundary error in short rotation windows;
@@ -157,14 +157,19 @@ or corpus inventory contains unimplemented behavior.
   fractional starting time. Custom second-only clocks remain supported, with an
   optional millisecond clock for applications/tests that need finer precision.
 
+- Connected ordered versioned secrets to auth initialization, current cookie
+  signing, encrypted JWK persistence, JWE caches, and native sealed-session token
+  recovery. Explicit legacy-secret policy and version retirement remain enforced.
+  File-backed native tests reopen sessions and keys across rotation; integration
+  tests verify existing signing-key reuse and rejection of invalid configurations.
+  Cookie signature acceptance remains current-secret-only, matching pinned
+  upstream. Initialization failures now close their bridge cleanly.
+
 ## Next infrastructure work
 
-The completed `make check` passes 450 TypeScript runtime cases across 19 files,
-51 native V test functions across 9 files (including all 20,034 Unicode vectors),
+The completed `make check` passes 457 TypeScript runtime cases across 20 files,
+52 native V test functions across 10 files (including all 20,034 Unicode vectors),
 TypeScript checking, and real HTTP migration/authentication/CSRF/restart checks.
-A subsequent focused crypto run passes 60 cases, including an additional wide
-secret-version regression (451 TypeScript cases now selected in total). Native
-crypto tests and type checking also pass after that integer-width correction.
 This includes the final custom-store publication and encrypted-key regressions.
 The complete suite was rerun successfully before committing and publishing the
 repository. TypeScript checking, V formatting, and `git diff --check` pass.
@@ -185,7 +190,7 @@ pushes to `alexvyber/better-auth-v`. The objective remains incomplete.
    handling and client type contracts. Verify combinations with deferred
    read-only session GET and other hooks; JWT header issuance can rotate keys.
 3. Implement complete admin and organization plugins beyond their schema/creation
-   foundations, plus account-cookie and secret-rotation behavior. The complete
+   foundations, plus account-cookie behavior and remaining rotation combinations. The complete
    sign-up/session source runs do not establish full plugin or stateless parity.
    Preserve every original assertion when importing additional suites.
 4. Expand the adapter contract/schema/migrations to PostgreSQL, MySQL, MongoDB,

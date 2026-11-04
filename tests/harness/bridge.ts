@@ -46,6 +46,7 @@ export class Bridge {
       resolve: (reply: Reply) => void;
       reject: (error: Error) => void;
       timer: ReturnType<typeof setTimeout>;
+      op: string;
     }
   >();
   private stderr = "";
@@ -90,7 +91,11 @@ export class Bridge {
         if (!pending) throw new Error(`Unexpected bridge reply ${reply.id}`);
         clearTimeout(pending.timer);
         this.pending.delete(reply.id);
-        if (reply.error) pending.reject(new Error(reply.error));
+        if (reply.error) {
+          const error = new Error(reply.error);
+          pending.reject(error);
+          if (pending.op === 'init') this.abort(error);
+        }
         else pending.resolve(reply);
       } catch (error) {
         this.abort(error instanceof Error ? error : new Error(String(error)));
@@ -169,7 +174,7 @@ export class Bridge {
       const timer = setTimeout(() => {
         this.abort(new Error(`V bridge timed out on ${op}: ${this.stderr}`));
       }, 15000);
-      this.pending.set(id, { resolve, reject, timer });
+      this.pending.set(id, { resolve, reject, timer, op });
       const commandTime = Date.now();
       this.child.stdin.write(
         JSON.stringify({

@@ -82,7 +82,7 @@ fn (mut a Auth) encode_cookie_cache(result SessionResult) !string {
 	payload :=
 		js_json(json2.decode[json2.Any]('{"session":${a.session_json(result.session)},"user":${a.user_json(result.user)},"updatedAt":${now * 1000},"version":${json.encode(version)}}')!)
 	if a.config.cookie_cache.strategy == 'jwe' {
-		return symmetric_encode_jwt(payload, a.config.secret, 'better-auth-session',
+		return symmetric_encode_jwt_rotating(payload, a.secret_config, 'better-auth-session',
 			a.config.cookie_cache.max_age, now)
 	}
 	if a.config.cookie_cache.strategy == 'jwt' {
@@ -111,8 +111,8 @@ fn (mut a Auth) decode_cookie_cache(value string) !CachedSession {
 	mut payload := map[string]json2.Any{}
 	mut expires := i64(0)
 	if a.config.cookie_cache.strategy == 'jwe' {
-		payload = json2.decode[map[string]json2.Any](symmetric_decode_jwt(value, a.config.secret,
-			'better-auth-session', a.config.clock())!)!
+		payload = json2.decode[map[string]json2.Any](symmetric_decode_jwt_rotating(value,
+			a.secret_config, 'better-auth-session', a.config.clock())!)!
 		expires = numeric_field(payload, 'exp')! * 1000
 	} else if a.config.cookie_cache.strategy == 'jwt' {
 		if a.jwks_cache_enabled() {

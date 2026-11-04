@@ -11,6 +11,7 @@ pub:
 	config Config
 mut:
 	storage             Storage
+	secret_config       SymmetricSecret
 	mutex               &sync.Mutex = sync.new_mutex()
 	limits              map[string]RateBucket
 	closed              bool
@@ -29,7 +30,18 @@ struct RateBucket {
 }
 
 pub fn new(input_config Config, storage Storage) !&Auth {
-	config := resolve_cache_defaults(resolve_plugin_fields(input_config))
+	mut config := resolve_cache_defaults(resolve_plugin_fields(input_config))
+	mut secret_config := SymmetricSecret(config.secret)
+	if entries := config.secrets {
+		secret_config = SymmetricSecret(build_secret_config(entries, config.secret)!)
+		for warning in secret_config_warnings(entries) {
+			config.log('warn', warning)
+		}
+		config = Config{
+			...config
+			secret: entries[0].value
+		}
+	}
 	url := urllib.parse(config.base_url)!
 	if config.base_url != ''
 		&& (url.scheme !in ['http', 'https'] || url.host == '' || config.base_url.contains('@')
@@ -37,7 +49,7 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 		return error('base_url must be an HTTP(S) origin')
 	}
 	if config.secret == '' { return error('secret is required') }
-	if config.secret.len < 32 {
+	if config.secret.len < 32 && config.secrets == none {
 		config.log('warn',
 			'[better-auth] Warning: your secret should be at least 32 characters long for adequate security.')
 	}
@@ -152,6 +164,7 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 	return &Auth{
 		user_defined_fields: input_config.user_fields.keys()
 		config:              config
+		secret_config:       secret_config
 		storage:             storage
 		secondary:           config.secondary_storage
 	}
@@ -466,4 +479,18 @@ fn (a &Auth) check_redirect(value string, field string) ! {
 		|| !a.trusted(u.scheme + '://' + u.host) {
 		return fail(403, 'INVALID_CALLBACK_URL', 'Invalid ${field}')
 	}
+}
+
+fn (a &Auth) secret_candidates() []string {
+	mut candidates := [a.config.secret]
+	config := a.secret_config
+	if config is SecretConfig {
+		for _, value in config.keys {
+			if value != '' && value !in candidates { candidates << value }
+		}
+		if config.legacy_secret != '' && config.legacy_secret !in candidates {
+			candidates << config.legacy_secret
+		}
+	}
+	return candidates
 }

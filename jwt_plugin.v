@@ -165,7 +165,7 @@ fn (a &Auth) seal_jwk(id string, plaintext string) !string {
 fn (a &Auth) private_jwk_json(record Jwk) !string {
 	mut plaintext := record.private_key
 	if plaintext.starts_with('"') {
-		return symmetric_decrypt(SymmetricSecret(a.config.secret), json2.decode[string](plaintext)!)
+		return symmetric_decrypt(a.secret_config, json2.decode[string](plaintext)!)
 	}
 	if record.encrypted || plaintext.starts_with('v2.') {
 		v2 := plaintext.starts_with('v2.')
@@ -173,12 +173,16 @@ fn (a &Auth) private_jwk_json(record Jwk) !string {
 		if encoded.len < aes.gcm_nonce_size + aes.gcm_tag_size {
 			return error('invalid encrypted JWK')
 		}
-		key := hmac.new(a.config.secret.bytes(), 'better-auth-v:jwks:v1'.bytes(), sha256.sum,
-			sha256.block_size)
-		gcm := aes.new_aes_gcm(key)!
 		binding := if v2 { 'public:' + digest(record.public_key) } else { record.id }
-		plaintext = gcm.decrypt(encoded[aes.gcm_nonce_size..], encoded[..aes.gcm_nonce_size], (
-			'jwks:' + binding).bytes())!.bytestr()
+		for candidate in a.secret_candidates() {
+			key := hmac.new(candidate.bytes(), 'better-auth-v:jwks:v1'.bytes(), sha256.sum,
+				sha256.block_size)
+			gcm := aes.new_aes_gcm(key)!
+			decrypted := gcm.decrypt(encoded[aes.gcm_nonce_size..], encoded[..aes.gcm_nonce_size], (
+				'jwks:' + binding).bytes()) or { continue }
+			return decrypted.bytestr()
+		}
+		return error('unable to decrypt native JWK with configured secrets')
 	}
 	return plaintext
 }
@@ -225,7 +229,7 @@ fn (mut a Auth) create_signing_key(options JWTOptions) !Jwk {
 		private_key: if options.disable_private_key_encryption {
 			private_json
 		} else {
-			json.encode(symmetric_encrypt(SymmetricSecret(a.config.secret), private_json)!)
+			json.encode(symmetric_encrypt(a.secret_config, private_json)!)
 		}
 		created_at:  time.unix_milli(a.clock_millis()).format_rfc3339()
 		expires_at:  if options.rotation_interval > 0 {

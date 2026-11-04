@@ -81,9 +81,13 @@ fn (a &Auth) unseal_session_token(session Session) !string {
 	if encoded.len < aes.gcm_nonce_size + aes.gcm_tag_size {
 		return error('invalid sealed session token')
 	}
-	key := hmac.new(a.config.secret.bytes(), 'better-auth-v:session-token:v1'.bytes(), sha256.sum,
-		sha256.block_size)
-	cipher := aes.new_aes_gcm(key)!
-	return cipher.decrypt(encoded[aes.gcm_nonce_size..], encoded[..aes.gcm_nonce_size], (
-		'session:' + session.id + ':' + session.user_id).bytes())!.bytestr()
+	for candidate in a.secret_candidates() {
+		key := hmac.new(candidate.bytes(), 'better-auth-v:session-token:v1'.bytes(), sha256.sum,
+			sha256.block_size)
+		cipher := aes.new_aes_gcm(key)!
+		plaintext := cipher.decrypt(encoded[aes.gcm_nonce_size..], encoded[..aes.gcm_nonce_size], (
+			'session:' + session.id + ':' + session.user_id).bytes()) or { continue }
+		return plaintext.bytestr()
+	}
+	return error('unable to recover session token with configured secrets')
 }

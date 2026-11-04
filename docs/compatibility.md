@@ -110,8 +110,12 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
 - Symmetric crypto supports upstream XChaCha20-Poly1305, versioned key envelopes,
   retired-key lookup, explicit legacy keys, JWE key rotation, and isolated OAuth
   purpose derivation. Secret environment/configuration helpers execute in V.
-  These helpers do not yet enable full rotation of authentication cookies or
-  all persisted native credentials through the main auth configuration.
+  Main auth configuration accepts ordered versioned `secrets`; the first secret
+  signs new cookies and encrypts new data. Retained versions read encrypted JWKs,
+  native sealed session tokens, and JWE caches. Unversioned upstream ciphertext
+  requires an explicit legacy `secret`. Session-token/compact/HS256 cookies use
+  only the current secret, matching pinned upstream; retained encryption keys do
+  not silently widen cookie-signature acceptance.
 - `stateless_sessions` treats the signed cookie as authoritative when no secondary
   store is configured. Native defaults enable JWE caching and refresh; refreshing
   cache/token cookies preserves the original session expiry. State-dependent
@@ -129,7 +133,7 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   recalled on a subsequent commit failure.
 - An empty `base_url` resolves an origin from each HTTP request. Explicit trusted
   origins remain exact strings; wildcard/dynamic allowlists, cross-subdomain
-  cookie sharing, and secret rotation are not implemented.
+  cookie sharing are not implemented.
 
 ## Remaining Better Auth scope
 

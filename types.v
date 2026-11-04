@@ -178,6 +178,7 @@ pub:
 	base_url                     string = 'http://localhost:3000'
 	base_path                    string = '/api/auth'
 	secret                       string
+	secrets                      ?[]SecretEntry
 	trusted_origins              []string
 	email_and_password           bool = true
 	require_email_verification   bool

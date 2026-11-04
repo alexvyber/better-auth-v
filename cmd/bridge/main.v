@@ -27,6 +27,7 @@ struct Options {
 	cookie_cache                 better_auth.CookieCacheConfig
 	base_url                     string = 'http://localhost:3000'
 	base_path                    string = '/api/auth'
+	secrets_json                 string
 	secret                       string = 'better-auth-test-secret-at-least-32-bytes'
 	trusted_origins              []string
 	require_email_verification   bool
@@ -464,6 +465,13 @@ fn main() {
 	if opts.magic_link { plugins << better_auth.MagicLinkPlugin{} }
 	mut secondary := better_auth.SecondaryStorage(better_auth.NoSecondaryStorage{})
 	if opts.secondary_storage { secondary = RemoteSecondaryStorage{} }
+	mut secrets := ?[]better_auth.SecretEntry(none)
+	if opts.secrets_json != '' {
+		secrets = better_auth.parse_secret_entries(opts.secrets_json) or {
+			emit(Reply{ id: init.id, error: err.msg() })
+			return
+		}
+	}
 	mut auth := better_auth.new(better_auth.Config{
 		stateless_sessions:           opts.stateless_sessions
 		cookie_cache:                 better_auth.CookieCacheConfig{
@@ -497,6 +505,7 @@ fn main() {
 		base_url:                     opts.base_url
 		base_path:                    opts.base_path
 		secret:                       opts.secret
+		secrets:                      secrets
 		trusted_origins:              opts.trusted_origins
 		require_email_verification:   opts.require_email_verification
 		send_verification_on_sign_up: opts.send_verification_on_sign_up

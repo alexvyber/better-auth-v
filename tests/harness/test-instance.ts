@@ -21,6 +21,9 @@ interface FixtureUserOptions extends FixtureOptions {
     source: { action: string; method: string };
   }) => unknown;
 }
+interface FixtureLoggerOptions extends FixtureOptions {
+  log?: (level: string, message: string, ...args: unknown[]) => void;
+}
 interface ServerOptions {
   plugins?: BetterAuthOptions['plugins'];
   database?: BetterAuthOptions["database"];
@@ -33,7 +36,7 @@ interface ServerOptions {
   session?: NonNullable<BetterAuthOptions["session"]> & FixtureOptions;
   advanced?: FixtureOptions;
   rateLimit?: FixtureOptions;
-  logger?: FixtureOptions;
+  logger?: FixtureLoggerOptions;
   secondaryStorage?: NonNullable<BetterAuthOptions["secondaryStorage"]> & Record<string, any>;
   account?: FixtureOptions;
   user?: FixtureUserOptions;
@@ -488,7 +491,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       },
       store_session_in_database: session.storeSessionInDatabase ?? false,
       preserve_session_in_database: session.preserveSessionInDatabase ?? false,
-      base_url: baseURL,
+      base_url: Object.hasOwn(options, 'baseURL') && options.baseURL === undefined ? '' : baseURL,
       base_path: basePath,
       secret:
         options.secret ??
@@ -523,6 +526,21 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     },
   });
 
+  function recordLogs(events: {level: string; message: string}[]) {
+    const levels = ["debug", "info", "warn", "error"];
+    if (
+      !options.logger?.disabled &&
+      typeof options.logger?.log === "function"
+    ) {
+      for (const event of events) {
+        if (
+          levels.indexOf(event.level) >=
+          levels.indexOf(options.logger.level ?? "info")
+        )
+          options.logger.log(event.level, event.message);
+      }
+    }
+  }
   const emails: any[] = [];
   const cookieInfo = await bridge.send('internal', {method: 'cookieInfo'});
   context.authCookies = JSON.parse(cookieInfo.value_json);
@@ -539,19 +557,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     for (const email of result.emails) {
       emails.push(email);
     }
-    const levels = ["debug", "info", "warn", "error"];
-    if (
-      !options.logger?.disabled &&
-      typeof options.logger?.log === "function"
-    ) {
-      for (const event of result.logs ?? []) {
-        if (
-          levels.indexOf(event.level) >=
-          levels.indexOf(options.logger.level ?? "info")
-        )
-          options.logger.log(event.level, event.message);
-      }
-    }
+    recordLogs(result.logs ?? []);
     return result.response;
     });
   }
@@ -600,6 +606,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       assertKeys(args.body ?? {}, name === 'signJWT' ? ['payload'] : ['token', 'issuer'], name);
       const values = name === 'signJWT' ? [args.body?.payload] : [args.body?.token, args.body?.issuer ?? ''];
       const reply = await bridge.send('internal', {method: name, arguments_json: transportJSON(values)});
+      recordLogs(reply.logs ?? []);
       const value = JSON.parse(reply.value_json);
       if (args.asResponse) return new Response(reply.value_json, {headers: {'content-type': 'application/json'}});
       return args.returnHeaders ? {response: hydrate(value), headers: new Headers()} : hydrate(value);

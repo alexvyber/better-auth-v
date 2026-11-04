@@ -4,9 +4,10 @@ import json
 import x.json2
 
 fn (mut a Auth) invoke(method string, path string, body string, ctx RequestContext) !Response {
+	origin := if a.config.base_url == '' && ctx.origin != '' { ctx.origin } else { a.base_url() }
 	r := a.call(Request{
 		method:  method
-		url:     a.config.base_url.trim_right('/') + a.config.base_path + path
+		url:     origin.trim_right('/') + a.config.base_path + path
 		headers: ctx.headers
 		body:    body
 	})

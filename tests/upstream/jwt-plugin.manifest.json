@@ -409,9 +409,9 @@
         "jwt - unresolved issuer and audience"
       ],
       "test": "warns when it signs a token without an issuer or audience",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "jwt - unresolved issuer and audience",
@@ -419,9 +419,9 @@
         "jwt - unresolved issuer and audience"
       ],
       "test": "warns when it accepts a token without checking its issuer or audience",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     }
   ]
 }

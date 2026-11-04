@@ -66,6 +66,7 @@ pub:
 
 pub struct RequestContext {
 pub:
+	origin  string
 	headers map[string]string
 }
 

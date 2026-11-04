@@ -207,7 +207,7 @@ fn (a &Auth) cache_cookie(ctx RequestContext) ?string {
 fn (a &Auth) cache_cookie_header(name string, value string, max_age ?i64) string {
 	mut header := '${name}=${value}; Path=/; HttpOnly; SameSite=Lax'
 	if age := max_age { header += '; Max-Age=${age}' }
-	if a.config.base_url.starts_with('https://') { header += '; Secure' }
+	if a.base_url().starts_with('https://') { header += '; Secure' }
 	return header
 }
 

@@ -907,3 +907,49 @@ describe("jwt - signing algorithm comes from the key", async () => {
 		await expect(signer.verify(ctx, headerSigned)).resolves.toBeNull();
 	});
 });
+
+describe("jwt - unresolved issuer and audience", async () => {
+	const warn = vi.fn();
+	const { auth } = await getTestInstance({
+		baseURL: undefined,
+		logger: {
+			log: (level, message) => {
+				if (level === "warn") warn(message);
+			},
+		},
+		plugins: [jwt()],
+	});
+
+	beforeEach(() => {
+		warn.mockClear();
+	});
+
+	it("warns when it signs a token without an issuer or audience", async () => {
+		const { token } = await auth.api.signJWT({
+			body: { payload: { sub: "u1" } },
+		});
+
+		expect(decodeJwt(token)).toMatchObject({ iss: "", aud: "" });
+		expect(warn).toHaveBeenCalledWith(
+			expect.stringContaining("signed a JWT without an issuer or audience"),
+		);
+		await expect(auth.api.verifyJWT({ body: { token } })).resolves.toEqual({
+			payload: null,
+		});
+	});
+
+	it("warns when it accepts a token without checking its issuer or audience", async () => {
+		const { token } = await auth.api.signJWT({
+			body: {
+				payload: { sub: "u1", iss: "https://other.example", aud: "other" },
+			},
+		});
+
+		await expect(
+			auth.api.verifyJWT({ body: { token } }),
+		).resolves.toMatchObject({ payload: { sub: "u1", aud: "other" } });
+		expect(warn).toHaveBeenCalledWith(
+			expect.stringContaining("verifying a JWT without checking its issuer"),
+		);
+	});
+});

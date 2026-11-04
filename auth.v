@@ -31,8 +31,9 @@ struct RateBucket {
 pub fn new(input_config Config, storage Storage) !&Auth {
 	config := resolve_cache_defaults(resolve_plugin_fields(input_config))
 	url := urllib.parse(config.base_url)!
-	if url.scheme !in ['http', 'https'] || url.host == '' || config.base_url.contains('@')
-		|| url.raw_query != '' || url.fragment != '' || url.path !in ['', '/'] {
+	if config.base_url != ''
+		&& (url.scheme !in ['http', 'https'] || url.host == '' || config.base_url.contains('@')
+		|| url.raw_query != '' || url.fragment != '' || url.path !in ['', '/']) {
 		return error('base_url must be an HTTP(S) origin')
 	}
 	if config.secret.len < 32 { return error('secret must contain at least 32 bytes') }
@@ -405,7 +406,7 @@ fn (mut a Auth) issue_email(kind string, user User, callback string) ! {
 	} else {
 		'/verify-email?token=' + token
 	}
-	mut url := a.config.base_url.trim_right('/') + a.config.base_path + path
+	mut url := a.base_url().trim_right('/') + a.config.base_path + path
 	if callback != '' {
 		a.check_redirect(callback, 'callbackURL')!
 		url += if url.contains('?') { '&' } else { '?' }
@@ -432,8 +433,15 @@ fn (mut a Auth) consume_token(token string, kind string) !User {
 	return user
 }
 
+// An omitted base URL is resolved only for the current request. Direct server
+// calls without a request keep it unresolved, as in the pinned upstream API.
+fn (a &Auth) base_url() string {
+	return if a.config.base_url != '' { a.config.base_url } else { a.request_context.origin }
+}
+
 fn (a &Auth) trusted(origin string) bool {
-	if origin == a.config.base_url.trim_right('/') { return true }
+	if origin == '' { return false }
+	if origin == a.base_url().trim_right('/') { return true }
 	return origin in a.config.trusted_origins
 }
 

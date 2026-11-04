@@ -104,7 +104,9 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   pins, configured extra-algorithm lazy minting, and protected profile headers.
   Resolved alg/kid override caller header fields; custom signers receive all three
   callback arguments. Session JWTs support payload and subject callbacks, including
-  null-subject fallback to the user ID. Per-call option replacement, upstream encryption formats, and remaining
+  null-subject fallback to the user ID. An empty configured base URL resolves from
+  the current request; direct calls remain unresolved and emit upstream warnings.
+  Per-call option replacement, upstream encryption formats, and remaining
   JWT plugin tests are unported.
 - `stateless_sessions` treats the signed cookie as authoritative when no secondary
   store is configured. Native defaults enable JWE caching and refresh; refreshing
@@ -121,7 +123,8 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
 - There is no automatic expiration-record garbage collector or durable email outbox.
   Email callback failure rolls back database writes, but delivered email cannot be
   recalled on a subsequent commit failure.
-- Trusted origins are exact strings. Wildcards, dynamic hosts, cross-subdomain
+- An empty `base_url` resolves an origin from each HTTP request. Explicit trusted
+  origins remain exact strings; wildcard/dynamic allowlists, cross-subdomain
   cookie sharing, and secret rotation are not implemented.
 
 ## Remaining Better Auth scope
@@ -147,7 +150,7 @@ tests establishes only their covered behavior, not complete upstream parity.
   does not establish coverage of the separate plugin/adapter/client suites.
 - The original JWT rotation, signing-override, and multi-algorithm files run in full. The JWT plugin file is
   partially imported: its algorithm matrix, general signing, custom-store/path,
-  key-algorithm authority, remote-signing/URL, and expiration utility suites run, with remaining declarations explicitly
+  key-algorithm authority, remote-signing/URL, expiration utility, and unresolved-origin suites run, with remaining declarations explicitly
   unported in its manifest. Key generation in its utility tests also runs in V.
 - Differential tests compare the published TS server and V on supported scenarios,
   ignoring inherently random IDs/tokens/timestamps and documented record-format

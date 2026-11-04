@@ -63,7 +63,7 @@ fn with_header(r Response, name string, value string) Response {
 }
 
 fn (a &Auth) cookie_name() string {
-	return if a.config.base_url.starts_with('https://') {
+	return if a.base_url().starts_with('https://') {
 		'__Secure-better-auth.session_token'
 	} else {
 		'better-auth.session_token'
@@ -80,7 +80,7 @@ fn (a &Auth) set_cookie(r Response, token string, remember bool) Response {
 		}
 		value += '; Max-Age=${max_age}'
 	}
-	if a.config.base_url.starts_with('https://') { value += '; Secure' }
+	if a.base_url().starts_with('https://') { value += '; Secure' }
 	mut result := with_header(r, 'set-cookie', value)
 	marker := a.cookie_name().all_before_last('.') + '.dont_remember'
 	if !remember {
@@ -94,7 +94,7 @@ fn (a &Auth) set_cookie(r Response, token string, remember bool) Response {
 
 fn (a &Auth) clear_cookie(r Response) Response {
 	mut value := '${a.cookie_name()}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0'
-	if a.config.base_url.starts_with('https://') { value += '; Secure' }
+	if a.base_url().starts_with('https://') { value += '; Secure' }
 	mut result := a.clear_cache_cookie(with_header(r, 'set-cookie', value))
 	marker := a.cookie_name().all_before_last('.') + '.dont_remember'
 	if marker in cookie_values(a.request_context) {
@@ -131,8 +131,18 @@ fn (mut a Auth) process(req Request, direct bool) Response {
 		method:  req.method.to_upper()
 		headers: headers
 	}
+	previous_context := a.request_context
+	defer { a.request_context = previous_context }
+	parsed_origin := urllib.parse(normalized.url) or { urllib.URL{} }
+	origin_url := if parsed_origin.scheme in ['http', 'https'] && parsed_origin.host != ''
+		&& !normalized.url.all_after('://').all_before('/').all_before('?').all_before('#').contains('@') {
+		parsed_origin.scheme + '://' + parsed_origin.host
+	} else {
+		''
+	}
 	a.request_context = RequestContext{
 		headers: headers
+		origin:  origin_url
 	}
 	r := a.process_checked(normalized, direct) or { error_response(err) }
 	mut result := r
@@ -162,6 +172,11 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 		return fail(413, 'BODY_TOO_LARGE', 'Request body too large')
 	}
 	u := urllib.parse(req.url) or { return fail(400, 'INVALID_URL', 'Invalid URL') }
+	if (!direct || u.scheme != '' || u.host != '') && (u.scheme !in ['http', 'https']
+		|| u.host == ''
+		|| req.url.all_after('://').all_before('/').all_before('?').all_before('#').contains('@')) {
+		return fail(400, 'INVALID_URL', 'Invalid URL')
+	}
 	path := if u.path.starts_with(a.config.base_path + '/') {
 		u.path[a.config.base_path.len..]
 	} else {

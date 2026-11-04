@@ -50,9 +50,8 @@ fn magic_link_send(mut context EndpointContext, req Request) !Response {
 			value:      user.id
 			expires_at: a.config.clock() + a.config.verification_expires_in
 		})!
-		url := a.config.base_url.trim_right('/') + a.config.base_path +
-			'/magic-link/verify?token=' + token + '&callbackURL=' +
-			urllib.query_escape(p.callback_url)
+		url := a.base_url().trim_right('/') + a.config.base_path + '/magic-link/verify?token=' +
+			token + '&callbackURL=' + urllib.query_escape(p.callback_url)
 		a.config.send_email(EmailMessage{ kind: 'magic-link', user: user, token: token, url: url })!
 	}
 	return json_response({

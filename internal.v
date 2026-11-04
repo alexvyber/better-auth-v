@@ -124,12 +124,13 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 			}
 			previous := c.auth.request_context
 			c.auth.request_context = RequestContext{
+				...previous
 				headers: headers
 			}
 			defer { c.auth.request_context = previous }
 			response := c.auth.dispatch(Request{
 				method:  'GET'
-				url:     c.auth.config.base_url + c.auth.config.base_path + '/get-session?' +
+				url:     c.auth.base_url() + c.auth.config.base_path + '/get-session?' +
 					query.encode()
 				headers: headers
 			}, '/get-session', Payload{})!

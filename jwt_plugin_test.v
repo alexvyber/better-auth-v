@@ -272,3 +272,74 @@ fn test_native_signing_pins_use_transaction_context_and_rollback_key_creation() 
 	}
 	assert false, 'missing signing key must fail without minting a replacement'
 }
+
+struct JWTOriginLog {
+mut:
+	messages []string
+}
+
+fn test_request_resolved_origins_do_not_leak_into_direct_jwt_calls() ! {
+	mut storage := open_memory()
+	mut audit := &JWTOriginLog{}
+	mut auth := new(Config{
+		secret:   '12345678901234567890123456789012'
+		base_url: ''
+		plugins:  [Plugin(JWTPlugin{})]
+		log:      fn [mut audit] (_ string, message string) {
+			audit.messages << message
+		}
+	}, storage)!
+	defer { auth.close() or {} }
+	signup := auth.call(Request{
+		method: 'POST'
+		url:    'https://one.example/api/auth/sign-up/email'
+		body:   '{"email":"origin@example.com","password":"password123","name":"Origin"}'
+	})
+	assert signup.status == 200, signup.body
+	mut cookies := []string{}
+	for header in signup.headers {
+		if header.name == 'set-cookie' {
+			assert header.value.contains('; Secure')
+			cookies << header.value.all_before(';')
+		}
+	}
+	assert cookies.len > 0
+	for origin in ['https://one.example', 'https://two.example'] {
+		response := auth.handle(Request{
+			url:     origin + '/api/auth/get-session'
+			headers: {
+				'cookie': cookies.join('; ')
+				'origin': origin
+			}
+		})
+		assert response.status == 200, response.body
+		mut token := ''
+		for header in response.headers {
+			if header.name == 'set-auth-jwt' { token = header.value }
+			if header.name == 'access-control-allow-origin' { assert header.value == origin
+			 }
+		}
+		assert token != ''
+		claims :=
+			json2.decode[map[string]json2.Any](decode_base64url(token.split('.')[1])!.bytestr())!
+		assert claims['iss']!.str() == origin
+		assert claims['aud']!.str() == origin
+	}
+	bad := auth.handle(Request{
+		method:  'POST'
+		url:     'https://two.example/api/auth/sign-out'
+		headers: {
+			'cookie':       cookies.join('; ')
+			'origin':       'https://one.example'
+			'content-type': 'application/json'
+		}
+		body:    '{}'
+	})
+	assert bad.status == 403
+	token := auth.sign_jwt('{"sub":"server-user"}')!
+	claims := json2.decode[map[string]json2.Any](decode_base64url(token.split('.')[1])!.bytestr())!
+	assert claims['iss']!.str() == ''
+	assert claims['aud']!.str() == ''
+	assert audit.messages.any(it.contains('signed a JWT without an issuer or audience'))
+	assert (auth.verify_jwt(token, '')!).value == none
+}

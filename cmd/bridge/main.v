@@ -565,13 +565,14 @@ fn main() {
 		state.now = command.now
 		match command.op {
 			'internal' {
+				log_start := state.logs.len
 				value := auth.with_internal(fn [command] (mut context better_auth.EndpointContext) !string {
 					return context.invoke_internal(command.method, command.arguments_json)
 				}) or {
 					emit(Reply{ id: command.id, error: err.msg() })
 					continue
 				}
-				emit(Reply{ id: command.id, value_json: value })
+				emit(Reply{ id: command.id, value_json: value, logs: state.logs[log_start..].clone() })
 			}
 			'password-hash' {
 				value := better_auth.ScryptHasher{}.hash(command.password) or {

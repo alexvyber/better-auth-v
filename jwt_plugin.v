@@ -383,7 +383,7 @@ fn (mut a Auth) sign_jwks_payload_with(payload map[string]json2.Any, typ string,
 	if cookie {
 		claims['iat'] = a.config.clock()
 		claims['exp'] = a.config.clock() + a.config.cookie_cache.max_age
-		claims['iss'] = a.config.base_url
+		claims['iss'] = a.base_url()
 		claims['aud'] = 'better-auth:session-cache'
 		data := decode_session_result(json2.Any(payload).json_str())!
 		claims['sub'] = data.user.id
@@ -400,14 +400,14 @@ fn (mut a Auth) sign_jwks_payload_with(payload map[string]json2.Any, typ string,
 		if 'iss' !in claims { claims['iss'] = if options.issuer != '' {
 				options.issuer
 			} else {
-				a.config.base_url
+				a.base_url()
 			}
 		 }
 		if 'aud' !in claims {
 			default_audience := if options.audience != '' {
 				options.audience
 			} else {
-				a.config.base_url
+				a.base_url()
 			}
 			claims['aud'] = if options.audiences.len > 0 {
 				json2.Any(options.audiences.map(json2.Any(it)))
@@ -415,6 +415,12 @@ fn (mut a Auth) sign_jwks_payload_with(payload map[string]json2.Any, typ string,
 				json2.Any(default_audience)
 			}
 		}
+	}
+	if !cookie && ((claims['iss'] or { json2.Any('') }).str() == '' || (claims['aud'] or {
+		json2.Any('')
+	}).str() == '') {
+		a.config.log('warn',
+			'[better-auth] The JWT plugin signed a JWT without an issuer or audience because no base URL was resolved for this call. Set baseURL, or jwt.issuer and jwt.audience in the JWT plugin options.')
 	}
 	if !cookie && options.sign_with != local_jwt_sign_with {
 		return options.sign_with(js_json(json2.Any(claims)), config.header_json, config)
@@ -503,16 +509,18 @@ fn (mut a Auth) verify_jwks_payload(token string, cookie bool, issuer_override s
 	}
 	if 'iat' in claims { numeric_field(claims, 'iat')! }
 	issuer := if cookie {
-		a.config.base_url
+		a.base_url()
 	} else if issuer_override != '' {
 		issuer_override
 	} else if options.issuer != '' {
 		options.issuer
 	} else {
-		a.config.base_url
+		a.base_url()
 	}
-	if (claims['iss'] or { json2.Any('') }).str() != issuer { return error('JWT issuer mismatch') }
-	default_audience := if options.audience != '' { options.audience } else { a.config.base_url }
+	if (cookie || issuer != '') && (claims['iss'] or { json2.Any('') }).str() != issuer {
+		return error('JWT issuer mismatch')
+	}
+	default_audience := if options.audience != '' { options.audience } else { a.base_url() }
 	expected_audiences := if cookie {
 		['better-auth:session-cache']
 	} else if options.audiences.len > 0 {
@@ -520,7 +528,13 @@ fn (mut a Auth) verify_jwks_payload(token string, cookie bool, issuer_override s
 	} else {
 		[default_audience]
 	}
-	if !audience_matches(claims['aud'] or { json2.Any(json2.Null{}) }, expected_audiences) {
+	if !cookie && (issuer == '' || expected_audiences == ['']) {
+		a.config.log('warn',
+			'[better-auth] The JWT plugin is verifying a JWT without checking its issuer or audience because no base URL was resolved for this call. Set baseURL, or jwt.issuer and jwt.audience in the JWT plugin options.')
+	}
+	if (cookie || expected_audiences != ['']) && !audience_matches(claims['aud'] or {
+		json2.Any(json2.Null{})
+	}, expected_audiences) {
 		return error('JWT audience mismatch')
 	}
 	if cookie {
@@ -530,8 +544,10 @@ fn (mut a Auth) verify_jwks_payload(token string, cookie bool, issuer_override s
 		}).str() != data.session.token {
 			return error('cache JWT identity mismatch')
 		}
-	} else if (claims['sub'] or { json2.Any('') }).str() == '' {
-		return error('missing JWT subject')
+	} else if (claims['sub'] or { json2.Any('') }).str() == '' || (claims['aud'] or {
+		json2.Any('')
+	}).str() == '' {
+		return error('missing JWT subject or audience')
 	}
 	return claims
 }

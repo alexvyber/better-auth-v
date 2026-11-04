@@ -93,7 +93,7 @@ or corpus inventory contains unimplemented behavior.
 - Extended the importer to recognize top-level parameterized suites; the partial
   JWT plugin manifest records all selected/unported declarations. Added custom
   adapter/path and stored-algorithm authority suites. The JWT plugin source file
-  now has 5 unported declarations; this is not full JWT plugin parity.
+  now has 3 unported declarations; this is not full JWT plugin parity.
 
 - Added remote JWKS URL configuration and native custom signing callbacks. Remote
   configuration disables local JWKS publication, while token issuance and session
@@ -124,10 +124,18 @@ or corpus inventory contains unimplemented behavior.
   JWT headers use the same native claim-building path. Independent JOSE checks
   verify customized claims.
 
+- Added request-scoped base URL resolution when no origin is configured, including
+  secure-cookie selection and same-origin checks. Direct server JWT calls retain
+  an unresolved origin and log upstream-compatible warnings; verification skips
+  unspecified issuer/audience checks but still requires subject/audience claims.
+  Both original unresolved-origin tests now execute unchanged. Native regressions
+  cover multiple HTTPS origins, cross-origin rejection, and no request-origin
+  leakage into subsequent direct calls.
+
 ## Next infrastructure work
 
-The completed `make check` passes 387 TypeScript runtime cases across 15 files,
-46 native V test functions across 8 files (including all 20,034 Unicode vectors),
+The completed `make check` passes 389 TypeScript runtime cases across 15 files,
+47 native V test functions across 8 files (including all 20,034 Unicode vectors),
 TypeScript checking, and real HTTP migration/authentication/CSRF/restart checks.
 This includes the final custom-store publication and encrypted-key regressions.
 The complete suite was rerun successfully before committing and publishing the

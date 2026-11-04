@@ -40,7 +40,7 @@ fn (a &Auth) oauth_provider(id string) !OAuthProvider {
 }
 
 fn (a &Auth) oauth_cookie_name() string {
-	return if a.config.base_url.starts_with('https://') {
+	return if a.base_url().starts_with('https://') {
 		'__Secure-better-auth.oauth_state'
 	} else {
 		'better-auth.oauth_state'
@@ -50,7 +50,7 @@ fn (a &Auth) oauth_cookie_name() string {
 fn (a &Auth) oauth_cookie(r Response, state string, clear bool) Response {
 	age := if clear { 0 } else { 600 }
 	value := if clear { '' } else { urllib.query_escape(a.sign_cookie(state)) }
-	secure := if a.config.base_url.starts_with('https://') { '; Secure' } else { '' }
+	secure := if a.base_url().starts_with('https://') { '; Secure' } else { '' }
 	return with_header(r, 'set-cookie',
 		'${a.oauth_cookie_name()}=${value}; Path=${a.config.base_path}; HttpOnly; SameSite=Lax; Max-Age=${age}${secure}')
 }
@@ -60,10 +60,9 @@ fn (mut a Auth) start_oauth(p Payload) !Response {
 	state := random_token()!
 	verifier := random_token()!
 	challenge := base64.url_encode(sha256.sum(verifier.bytes())).trim_right('=')
-	redirect_uri := a.config.base_url.trim_right('/') + a.config.base_path + '/callback/' +
-		provider.id()
+	redirect_uri := a.base_url().trim_right('/') + a.config.base_path + '/callback/' + provider.id()
 	url := provider.authorization_url(state, challenge, redirect_uri)!
-	callback := if p.callback_url == '' { a.config.base_url } else { p.callback_url }
+	callback := if p.callback_url == '' { a.base_url() } else { p.callback_url }
 	a.persist_verification(Verification{
 		id:         digest(state)
 		identifier: 'oauth-state'
@@ -112,8 +111,7 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 	if code == '' || code.len > 4096 {
 		return fail(400, 'INVALID_CODE', 'Invalid authorization code')
 	}
-	redirect_uri := a.config.base_url.trim_right('/') + a.config.base_path + '/callback/' +
-		provider_id
+	redirect_uri := a.base_url().trim_right('/') + a.config.base_path + '/callback/' + provider_id
 	identity := provider.exchange(code, stored.verifier, redirect_uri)!
 	if identity.id == '' || !identity.email_verified {
 		return fail(403, 'EMAIL_NOT_VERIFIED', 'Email not verified')

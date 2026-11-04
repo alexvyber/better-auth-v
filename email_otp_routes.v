@@ -113,18 +113,9 @@ fn email_otp_sign_in(mut context EndpointContext, request Request) !Response {
 	if existing := (context.auth.storage.user_by_email(email)!).value {
 		user = existing
 		if !user.email_verified {
-			for account in context.auth.storage.accounts(user.id)! {
-				if (context.auth.before_record('account', 'delete', json.encode(account))!).value != none {
-					context.auth.storage.delete_account(account.id)!
-					context.auth.after_record('account', 'delete', json.encode(account))!
-				}
+			user = (context.revoke_unproven_account_access(user.id)!).value or {
+				return fail(400, 'INVALID_OTP', 'Invalid OTP')
 			}
-			context.auth.remove_user_sessions(user.id, '')!
-			user = context.auth.update_user_record(User{
-				...user
-				email_verified: true
-				updated_at:     stamp_millis(context.auth.clock_millis())
-			})!
 		}
 	} else {
 		if options.disable_sign_up { return fail(400, 'INVALID_OTP', 'Invalid OTP') }

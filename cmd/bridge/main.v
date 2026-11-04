@@ -15,6 +15,7 @@ struct Options {
 	email_otp                         ?better_auth.EmailOTPOptions
 	email_otp_callbacks               []string
 	verification_options              better_auth.VerificationOptions
+	verification_hash_callback        bool
 	one_time_token                    ?better_auth.OneTimeTokenOptions
 	ott_generate_callback             bool
 	ott_hash_callback                 bool
@@ -743,7 +744,16 @@ fn main() {
 		}
 	}
 	mut auth := better_auth.new(better_auth.Config{
-		verification:                      opts.verification_options
+		verification:                      better_auth.VerificationOptions{
+			...opts.verification_options
+			hash_identifier: fn [opts] (identifier string) !string {
+				if !opts.verification_hash_callback {
+					return error('verification identifier hash callback is not configured')
+				}
+				return json2.decode[string](callback_rpc('verification.hash',
+					json.encode(identifier))!)
+			}
+		}
 		stateless_sessions:                opts.stateless_sessions
 		cookie_cache:                      better_auth.CookieCacheConfig{
 			...opts.cookie_cache

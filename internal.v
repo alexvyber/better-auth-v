@@ -34,7 +34,8 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 			return c.email_otp_internal(name, args[0].json_str())
 		}
 		'createVerificationValue', 'findVerificationValue', 'consumeVerificationValue',
-		'deleteVerificationByIdentifier', 'updateVerificationByIdentifier' {
+		'reserveVerificationValue', 'deleteVerificationByIdentifier',
+		'updateVerificationByIdentifier' {
 			return c.verification_internal(name, args)
 		}
 		'validateRedirect' {

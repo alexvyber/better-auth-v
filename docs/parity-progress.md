@@ -521,8 +521,8 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   invalidation of older duplicates, expiry cleanup, delete veto/after hooks, and
   atomic secondary-store getAndDelete with optional database copies. Read cleanup
   preserves upstream's captured expired row for the first read. Custom identifier
-  hash callbacks, reservation APIs and complete integration of legacy
-  token helpers remain open. These are distinct from OTT's supported custom hasher.
+  hashing and default-string-ID reservation gates are now implemented; configured
+  UUID/serial ID strategies and complete integration of legacy token helpers remain open. These are distinct from OTT's supported custom hasher.
 - Imported all fourteen one-time-token source cases unchanged and all twelve cases
   from the internal-adapter consumeVerificationValue suite unchanged. The other
   58 internal-adapter declarations remain explicitly unported. Nine independent
@@ -542,12 +542,23 @@ Each plugin must retain original upstream assertions and accurately report gaps.
 - Imported the entire email-OTP source file with all 91 upstream cases unchanged.
   Three independent Brand Map configuration cases cover hashed rotating codes,
   five attempts, core verification overrides and both email-change proofs; one
-  native test verifies hashing, sign-in and single use. Distributed reservation
-  locks for unverified account promotion remain open, along with complete public
-  callback contexts and PostgreSQL/Redis integration.
+  native test verifies hashing, sign-in and single use. Database reservation
+  locks for unverified account promotion are now implemented; complete public
+  callback contexts remain open and PostgreSQL/Redis integration.
 
-The latest verification passes 1175 TypeScript cases across 60 files, all 85 native
-V test functions across 25 files (including all 20,034 Unicode vectors), TypeScript
+- Added deterministic verification reservations using a database primary-key gate,
+  duplicate re-read and explicit rejection of secondary-only storage. Create hooks
+  cannot replace the reservation key. Custom identifier hash callbacks support
+  ordered prefix policies across create/find/update/delete/consume/reserve. Email-
+  OTP promotion re-reads the user under a reservation before removing pre-proof
+  accounts and sessions. Independent SQLite connections share the gate.
+- Imported nine unchanged default-ID reservation cases, including both duplicate
+  upstream suites; UUID/serial strategy cases remain explicitly excluded. Two
+  independent callback/key lifecycle cases and a native SQLite connection test
+  cover custom prefix precedence, hook bypass, deterministic IDs and release.
+
+The latest verification passes 1186 TypeScript cases across 61 files, all 86 native
+V test functions across 26 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus

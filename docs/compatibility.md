@@ -145,9 +145,9 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   Public V generation/redemption APIs and trusted verification create/find/consume
   operations are available. Verification APIs support ordered plain/hashed prefix
   policies, metadata, hook patches/vetoes, latest-record selection/stale cleanup,
-  atomic secondary consumption and optional DB copies. Custom identifier hashing,
-  reservation APIs and legacy reset/OAuth storage unification remain
-  incomplete; the verification settings currently govern these trusted APIs and
+  atomic secondary consumption and optional DB copies. Custom identifier hashing and default-string-ID reservation
+  gates are implemented; UUID/serial ID strategies and legacy reset/OAuth storage
+  unification remain incomplete; the verification settings currently govern these trusted APIs and
   the OTT and email-OTP plugins. Update/delete-by-identifier APIs are also available.
   Redis/application-wrapper integration is still separate work.
 - The native email-OTP plugin implements code creation/read APIs, delivery, checking,
@@ -155,8 +155,9 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   Plain, SHA256, encrypted and application-provided codecs, resend rotation/reuse,
   attempt budgets, plugin rate limits and default-verification overrides are covered
   by the complete upstream email-OTP source file. Brand Map's hashed/rotating/five-
-  attempt configuration has independent coverage. Cross-instance account-promotion
-  reservation locking and complete callback contexts remain open.
+  attempt configuration has independent coverage. Unverified account promotion coordinates through database reservation keys and
+  re-reads before deleting old account links and sessions. Complete callback contexts
+  and additional database adapters remain open.
 - The HTML error endpoint validates error codes and escapes descriptions. Default
   page styling, custom themes, production redirects, and `onAPIError.errorURL`
   behavior remain unimplemented.

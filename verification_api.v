@@ -1,5 +1,6 @@
 module better_auth
 
+import crypto.sha256
 import json
 import x.json2
 
@@ -9,6 +10,11 @@ pub:
 	disable_cleanup   bool   @[json: disableCleanup]
 	store_identifier  string = 'plain' @[json: storeIdentifier]
 	overrides         map[string]string
+	hash_identifier   fn (string) !string = no_verification_identifier_hasher @[skip]
+}
+
+fn no_verification_identifier_hasher(_ string) !string {
+	return error('custom verification identifier hashing is not configured')
 }
 
 pub fn encode_verification(value Verification) string {
@@ -39,8 +45,12 @@ fn (a &Auth) verification_identifiers(identifier string) ![]string {
 		}
 	}
 	if mode == 'plain' { return [identifier] }
-	if mode != 'hashed' { return error('unsupported verification identifier storage') }
-	stored := default_one_time_token_hasher(identifier)!
+	if mode !in ['hashed', 'custom'] { return error('unsupported verification identifier storage') }
+	stored := if mode == 'custom' {
+		a.config.verification.hash_identifier(identifier)!
+	} else {
+		default_one_time_token_hasher(identifier)!
+	}
 	return [stored, identifier]
 }
 
@@ -179,6 +189,9 @@ fn (mut context EndpointContext) verification_internal(name string, args []json2
 		context.delete_verification_by_identifier(args[0].str())!
 		return 'null'
 	}
+	if name == 'reserveVerificationValue' {
+		return json.encode(context.reserve_verification_value(decode_verification_record(args[0].json_str())!)!)
+	}
 	if name == 'createVerificationValue' {
 		value := context.create_verification_value(decode_verification_record(args[0].json_str())!)!
 		return encode_verification(value)
@@ -238,4 +251,34 @@ pub fn (mut context EndpointContext) update_verification_by_identifier(identifie
 	return Lookup[Verification]{
 		value: updated
 	}
+}
+
+// Call inside with_internal or a native endpoint transaction. The primary key is
+// the cross-connection first-writer-wins gate; hooks cannot replace that key.
+pub fn (mut context EndpointContext) reserve_verification_value(input Verification) !bool {
+	if context.auth.has_secondary() && !context.auth.config.verification.store_in_database {
+		return error('reserveVerificationValue requires database-backed verification storage. Set verification.storeInDatabase to true for flows that reserve verification values.')
+	}
+	identifiers := context.auth.verification_identifiers(input.identifier)!
+	id := base64url(sha256.sum(('reserve:' + input.identifier).bytes()))
+	now := stamp_millis(context.auth.clock_millis())
+	value := Verification{
+		...input
+		id:         id
+		identifier: identifiers[0]
+		created_at: now
+		updated_at: now
+	}
+	context.auth.storage.create_verification(value) or {
+		if (context.auth.storage.verification(id)!).value != none { return false }
+		return err
+	}
+	if context.auth.has_secondary() {
+		ttl := (verification_expiry_millis(value) - context.auth.clock_millis()) / 1000
+		if ttl > 0 {
+			context.auth.secondary.set('verification:' + identifiers[0],
+				encode_verification(value), ttl)!
+		}
+	}
+	return true
 }

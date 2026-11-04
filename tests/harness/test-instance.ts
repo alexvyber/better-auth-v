@@ -201,7 +201,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     assertKeys(options.verification, ['storeInDatabase', 'disableCleanup', 'storeIdentifier'], 'verification');
     const storage = options.verification.storeIdentifier;
     const modes = typeof storage === 'object' && storage && 'default' in storage ? [storage.default, ...Object.values(storage.overrides ?? {})] : [storage];
-    if (modes.some(mode => mode !== undefined && mode !== 'plain' && mode !== 'hashed')) throw new Error('Unported custom verification identifier hashing');
+    if (modes.some(mode => mode !== undefined && mode !== 'plain' && mode !== 'hashed' && !(typeof mode === 'object' && mode && typeof (mode as FixtureOptions).hash === 'function'))) throw new Error('Invalid verification identifier hashing');
   }
   const ep = options.emailAndPassword ?? {};
   const ev = options.emailVerification ?? {};
@@ -413,7 +413,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   let jwtCallSequence = 0;
   const callbacks: Record<string, (payload: any) => unknown> = {...endpointCallbacks};
   const internalAdapter = {} as FixtureInternalAdapter;
-  const internalNames = ['createVerificationValue', 'findVerificationValue', 'consumeVerificationValue', 'deleteVerificationByIdentifier', 'updateVerificationByIdentifier', 'createSession', 'findSession', 'listSessions', 'updateSession', 'deleteSession', 'deleteUserSessions', 'createUser', 'updateUser', 'findUserById', 'findUserByEmail', 'createAccount', 'findCredentialAccount', 'deleteAccount', 'updateAccount', 'findAccounts', 'updatePassword'];
+  const internalNames = ['createVerificationValue', 'findVerificationValue', 'consumeVerificationValue', 'reserveVerificationValue', 'deleteVerificationByIdentifier', 'updateVerificationByIdentifier', 'createSession', 'findSession', 'listSessions', 'updateSession', 'deleteSession', 'deleteUserSessions', 'createUser', 'updateUser', 'findUserById', 'findUserByEmail', 'createAccount', 'findCredentialAccount', 'deleteAccount', 'updateAccount', 'findAccounts', 'updatePassword'];
   for (const name of internalNames) {
     internalAdapter[name] = async (...args: any[]) => {
       const reply = await bridge.send('internal', {method: name, arguments_json: transportJSON(args)});
@@ -630,6 +630,17 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       return ep.customSyntheticUser!({coreFields, additionalFields: hydrate(payload.additionalFields), id: payload.id});
     };
   }
+  const identifierPolicy = options.verification?.storeIdentifier;
+  const identifierMode = (policy: any) => typeof policy === 'object' && policy && 'hash' in policy ? 'custom' : policy;
+  const defaultIdentifierPolicy = typeof identifierPolicy === 'object' && identifierPolicy && 'default' in identifierPolicy ? identifierPolicy.default : identifierPolicy;
+  const identifierOverrides = typeof identifierPolicy === 'object' && identifierPolicy && 'default' in identifierPolicy ? identifierPolicy.overrides ?? {} : {};
+  const customIdentifierHash = [defaultIdentifierPolicy, ...Object.values(identifierOverrides)].some(value => identifierMode(value) === 'custom');
+  if (customIdentifierHash) callbacks['verification.hash'] = identifier => {
+    let policy: any = defaultIdentifierPolicy;
+    for (const [prefix, override] of Object.entries(identifierOverrides)) if (identifier.startsWith(prefix)) { policy = override; break; }
+    if (!policy || typeof policy.hash !== 'function') throw new Error('No custom hash for identifier');
+    return policy.hash(identifier);
+  };
   const otpCallbackNames: string[] = [];
   const otpContext = (payload: FixtureOptions) => {
     const request = payload.request ? new Request(payload.request.url, {method: payload.request.method, headers: payload.request.headers, body: payload.request.method === 'POST' ? payload.request.body : undefined}) : undefined;
@@ -648,10 +659,11 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     options: {
       email_otp: otpOptions ? {...otpOptions, storeOTP: typeof otpOptions.storeOTP === 'object' ? (otpOptions.storeOTP.hash ? 'custom-hash' : 'custom-encryption') : otpOptions.storeOTP} : null,
       email_otp_callbacks: otpCallbackNames,
+      verification_hash_callback: customIdentifierHash,
       verification_options: options.verification ? {
        ...options.verification,
-       storeIdentifier: typeof options.verification.storeIdentifier === 'object' && 'default' in options.verification.storeIdentifier ? options.verification.storeIdentifier.default : options.verification.storeIdentifier,
-       overrides: typeof options.verification.storeIdentifier === 'object' && 'default' in options.verification.storeIdentifier ? options.verification.storeIdentifier.overrides : undefined,
+       storeIdentifier: identifierMode(defaultIdentifierPolicy),
+       overrides: Object.fromEntries(Object.entries(identifierOverrides).map(([prefix, policy]) => [prefix, identifierMode(policy)])),
       } : {},
       one_time_token: ottOptions ? {...ottOptions, storeToken: typeof ottOptions.storeToken === 'object' ? 'custom-hasher' : ottOptions.storeToken} : null,
       ott_generate_callback: !!ottOptions?.generateToken,

@@ -19,9 +19,10 @@ const plans = [
   {file: 'email-otp', path: 'packages/better-auth/src/plugins/email-otp/email-otp.test.ts', suites: null,
    imports: 'import { afterEach, describe, expect, it, vi } from "vitest";\nimport { createAuthClient } from "better-auth/client";\nimport { getCookieCache, parseSetCookieHeader } from "../harness/cookies.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { bearer, emailOTP } from "../harness/plugins.js";\nimport { emailOTPClient } from "better-auth/client/plugins";\nimport { splitAtLastColon } from "../harness/crypto.js";\n',
   },
-  {file: 'internal-adapter', path: 'packages/better-auth/src/db/internal-adapter.test.ts', suites: new Set(), extractSuite: 'consumeVerificationValue', includeHelpers: true,
+  {file: 'internal-adapter', path: 'packages/better-auth/src/db/internal-adapter.test.ts', suites: new Set(), extractSuites: ['consumeVerificationValue', 'reserveVerificationValue'], includeHelpers: true,
+   skippedSuites: new Set(['with configured id strategies']),
    imports: 'import { describe, expect, it, vi } from "vitest";\nimport type { SecondaryStorage } from "@better-auth/core/db";\nimport { DatabaseSync, init, getMigrations } from "../harness/verification-fixture.js";\nimport type { BetterAuthOptions } from "../harness/verification-fixture.js";\n',
-   unportedReason: 'Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected',
+   unportedReason: 'Unported adapter/session/schema and ID strategies; consume and default-ID reservation suites are selected',
   },
   {file: 'one-time-token', path: 'packages/better-auth/src/plugins/one-time-token/one-time-token.test.ts', suites: null,
    imports: 'import { afterEach, describe, expect, it, vi } from "vitest";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { isAPIError } from "@better-auth/core/utils/is-api-error";\nimport { oneTimeToken } from "../harness/plugins.js";\nimport { oneTimeTokenClient } from "better-auth/client/plugins";\nimport { defaultKeyHasher } from "../harness/crypto.js";\n',
@@ -199,7 +200,9 @@ for (const plan of plans) {
     if (!/^(describe|suite)(\.|$)/.test(rootExpression.getText(sourceFile))) continue;
     const name = call.arguments[0].text;
     const callback = call.arguments[1];
-    const selected = !plan.extractSuite && (plan.suites === null || plan.suites.has(name));
+    const extractedSuites = plan.extractSuites ?? (plan.extractSuite ? [plan.extractSuite] : []);
+    const extractions = [];
+    const selected = !extractedSuites.length && (plan.suites === null || plan.suites.has(name));
     const removals = [];
     function collect(node, path = [name]) {
       if (ts.isCallExpression(node)) {
@@ -215,8 +218,9 @@ for (const plan of plans) {
             node.arguments[0]?.text ??
             node.arguments[0]?.getText(sourceFile) ??
             "<dynamic>";
-          if (plan.extractSuite === title) output += '\n' + node.getText(sourceFile) + ';\n';
+          if (extractedSuites.includes(title)) extractions.push(node);
           for (const fn of callbacks) collect(fn.body, [...path, title]);
+          if (plan.skippedSuites?.has(title) && path.some(title => extractedSuites.includes(title))) removals.push([node.getFullStart(), node.end]);
           return;
         }
         if (
@@ -227,7 +231,7 @@ for (const plan of plans) {
             node.arguments[0]?.text ??
             node.arguments[0]?.getText(sourceFile) ??
             "<dynamic>";
-          const include = (plan.extractSuite ? path.includes(plan.extractSuite) : selected) && !plan.skippedTests?.has(title);
+          const include = (extractedSuites.length ? path.some(title => extractedSuites.includes(title)) : selected) && !plan.skippedTests?.has(title) && !path.some(title => plan.skippedSuites?.has(title));
           inventory.push({
             suite: name,
             suites: path,
@@ -239,7 +243,7 @@ for (const plan of plans) {
               ? null
               : (plan.unportedReasons?.[name] ?? plan.unportedReason ?? "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"),
           });
-          if (selected && !include)
+          if ((selected || path.some(title => extractedSuites.includes(title))) && !include && !path.some(title => plan.skippedSuites?.has(title)))
             removals.push([node.getFullStart(), node.end]);
           return;
         }
@@ -247,6 +251,12 @@ for (const plan of plans) {
       ts.forEachChild(node, (child) => collect(child, path));
     }
     collect(callback.body);
+    for (const node of extractions) {
+      const start = node.getStart(sourceFile);
+      let text = node.getText(sourceFile);
+      for (const [from, to] of removals.filter(([from, to]) => from >= start && to <= node.end).sort((a, b) => b[0] - a[0])) text = text.slice(0, from - start) + text.slice(to - start);
+      output += '\n' + text + ';\n';
+    }
     if (selected) {
       const start = statement.getStart(sourceFile);
       let text = source.slice(start, statement.end);

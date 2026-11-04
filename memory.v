@@ -16,6 +16,7 @@ mut:
 @[heap]
 pub struct MemoryStorage {
 mut:
+	rate_limits map[string]RateLimitRecord
 	records     MemoryRecords
 	backup      MemoryRecords
 	transaction bool
@@ -85,6 +86,7 @@ pub fn (mut s MemoryStorage) rollback() ! {
 
 pub fn (mut s MemoryStorage) close() ! {
 	s.records = MemoryRecords{}
+	s.rate_limits.clear()
 	s.backup = MemoryRecords{}
 	s.closed = true
 }

@@ -274,7 +274,7 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 	if req.method !in methods { return fail(405, 'METHOD_NOT_ALLOWED', 'Method not allowed') }
 	if !direct {
 		a.check_csrf(req, path)!
-		a.rate_limit(path)!
+		if limited := (a.rate_limit(path)!).value { return limited }
 	}
 	mut body := req.body
 	if req.method == 'POST' {
@@ -390,51 +390,6 @@ fn (mut a Auth) check_csrf(req Request, path string) ! {
 		return fail(403, 'INVALID_ORIGIN', 'Invalid origin')
 	} else if req.headers['cookie'] != '' {
 		return fail(403, 'MISSING_OR_NULL_ORIGIN', 'Missing or null Origin')
-	}
-}
-
-fn (mut a Auth) rate_limit(path string) ! {
-	if a.config.rate_limit_max == 0 { return }
-	now := a.clock_millis()
-	mut maximum := a.config.rate_limit_max
-	mut window := a.config.rate_limit_window
-	if options := a.email_otp_options() {
-		if path.starts_with('/email-otp/')
-			|| path in ['/sign-in/email-otp', '/forget-password/email-otp'] {
-			maximum = if options.rate_limit.max != 0 { options.rate_limit.max } else { 3 }
-			window = if options.rate_limit.window != 0 { options.rate_limit.window } else { 60 }
-		}
-	}
-	// Bounded, per-instance limiter. Applications needing per-IP/distributed
-	// limits should enforce those at their trusted HTTP ingress as well.
-	for key, bucket in a.limits {
-		if now - bucket.start >= if bucket.window_millis > 0 {
-			bucket.window_millis
-		} else {
-			a.config.rate_limit_window * 1000
-		} {
-			a.limits.delete(key)
-		}
-	}
-	key := if path.starts_with('/callback/') {
-		'/callback/:provider'
-	} else if path.starts_with('/reset-password/') {
-		'/reset-password/:token'
-	} else {
-		path
-	}
-	previous := a.limits[key] or {
-		RateBucket{
-			start: now
-		}
-	}
-	if previous.count >= maximum {
-		return fail(429, 'TOO_MANY_REQUESTS', 'Too many requests')
-	}
-	a.limits[key] = RateBucket{
-		start:         previous.start
-		window_millis: window * 1000
-		count:         previous.count + 1
 	}
 }
 

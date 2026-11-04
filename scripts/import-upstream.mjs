@@ -16,6 +16,10 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+ {file: 'rate-limiter', path: 'packages/better-auth/src/api/rate-limiter/rate-limiter.test.ts', suites: new Set(['rate-limiter', 'atomic concurrent enforcement', 'should work with custom rules']),
+ imports: 'import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";\nimport { getTestInstance } from "../harness/test-instance.js";\n',
+ unportedReason: 'Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected',
+ },
  {file: 'redis-storage', path: 'packages/redis-storage/test/redis-storage.test.ts', suites: null,
  imports: 'import { describe, expect, it, vi } from "vitest";\nimport { redisStorage } from "../harness/redis-storage.js";\n',
  },

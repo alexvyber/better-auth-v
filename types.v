@@ -235,6 +235,8 @@ pub:
 	verification_expires_in           i64                 = 3600
 	rate_limit_max                    int                 = 100
 	rate_limit_window                 i64                 = 60
+	rate_limit_storage                string              = 'memory'
+	rate_limit_rules                  map[string]RateLimitRule
 	max_body_bytes                    int
 	password_hasher                   PasswordHasher      = ScryptHasher{}
 	clock                             fn () i64           = time.unix_now

@@ -42,7 +42,7 @@ There is no dependency on a web framework.
   synthetic-user callbacks, and native endpoint freshness checks.
 - HTTP method/body validation, origin and Fetch Metadata checks, exact trusted
   origin patterns and request-scoped allowlists, safe relative/custom-scheme redirects,
-  CORS responses, explicit CSRF/origin options, and a per-instance route limiter.
+  CORS responses, explicit CSRF/origin options, and memory/atomic database rate limits.
 - Native request hooks with trust snapshots resolved before callbacks, request
   replacement/short-circuiting, and prepare/complete APIs for trusted transports.
 - A plugin endpoint interface and an existing-user magic-link plugin.

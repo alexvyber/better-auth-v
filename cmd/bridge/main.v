@@ -81,7 +81,9 @@ struct Options {
 	disable_session_refresh           bool
 	verification_expires_in           i64 = 3600
 	rate_limit_max                    int
-	rate_limit_window                 i64 = 60
+	rate_limit_window                 i64    = 60
+	rate_limit_storage                string = 'memory'
+	rate_limit_rules                  map[string]better_auth.RateLimitRule
 	max_body_bytes                    int
 	password_reset_expires_in         i64 = 3600
 	revoke_sessions_on_password_reset bool
@@ -940,6 +942,8 @@ fn main() {
 		verification_expires_in:           opts.verification_expires_in
 		rate_limit_max:                    opts.rate_limit_max
 		rate_limit_window:                 opts.rate_limit_window
+		rate_limit_storage:                opts.rate_limit_storage
+		rate_limit_rules:                  opts.rate_limit_rules
 		max_body_bytes:                    opts.max_body_bytes
 		password_hasher:                   hasher
 		password_reset_expires_in:         opts.password_reset_expires_in

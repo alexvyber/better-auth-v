@@ -93,6 +93,9 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 		|| config.max_password_length < config.min_password_length {
 		return error('invalid auth limits')
 	}
+	if config.rate_limit_storage !in ['memory', 'database'] {
+		return error('unsupported rate limit storage')
+	}
 	for name, field in config.user_fields {
 		if name in core_user_fields
 			|| name in ['additional_fields', '__proto__', 'constructor', 'prototype'] {

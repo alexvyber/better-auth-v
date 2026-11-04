@@ -76,7 +76,7 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   Secondary storage holds live session tokens and user snapshots.
 - Optional images are emitted as null, including synthetic registration responses.
 - SQLite tables use typed indexed identity columns plus JSON record payloads;
-  they do not match upstream's physical schema. Schema v4 is owned by this project;
+  they do not match upstream's physical schema. Schema v5 is owned by this project;
   migrations preserve v1 rows. Account identity columns support actual SQL aliases.
 - Email verification uses upstream-compatible HS256 JWTs; repeated verification
   is idempotent. Old native opaque verification links remain readable until their
@@ -148,9 +148,18 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   Public password signup can be disabled independently of provisioned login.
   The full ID-token verification suite and selected discovery/signup source cases
   run unchanged. Nabu integration tests cover verified pre-provisioned identity,
-  unprovisioned/unverified rejection, Basic/PKCE and replay prevention. MongoDB,
-  database-backed rate limits, discovery retry/cache, provider refresh callbacks,
+  unprovisioned/unverified rejection, Basic/PKCE and replay prevention. MongoDB
+  integration, discovery retry/cache, provider refresh callbacks,
   full linking/options behavior and actual Nabu application integration remain open.
+- Rate limiting supports per-instance memory and atomic database backends. SQLite
+  schema v5 persists rolling count/lastRequest values behind an immediate transaction
+  so independent connections cannot overrun a shared budget. Default sensitive-path
+  rules, email-OTP overrides, ordered static wildcard/disabled rules, exact window
+  boundaries and JSON 429/X-Retry-After responses are covered by upstream cases.
+  Counters survive failed authentication transactions; trusted API calls bypass
+  HTTP quotas. Static longest-window retention protects longer-lived database rows.
+  MongoDB, distributed secondary counters, dynamic/custom stores, environment
+  defaults and complete IP/proxy normalization/policy remain open.
 - The native one-time-token plugin supports precise expiry, custom generation,
   plain/SHA256/custom hashed token storage, client-request restrictions, optional
   cookie suppression and OTT headers when a session cookie is set. Tokens redeem

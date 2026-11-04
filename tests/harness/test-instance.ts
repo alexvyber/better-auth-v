@@ -207,6 +207,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     if (modes.some(mode => mode !== undefined && mode !== 'plain' && mode !== 'hashed' && !(typeof mode === 'object' && mode && typeof (mode as FixtureOptions).hash === 'function'))) throw new Error('Invalid verification identifier hashing');
   }
   const nativeRedis = nativeRedisConfiguration(options.secondaryStorage);
+  assertKeys(options.rateLimit ?? {}, ['enabled', 'max', 'window', 'storage', 'customRules'], 'rateLimit');
   const ep = options.emailAndPassword ?? {};
   const ev = options.emailVerification ?? {};
   const session = options.session ?? {};
@@ -795,6 +796,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
         ? (options.rateLimit.max ?? 100)
         : 0,
       rate_limit_window: options.rateLimit?.window ?? 60,
+      rate_limit_storage: options.rateLimit?.storage ?? 'memory',
+      rate_limit_rules: Object.fromEntries(Object.entries(options.rateLimit?.customRules ?? {}).map(([path, rule]) => {if (typeof rule === 'function') throw new Error('Dynamic rate limit rules remain unported'); return [path, rule === false ? {disabled: true} : rule];})),
       trust_proxy_origin_headers: advanced.trustedProxyHeaders ?? false,
       real_passwords: config.realPasswords ?? false,
       fail_delivery: config.failDelivery ?? false,

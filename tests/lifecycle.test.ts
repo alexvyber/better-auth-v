@@ -379,7 +379,9 @@ describe("V HTTP boundary", () => {
   it("enforces and expires rate limits in the V process", async () => {
     vi.useFakeTimers();
     const { auth, testUser } = await getTestInstance({
-      rateLimit: { enabled: true, max: 2, window: 10 },
+      // Sensitive paths have an upstream default of three; use an explicit
+      // custom rule to exercise a budget of two.
+      rateLimit: { enabled: true, max: 2, window: 10, customRules: {'/sign-in/email': {max: 2, window: 10}} },
     });
     const request = () =>
       auth.handler(

@@ -62,7 +62,7 @@ pub fn open_sqlite_with_options(path string, options SQLiteOptions) !SQLiteStora
 pub fn (mut s SQLiteStorage) migrate() ! {
 	s.db.exec('CREATE TABLE IF NOT EXISTS auth_migration (version INTEGER PRIMARY KEY)')!
 	version := s.db.q_int('SELECT coalesce(max(version), 0) FROM auth_migration')!
-	if version > 4 { return error('database schema is newer than this library') }
+	if version > 5 { return error('database schema is newer than this library') }
 	s.begin()!
 	mut committed := false
 	defer {
@@ -89,6 +89,11 @@ pub fn (mut s SQLiteStorage) migrate() ! {
 	if version < 4 {
 		s.db.exec('CREATE TABLE auth_jwks (id TEXT PRIMARY KEY, data TEXT NOT NULL)')!
 		s.db.exec('INSERT INTO auth_migration VALUES (4)')!
+	}
+	if version < 5 {
+		s.db.exec('CREATE TABLE auth_rate_limit (key TEXT PRIMARY KEY, count INTEGER NOT NULL, last_request INTEGER NOT NULL)')!
+		s.db.exec('CREATE INDEX auth_rate_limit_last_request ON auth_rate_limit(last_request)')!
+		s.db.exec('INSERT INTO auth_migration VALUES (5)')!
 	}
 	s.commit()!
 	committed = true

@@ -1,0 +1,323 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/api/rate-limiter/rate-limiter.test.ts",
+  "sha256": "57bc38a610e86879d66e4ada35c208076b5f88c84528f95f933114aefd4ceb4a",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "rate-limiter",
+      "suites": [
+        "rate-limiter"
+      ],
+      "test": "should send JSON content type for rate limit responses",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "rate-limiter",
+      "suites": [
+        "rate-limiter"
+      ],
+      "test": "should return 429 after 3 request for sign-in",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "rate-limiter",
+      "suites": [
+        "rate-limiter"
+      ],
+      "test": "should reset the limit after the window period",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "rate-limiter",
+      "suites": [
+        "rate-limiter"
+      ],
+      "test": "should respond the correct retry-after header",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "rate-limiter",
+      "suites": [
+        "rate-limiter"
+      ],
+      "test": "should rate limit based on the path",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "rate-limiter",
+      "suites": [
+        "rate-limiter"
+      ],
+      "test": "non-special-rules limits",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "rate-limiter",
+      "suites": [
+        "rate-limiter"
+      ],
+      "test": "query params should be ignored",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "atomic concurrent enforcement",
+      "suites": [
+        "atomic concurrent enforcement",
+        "`${storage} storage`"
+      ],
+      "test": "lets exactly one of two simultaneous requests through",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "atomic concurrent enforcement",
+      "suites": [
+        "atomic concurrent enforcement",
+        "`${storage} storage`"
+      ],
+      "test": "resets the count once the window elapses",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "atomic concurrent enforcement",
+      "suites": [
+        "atomic concurrent enforcement",
+        "`${storage} storage`"
+      ],
+      "test": "resets the count at the exact window boundary",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "database rate-limit pruning",
+      "suites": [
+        "database rate-limit pruning"
+      ],
+      "test": "keeps active rows from longer configured windows",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    },
+    {
+      "suite": "database rate-limit pruning with dynamic rules",
+      "suites": [
+        "database rate-limit pruning with dynamic rules"
+      ],
+      "test": "prunes stale rows using the longest observed dynamic window",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    },
+    {
+      "suite": "database rate-limit cleanup scheduling",
+      "suites": [
+        "database rate-limit cleanup scheduling"
+      ],
+      "test": "awaits expired row cleanup when no background handler is configured",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    },
+    {
+      "suite": "database rate-limit with a string lastRequest",
+      "suites": [
+        "database rate-limit with a string lastRequest"
+      ],
+      "test": "should respond with the remaining seconds in the retry-after header",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    },
+    {
+      "suite": "custom rate limiting storage",
+      "suites": [
+        "custom rate limiting storage"
+      ],
+      "test": "should use custom storage",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    },
+    {
+      "suite": "should work with custom rules",
+      "suites": [
+        "should work with custom rules"
+      ],
+      "test": "should use custom rules",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "should work with custom rules",
+      "suites": [
+        "should work with custom rules"
+      ],
+      "test": "should use default rules if custom rules are not defined",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "should work with custom rules",
+      "suites": [
+        "should work with custom rules"
+      ],
+      "test": "should not rate limit if custom rule is false",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "should work in development/test environment",
+      "suites": [
+        "should work in development/test environment"
+      ],
+      "test": "should work in development environment",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    },
+    {
+      "suite": "should work in development/test environment",
+      "suites": [
+        "should work in development/test environment"
+      ],
+      "test": "should work in test environment",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    },
+    {
+      "suite": "missing client IP warning",
+      "suites": [
+        "missing client IP warning"
+      ],
+      "test": "should point users to ipAddressHeaders and trustedProxies when no client IP is available outside dev/test",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    },
+    {
+      "suite": "missing client IP warning",
+      "suites": [
+        "missing client IP warning"
+      ],
+      "test": "should fail closed and still enforce the limit when no client IP is available",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    },
+    {
+      "suite": "forwarded IP chains",
+      "suites": [
+        "forwarded IP chains"
+      ],
+      "test": "should not key limits by untrusted forwarded chain entries",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    },
+    {
+      "suite": "forwarded IP chains",
+      "suites": [
+        "forwarded IP chains"
+      ],
+      "test": "should key the real client when trusted proxies are configured",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    },
+    {
+      "suite": "IPv6 address normalization and rate limiting",
+      "suites": [
+        "IPv6 address normalization and rate limiting"
+      ],
+      "test": "should normalize IPv6 addresses to canonical form",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    },
+    {
+      "suite": "IPv6 address normalization and rate limiting",
+      "suites": [
+        "IPv6 address normalization and rate limiting"
+      ],
+      "test": "should convert IPv4-mapped IPv6 to IPv4",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    },
+    {
+      "suite": "IPv6 address normalization and rate limiting",
+      "suites": [
+        "IPv6 address normalization and rate limiting"
+      ],
+      "test": "should support IPv6 subnet rate limiting",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    },
+    {
+      "suite": "IPv6 address normalization and rate limiting",
+      "suites": [
+        "IPv6 address normalization and rate limiting"
+      ],
+      "test": "should rate limit different IPv6 subnets separately",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    },
+    {
+      "suite": "IPv6 address normalization and rate limiting",
+      "suites": [
+        "IPv6 address normalization and rate limiting"
+      ],
+      "test": "should handle localhost IPv6 addresses",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    },
+    {
+      "suite": "IPv6 address normalization and rate limiting",
+      "suites": [
+        "IPv6 address normalization and rate limiting"
+      ],
+      "test": "should handle link-local IPv6 addresses",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    },
+    {
+      "suite": "IPv6 address normalization and rate limiting",
+      "suites": [
+        "IPv6 address normalization and rate limiting"
+      ],
+      "test": "IPv6 subnet should not affect IPv4 addresses",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported pruning hooks, dynamic/custom/secondary limit storage, IP normalization/proxy policy, and environment defaults; basic memory/database enforcement and static rules selected"
+    }
+  ]
+}

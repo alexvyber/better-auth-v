@@ -24,7 +24,7 @@
     "core-api": {
       "files": 18,
       "declarations": 452,
-      "importedFiles": 10
+      "importedFiles": 11
     },
     "client": {
       "files": 10,
@@ -5179,7 +5179,7 @@
       "path": "packages/better-auth/src/api/rate-limiter/rate-limiter.test.ts",
       "sha256": "57bc38a610e86879d66e4ada35c208076b5f88c84528f95f933114aefd4ceb4a",
       "group": "core-api",
-      "status": "unported",
+      "status": "imported-partial-file",
       "kind": "runtime",
       "declarations": [
         {

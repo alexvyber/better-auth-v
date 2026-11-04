@@ -583,7 +583,7 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   mock IdP, Basic credentials without body secrets, PKCE, verified provisioning
   policy, same-user linking, replay prevention and disabled password registration.
   A native signed-token test covers discovery, subject selection, nonce and forged
-  signatures. MongoDB, database-backed rate limits, retry/cache, full generic
+  signatures. Atomic SQLite rate limits are now implemented; MongoDB, retry/cache, full generic
   options/linking/refresh and actual Nabu application migration remain open.
 
 - Added native Redis secondary storage with application client transport and a
@@ -599,8 +599,24 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   and redis-cli are required for those tests. TLS, pooling, native dial deadlines
   and the application-specific tolerant/strict wrapper remain open.
 
-The latest verification passes 1252 TypeScript cases across 67 files, all 88 native
-V test functions across 28 files (including all 20,034 Unicode vectors), TypeScript
+- Added rolling-window rate limits with native memory and atomic SQLite database
+  backends, sensitive-route defaults, plugin overrides and static wildcard/disabled
+  rules. SQLite schema v5 adds indexed persistent counters; immediate transactions
+  serialize independent connections and counts remain committed across auth errors.
+  Responses match upstream JSON and X-Retry-After boundaries. Cleanup retains the
+  longest statically configured window.
+- Imported 16 unchanged rate-limiter cases for memory/database concurrency, window
+  boundaries and static rules. Two independent Nabu configuration cases cover failed
+  authentication, trusted-call bypass and rightmost forwarded-chain isolation. Two
+  native tests exercise racing independent SQLite connections, rolling windows and
+  longer-window retention. MongoDB integration, dynamic/custom/secondary stores,
+  precise cleanup-hook scheduling, environment defaults and full IP/proxy policy
+  remain unported. The rate-limiter file is a partial import. An older owned test
+  now sets an explicit two-request sign-in rule; upstream sensitive-path defaults
+  override the global max with three. Its assertions are unchanged.
+
+The latest verification passes 1270 TypeScript cases across 69 files, all 90 native
+V test functions across 29 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus
@@ -609,7 +625,7 @@ passes.
 The user resumed work and authorized incremental commits and pushes to
 `alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.
 The objective remains incomplete. The corpus currently records 30 completely
-imported files, four partial imports and 402 unported files; imported status describes source
+imported files, five partial imports and 401 unported files; imported status describes source
 preservation, not broad feature completion.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise

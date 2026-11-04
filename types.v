@@ -197,6 +197,7 @@ pub:
 	max_body_bytes               int                 = 65536
 	password_hasher              PasswordHasher      = ScryptHasher{}
 	clock                        fn () i64           = time.unix_now
+	clock_millis                 fn () i64           = no_millisecond_clock
 	send_email                   fn (EmailMessage) ! = discard_email
 	trust_proxy_origin_headers   bool
 	trust_proxy_ip_headers       bool
@@ -426,4 +427,8 @@ pub:
 pub struct Lookup[T] {
 pub:
 	value ?T
+}
+
+fn no_millisecond_clock() i64 {
+	return 0
 }

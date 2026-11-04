@@ -88,9 +88,8 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   (P-256/P-384/P-521) signing/verification, authenticated token issuance,
   automatic `set-auth-jwt` headers, configurable JWKS paths, persisted keys,
   rotation, and publication grace periods. Signing and verification are trusted
-  server APIs, not HTTP routes. Private keys use native, purpose-bound AES-GCM
-  storage by default; that at-rest format differs from upstream's encryption
-  format. Custom key-store reads and creates can override either or both native
+  server APIs, not HTTP routes. New private keys use upstream-compatible
+  XChaCha20-Poly1305 ciphertext; older native AES-GCM key envelopes remain readable. Custom key-store reads and creates can override either or both native
   operations; callbacks run in the current context. Newly encrypted keys remain
   usable when the store assigns IDs, and older ID-bound records remain readable.
   RSA/ECDSA operations use OpenSSL 3 through a native C interface; policy remains
@@ -106,8 +105,13 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   callback arguments. Session JWTs support payload and subject callbacks, including
   null-subject fallback to the user ID. An empty configured base URL resolves from
   the current request; direct calls remain unresolved and emit upstream warnings.
-  Per-call option replacement, upstream encryption formats, and remaining
-  JWT plugin tests are unported.
+  Per-call option replacement and the two client type declarations in the main
+  JWT test file remain unported.
+- Symmetric crypto supports upstream XChaCha20-Poly1305, versioned key envelopes,
+  retired-key lookup, explicit legacy keys, JWE key rotation, and isolated OAuth
+  purpose derivation. Secret environment/configuration helpers execute in V.
+  These helpers do not yet enable full rotation of authentication cookies or
+  all persisted native credentials through the main auth configuration.
 - `stateless_sessions` treats the signed cookie as authoritative when no secondary
   store is configured. Native defaults enable JWE caching and refresh; refreshing
   cache/token cookies preserves the original session expiry. State-dependent
@@ -154,6 +158,9 @@ tests establishes only their covered behavior, not complete upstream parity.
   partially imported: its algorithm matrix, general signing, custom-store/path,
   key-algorithm authority, remote-signing/URL, expiration utility, and unresolved-origin suites run, with remaining declarations explicitly
   unported in its manifest. Key generation in its utility tests also runs in V.
+- The complete upstream crypto secret-rotation and OAuth purpose-isolation files
+  also run with native crypto helpers. Independent TS crypto exchanges ciphertext,
+  JWEs, and encrypted private JWKs with V.
 - Differential tests compare the published TS server and V on supported scenarios,
   ignoring inherently random IDs/tokens/timestamps and documented record-format
   differences.

@@ -343,3 +343,61 @@ fn test_request_resolved_origins_do_not_leak_into_direct_jwt_calls() ! {
 	assert audit.messages.any(it.contains('signed a JWT without an issuer or audience'))
 	assert (auth.verify_jwt(token, '')!).value == none
 }
+
+fn test_preexisting_v2_native_key_envelopes_survive_upstream_ciphertext_migration() ! {
+	mut storage := open_memory()
+	mut auth := new(Config{
+		secret:  '12345678901234567890123456789012'
+		plugins: [Plugin(JWTPlugin{})]
+	}, storage)!
+	defer { auth.close() or {} }
+	public, private := generate_exported_keypair(JWTOptions{})!
+	storage.create_jwk(Jwk{
+		id:          'reassigned-id'
+		public_key:  public
+		private_key: 'v2.' + auth.seal_jwk('public:' + digest(public), private)!
+		created_at:  stamp(auth.config.clock())
+		alg:         'EdDSA'
+		crv:         'Ed25519'
+	})!
+	token := auth.sign_jwt('{"sub":"migrated-user"}')!
+	assert (auth.verify_jwt(token, '')!).value != none
+	assert storage.jwks()!.len == 1
+}
+
+struct JWTMillisecondClock {
+mut:
+	now i64 = 1900
+}
+
+fn test_jwt_rotation_grace_preserves_fractional_second_boundaries() ! {
+	mut clock := &JWTMillisecondClock{}
+	mut storage := open_memory()
+	mut auth := new(Config{
+		secret:       '12345678901234567890123456789012'
+		clock:        fn [clock] () i64 {
+			return clock.now / 1000
+		}
+		clock_millis: fn [clock] () i64 {
+			return clock.now
+		}
+		plugins:      [
+			Plugin(JWTPlugin{
+				options: JWTOptions{
+					rotation_interval: 1
+					grace_period:      1
+				}
+			}),
+		]
+	}, storage)!
+	defer { auth.close() or {} }
+	auth.sign_jwt('{"sub":"first"}')!
+	clock.now += 1100
+	auth.sign_jwt('{"sub":"second"}')!
+	assert storage.jwks()!.len == 2
+	first := json2.decode[map[string]json2.Any](auth.get_jwks()!)!
+	assert first['keys']!.as_array().len == 2
+	clock.now += 1000
+	after_grace := json2.decode[map[string]json2.Any](auth.get_jwks()!)!
+	assert after_grace['keys']!.as_array().len == 1
+}

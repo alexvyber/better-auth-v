@@ -170,11 +170,13 @@ export class Bridge {
         this.abort(new Error(`V bridge timed out on ${op}: ${this.stderr}`));
       }, 15000);
       this.pending.set(id, { resolve, reject, timer });
+      const commandTime = Date.now();
       this.child.stdin.write(
         JSON.stringify({
           id,
           op,
-          now: Math.floor(Date.now() / 1000),
+          now: Math.floor(commandTime / 1000),
+          now_millis: commandTime,
           ...data,
         }) + "\n",
       );

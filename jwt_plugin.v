@@ -164,6 +164,9 @@ fn (a &Auth) seal_jwk(id string, plaintext string) !string {
 
 fn (a &Auth) private_jwk_json(record Jwk) !string {
 	mut plaintext := record.private_key
+	if plaintext.starts_with('"') {
+		return symmetric_decrypt(SymmetricSecret(a.config.secret), json2.decode[string](plaintext)!)
+	}
 	if record.encrypted || plaintext.starts_with('v2.') {
 		v2 := plaintext.starts_with('v2.')
 		encoded := decode_base64url(if v2 { plaintext[3..] } else { plaintext })!
@@ -222,11 +225,11 @@ fn (mut a Auth) create_signing_key(options JWTOptions) !Jwk {
 		private_key: if options.disable_private_key_encryption {
 			private_json
 		} else {
-			'v2.' + a.seal_jwk('public:' + digest(public_json), private_json)!
+			json.encode(symmetric_encrypt(SymmetricSecret(a.config.secret), private_json)!)
 		}
-		created_at:  stamp(a.config.clock())
+		created_at:  time.unix_milli(a.clock_millis()).format_rfc3339()
 		expires_at:  if options.rotation_interval > 0 {
-			?string(stamp(a.config.clock() + options.rotation_interval))
+			?string(time.unix_milli(a.clock_millis() + options.rotation_interval * 1000).format_rfc3339())
 		} else {
 			none
 		}
@@ -255,7 +258,7 @@ fn (mut a Auth) lookup_jwk(options JWTOptions, id ?string, algorithm ?string) !L
 			continue
 		}
 		if expires := key.expires_at {
-			if epoch(expires)! <= a.config.clock() { continue
+			if time.parse_rfc3339(expires)!.unix_milli() <= a.clock_millis() { continue
 			 }
 		}
 		if requested := algorithm {
@@ -293,7 +296,7 @@ fn (mut a Auth) signing_key_with(options JWTOptions, config JWTSigningConfig) !J
 			}
 		}
 		if expires := key.expires_at {
-			if epoch(expires)! <= a.config.clock() {
+			if time.parse_rfc3339(expires)!.unix_milli() <= a.clock_millis() {
 				return error('signJWT: requested signing key is expired and an explicit kid/alg was provided; not auto-minting a replacement. Rotate the key explicitly.')
 			}
 		}
@@ -344,7 +347,7 @@ fn (mut a Auth) public_jwks_json() !string {
 	for raw_key in stored {
 		key := normalize_jwk(raw_key, options)
 		if expires := key.expires_at {
-			if epoch(expires)! + options.grace_period <= a.config.clock() { continue
+			if time.parse_rfc3339(expires)!.unix_milli() + options.grace_period * 1000 <= a.clock_millis() { continue
 			 }
 		}
 		stored_public := json2.decode[map[string]json2.Any](key.public_key)!

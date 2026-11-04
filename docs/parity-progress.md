@@ -142,11 +142,29 @@ or corpus inventory contains unimplemented behavior.
   declarations remain explicitly unported. Nonempty short secrets warn rather
   than fail initialization, matching pinned upstream; empty secrets still fail.
 
+- Added upstream-compatible XChaCha20-Poly1305 (V HChaCha20 derivation plus
+  OpenSSL AEAD), versioned symmetric envelopes, key retirement/legacy-key policy,
+  rotating JWE decode, isolated OAuth-purpose derivation, and native secret
+  environment/configuration helpers. Complete crypto secret-rotation and purpose
+  files now run (43 declarations, 52 runtime cases). New private JWK writes use
+  upstream ciphertext while older native envelopes remain readable. Independent
+  TS crypto tests exchange ciphertext, JWEs, and encrypted JWKs in both directions.
+  Main auth cookie/persistence secret rotation still requires separate integration.
+
+- Corrected signing-key creation/expiration/grace decisions to use millisecond
+  time. The full run exposed a second-boundary error in short rotation windows;
+  a deterministic native regression now covers a 1.1-second advance from a
+  fractional starting time. Custom second-only clocks remain supported, with an
+  optional millisecond clock for applications/tests that need finer precision.
+
 ## Next infrastructure work
 
-The completed `make check` passes 391 TypeScript runtime cases across 16 files,
-47 native V test functions across 8 files (including all 20,034 Unicode vectors),
+The completed `make check` passes 450 TypeScript runtime cases across 19 files,
+51 native V test functions across 9 files (including all 20,034 Unicode vectors),
 TypeScript checking, and real HTTP migration/authentication/CSRF/restart checks.
+A subsequent focused crypto run passes 60 cases, including an additional wide
+secret-version regression (451 TypeScript cases now selected in total). Native
+crypto tests and type checking also pass after that integer-width correction.
 This includes the final custom-store publication and encrypted-key regressions.
 The complete suite was rerun successfully before committing and publishing the
 repository. TypeScript checking, V formatting, and `git diff --check` pass.
@@ -164,7 +182,7 @@ pushes to `alexvyber/better-auth-v`. The objective remains incomplete.
    adapter operations/observability. Cache effects are not distributed transactions;
    rollback cleanup is best effort and cannot reverse existing updates/deletes.
 2. Complete the remaining JWT plugin suites: full option/callback
-   handling, and upstream encryption formats. Verify combinations with deferred
+   handling and client type contracts. Verify combinations with deferred
    read-only session GET and other hooks; JWT header issuance can rotate keys.
 3. Implement complete admin and organization plugins beyond their schema/creation
    foundations, plus account-cookie and secret-rotation behavior. The complete

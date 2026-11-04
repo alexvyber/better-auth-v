@@ -165,6 +165,12 @@ pub fn (mut a Auth) close() ! {
 	a.closed = true
 }
 
+fn (a &Auth) clock_millis() i64 {
+	if a.config.clock_millis != no_millisecond_clock { return a.config.clock_millis() }
+	if a.config.clock == time.unix_now { return time.now().unix_milli() }
+	return a.config.clock() * 1000
+}
+
 fn stamp(epoch i64) string {
 	return time.unix(epoch).format_rfc3339()
 }

@@ -9,12 +9,13 @@
 #include <openssl/crypto.h>
 #include <string.h>
 #include <stdio.h>
+#include <limits.h>
 
 #if OPENSSL_VERSION_NUMBER < 0x30000000L
 #error "Better Auth V RSA/ECDSA support requires OpenSSL 3 or newer"
 #endif
 
-/* The shim handles key material and signature encodings only. JWT claims,
+/* The shim handles EVP primitives, key material and signature encodings. JWT claims,
  * algorithm selection, key selection, persistence and authorization live in V. */
 static int ba_ec_width(const char *alg) {
     if (!strcmp(alg,"ES256")) return 32;
@@ -212,4 +213,34 @@ static int ba_verify_jwk(const char *alg,const char **fields,const unsigned char
 done:
     OPENSSL_free(der); ECDSA_SIG_free(ecsig); EVP_MD_CTX_free(ctx); EVP_PKEY_free(key); return ok;
 }
+/* HChaCha20 runs in V. This boundary handles only IETF ChaCha20-Poly1305 AEAD.
+ * Encrypt: output ciphertext || tag. Decrypt: authenticate before returning any
+ * plaintext and cleanse the output buffer on failure. Inputs are length-checked
+ * before OpenSSL's int-sized update API is called. */
+static int ba_chacha_encrypt(const unsigned char *key,const unsigned char *iv,const unsigned char *data,size_t length,unsigned char *out) {
+    if(length > INT_MAX) return 0;
+    EVP_CIPHER_CTX *ctx=EVP_CIPHER_CTX_new(); int n=0,tail=0,ok=0;
+    if(!ctx) return 0;
+    if(EVP_EncryptInit_ex(ctx,EVP_chacha20_poly1305(),NULL,key,iv)!=1) goto done;
+    if(EVP_EncryptUpdate(ctx,out,&n,data,(int)length)!=1 || n!=(int)length) goto done;
+    if(EVP_EncryptFinal_ex(ctx,out+n,&tail)!=1 || tail!=0) goto done;
+    if(EVP_CIPHER_CTX_ctrl(ctx,EVP_CTRL_AEAD_GET_TAG,16,out+length)!=1) goto done;
+    ok=1;
+done:
+    EVP_CIPHER_CTX_free(ctx); return ok;
+}
+static int ba_chacha_decrypt(const unsigned char *key,const unsigned char *iv,const unsigned char *data,size_t length,unsigned char *out) {
+    if(length<16 || length-16>INT_MAX) return 0;
+    size_t size=length-16; EVP_CIPHER_CTX *ctx=EVP_CIPHER_CTX_new(); int n=0,tail=0,ok=0;
+    if(!ctx) return 0;
+    if(EVP_DecryptInit_ex(ctx,EVP_chacha20_poly1305(),NULL,key,iv)!=1) goto done;
+    if(EVP_CIPHER_CTX_ctrl(ctx,EVP_CTRL_AEAD_SET_TAG,16,(void *)(data+size))!=1) goto done;
+    if(EVP_DecryptUpdate(ctx,out,&n,data,(int)size)!=1 || n!=(int)size) goto done;
+    if(EVP_DecryptFinal_ex(ctx,out+n,&tail)!=1 || tail!=0) goto done;
+    ok=1;
+done:
+    if(!ok && size) OPENSSL_cleanse(out,size);
+    EVP_CIPHER_CTX_free(ctx); return ok;
+}
+
 #endif

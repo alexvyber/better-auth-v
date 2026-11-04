@@ -19,6 +19,14 @@ const plans = [
   { file: "sign-in", suites: null },
   { file: "password", directory: "crypto", suites: null },
   {
+    file: 'secret-rotation', directory: 'crypto', suites: null,
+    imports: 'import type { SecretConfig } from "@better-auth/core";\nimport { describe, expect, it } from "vitest";\nimport { buildSecretConfig, parseSecretsEnv, validateSecretsArray, formatEnvelope, parseEnvelope, symmetricDecrypt, symmetricEncrypt, symmetricDecodeJWT, symmetricEncodeJWT } from "../harness/crypto.js";\n',
+  },
+  {
+    file: 'crypto-purpose', source_file: 'purpose', directory: 'crypto', suites: null, includeHelpers: true,
+    imports: 'import type { SecretConfig } from "@better-auth/core";\nimport { describe, expect, it } from "vitest";\nimport { symmetricDecrypt, symmetricEncrypt, derivePurposeKey, type EncryptionPurpose } from "../harness/crypto.js";\n',
+  },
+  {
     file: 'jwt-plugin', source_file: 'jwt', directory: 'plugins/jwt',
     unportedReasons: {'jwtClient types': 'Unported: client compile-time declarations need equivalent native/facade coverage; running only the existing upstream TS client does not establish V parity'},
     suites: new Set(['jwt', 'signJWT - alg: $alg', 'jwt - custom adapter', 'jwt - custom jwksPath', 'jwt - signing algorithm comes from the key', 'jwt - remote signing', 'jwt - remote url', 'toExpJWT', 'jwt - unresolved issuer and audience', 'jwt - JWKS minting inside an active transaction']),

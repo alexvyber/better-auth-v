@@ -123,6 +123,7 @@ fn (p RemoteEndpointPlugin) endpoints() []better_auth.Endpoint {
 struct Command {
 	id             int
 	op             string
+	now_millis     i64
 	now            i64
 	options        Options
 	request        better_auth.Request
@@ -146,6 +147,7 @@ struct Reply {
 
 struct State {
 mut:
+	now_millis    i64
 	now           i64
 	emails        []better_auth.EmailMessage
 	fail_delivery bool
@@ -324,6 +326,13 @@ fn expiration_command() ! {
 }
 
 fn main() {
+	if os.args.len == 2 && os.args[1] == '--crypto' {
+		crypto_command() or {
+			eprintln(err.msg())
+			exit(1)
+		}
+		return
+	}
 	if os.args.len == 2 && os.args[1] == '--jwt-expiration' {
 		expiration_command() or {
 			eprintln(err.msg())
@@ -343,6 +352,7 @@ fn main() {
 	}
 	mut state := &State{
 		now:           init.now
+		now_millis:    init.now_millis
 		fail_delivery: init.options.fail_delivery
 	}
 	opts := init.options
@@ -540,6 +550,9 @@ fn main() {
 				message: message
 			}
 		}
+		clock_millis:                 fn [state] () i64 {
+			return state.now_millis
+		}
 		clock:                        fn [state] () i64 {
 			return state.now
 		}
@@ -566,6 +579,7 @@ fn main() {
 			continue
 		}
 		state.now = command.now
+		state.now_millis = command.now_millis
 		match command.op {
 			'migrate' {
 				if mut storage is better_auth.SQLiteStorage {

@@ -5,6 +5,9 @@ import x.json2
 
 #include "@VMODROOT/jws_openssl.h"
 
+fn C.ba_chacha_encrypt(&u8, &u8, &u8, usize, &u8) int
+fn C.ba_chacha_decrypt(&u8, &u8, &u8, usize, &u8) int
+
 fn C.ba_generate_jwk(&char, int, &u8, usize, &usize) int
 fn C.ba_sign_jwk(&char, &&char, &u8, usize, &u8, usize, &usize) int
 fn C.ba_verify_jwk(&char, &&char, &u8, usize, &u8, usize) int

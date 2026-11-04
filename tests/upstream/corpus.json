@@ -14,7 +14,7 @@
     "utilities-and-tooling": {
       "files": 275,
       "declarations": 4594,
-      "importedFiles": 1
+      "importedFiles": 3
     },
     "e2e": {
       "files": 71,
@@ -13147,7 +13147,7 @@
       "path": "packages/better-auth/src/crypto/purpose.test.ts",
       "sha256": "6cc1122396373264586b2832112d60bf62cbb3761f2c370929773d765471d6ec",
       "group": "utilities-and-tooling",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {
@@ -13183,7 +13183,7 @@
       "path": "packages/better-auth/src/crypto/secret-rotation.test.ts",
       "sha256": "474daab13f7fffb24356f28fb4e868fac0dda6fcb93b33e1ff0f0fa01d9c229d",
       "group": "utilities-and-tooling",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {

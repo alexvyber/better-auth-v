@@ -1,0 +1,40 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/crypto/purpose.test.ts",
+  "sha256": "6cc1122396373264586b2832112d60bf62cbb3761f2c370929773d765471d6ec",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "OAuth encryption purposes",
+      "suites": [
+        "OAuth encryption purposes"
+      ],
+      "test": "decrypts %s only for its own purpose",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "OAuth encryption purposes",
+      "suites": [
+        "OAuth encryption purposes"
+      ],
+      "test": "decrypts bare %s ciphertext with its purpose-derived legacy key",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "OAuth encryption purposes",
+      "suites": [
+        "OAuth encryption purposes"
+      ],
+      "test": "preserves %s rotation without accepting the shared key",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

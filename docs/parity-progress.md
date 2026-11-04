@@ -427,7 +427,23 @@ or corpus inventory contains unimplemented behavior.
   account integration. The shared upstream verifier suite is the next import;
   Facebook remote-key caching and broader provider options remain incomplete.
 
-The latest `make check` passes 892 TypeScript cases across 45 files, all 80 native
+- Imported the complete pinned shared ID-token verifier source: all 17 static
+  declarations run as 25 cases, with original assertions unchanged. Native policy
+  handles capability/disable checks, application overrides, custom verifiers,
+  JWKS callbacks, opaque-token opt-in, signature/standard claims, nonce and extra
+  claim callbacks. The facade only serializes platform keys and invokes supplied
+  callbacks. It preserves callback context identity and optional nonce arguments.
+  Algorithm/critical-header validation now precedes key callbacks and remote HTTP.
+  Platform CryptoKey hash/type/usage restrictions survive serialization; RSA
+  verification requires at least 2048 bits. Twenty-two independent cases verify
+  real signatures for all five verification profiles, Microsoft tenant restrictions,
+  callback ordering/errors, opaque paths with unused invalid configuration, and
+  nine additional HMAC/EdDSA/ECDSA/RSA/PSS algorithms. The manifest explicitly labels
+  provider regressions as ID-token verification profiles; these do not establish
+  full Apple/Cognito/Facebook/Microsoft OAuth or account integration. Remote-key
+  caching, remaining provider options and the broader account APIs remain open.
+
+The latest `make check` passes 939 TypeScript cases across 47 files, all 80 native
 V test functions across 22 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and

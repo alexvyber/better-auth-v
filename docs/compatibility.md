@@ -317,7 +317,13 @@ tests establishes only their covered behavior, not complete upstream parity.
   standalone ID-token verification profiles also support Apple, Cognito, Facebook
   and Microsoft trust/key-selection rules, callback precedence and tenant binding.
   These profiles do not supply the providers' complete OAuth/account flows;
-  Facebook remote-key caching remains incomplete. Other provider and OAuth/account source
+  Facebook remote-key caching remains incomplete. The complete shared verifier
+  source runs 25 native-backed cases, including supplied override/custom/key/claim
+  callbacks and fail-closed behavior. Another 22 independent cases verify real
+  signatures for all five profiles, tenant binding, callback order/context,
+  algorithm/header rejection before key retrieval, CryptoKey hash/type/usage
+  preservation and the RSA 2048-bit minimum, plus nine additional signing algorithms.
+  Other provider and OAuth/account source
   files remain unported; these cases do not establish full Google/OAuth parity.
   Four independent helper contracts compare V with the published TS implementation
   on malformed encodings, attribute metadata, ordered merging, and secure selection.

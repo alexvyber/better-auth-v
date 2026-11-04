@@ -64,9 +64,7 @@ fn validate_id_token_jwk(encoded string, algorithm string) ! {
 	}
 }
 
-pub fn verify_id_token_with_jwk(token string, key_json string, config IDTokenVerifyConfig, now i64) !string {
-	if !config.audiences.any(it != '') { return error('ID token audience is not configured') }
-	header := id_token_header(token)!
+fn validate_id_token_header(header map[string]json2.Any, config IDTokenVerifyConfig) !string {
 	algorithm := header['alg'] or { return error('missing ID-token algorithm') }
 	if algorithm !is string || algorithm.str() !in config.algorithms {
 		return error('ID-token algorithm not allowed')
@@ -79,21 +77,44 @@ pub fn verify_id_token_with_jwk(token string, key_json string, config IDTokenVer
 			return error('unsupported critical ID-token header')
 		}
 	}
-	validate_id_token_jwk(key_json, algorithm.str())!
+	return algorithm.str()
+}
+
+pub fn verify_id_token_with_jwk(token string, key_json string, config IDTokenVerifyConfig, now i64) !string {
+	if !config.audiences.any(it != '') { return error('ID token audience is not configured') }
+	header := id_token_header(token)!
+	algorithm := validate_id_token_header(header, config)!
+	validate_id_token_jwk(key_json, algorithm)!
 	parts := token.split('.')
 	signature := decode_base64url(parts[2])!
 	message := (parts[0] + '.' + parts[1]).bytes()
 	key := json2.decode[map[string]json2.Any](key_json)!
+	if algorithm.starts_with('RS') || algorithm.starts_with('PS') {
+		modulus := decode_base64url((key['n'] or { return error('missing RSA modulus') }).str())!
+		mut start := 0
+		for start < modulus.len && modulus[start] == 0 {
+			start++
+		}
+		mut bits := (modulus.len - start) * 8
+		if start < modulus.len {
+			mut first := modulus[start]
+			for first < 128 {
+				bits--
+				first <<= 1
+			}
+		}
+		if bits < 2048 { return error('ID token RSA key must have at least 2048 bits') }
+	}
 	mut valid := false
 	if (key['kty'] or { json2.Any('') }).str() == 'oct' {
 		bytes := decode_base64url((key['k'] or { return error('missing symmetric key') }).str())!
-		valid = hmac.equal(cookie_reader_hmac(algorithm.str(), bytes, message)!, signature)
-	} else if algorithm.str() == 'EdDSA' {
+		valid = hmac.equal(cookie_reader_hmac(algorithm, bytes, message)!, signature)
+	} else if algorithm == 'EdDSA' {
 		bytes := decode_base64url((key['x'] or { return error('missing public key') }).str())!
 		if bytes.len != ed25519.public_key_size { return error('invalid Ed25519 key') }
 		valid = ed25519.verify(ed25519.PublicKey(bytes), message, signature)!
 	} else {
-		valid = openssl_verify(algorithm.str(), key_json, message, signature)!
+		valid = openssl_verify(algorithm, key_json, message, signature)!
 	}
 	if !valid { return error('invalid ID-token signature') }
 	claims := json2.decode[map[string]json2.Any](decode_base64url(parts[1])!.bytestr())!

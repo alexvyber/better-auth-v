@@ -16,6 +16,10 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+  {file: 'verify-id-token', path: 'packages/core/src/oauth2/verify-id-token.test.ts', suites: null, includeHelpers: true,
+   testSurfaces: {'verifyProviderIdToken': 'native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows'},
+   imports: 'import { createHash } from "node:crypto";\nimport type { JWK } from "jose";\nimport { createLocalJWKSet, exportJWK, generateKeyPair, SignJWT } from "jose";\nimport { describe, expect, it } from "vitest";\nimport type { OAuthIdTokenConfig } from "@better-auth/core/oauth2";\nimport { apple, cognito, facebook, google, microsoft, paypal, supportsIdTokenSignIn, verifyProviderIdToken } from "../harness/id-token.js";\n',
+  },
   {file: 'google-provider', path: 'packages/core/src/social-providers/google.test.ts', suites: null, includeHelpers: true, setupCalls: new Set(['vi.mock']),
    imports: 'import { exportJWK, generateKeyPair, generateSecret, SignJWT } from "jose";\nimport { beforeEach, describe, expect, it, vi } from "vitest";\nimport { betterFetch } from "@better-fetch/fetch";\nimport { google, verifyGoogleIdToken } from "../harness/google.js";\n',
   },

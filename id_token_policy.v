@@ -43,6 +43,7 @@ pub fn (policy ProviderIDTokenPolicy) verify(token string, nonce string, now i64
 	if token.split('.').len != 3 { return policy.allow_opaque_token }
 	if !policy.config.audiences.any(it != '') { return false }
 	header := id_token_header(token) or { return false }
+	validate_id_token_header(header, policy.config) or { return false }
 	key := policy.resolve_key(json2.Any(header).json_str(), token) or { return false }
 	payload := verify_id_token_with_jwk(token, key, IDTokenVerifyConfig{
 		...policy.config

@@ -1,0 +1,202 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/core/src/oauth2/verify-id-token.test.ts",
+  "sha256": "7bc35efa507023ad93574da542f909f4a2603d0def5dc09b6a90adc78d13a6bf",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "verifyProviderIdToken",
+      "suites": [
+        "verifyProviderIdToken"
+      ],
+      "test": "accepts a correctly signed token with matching issuer, audience, and nonce",
+      "selected": true,
+      "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyProviderIdToken",
+      "suites": [
+        "verifyProviderIdToken"
+      ],
+      "test": "accepts a signed token without a kid header when the JWKS resolves it",
+      "selected": true,
+      "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyProviderIdToken",
+      "suites": [
+        "verifyProviderIdToken"
+      ],
+      "test": "rejects a token signed by a different key (forgery)",
+      "selected": true,
+      "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyProviderIdToken",
+      "suites": [
+        "verifyProviderIdToken"
+      ],
+      "test": "rejects an unsigned alg:none token",
+      "selected": true,
+      "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyProviderIdToken",
+      "suites": [
+        "verifyProviderIdToken"
+      ],
+      "test": "requires the exp and iat claims every ID token carries",
+      "selected": true,
+      "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyProviderIdToken",
+      "suites": [
+        "verifyProviderIdToken"
+      ],
+      "test": "rejects a wrong issuer or audience",
+      "selected": true,
+      "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyProviderIdToken",
+      "suites": [
+        "verifyProviderIdToken"
+      ],
+      "test": "enforces nonce and supports exact-or-sha256 comparison",
+      "selected": true,
+      "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyProviderIdToken",
+      "suites": [
+        "verifyProviderIdToken"
+      ],
+      "test": "is fail-closed when no config and no override are present",
+      "selected": true,
+      "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyProviderIdToken",
+      "suites": [
+        "verifyProviderIdToken"
+      ],
+      "test": "honors an options.verifyIdToken override",
+      "selected": true,
+      "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyProviderIdToken",
+      "suites": [
+        "verifyProviderIdToken"
+      ],
+      "test": "honors disableIdTokenSignIn even with a valid config",
+      "selected": true,
+      "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyProviderIdToken",
+      "suites": [
+        "verifyProviderIdToken"
+      ],
+      "test": "is fail-closed when a custom verifier throws",
+      "selected": true,
+      "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyProviderIdToken",
+      "suites": [
+        "verifyProviderIdToken"
+      ],
+      "test": "gates opaque (non-JWS) tokens behind allowOpaqueToken",
+      "selected": true,
+      "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyProviderIdToken",
+      "suites": [
+        "verifyProviderIdToken",
+        "clock skew"
+      ],
+      "test": "%s %is from now verifies: %s",
+      "selected": true,
+      "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyProviderIdToken",
+      "suites": [
+        "verifyProviderIdToken",
+        "without a configured audience"
+      ],
+      "test": "rejects a token when the audience is %s",
+      "selected": true,
+      "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyProviderIdToken",
+      "suites": [
+        "verifyProviderIdToken",
+        "provider regressions"
+      ],
+      "test": "PayPal no longer accepts client id_token sign-in",
+      "selected": true,
+      "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyProviderIdToken",
+      "suites": [
+        "verifyProviderIdToken",
+        "provider regressions"
+      ],
+      "test": "Facebook supports id_token sign-in and still accepts opaque Graph tokens",
+      "selected": true,
+      "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyProviderIdToken",
+      "suites": [
+        "verifyProviderIdToken",
+        "provider regressions"
+      ],
+      "test": "pins the signing algorithms of every provider that verifies against a JWKS",
+      "selected": true,
+      "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

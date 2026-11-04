@@ -73,10 +73,10 @@ export class Bridge {
 
   removeCallback(method: string) { this.callbacks.delete(method); }
 
-  constructor() {
+  constructor(args: string[] = []) {
     this.child = spawn(
       fileURLToPath(new URL("../../build/auth-bridge", import.meta.url)),
-      [],
+      args,
       {
         stdio: "pipe",
       },

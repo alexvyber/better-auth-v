@@ -91,9 +91,13 @@ pub fn (mut context EndpointContext) create_verification_value(input Verificatio
 }
 
 fn (mut context EndpointContext) latest_verification(identifiers []string) !Lookup[Verification] {
+	return select_latest_verification(context.auth.storage.verifications()!, identifiers)
+}
+
+fn select_latest_verification(records []Verification, identifiers []string) Lookup[Verification] {
 	for identifier in identifiers {
 		mut latest := ?Verification(none)
-		for value in context.auth.storage.verifications()! {
+		for value in records {
 			if value.identifier != identifier { continue
 			 }
 			if previous := latest {
@@ -150,17 +154,27 @@ pub fn (mut context EndpointContext) consume_verification_value(identifier strin
 			break
 		}
 	} else {
-		if latest := (context.latest_verification(identifiers)!).value {
+		stale := context.auth.storage.verifications()!
+		if latest := select_latest_verification(stale, identifiers).value {
 			if (context.auth.before_record('verification', 'delete', encode_verification(latest))!).value == none {
 				return Lookup[Verification]{}
 			}
-			for record in context.auth.storage.verifications()! {
-				if record.identifier == latest.identifier {
+			mut winner := latest
+			mut database := context.auth.storage
+			if mut database is AtomicVerificationStorage {
+				winner = (database.take_verification(latest.id, latest.identifier)!).value or {
+					return Lookup[Verification]{}
+				}
+			} else {
+				context.auth.storage.delete_verification(latest.id)!
+			}
+			for record in stale {
+				if record.identifier == latest.identifier && record.id != latest.id {
 					context.auth.storage.delete_verification(record.id)!
 				}
 			}
-			context.auth.after_record('verification', 'delete', encode_verification(latest))!
-			consumed = latest
+			context.auth.after_record('verification', 'delete', encode_verification(winner))!
+			consumed = winner
 			if context.auth.has_secondary() {
 				for candidate in identifiers {
 					context.auth.secondary.delete('verification:' + candidate)!

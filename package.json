@@ -8,7 +8,8 @@
     "typecheck": "tsc --noEmit",
     "upstream:fetch": "node scripts/fetch-upstream.mjs",
     "upstream:import": "node scripts/import-upstream.mjs",
-    "upstream:inventory": "node scripts/inventory-upstream.mjs"
+    "upstream:inventory": "node scripts/inventory-upstream.mjs",
+    "postgres:setup": "node scripts/build-test-postgres.mjs"
   },
   "devDependencies": {
     "@better-auth/core": "1.7.15",

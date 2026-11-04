@@ -1,0 +1,838 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/api/routes/session-api.test.ts",
+  "sha256": "c2f561f44e3ca0c87b0fe18a40bcf30d63307dcedfaf3175fec4e9b32e25a6fc",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "session",
+      "suites": [
+        "session"
+      ],
+      "test": "should set cookies correctly on sign in",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "session",
+      "suites": [
+        "session"
+      ],
+      "test": "should return null when not authenticated",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "session",
+      "suites": [
+        "session"
+      ],
+      "test": "should keep the store failure as a server-only cause",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "session",
+      "suites": [
+        "session"
+      ],
+      "test": "should require a fresh session based on session creation time",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "session",
+      "suites": [
+        "session"
+      ],
+      "test": "should require a fresh session to list sessions",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "session",
+      "suites": [
+        "session",
+        "session refresh and expiration"
+      ],
+      "test": "returns the expected session expiration after $elapsedSeconds seconds",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "session",
+      "suites": [
+        "session",
+        "session refresh and expiration"
+      ],
+      "test": "persists successive session refreshes beyond the original expiration",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "session",
+      "suites": [
+        "session",
+        "session refresh and expiration"
+      ],
+      "test": "clears an expired session without refreshing it",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "session",
+      "suites": [
+        "session"
+      ],
+      "test": "should update the session every time when set to 0",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "session",
+      "suites": [
+        "session"
+      ],
+      "test": "should handle 'don't remember me' option",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "session",
+      "suites": [
+        "session"
+      ],
+      "test": "should set cookies correctly on sign in after changing config",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "session",
+      "suites": [
+        "session"
+      ],
+      "test": "should clear session on sign out",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "session",
+      "suites": [
+        "session"
+      ],
+      "test": "should list sessions",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "session",
+      "suites": [
+        "session"
+      ],
+      "test": "should revoke session",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "session",
+      "suites": [
+        "session"
+      ],
+      "test": "should return session headers",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "session",
+      "suites": [
+        "session"
+      ],
+      "test": "should not exceed the 400-day browser Max-Age ceiling on session refresh",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "session storage",
+      "suites": [
+        "session storage"
+      ],
+      "test": "should store session in secondary storage",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "session storage",
+      "suites": [
+        "session storage"
+      ],
+      "test": "should list sessions",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "session storage",
+      "suites": [
+        "session storage"
+      ],
+      "test": "revoke session and list sessions",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "session storage",
+      "suites": [
+        "session storage"
+      ],
+      "test": "should revoke session",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache",
+      "suites": [
+        "cookie cache"
+      ],
+      "test": "serves cached sessions without querying the database",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache",
+      "suites": [
+        "cookie cache"
+      ],
+      "test": "reads fresh user data when cookie caching is bypassed",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache",
+      "suites": [
+        "cookie cache"
+      ],
+      "test": "refreshes expired cache and reuses the replacement cookie",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache with JWT strategy",
+      "suites": [
+        "cookie cache with JWT strategy"
+      ],
+      "test": "should cache cookies with JWT strategy",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache with JWT strategy",
+      "suites": [
+        "cookie cache with JWT strategy"
+      ],
+      "test": "should not allow tampering with the cookie",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache with JWT strategy",
+      "suites": [
+        "cookie cache with JWT strategy"
+      ],
+      "test": "should have max age expiry",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache with JWT strategy",
+      "suites": [
+        "cookie cache with JWT strategy"
+      ],
+      "test": "should handle multiple concurrent requests with JWT cache",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache with JWT strategy backed by JWKS",
+      "suites": [
+        "cookie cache with JWT strategy backed by JWKS"
+      ],
+      "test": "should cache cookies with JWKS-backed JWT strategy",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache with JWT strategy backed by JWKS",
+      "suites": [
+        "cookie cache with JWT strategy backed by JWKS"
+      ],
+      "test": "should ignore a JWKS cookie cache from a different session token",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache with JWT strategy backed by JWKS",
+      "suites": [
+        "cookie cache with JWT strategy backed by JWKS"
+      ],
+      "test": "should not allow tampering with the cookie in JWKS mode",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache with JWT strategy backed by JWKS",
+      "suites": [
+        "cookie cache with JWT strategy backed by JWKS"
+      ],
+      "test": "should reject a secret-signed cookie cache and fall back to the database",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache with JWT strategy backed by JWKS",
+      "suites": [
+        "cookie cache with JWT strategy backed by JWKS"
+      ],
+      "test": "should verify existing cookie-cache JWTs across JWKS rotation grace period",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache with JWE strategy",
+      "suites": [
+        "cookie cache with JWE strategy"
+      ],
+      "test": "serves cached sessions without querying the database",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache with JWE strategy",
+      "suites": [
+        "cookie cache with JWE strategy"
+      ],
+      "test": "reads fresh user data when cookie caching is bypassed",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache with JWE strategy",
+      "suites": [
+        "cookie cache with JWE strategy"
+      ],
+      "test": "refreshes expired cache and reuses the replacement cookie",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache with JWE strategy",
+      "suites": [
+        "cookie cache with JWE strategy"
+      ],
+      "test": "serves concurrent requests from the cache",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache refreshCache",
+      "suites": [
+        "cookie cache refreshCache"
+      ],
+      "test": "uses cached data before the refresh threshold",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache refreshCache",
+      "suites": [
+        "cookie cache refreshCache"
+      ],
+      "test": "does not perform stateless refresh when a database is configured",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache refreshCache",
+      "suites": [
+        "cookie cache refreshCache"
+      ],
+      "test": "should not refresh cache when refreshCache is disabled (false)",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache refreshCache",
+      "suites": [
+        "cookie cache refreshCache"
+      ],
+      "test": "should work without database (session stored in cookie only)",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache refreshCache",
+      "suites": [
+        "cookie cache refreshCache"
+      ],
+      "test": "should preserve session expiry when refreshing stateless cookie cache",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache refreshCache",
+      "suites": [
+        "cookie cache refreshCache"
+      ],
+      "test": "should work without database when refreshCache threshold is reached",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache refreshCache",
+      "suites": [
+        "cookie cache refreshCache"
+      ],
+      "test": "should forward cookie cache headers from getSessionFromCtx",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache refreshCache",
+      "suites": [
+        "cookie cache refreshCache"
+      ],
+      "test": "should extend session_token cookie expiry when refreshCache threshold is reached",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache versioning",
+      "suites": [
+        "cookie cache versioning"
+      ],
+      "test": "should invalidate cookie cache when version changes (string version)",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache versioning",
+      "suites": [
+        "cookie cache versioning"
+      ],
+      "test": "should work with function-based version",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache versioning",
+      "suites": [
+        "cookie cache versioning"
+      ],
+      "test": "should work with async function-based version",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache versioning",
+      "suites": [
+        "cookie cache versioning"
+      ],
+      "test": "should work with compact strategy",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache versioning",
+      "suites": [
+        "cookie cache versioning"
+      ],
+      "test": "should work with jwt strategy",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache versioning",
+      "suites": [
+        "cookie cache versioning"
+      ],
+      "test": "should default to version '1' when not specified",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "cookie cache versioning",
+      "suites": [
+        "cookie cache versioning"
+      ],
+      "test": "should include additionalFields when retrieving from cookie cache",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "deferSessionRefresh",
+      "suites": [
+        "deferSessionRefresh"
+      ],
+      "test": "should return needsRefresh flag on GET when enabled",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "deferSessionRefresh",
+      "suites": [
+        "deferSessionRefresh"
+      ],
+      "test": "should return needsRefresh: false when session is fresh",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "deferSessionRefresh",
+      "suites": [
+        "deferSessionRefresh"
+      ],
+      "test": "should not update session on GET when deferSessionRefresh is enabled",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "deferSessionRefresh",
+      "suites": [
+        "deferSessionRefresh"
+      ],
+      "test": "should update session on POST when deferSessionRefresh is enabled",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "deferSessionRefresh",
+      "suites": [
+        "deferSessionRefresh"
+      ],
+      "test": "should reject POST when deferSessionRefresh is not enabled",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "deferSessionRefresh",
+      "suites": [
+        "deferSessionRefresh"
+      ],
+      "test": "should not delete expired session on GET when deferSessionRefresh is enabled",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "deferSessionRefresh",
+      "suites": [
+        "deferSessionRefresh"
+      ],
+      "test": "should delete expired session on POST when deferSessionRefresh is enabled",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "deferSessionRefresh",
+      "suites": [
+        "deferSessionRefresh"
+      ],
+      "test": "should still update session on GET when deferSessionRefresh is not enabled (default behavior)",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "deferSessionRefresh",
+      "suites": [
+        "deferSessionRefresh"
+      ],
+      "test": "should respect disableSessionRefresh config when deferSessionRefresh is enabled",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "date field type consistency",
+      "suites": [
+        "date field type consistency"
+      ],
+      "test": "should have consistent date types between cookie cache and refresh paths",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "updateSession",
+      "suites": [
+        "updateSession"
+      ],
+      "test": "should update a custom additional field on a session",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "updateSession",
+      "suites": [
+        "updateSession"
+      ],
+      "test": "should ignore core session fields",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "updateSession",
+      "suites": [
+        "updateSession"
+      ],
+      "test": "should ignore core field userId",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "updateSession",
+      "suites": [
+        "updateSession"
+      ],
+      "test": "should reject input: false fields",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "updateSession",
+      "suites": [
+        "updateSession"
+      ],
+      "test": "should return error when no fields to update",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "updateSession",
+      "suites": [
+        "updateSession"
+      ],
+      "test": "should update session cookie after mutation",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "updateSession plugin authority fields",
+      "suites": [
+        "updateSession plugin authority fields"
+      ],
+      "test": "should reject forging the %s session field",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "update-session cookie cache revocation",
+      "suites": [
+        "update-session cookie cache revocation"
+      ],
+      "test": "fails closed when the backing session is revoked in a stateful deployment",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "update-session cookie cache revocation",
+      "suites": [
+        "update-session cookie cache revocation"
+      ],
+      "test": "still refreshes the cookie in a DB-less deployment when no row exists",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "forced strict session validation",
+      "suites": [
+        "forced strict session validation"
+      ],
+      "test": "a request cannot re-enable the cookie cache on a route that forces it off",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "forced strict session validation",
+      "suites": [
+        "forced strict session validation"
+      ],
+      "test": "uses the signed cookie as the authoritative session record without a server store",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "get-session cache headers",
+      "suites": [
+        "get-session cache headers"
+      ],
+      "test": "sets Cache-Control: no-store on authenticated GET /get-session responses",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "get-session cache headers",
+      "suites": [
+        "get-session cache headers"
+      ],
+      "test": "sets Cache-Control: no-store on unauthenticated GET /get-session responses",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "get-session cache headers",
+      "suites": [
+        "get-session cache headers"
+      ],
+      "test": "does not set Cache-Control: no-store on session-gated endpoints",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    }
+  ]
+}

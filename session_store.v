@@ -178,6 +178,8 @@ fn (mut a Auth) user_sessions(user_id string) ![]Session {
 			 }
 			token := if stored.encrypted_token != '' {
 				a.unseal_session_token(stored)!
+			} else if a.plain_database_session_tokens() {
+				stored.token
 			} else {
 				stored.id
 			}
@@ -283,4 +285,9 @@ fn (mut a Auth) refresh_cached_user(user User) ! {
 			a.mirror_session(result.session)!
 		}
 	}
+}
+
+fn (a &Auth) plain_database_session_tokens() bool {
+	if a.storage is PlainSessionTokenStorage { return a.storage.stores_plain_session_tokens() }
+	return false
 }

@@ -49,6 +49,10 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 			trusted_origins: origins
 		}
 	}
+	mut configured_storage := storage
+	if mut configured_storage is ConfigurableStorage {
+		configured_storage.configure_fields(config.user_fields, config.session_fields)!
+	}
 	initial_trusted_origins := config.trusted_origins_for(RequestContext{})!
 	mut secret_config := SymmetricSecret(config.secret)
 	if entries := config.secrets {
@@ -417,10 +421,21 @@ fn (mut a Auth) lookup_session(ctx RequestContext, delete_expired bool) !Lookup[
 		a.config.log('error', 'Failed to get session: ${err.msg()}')
 		return fail(500, 'FAILED_TO_GET_SESSION', 'Failed to get session')
 	}
-	result := found.value or { return Lookup[SessionResult]{} }
+	mut result := found.value or { return Lookup[SessionResult]{} }
 	if epoch_millis(result.session.expires_at)! < a.clock_millis() {
 		if delete_expired { a.remove_session(token)! }
 		return Lookup[SessionResult]{}
+	}
+	if marker := cookie_values(ctx)[a.cookie_name_for('dont_remember')] {
+		if (a.verify_signed_value(marker) or { '' }) == 'true' {
+			result = SessionResult{
+				...result
+				session: Session{
+					...result.session
+					persistent: false
+				}
+			}
+		}
 	}
 	return Lookup[SessionResult]{
 		value: result

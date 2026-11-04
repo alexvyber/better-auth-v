@@ -16,6 +16,12 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+ {file: 'postgres-sign-in', source_file: 'sign-in', suites: null, executionSurface: 'native-postgres-uuid-mapped-physical-schema',
+ imports: 'import { APIError, BASE_ERROR_CODES } from "@better-auth/core/error";\nimport { describe, expect, it, vi } from "vitest";\nimport { parseSetCookieHeader } from "better-auth/cookies";\nimport { getTestInstance } from "../harness/postgres-fixture.js";\n',
+ },
+ {file: 'postgres-sign-up', source_file: 'sign-up', suites: null, executionSurface: 'native-postgres-uuid-mapped-physical-schema',
+ imports: 'import { BASE_ERROR_CODES } from "@better-auth/core/error";\nimport { afterEach, describe, expect, it, vi } from "vitest";\nimport { admin } from "../harness/plugins.js";\nimport { getTestInstance } from "../harness/postgres-fixture.js";\n',
+ },
  {file: 'id-field', path: 'packages/core/src/db/adapter/get-id-field.test.ts', suites: null, includeHelpers: true,
  imports: 'import { describe, expect, it, vi } from "vitest";\nimport { logger } from "@better-auth/core/env";\nimport type { BetterAuthOptions } from "@better-auth/core";\nimport type { BetterAuthDBSchema } from "@better-auth/core/db";\nimport { encodeDeterministicId, initGetIdField } from "../harness/id-field.js";\n',
  },
@@ -168,6 +174,14 @@ const plans = [
     ]),
   },
 ];
+// Repeat intact assertions over native PostgreSQL; these copies do not expand the unique corpus.
+for (const name of ['one-time-token', 'email-otp', 'password-reset', 'session-api']) {
+ const original = plans.find(plan => plan.file === name);
+ plans.push({...original, file: 'postgres-' + name, source_file: original.source_file ?? name,
+  ...(name === 'session-api' ? {suites: new Set(['session'])} : {}),
+  imports: original.imports.replace('../harness/test-instance.js', '../harness/postgres-fixture.js'),
+  executionSurface: 'native-postgres-uuid-mapped-physical-schema'});
+}
 for (const plan of plans) {
   const relativePath = plan.path ?? `packages/better-auth/src/${plan.directory ?? "api/routes"}/${plan.source_file ?? plan.file}.test.ts`;
   const source = readFileSync(resolve(repo, relativePath), "utf8");
@@ -257,7 +271,7 @@ for (const plan of plans) {
             suites: path,
             test: title,
             selected: include,
-            ...(plan.testSurfaces?.[name] ? {executionSurface: plan.testSurfaces[name]} : {}),
+            ...(plan.executionSurface || plan.testSurfaces?.[name] ? {executionSurface: plan.executionSurface ?? plan.testSurfaces[name]} : {}),
             upstreamDisabled: /\.(skip|todo|fails)(\.|$)/.test(callee),
             reason: include
               ? null

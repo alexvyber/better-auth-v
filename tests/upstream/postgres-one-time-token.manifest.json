@@ -1,0 +1,175 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/one-time-token/one-time-token.test.ts",
+  "sha256": "d733a31cdaf794335b94e69691862acc62e37754e15fc54615ca9b19c9d41c6e",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "One-time token",
+      "suites": [
+        "One-time token"
+      ],
+      "test": "should work",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "One-time token",
+      "suites": [
+        "One-time token"
+      ],
+      "test": "should expire",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "One-time token",
+      "suites": [
+        "One-time token"
+      ],
+      "test": "should only redeem a token once under concurrent verification",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "One-time token",
+      "suites": [
+        "One-time token"
+      ],
+      "test": "should work with client",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "One-time token",
+      "suites": [
+        "One-time token"
+      ],
+      "test": "should reject token when underlying session has expired",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "One-time token",
+      "suites": [
+        "One-time token",
+        "should work with different storeToken options",
+        "hashed"
+      ],
+      "test": "should work with hashed",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "One-time token",
+      "suites": [
+        "One-time token",
+        "should work with different storeToken options",
+        "custom hasher"
+      ],
+      "test": "should work with custom hasher",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "One-time token",
+      "suites": [
+        "One-time token",
+        "disableClientRequest option"
+      ],
+      "test": "should allow server-side requests",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "One-time token",
+      "suites": [
+        "One-time token",
+        "disableClientRequest option"
+      ],
+      "test": "should reject client requests when disableClientRequest is true",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "One-time token",
+      "suites": [
+        "One-time token",
+        "disableSetSessionCookie option"
+      ],
+      "test": "should not set session cookie when disableSetSessionCookie is true",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "One-time token",
+      "suites": [
+        "One-time token",
+        "disableSetSessionCookie option"
+      ],
+      "test": "should set session cookie by default",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "One-time token",
+      "suites": [
+        "One-time token",
+        "setOttHeaderOnNewSession option"
+      ],
+      "test": "should set OTT header on new session when enabled",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "One-time token",
+      "suites": [
+        "One-time token",
+        "setOttHeaderOnNewSession option"
+      ],
+      "test": "should not set OTT header on new session by default",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "One-time token",
+      "suites": [
+        "One-time token",
+        "setOttHeaderOnNewSession option"
+      ],
+      "test": "should set OTT header on sign in when enabled",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

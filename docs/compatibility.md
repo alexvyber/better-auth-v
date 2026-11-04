@@ -308,7 +308,8 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   already-written records on failure and after-write hooks run immediately,
   matching nontransactional adapter semantics. Secondary-cache changes still
   cannot be rolled back as distributed transactions.
-- Rate limiting is per-instance/per-route and in memory, not distributed or per-IP.
+- Rate limiting supports per-instance memory and atomic SQLite/PostgreSQL storage;
+  route keys include resolved client IP when supplied by the trusted integration.
   Authentication work is serialized per instance/connection. Body limits are opt-in
   (`max_body_bytes > 0`); the default zero imposes no library cap, matching upstream.
   The native HTTP transport buffers bodies before this optional limit is enforced.
@@ -359,10 +360,11 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
 
 ## Remaining Better Auth scope
 
-PostgreSQL/MySQL/MongoDB adapters, schema generation/introspection, full secondary
+Complete PostgreSQL query/plugin-schema support, MySQL/MongoDB adapters,
+schema generation/introspection, full secondary
 storage parity, full stateless/account-cookie behavior, complete JWT/JWKS plugin parity,
 custom-field validators/transforms,
-general database-column mapping, richer hooks,
+remaining database-column mapping options, richer hooks,
 username/phone authentication, TOTP/recovery codes, passkeys, admin,
 organizations/teams/RBAC, API keys, OAuth/OIDC server functionality,
 SSO/SAML/SCIM, and payment/integration plugins remain unimplemented.
@@ -471,3 +473,34 @@ existing context. The fixture exposes only explicitly implemented internal metho
 arbitrary upstream internals remain unported. V timer tests receive the test's
 current time on each request. This does
 not simulate a background scheduler.
+
+
+## Native PostgreSQL adapter
+
+`open_postgres(PostgresOptions{...})` opens one libpq connection. Pass it to `new`
+and explicitly call `auth.migrate_storage()` for schema creation. Auth initialization
+configures additional/plugin user and session fields before migrations. Existing
+application schemas may be used without running migrations.
+
+Options include `connection_string`, `schema`, `uuid_ids`, per-model `tables`, logical
+to physical `fields` maps, and whitelisted `column_types` overrides. Configure auth
+`id_strategy: 'uuid'` when PostgreSQL IDs are UUID columns. Core users, sessions,
+accounts, verifications, JWKS and rate limits occupy physical columns. Quoted
+identifiers, snake-case mappings, UTC timestamps and extra user/session fields are
+supported; inserts omit application-owned columns so database defaults apply.
+Updates patch changed configured fields and read back user records before hooks
+or session-cache mirroring, retaining concurrent changes to untouched fields.
+
+Session rows contain plaintext tokens, as in the pinned upstream schema. Proof
+consumption uses `DELETE ... RETURNING`, reservations rely on primary-key conflicts,
+and database rate limits use atomic guarded upserts across connections. These
+contracts are tested using separate native bridge processes. Backend copies of
+original sign-in, sign-up, core-session, one-time-token, email-OTP and reset tests
+preserve their assertions and record their execution surface in manifests. These
+copies add backend coverage, not unique imported upstream files.
+
+This is a foundational adapter, not verified Brand Map database interchange. Full
+Prisma schema/migration equivalence, arbitrary query/filter/join APIs, plugin-owned
+tables, introspection, pooling/reconnect policy, serial IDs and live TypeScript/V
+coexistence remain unverified or unimplemented. No tests connect to Brand Map or
+Nabu databases. MongoDB remains required for Nabu.

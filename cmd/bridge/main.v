@@ -12,6 +12,7 @@ import time
 import x.json2
 
 struct Options {
+	postgres                          ?better_auth.PostgresOptions
 	id_strategy                       string = 'random'
 	custom_id_generator               bool
 	redis_tcp                         ?better_auth.RedisTCPOptions
@@ -608,6 +609,16 @@ fn main() {
 			}
 		}
 		storage = sqlite_storage
+	} else if opts.storage == 'postgres' {
+		options := opts.postgres or {
+			emit(Reply{ id: init.id, error: 'PostgreSQL options are required' })
+			return
+		}
+
+		storage = better_auth.open_postgres(options) or {
+			emit(Reply{ id: init.id, error: err.msg() })
+			return
+		}
 	} else if opts.storage != 'memory' {
 		emit(Reply{ id: init.id, error: 'unsupported storage' })
 		return
@@ -1026,6 +1037,12 @@ fn main() {
 		return
 	}
 	defer { auth.close() or {} }
+	if opts.storage == 'postgres' && !opts.defer_migrations {
+		auth.migrate_storage() or {
+			emit(Reply{ id: init.id, error: err.msg() })
+			return
+		}
+	}
 	emit(Reply{ id: init.id })
 	for {
 		line := os.get_raw_line()
@@ -1043,13 +1060,8 @@ fn main() {
 		state.now_millis = command.now_millis
 		match command.op {
 			'migrate' {
-				if mut storage is better_auth.SQLiteStorage {
-					storage.migrate() or {
-						emit(Reply{ id: command.id, error: err.msg() })
-						continue
-					}
-				} else {
-					emit(Reply{ id: command.id, error: 'explicit migrations require native SQLite' })
+				auth.migrate_storage() or {
+					emit(Reply{ id: command.id, error: err.msg() })
 					continue
 				}
 				emit(Reply{ id: command.id })

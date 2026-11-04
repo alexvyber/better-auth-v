@@ -185,6 +185,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     config,
     [
       "deferMigrations",
+      "nativePostgres",
       "disableTestUser",
       "testUser",
       "port",
@@ -697,7 +698,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     bridge.setCallback(method, callback);
   await bridge.send("init", {
     options: {
-      id_strategy: configuredId === 'uuid' ? 'uuid' : 'random',
+      id_strategy: configuredId === 'uuid' || config.nativePostgres?.uuidIds ? 'uuid' : 'random',
       custom_id_generator: typeof configuredId === 'function',
       generic_oauth: genericProviders.map(({getToken: _getToken, mapProfileToUser: _mapProfile, ...provider}) => provider),
       generic_callbacks: genericCallbacks,
@@ -743,7 +744,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
         audience: typeof jwtOptions.jwt?.audience === 'string' ? jwtOptions.jwt.audience : null,
         audiences: Array.isArray(jwtOptions.jwt?.audience) ? jwtOptions.jwt.audience : null,
       },
-      storage: stateless || isNativeMemoryAdapter(options.database) ? 'memory' : 'sqlite',
+      storage: config.nativePostgres ? 'postgres' : stateless || isNativeMemoryAdapter(options.database) ? 'memory' : 'sqlite',
+      postgres: config.nativePostgres,
       stateless_sessions: stateless,
       secondary_storage: !!options.secondaryStorage,
       redis_tcp: nativeRedis?.tcp,

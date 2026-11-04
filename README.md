@@ -25,8 +25,8 @@ There is no dependency on a web framework.
   400-day cookie ceiling, and configurable session fields with update support.
 - Email verification, password reset/change, profile updates, opt-in account deletion
   with one-use verification links, and a server-only password-setting API.
-- SQLite storage, explicit versioned migrations, transactions, and a typed storage
-  interface for additional adapters.
+- SQLite storage with versioned migrations, native PostgreSQL physical-column
+  storage with explicit migrations, UUIDs and mapped schemas, plus a typed adapter interface.
 - Secondary session storage with database fallback, TTLs, and an in-memory
   implementation; database mutation hooks and after-commit callbacks.
 - Sealed database session tokens and migration-aware account-column aliases.
@@ -69,10 +69,16 @@ development headers and libraries, discovered through V's `net.openssl` module.
 SQLite uses V's `db.sqlite` binding
 and its native SQLite dependency. The full test suite also requires `redis-server`
 and `redis-cli` on PATH; its isolated Redis process disables persistence. The
-library itself has no V package dependencies.
+PostgreSQL adapter uses V's `db.pg`/libpq binding (development headers and libraries
+must be installed). PostgreSQL conformance tests start isolated temporary clusters;
+provide PostgreSQL server tools on PATH or set `BETTER_AUTH_PG_BIN` to their directory.
+`pnpm postgres:setup` builds a checksum-pinned PostgreSQL 18.4 under ignored
+`build/deps`, requiring a C compiler and make. No global installation is performed.
+The library itself has no V package dependencies.
 
 ```sh
 pnpm install --frozen-lockfile
+pnpm postgres:setup # optional when PostgreSQL server tools are already available
 make check
 ```
 

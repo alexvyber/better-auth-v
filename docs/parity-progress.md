@@ -645,7 +645,23 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   Build scripts disable V compiler automatic bug-report uploads after a compiler
   ternary/json code-generation failure; the native workaround compiles successfully.
 
-The latest verification passes 1307 TypeScript cases across 72 files, all 91 native
+- Added native libpq PostgreSQL storage using physical columns, UUIDs, table/field
+  mappings, explicit transactional migrations and additional user/session fields.
+  Concurrent migrations serialize with a schema-scoped advisory lock. Sessions use
+  upstream-shaped token columns; signed nonpersistent markers suppress refresh.
+  User updates patch changed fields and read back the stored row before hooks/cache
+  mirroring, preserving concurrent application role changes. Quoted identifiers and
+  application-owned columns are independently tested.
+- Repeated 213 original runtime cases from sign-in/sign-up, core sessions,
+  one-time-token, email OTP and password reset on isolated PostgreSQL 18.4 clusters.
+  Five additional contracts verify physical columns, separate-process proof
+  consumption/reservations, concurrent rate limiting/migrations and application
+  update isolation. Backend copies preserve assertions without increasing the
+  unique upstream corpus count. PostgreSQL setup is checksum-pinned and isolated
+  under ignored build/deps. This does not prove compatibility with live Brand Map
+  databases or complete Prisma/plugin/query parity. MongoDB remains open for Nabu.
+
+The latest verification passes 1525 TypeScript cases across 79 files, all 91 native
 V test functions across 30 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
@@ -669,7 +685,7 @@ preservation, not broad feature completion.
    foundations, plus account-cookie behavior and remaining rotation combinations. The complete
    sign-up/session source runs do not establish full plugin or stateless parity.
    Preserve every original assertion when importing additional suites.
-4. Expand the adapter contract/schema/migrations to PostgreSQL, MySQL, MongoDB,
+4. Complete the PostgreSQL adapter contract/schema/plugin migrations, and add MySQL, MongoDB,
    secondary stores, and plugin schemas. The existing SQLite payload schema is
    not the upstream physical schema.
 5. Implement the remaining provider, plugin, client-contract, browser integration,

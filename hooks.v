@@ -160,9 +160,14 @@ fn (mut a Auth) persist_user(user User) !User {
 
 fn (mut a Auth) update_user_record(user User) !User {
 	encoded := (a.before_record('user', 'update', encode_user(user))!).value or { return user }
-	actual := decode_user(encoded)!
+	mut actual := decode_user(encoded)!
 	if actual.id != user.id { return error('user update hook cannot change the primary key') }
-	a.storage.update_user(actual)!
+	mut storage := a.storage
+	if mut storage is UserUpdateReturningStorage {
+		actual = storage.update_user_returning(actual)!
+	} else {
+		a.storage.update_user(actual)!
+	}
 	a.refresh_cached_user(actual)!
 	a.after_record('user', 'update', encode_user(actual))!
 	return actual

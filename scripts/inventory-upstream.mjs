@@ -86,7 +86,10 @@ for (const directory of ["."]) {
     }
     visit(source);
     const name = relative(root, path).replaceAll("\\", "/");
-    const manifest = manifests.find((entry) => entry.path === name);
+    // Backend matrices may repeat a source file with narrower selections. Prefer
+    // its broadest import for the unique-file inventory.
+    const manifest = manifests.filter(entry => entry.path === name).sort((a, b) =>
+      b.tests.filter(test => test.selected).length - a.tests.filter(test => test.selected).length)[0];
     if (
       manifest &&
       createHash("sha256").update(contents).digest("hex") !== manifest.sha256

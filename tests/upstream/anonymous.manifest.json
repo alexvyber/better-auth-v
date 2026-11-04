@@ -1,0 +1,192 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/anonymous/anon.test.ts",
+  "sha256": "64f0d7665e4b5c115c67d2527bc4b4703f6a26cb0d0c7d1f8dd26ed8bf83f003",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "anonymous",
+      "suites": [
+        "anonymous"
+      ],
+      "test": "should sign in anonymously",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "anonymous",
+      "suites": [
+        "anonymous"
+      ],
+      "test": "uses a namespaced placeholder email by default",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "anonymous",
+      "suites": [
+        "anonymous"
+      ],
+      "test": "should reject anonymous sign-in when validateUserInfo returns error",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "anonymous",
+      "suites": [
+        "anonymous"
+      ],
+      "test": "link anonymous user account",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "anonymous",
+      "suites": [
+        "anonymous"
+      ],
+      "test": "should link in social sign on",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "anonymous",
+      "suites": [
+        "anonymous"
+      ],
+      "test": "should link the anonymous account on social sign-in when the callback has no session cookie (Expo)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "anonymous",
+      "suites": [
+        "anonymous"
+      ],
+      "test": "should ignore a client-supplied anonymousUserId on the OAuth callback",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "anonymous",
+      "suites": [
+        "anonymous"
+      ],
+      "test": "should call onLinkAccount when anonymous user verifies email",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "anonymous",
+      "suites": [
+        "anonymous"
+      ],
+      "test": "should work with generateName",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "anonymous",
+      "suites": [
+        "anonymous"
+      ],
+      "test": "should work with generateRandomEmail",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "anonymous",
+      "suites": [
+        "anonymous"
+      ],
+      "test": "should work with async generateRandomEmail",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "anonymous",
+      "suites": [
+        "anonymous"
+      ],
+      "test": "should throw error if generateRandomEmail returns invalid email",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "anonymous",
+      "suites": [
+        "anonymous"
+      ],
+      "test": "should throw error if async generateRandomEmail returns invalid email",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "anonymous",
+      "suites": [
+        "anonymous"
+      ],
+      "test": "should not reject first-time anonymous sign-in",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "anonymous",
+      "suites": [
+        "anonymous"
+      ],
+      "test": "should reject subsequent anonymous sign-in attempts once signed in",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "anonymous",
+      "suites": [
+        "anonymous",
+        "anonymous cleanup safeguards"
+      ],
+      "test": "does not delete when the new session is still anonymous",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported direct middleware-object injection and generic-OIDC anonymous callback integration"
+    },
+    {
+      "suite": "anonymous",
+      "suites": [
+        "anonymous",
+        "anonymous cleanup safeguards"
+      ],
+      "test": "deletes the previous anonymous user when linking a new account",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported direct middleware-object injection and generic-OIDC anonymous callback integration"
+    },
+    {
+      "suite": "anonymous linking through generic oauth (Expo)",
+      "suites": [
+        "anonymous linking through generic oauth (Expo)"
+      ],
+      "test": "links the anonymous account when the callback lacks the session cookie",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported direct middleware-object injection and generic-OIDC anonymous callback integration"
+    }
+  ]
+}

@@ -34,7 +34,7 @@
     "plugins": {
       "files": 45,
       "declarations": 1315,
-      "importedFiles": 6
+      "importedFiles": 7
     },
     "adapters": {
       "files": 16,
@@ -17328,7 +17328,7 @@
       "path": "packages/better-auth/src/plugins/anonymous/anon.test.ts",
       "sha256": "64f0d7665e4b5c115c67d2527bc4b4703f6a26cb0d0c7d1f8dd26ed8bf83f003",
       "group": "plugins",
-      "status": "unported",
+      "status": "imported-partial-file",
       "kind": "runtime",
       "declarations": [
         {

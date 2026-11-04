@@ -27,6 +27,7 @@ mut:
 	intercepting              map[string]bool
 	request_context           RequestContext
 	new_session               ?SessionResult
+	anonymous_link_session    ?SessionResult
 	user_defined_fields       []string
 }
 

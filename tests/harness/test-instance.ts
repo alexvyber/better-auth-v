@@ -79,6 +79,8 @@ afterAll(async () => {
 });
 
 const routes: Record<string, [string, string]> = {
+ signInAnonymous: ['POST', '/sign-in/anonymous'],
+ deleteAnonymousUser: ['POST', '/delete-anonymous-user'],
  sendVerificationOTP: ['POST', '/email-otp/send-verification-otp'],
  checkVerificationOTP: ['POST', '/email-otp/check-verification-otp'],
  verifyEmailOTP: ['POST', '/email-otp/verify-email'],
@@ -206,6 +208,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   const ep = options.emailAndPassword ?? {};
   const ev = options.emailVerification ?? {};
   const session = options.session ?? {};
+  let anonymousOptions: FixtureOptions | undefined;
   let otpOptions: FixtureOptions | undefined;
   let ottOptions: FixtureOptions | undefined;
   let jwtOptions: FixtureOptions | undefined;
@@ -220,6 +223,12 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   const endpointPlugins: FixtureOptions[] = [];
   const endpointCallbacks: Record<string, (payload: any) => Promise<unknown>> = {};
   for (const plugin of options.plugins ?? []) {
+    if (plugin.id === 'anonymous') {
+      anonymousOptions = schemaPluginOptions(plugin);
+      if (!anonymousOptions) throw new Error('Anonymous requires a native fixture descriptor');
+      assertKeys(anonymousOptions, ['emailDomainName', 'disableDeleteAnonymousUser', 'generateName', 'generateRandomEmail', 'onLinkAccount', 'schema'], 'anonymous');
+      continue;
+    }
     if (plugin.id === 'bearer') { continue; }
     if (plugin.id === 'email-otp') {
       otpOptions = schemaPluginOptions(plugin);
@@ -646,6 +655,10 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     const request = payload.request ? new Request(payload.request.url, {method: payload.request.method, headers: payload.request.headers, body: payload.request.method === 'POST' ? payload.request.body : undefined}) : undefined;
     return {context: {...context, session: hydrate(payload.session)}, headers: new Headers(payload.headers), request};
   };
+  const anonymousCallbackNames: string[] = [];
+  if (anonymousOptions?.generateName) { anonymousCallbackNames.push('name'); callbacks['anonymous.name'] = payload => anonymousOptions.generateName(otpContext(payload)); }
+  if (anonymousOptions?.generateRandomEmail) { anonymousCallbackNames.push('email'); callbacks['anonymous.email'] = () => anonymousOptions.generateRandomEmail(); }
+  if (anonymousOptions?.onLinkAccount) { anonymousCallbackNames.push('link'); callbacks['anonymous.link'] = payload => anonymousOptions.onLinkAccount({...hydrate(payload.data), ctx: otpContext(payload)}); }
   for (const [key, callback] of Object.entries({generate: otpOptions?.generateOTP, send: otpOptions?.sendVerificationOTP, hash: typeof otpOptions?.storeOTP === 'object' ? otpOptions.storeOTP.hash : undefined, encrypt: typeof otpOptions?.storeOTP === 'object' ? otpOptions.storeOTP.encrypt : undefined, decrypt: typeof otpOptions?.storeOTP === 'object' ? otpOptions.storeOTP.decrypt : undefined})) {
     if (typeof callback !== 'function') continue;
     otpCallbackNames.push(key);
@@ -657,6 +670,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     bridge.setCallback(method, callback);
   await bridge.send("init", {
     options: {
+      anonymous: anonymousOptions,
+      anonymous_callbacks: anonymousCallbackNames,
       email_otp: otpOptions ? {...otpOptions, storeOTP: typeof otpOptions.storeOTP === 'object' ? (otpOptions.storeOTP.hash ? 'custom-hash' : 'custom-encryption') : otpOptions.storeOTP} : null,
       email_otp_callbacks: otpCallbackNames,
       verification_hash_callback: customIdentifierHash,

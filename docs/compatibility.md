@@ -40,6 +40,8 @@ The default base path is `/api/auth`.
 | POST   | `/email-otp/send-verification-otp` | Plugin: send a rotating or reusable email code |
 | POST   | `/email-otp/check-verification-otp` | Plugin: check a code without consuming it |
 | POST   | `/email-otp/verify-email` | Plugin: consume a code and verify email |
+| POST   | `/sign-in/anonymous` | Plugin: create a protected anonymous identity and session |
+| POST   | `/delete-anonymous-user` | Plugin: delete the authenticated guest and revoke access |
 | POST   | `/sign-in/email-otp` | Plugin: consume a code and sign in or register |
 | POST   | `/email-otp/request-password-reset` | Plugin: send a password-reset code |
 | POST   | `/email-otp/reset-password` | Plugin: consume a code and reset the password |
@@ -158,6 +160,13 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   attempt configuration has independent coverage. Unverified account promotion coordinates through database reservation keys and
   re-reads before deleting old account links and sessions. Complete callback contexts
   and additional database adapters remain open.
+- The native anonymous plugin supports protected guest identities, custom email/name
+  generators, explicit deletion and guest-to-account callbacks before cleanup.
+  Email/password, email verification, email OTP and Google OAuth flows are covered,
+  including recovering the guest from server-owned OAuth state on a cookie-less
+  callback and rejecting client-supplied guest IDs. Disabling cleanup preserves the
+  guest. Generic-OIDC integration and direct middleware-object unit fixtures remain
+  unported; schema aliases still use the native JSON payload schema.
 - The HTML error endpoint validates error codes and escapes descriptions. Default
   page styling, custom themes, production redirects, and `onAPIError.errorURL`
   behavior remain unimplemented.

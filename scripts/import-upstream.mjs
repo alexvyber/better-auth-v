@@ -16,6 +16,11 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+ {file: 'anonymous', path: 'packages/better-auth/src/plugins/anonymous/anon.test.ts', suites: new Set(['anonymous']), includeHelpers: true, setupCalls: new Set(['beforeAll', 'afterEach', 'afterAll']),
+ skippedSuites: new Set(['anonymous cleanup safeguards']),
+ imports: 'import type { GoogleProfile } from "@better-auth/core/social-providers";\nimport { betterFetch } from "@better-fetch/fetch";\nimport { HttpResponse, http } from "msw";\nimport { setupServer } from "msw/node";\nimport { beforeAll, afterAll, afterEach, describe, expect, it, vi } from "vitest";\nimport { signJWT } from "../harness/crypto.js";\nimport { DEFAULT_SECRET } from "../harness/constants.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { anonymous } from "../harness/plugins.js";\nimport { anonymousClient } from "better-auth/client/plugins";\n',
+ unportedReason: 'Unported direct middleware-object injection and generic-OIDC anonymous callback integration',
+ },
   {file: 'email-otp', path: 'packages/better-auth/src/plugins/email-otp/email-otp.test.ts', suites: null,
    imports: 'import { afterEach, describe, expect, it, vi } from "vitest";\nimport { createAuthClient } from "better-auth/client";\nimport { getCookieCache, parseSetCookieHeader } from "../harness/cookies.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { bearer, emailOTP } from "../harness/plugins.js";\nimport { emailOTPClient } from "better-auth/client/plugins";\nimport { splitAtLastColon } from "../harness/crypto.js";\n',
   },
@@ -220,7 +225,7 @@ for (const plan of plans) {
             "<dynamic>";
           if (extractedSuites.includes(title)) extractions.push(node);
           for (const fn of callbacks) collect(fn.body, [...path, title]);
-          if (plan.skippedSuites?.has(title) && path.some(title => extractedSuites.includes(title))) removals.push([node.getFullStart(), node.end]);
+          if (plan.skippedSuites?.has(title) && (selected || path.some(title => extractedSuites.includes(title)))) removals.push([node.getFullStart(), node.end]);
           return;
         }
         if (

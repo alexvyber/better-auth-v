@@ -62,9 +62,10 @@ pub:
 }
 
 struct OAuthState {
-	provider     string
-	verifier     string
-	callback_url string
+	anonymous_user_id string
+	provider          string
+	verifier          string
+	callback_url      string
 }
 
 fn (a &Auth) oauth_provider(id string) !OAuthProvider {
@@ -150,9 +151,10 @@ fn (mut a Auth) start_oauth(p Payload) !Response {
 		id:                digest(state)
 		identifier:        'oauth-state'
 		value:             json.encode(OAuthState{
-			provider:     provider.id()
-			verifier:     verifier
-			callback_url: callback
+			provider:          provider.id()
+			verifier:          verifier
+			callback_url:      callback
+			anonymous_user_id: if source := a.anonymous_link_session { source.user.id } else { '' }
 		})
 		expires_at:        a.config.clock() + 600
 		expires_at_millis: a.clock_millis() + 600000
@@ -190,6 +192,7 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 	stored := json.decode(OAuthState, record.value)!
 	if stored.provider != provider_id { return fail(400, 'INVALID_STATE', 'Invalid OAuth state') }
 	a.check_redirect(stored.callback_url, 'callbackURL')!
+	a.restore_anonymous_oauth_source(stored.anonymous_user_id)!
 	code := u.query().get('code') or {
 		return fail(400, 'INVALID_CODE', 'Missing authorization code')
 	}

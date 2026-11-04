@@ -12,6 +12,8 @@ import time
 import x.json2
 
 struct Options {
+	anonymous                         ?better_auth.AnonymousOptions
+	anonymous_callbacks               []string
 	email_otp                         ?better_auth.EmailOTPOptions
 	email_otp_callbacks               []string
 	verification_options              better_auth.VerificationOptions
@@ -654,6 +656,27 @@ fn main() {
 				...jwt_options
 				key_store: key_store
 			}
+		}
+	}
+	if given := opts.anonymous {
+		mut settings := given
+		if 'name' in opts.anonymous_callbacks { settings = better_auth.AnonymousOptions{
+				...settings
+				generate_name: fn (mut context better_auth.EndpointContext) !string {
+					return json2.decode[string](otp_callback('anonymous.name', 'null', mut context)!)}
+			} }
+		if 'email' in opts.anonymous_callbacks { settings = better_auth.AnonymousOptions{
+				...settings
+				generate_email: fn () !string {
+					return json2.decode[string](callback_rpc('anonymous.email', 'null')!)}
+			} }
+		if 'link' in opts.anonymous_callbacks { settings = better_auth.AnonymousOptions{
+				...settings
+				on_link_account: fn (mut context better_auth.EndpointContext, previous better_auth.SessionResult, next better_auth.SessionResult) ! {
+					data := '{"anonymousUser":{"user":${better_auth.encode_user(previous.user)},"session":${better_auth.encode_session(previous.session)}},"newUser":{"user":${better_auth.encode_user(next.user)},"session":${better_auth.encode_session(next.session)}}}'otp_callback('anonymous.link', data, mut context)!}
+			} }
+		plugins << better_auth.AnonymousPlugin{
+			options: settings
 		}
 	}
 	if given := opts.email_otp {

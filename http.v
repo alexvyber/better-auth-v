@@ -201,6 +201,8 @@ pub fn (mut a Auth) handle_prepared(prepared PreparedRequest) Response {
 		method:  req.method.to_upper()
 		headers: headers
 	}
+	previous_anonymous := a.anonymous_link_session
+	defer { a.anonymous_link_session = previous_anonymous }
 	previous_session := a.new_session
 	a.new_session = none
 	defer { a.new_session = previous_session }
@@ -324,7 +326,9 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 	a.begin_transaction(path == '/get-session' && req.method == 'GET'
 		&& a.config.defer_session_refresh)!
 	defer { a.rollback_transaction() }
+	a.anonymous_before_request(path)!
 	mut result := a.dispatch(Request{ ...req, body: body }, path, payload)!
+	a.anonymous_after_response(path, result)!
 	if path == '/get-session' && result.body != 'null' {
 		if options := a.jwt_options() {
 			if !options.disable_setting_jwt_header {

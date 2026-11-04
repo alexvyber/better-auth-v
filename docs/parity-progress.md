@@ -557,8 +557,22 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   independent callback/key lifecycle cases and a native SQLite connection test
   cover custom prefix precedence, hook bypass, deterministic IDs and release.
 
-The latest verification passes 1186 TypeScript cases across 61 files, all 86 native
-V test functions across 26 files (including all 20,034 Unicode vectors), TypeScript
+- Added native anonymous identities, protected isAnonymous defaults, custom email/
+  name generation, explicit deletion and guest-account linking callbacks. Cookie
+  issuance triggers the link callback before cleanup. Server-owned OAuth state
+  carries the guest ID across cookie-less callbacks; client additionalData cannot
+  impersonate a guest. Cleanup respects same-user/anonymous destinations and the
+  disable-delete option.
+- Fifteen original anonymous source cases run unchanged, including Google OAuth,
+  verification-based upgrades and spoofed guest IDs. Three independent cases cover
+  a Brand Map style domain merge callback with nested native adapter calls, hashed
+  email-OTP upgrades, cleanup disabling and explicit deletion/token revocation.
+  One native test covers protected guest identity, repeated sign-in and deletion.
+  The generic-OIDC Expo case and two direct JS middleware-mock cases remain
+  explicitly unported; the anonymous file is a partial import.
+
+The latest verification passes 1204 TypeScript cases across 63 files, all 87 native
+V test functions across 27 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus
@@ -567,7 +581,7 @@ passes.
 The user resumed work and authorized incremental commits and pushes to
 `alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.
 The objective remains incomplete. The corpus currently records 29 completely
-imported files, two partial imports and 405 unported files; imported status describes source
+imported files, three partial imports and 404 unported files; imported status describes source
 preservation, not broad feature completion.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise

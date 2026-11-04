@@ -35,18 +35,14 @@ fn (mut a Auth) delete_user_callback(p Payload, ctx RequestContext) !Response {
 		return fail(404, 'FAILED_TO_GET_USER_INFO', 'Failed to get user info')
 	}
 	if p.callback_url != '' { a.check_redirect(p.callback_url, 'callbackURL')! }
-	id := digest(p.token)
-	verification := (a.storage.verification(id)!).value or {
-		return fail(404, 'INVALID_TOKEN', 'Invalid token')
-	}
-
+	consumed := a.consume_opaque_verification(p.token, 'delete-account-' + p.token)!
+	// Persist missing/expired consumption too, before ownership or callback checks.
+	a.commit_transaction()!
+	a.begin_transaction(false)!
+	verification := consumed.value or { return fail(404, 'INVALID_TOKEN', 'Invalid token') }
 	if verification.identifier != 'delete-account-' + p.token {
 		return fail(404, 'INVALID_TOKEN', 'Invalid token')
 	}
-	a.remove_verification(id)!
-	// Consumption is durable even if ownership checks or deletion callbacks fail.
-	a.commit_transaction()!
-	a.begin_transaction(false)!
 	// A wrong-owner or expired token remains consumed after this response commits.
 	if verification.value != current.user.id
 		|| verification_expiry_millis(verification) < a.clock_millis() {
@@ -84,7 +80,7 @@ fn (mut a Auth) delete_user_request(p Payload, ctx RequestContext) !Response {
 		} else {
 			a.config.delete_token_expires_in
 		}
-		a.persist_verification(Verification{
+		a.persist_opaque_verification(token, Verification{
 			id:                digest(token)
 			identifier:        'delete-account-' + token
 			value:             current.user.id

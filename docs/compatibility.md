@@ -73,8 +73,8 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   random 32-byte hex values. UUID and application generators are supported for
   users, sessions, accounts, JWKs and trusted verification records. UUID reservation
   IDs deterministically format the digest with version-five/variant bits; user
-  callbacks receive logical model names. Legacy opaque reset/OAuth/deletion records
-  still use digest lookup IDs until their storage paths are unified. Persisted serial
+  callbacks receive logical model names. New opaque reset/OAuth/deletion records
+  use the trusted verification APIs; legacy digest-keyed records remain readable. Persisted serial
   and database-generated ID strategies remain unsupported. Database session lookup uses token
   digests; AES-GCM seals recoverable tokens with a purpose-derived key and binds
   them to the session/user identity. Listings return actual tokens for new rows.
@@ -110,7 +110,9 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   Server-only `EndpointContext.set_password` runs through `Auth.with_internal` and
   preserves existing passwordless credential account identity; it has no HTTP route.
 - Magic links sign in existing users only. Registration through a magic link is
-  not implemented.
+  not implemented. Successful mailbox proof strips accounts and sessions attached
+  before email verification, then issues session-cache cookies and OTT headers
+  through the normal session pipeline.
 - OAuth supplies GitHub and a Google authorization-code provider. Google constructs
   PKCE grants, exchanges through a redirect-refusing native HTTP transport, decodes
   the profile from the authenticated token response, and enforces hosted-domain
@@ -174,9 +176,9 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   operations are available. Verification APIs support ordered plain/hashed prefix
   policies, metadata, hook patches/vetoes, latest-record selection/stale cleanup,
   atomic secondary consumption and optional DB copies. Custom identifier hashing and default-string-ID reservation
-  gates support UUID IDs too; persisted serial IDs and legacy reset/OAuth storage
-  unification remain incomplete; the verification settings currently govern these trusted APIs and
-  the OTT and email-OTP plugins. Update/delete-by-identifier APIs are also available.
+  gates support UUID IDs too. Persisted serial IDs remain unsupported. Verification
+  settings also govern native reset, OAuth state, deletion, magic-link, OTT and
+  email-OTP records; legacy digest-keyed rows are read as a migration fallback. Update/delete-by-identifier APIs are also available.
   A native Redis secondary store is now available; application-specific fallback
   wrappers and complete database integration remain separate work.
 - The native email-OTP plugin implements code creation/read APIs, delivery, checking,

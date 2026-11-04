@@ -1,4 +1,5 @@
 V ?= v
+export V_C_ERROR_BUG_REPORT_DISABLED = 1
 
 .PHONY: check test test-v test-ts integration fmt
 

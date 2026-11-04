@@ -44,7 +44,7 @@ fn magic_link_send(mut context EndpointContext, req Request) !Response {
 	// policy and is not silently enabled by this plugin.
 	if user := (a.storage.user_by_email(email)!).value {
 		token := random_token()!
-		a.persist_verification(Verification{
+		a.persist_opaque_verification(token, Verification{
 			id:                digest(token)
 			identifier:        'magic-link'
 			value:             user.id
@@ -72,19 +72,18 @@ fn magic_link_verify(mut context EndpointContext, req Request) !Response {
 	callback := u.query().get('callbackURL') or { '' }
 	a.check_redirect(callback, 'callbackURL')!
 	user := a.consume_token(u.query().get('token') or { '' }, 'magic-link')!
-	updated := User{
-		...user
-		email_verified: true
-		updated_at:     stamp_millis(a.clock_millis())
-	}
-	a.update_user_record(updated)!
-	session := a.make_session(user.id, RequestContext{ headers: req.headers }, true)!
-	if callback != '' { return a.set_cookie(Response{
+	a.commit_transaction()!
+	a.begin_transaction(false)!
+	updated := if !user.email_verified { (context.revoke_unproven_account_access(user.id)!).value or {
+			return fail(400, 'INVALID_TOKEN', 'Invalid token')} } else { user }
+	session := a.make_session(user.id, a.request_context, true)!
+	response := if callback != '' {
+		Response{
 			status:  302
-			headers: [
-				Header{'location', callback},
-			]
-		}, session.token, true) }
-	return a.set_cookie(a.session_response(SessionResult{ user: updated, session: session }),
-		session.token, true)
+			headers: [Header{'location', callback}]
+		}
+	} else {
+		a.session_response(SessionResult{ user: updated, session: session })
+	}
+	return a.set_session_cookies(response, SessionResult{ user: updated, session: session })
 }

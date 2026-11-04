@@ -220,23 +220,15 @@ fn (mut a Auth) update_account_record(account Account, patch string) ! {
 	a.after_record('account', 'update', encoded)!
 }
 
-fn (mut a Auth) persist_verification(value Verification) ! {
-	encoded := (a.before_record('verification', 'create', json.encode(value))!).value or {
-		return fail(400, 'FAILED_TO_CREATE_VERIFICATION', 'Unable to create verification')
-	}
-
-	actual := json.decode(Verification, encoded)!
-	a.storage.create_verification(actual)!
-	a.after_record('verification', 'create', json.encode(actual))!
-}
-
 fn (mut a Auth) remove_verification(id string) ! {
 	value := (a.storage.verification(id)!).value or { return }
-	if (a.before_record('verification', 'delete', json.encode(value))!).value == none {
+	mut encoded := encode_verification(value)
+	if value.created_at == '' { encoded = json.encode(value) }
+	if (a.before_record('verification', 'delete', encoded)!).value == none {
 		return fail(400, 'INVALID_TOKEN', 'Invalid token')
 	}
 	a.storage.delete_verification(id)!
-	a.after_record('verification', 'delete', json.encode(value))!
+	a.after_record('verification', 'delete', encoded)!
 }
 
 fn (mut a Auth) remove_user(id string) ! {

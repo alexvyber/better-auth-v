@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 import {spawn, execFileSync, type ChildProcess} from 'node:child_process';
 import {createConnection, createServer} from 'node:net';
 import {once} from 'node:events';
@@ -67,6 +68,20 @@ describe('native Redis TCP and auth integration', () => {
   expect((await second.auth.api.verifyOneTimeToken({body: {token}})).user.email).toBe(first.testUser.email);
   await expect(first.auth.api.verifyOneTimeToken({body: {token}})).rejects.toMatchObject({body: {code: 'BAD_REQUEST', message: 'Invalid token'}});
  });
+ it('uses Redis-only hashed UUID proofs for the core password-reset API', async () => {
+  let token = '';
+  const storage = redisStorage({tcp: tcp(), keyPrefix: 'core-reset:'});
+  const {auth, testUser} = await getTestInstance({secondaryStorage: storage, verification: {storeIdentifier: 'hashed'}, advanced: {database: {generateId: 'uuid'}}, emailAndPassword: {sendResetPassword: async data => {token = data.token;}}});
+  await auth.api.requestPasswordReset({body: {email: testUser.email}});
+  const key = 'verification:' + createHash('sha256').update('reset-password:' + token).digest('base64url');
+  expect(JSON.parse(await storage.get(key)).id).toMatch(/^[\da-f]{8}-[\da-f]{4}-4/);
+  expect(await auth.api.resetPassword({body: {token, newPassword: 'changed-password'}})).toEqual({status: true});
+  expect(await storage.get(key)).toBeNull();
+  await auth.api.requestPasswordReset({body: {email: testUser.email}});
+  await storage.delete('verification:' + createHash('sha256').update('reset-password:' + token).digest('base64url'));
+  await expect(auth.api.resetPassword({body: {token, newPassword: 'other-password'}})).rejects.toMatchObject({body: {code: 'INVALID_TOKEN'}});
+ });
+
 });
 
 describe('Redis TCP protocol failures', () => {

@@ -629,7 +629,23 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   opaque-verification digest IDs remain open; passing helper tests does not provide
   a serial database adapter.
 
-The latest verification passes 1301 TypeScript cases across 71 files, all 91 native
+- Unified reset, OAuth-state, deletion and native magic-link proofs through the
+  trusted verification APIs. Configured hashing/prefix policy, Redis storage, UUID
+  IDs, hook metadata and atomic consumption now apply to these flows. New reset
+  tokens use the pinned 24-character form, and trusted APIs can supply reset proofs.
+  Legacy digest-keyed rows remain readable without new non-upstream lookup columns.
+  OAuth state is burned before exchange; deletion consumption commits before owner
+  checks. Native magic links revoke pre-proof access and use session-cookie/cache/
+  OTT issuance. The existing-user-only registration limitation remains explicit.
+- Existing upstream reset, email verification, generic OIDC and anonymous suites
+  pass. Four new independent cases cover hashed UUID reset/deletion records,
+  supplied reset proofs and magic-link cleanup/header issuance. Existing Nabu/Redis
+  suites add hashed secondary-only OAuth/reset cases. Native millisecond assertions
+  are retained while locating newly created proofs by the new logical identifier.
+  Build scripts disable V compiler automatic bug-report uploads after a compiler
+  ternary/json code-generation failure; the native workaround compiles successfully.
+
+The latest verification passes 1307 TypeScript cases across 72 files, all 91 native
 V test functions across 30 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and

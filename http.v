@@ -703,7 +703,7 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 			}
 			if path.starts_with('/reset-password/') {
 				token := path.all_after('/reset-password/')
-				record := (a.storage.verification(digest(token))!).value or {
+				record := (a.find_opaque_verification(token, 'reset-password')!).value or {
 					return fail(400, 'INVALID_TOKEN', 'Invalid token')
 				}
 

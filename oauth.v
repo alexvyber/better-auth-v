@@ -166,7 +166,7 @@ fn (mut a Auth) start_oauth(p Payload) !Response {
 		provider.authorization_url(state, challenge, redirect_uri)!
 	}
 	callback := if p.callback_url == '' { a.base_url() } else { p.callback_url }
-	a.persist_verification(Verification{
+	a.persist_opaque_verification(state, Verification{
 		id:                digest(state)
 		identifier:        'oauth-state'
 		value:             json.encode(OAuthState{
@@ -209,10 +209,12 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 		}
 	}
 	if !bound { return fail(403, 'STATE_MISMATCH', 'OAuth state does not match this browser') }
-	record := (a.storage.verification(digest(state))!).value or {
+	record := (a.consume_opaque_verification(state, 'oauth-state')!).value or {
 		return fail(400, 'INVALID_STATE', 'Invalid OAuth state')
 	}
 
+	a.commit_transaction()!
+	a.begin_transaction(false)!
 	if record.identifier != 'oauth-state' || verification_expiry_millis(record) < a.clock_millis() {
 		return fail(400, 'INVALID_STATE', 'Invalid OAuth state')
 	}
@@ -245,7 +247,6 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 		if provider is GenericOAuthProvider { return a.generic_oauth_error(stored, record.id, err) }
 		return err
 	}
-	a.remove_verification(record.id)!
 	session := a.make_session(account.user.id, RequestContext{ headers: req.headers }, true)!
 	mut response := Response{
 		status:  302

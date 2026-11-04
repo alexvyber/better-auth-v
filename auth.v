@@ -473,8 +473,8 @@ fn (mut a Auth) issue_email(kind string, user User, callback string) ! {
 		a.config.send_email(a.verification_message(user, callback, '', '')!)!
 		return
 	}
-	token := random_token()!
-	a.persist_verification(Verification{
+	token := if kind == 'reset-password' { generate_auth_id(24)! } else { random_token()! }
+	a.persist_opaque_verification(token, Verification{
 		id:                digest(token)
 		identifier:        kind
 		value:             user.id
@@ -504,9 +504,8 @@ fn (mut a Auth) issue_email(kind string, user User, callback string) ! {
 }
 
 fn (mut a Auth) token_user(token string, kind string) !User {
-	if token.len != 64 { return fail(400, 'INVALID_TOKEN', 'Invalid token') }
-	id := digest(token)
-	record := (a.storage.verification(id)!).value or {
+	if token == '' || token.len > 4096 { return fail(400, 'INVALID_TOKEN', 'Invalid token') }
+	record := (a.find_opaque_verification(token, kind)!).value or {
 		return fail(400, 'INVALID_TOKEN', 'Invalid token')
 	}
 
@@ -522,7 +521,13 @@ fn (mut a Auth) token_user(token string, kind string) !User {
 
 fn (mut a Auth) consume_token(token string, kind string) !User {
 	user := a.token_user(token, kind)!
-	a.remove_verification(digest(token))!
+	consumed := (a.consume_opaque_verification(token, kind)!).value or {
+		return fail(400, 'INVALID_TOKEN', 'Invalid token')
+	}
+
+	if consumed.value != user.id || verification_expiry_millis(consumed) < a.clock_millis() {
+		return fail(400, 'INVALID_TOKEN', 'Invalid token')
+	}
 	return user
 }
 

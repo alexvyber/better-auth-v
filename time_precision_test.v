@@ -78,9 +78,9 @@ fn test_legacy_verification_rows_and_native_reset_request_metadata() ! {
 	assert response.status == 200
 	assert delivery.request_url.ends_with('/request-password-reset')
 	assert delivery.request_body == '{"email":"legacy@example.com"}'
-	created := (storage.verification(digest(delivery.token))!).value or {
-		return error('missing new verification row')
-	}
+	records := storage.verifications()!.filter(it.identifier == 'reset-password:' + delivery.token)
+	assert records.len == 1
+	created := records[0]
 
 	assert (created.expires_at_millis or { -1 }) == 3001
 }

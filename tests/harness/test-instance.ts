@@ -32,6 +32,7 @@ interface ServerOptions {
   database?: BetterAuthOptions["database"];
   baseURL?: BetterAuthOptions['baseURL'];
   basePath?: string;
+  appName?: string;
   secret?: string;
   secrets?: BetterAuthOptions['secrets'];
   trustedOrigins?: BetterAuthOptions['trustedOrigins'];
@@ -46,6 +47,8 @@ interface ServerOptions {
   user?: FixtureUserOptions;
   databaseHooks?: BetterAuthOptions["databaseHooks"];
 }
+type FixtureResponseAPI = <const A extends FixtureOptions = FixtureOptions>(args?: A) => Promise<A extends {asResponse: true} ? Response : any>;
+type FixtureEnableTwoFactorAPI = <const A extends FixtureOptions = FixtureOptions>(args?: A) => Promise<A extends {asResponse: true} ? Response : {method: 'totp' | 'otp'; backupCodes: string[]; totpURI: string}>;
 type SignUpAPI<O> = O extends BetterAuthOptions ? (Auth<O>["api"] extends {signUpEmail: infer F} ? F : Auth<{}>["api"]["signUpEmail"]) : Auth<{}>["api"]["signUpEmail"];
 type SessionAPI<O> = O extends BetterAuthOptions ? (Auth<O>["api"] extends {getSession: infer F} ? F : Auth<{}>["api"]["getSession"]) : Auth<{}>["api"]["getSession"];
 interface FixtureSession extends FixtureOptions {
@@ -80,6 +83,18 @@ afterAll(async () => {
 });
 
 const routes: Record<string, [string, string]> = {
+ signInMagicLink: ['POST', '/sign-in/magic-link'],
+ magicLinkVerify: ['GET', '/magic-link/verify'],
+ sendTwoFactorOTP: ['POST', '/two-factor/send-otp'],
+ verifyTwoFactorOTP: ['POST', '/two-factor/verify-otp'],
+ enableTwoFactor: ['POST', '/two-factor/enable'],
+ disableTwoFactor: ['POST', '/two-factor/disable'],
+ getTOTPURI: ['POST', '/two-factor/get-totp-uri'],
+ verifyTOTP: ['POST', '/two-factor/verify-totp'],
+ generateTOTP: ['POST', '/internal/two-factor/generate-totp'],
+ generateBackupCodes: ['POST', '/two-factor/generate-backup-codes'],
+ verifyBackupCode: ['POST', '/two-factor/verify-backup-code'],
+ viewBackupCodes: ['POST', '/internal/two-factor/view-backup-codes'],
  signInAnonymous: ['POST', '/sign-in/anonymous'],
  deleteAnonymousUser: ['POST', '/delete-anonymous-user'],
  sendVerificationOTP: ['POST', '/email-otp/send-verification-otp'],
@@ -160,6 +175,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     options,
     [
       "verification",
+      "appName",
       "baseURL",
       "plugins",
       "database",
@@ -212,6 +228,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   const ep = options.emailAndPassword ?? {};
   const ev = options.emailVerification ?? {};
   const session = options.session ?? {};
+  let magicLinkOptions: FixtureOptions | undefined;
+  let twoFactorOptions: FixtureOptions | undefined;
   let anonymousOptions: FixtureOptions | undefined;
   let otpOptions: FixtureOptions | undefined;
   let ottOptions: FixtureOptions | undefined;
@@ -228,6 +246,18 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   const endpointPlugins: FixtureOptions[] = [];
   const endpointCallbacks: Record<string, (payload: any) => Promise<unknown>> = {};
   for (const plugin of options.plugins ?? []) {
+    if (plugin.id === 'magic-link') {
+      magicLinkOptions = schemaPluginOptions(plugin);
+      if (!magicLinkOptions) throw new Error('Magic link requires a native fixture descriptor');
+      assertKeys(magicLinkOptions, ['sendMagicLink'], 'magicLink');
+      continue;
+    }
+    if (plugin.id === 'two-factor') {
+      twoFactorOptions = schemaPluginOptions(plugin);
+      if (!twoFactorOptions) throw new Error('Two factor requires a native fixture descriptor');
+      assertKeys(twoFactorOptions, ['twoFactorTable', 'issuer', 'totpOptions', 'otpOptions', 'backupCodeOptions', 'skipVerificationOnEnable', 'allowPasswordless', 'twoFactorCookieMaxAge', 'trustDeviceMaxAge', 'accountLockout', 'schema'], 'twoFactor');
+      continue;
+    }
     if (plugin.id === 'anonymous') {
       anonymousOptions = schemaPluginOptions(plugin);
       if (!anonymousOptions) throw new Error('Anonymous requires a native fixture descriptor');
@@ -626,6 +656,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       );
 
   }
+  if (magicLinkOptions) callbacks['email.magic-link'] = data => magicLinkOptions.sendMagicLink({email:data.user.email, url:data.url,token:data.token}, callbackRequest());
   callbacks['password.hash'] = value => context.password.hash(value);
   callbacks['password.verify'] = input => context.password.verify(input);
   if (typeof ep.onPasswordReset === 'function') callbacks['password.reset'] = input => ep.onPasswordReset!(hydrate(input), callbackRequest());
@@ -683,6 +714,20 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     const request = payload.request ? new Request(payload.request.url, {method: payload.request.method, headers: payload.request.headers, body: payload.request.method === 'POST' ? payload.request.body : undefined}) : undefined;
     return {context: {...context, session: hydrate(payload.session)}, headers: new Headers(payload.headers), request};
   };
+  const twoFactorCallbackNames: string[] = [];
+  for (const [name, callback] of Object.entries({
+   send: twoFactorOptions?.otpOptions?.sendOTP,
+   hash: twoFactorOptions?.otpOptions?.storeOTP?.hash,
+   encrypt: twoFactorOptions?.otpOptions?.storeOTP?.encrypt,
+   decrypt: twoFactorOptions?.otpOptions?.storeOTP?.decrypt,
+   backupGenerate: twoFactorOptions?.backupCodeOptions?.customBackupCodesGenerate,
+   backupEncrypt: twoFactorOptions?.backupCodeOptions?.storeBackupCodes?.encrypt,
+   backupDecrypt: twoFactorOptions?.backupCodeOptions?.storeBackupCodes?.decrypt,
+  })) {
+   if (typeof callback !== 'function') continue;
+   twoFactorCallbackNames.push(name);
+   callbacks['twoFactor.'+name] = payload => callback(hydrate(payload.data), otpContext(payload));
+  }
   const anonymousCallbackNames: string[] = [];
   if (anonymousOptions?.generateName) { anonymousCallbackNames.push('name'); callbacks['anonymous.name'] = payload => anonymousOptions.generateName(otpContext(payload)); }
   if (anonymousOptions?.generateRandomEmail) { anonymousCallbackNames.push('email'); callbacks['anonymous.email'] = () => anonymousOptions.generateRandomEmail(); }
@@ -705,6 +750,10 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       account_linking_enabled: options.account?.accountLinking?.enabled ?? false,
       trusted_linking_providers: options.account?.accountLinking?.trustedProviders ?? [],
       disable_email_sign_up: ep.disableSignUp ?? false,
+      app_name: options.appName,
+      two_factor_callbacks: twoFactorCallbackNames,
+      two_factor: twoFactorOptions ? {...twoFactorOptions,
+       otpOptions: {...twoFactorOptions.otpOptions, hasSender: !!twoFactorOptions.otpOptions?.sendOTP, storeOTP: typeof twoFactorOptions.otpOptions?.storeOTP === 'object' ? ('hash' in twoFactorOptions.otpOptions.storeOTP ? 'custom-hash' : 'custom-encryption') : twoFactorOptions.otpOptions?.storeOTP}, backupCodeOptions: {...twoFactorOptions.backupCodeOptions, storeBackupCodes: typeof twoFactorOptions.backupCodeOptions?.storeBackupCodes === 'object' ? 'custom' : twoFactorOptions.backupCodeOptions?.storeBackupCodes}} : undefined,
       anonymous: anonymousOptions,
       anonymous_callbacks: anonymousCallbackNames,
       email_otp: otpOptions ? {...otpOptions, storeOTP: typeof otpOptions.storeOTP === 'object' ? (otpOptions.storeOTP.hash ? 'custom-hash' : 'custom-encryption') : otpOptions.storeOTP} : null,
@@ -809,7 +858,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       trust_proxy_origin_headers: advanced.trustedProxyHeaders ?? false,
       real_passwords: config.realPasswords ?? false,
       fail_delivery: config.failDelivery ?? false,
-      magic_link: config.magicLink ?? false,
+      magic_link: !!magicLinkOptions || (config.magicLink ?? false),
       remote_passwords: true,
       password_reset_expires_in: ep.resetPasswordTokenExpiresIn ?? 3600,
       revoke_sessions_on_password_reset: ep.revokeSessionsOnPasswordReset ?? false,
@@ -868,7 +917,11 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       const state = currentOperation.getStore();
       if (state) state.request = safeCloneRequest(effective);
       result = await bridge.completeRequest(prepared, effective === request ? undefined : effective, response);
-    } else result = await bridge.request(request, direct);
+    } else result = await bridge.request(request, direct).catch(error => {
+      const transactionError = currentOperation.getStore()?.transactionError;
+      if (direct && transactionError) throw transactionError;
+      throw error;
+    });
     const transactionError = currentOperation.getStore()?.transactionError;
     if (direct && result.response.status === 500 && transactionError) throw transactionError;
     const storeFailure = currentOperation.getStore()?.storeFailure;
@@ -959,7 +1012,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   };
   const auth = {
     $context: Promise.resolve(context),
-    api: api as typeof api & { signUpEmail: SignUpAPI<O>; getSession: SessionAPI<O>; getJwks(args?: FixtureOptions): Promise<JSONWebKeySet> },
+    api: api as typeof api & { signInEmail: FixtureResponseAPI; verifyTOTP: FixtureResponseAPI; verifyTwoFactorOTP: FixtureResponseAPI; enableTwoFactor: FixtureEnableTwoFactorAPI; signUpEmail: SignUpAPI<O>; getSession: SessionAPI<O>; getJwks(args?: FixtureOptions): Promise<JSONWebKeySet>; generateBackupCodes(args?: FixtureOptions): Promise<{status: boolean; backupCodes: string[]}>; viewBackupCodes(args?: FixtureOptions): Promise<{status: boolean; backupCodes: string[]}> },
     handler: (request: Request) => dispatch(request),
     options,
   };
@@ -1040,6 +1093,12 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     return {...result, headers, runWithUser: <T>(callback: (headers: Headers) => T) => currentUserHeaders.run(headers, () => callback(headers))};
   }
   const db = {
+    async create<T = Record<string, unknown>>(args: FixtureOptions): Promise<T> {
+      assertKeys(args, ['model', 'data'], 'db.create');
+      if (args.model !== 'twoFactor') throw new Error('Native fixture create requires twoFactor model');
+      const reply = await bridge.send('internal', {method:'adapterCreateTwoFactor',arguments_json:transportJSON([args.data])});
+      return hydrate(JSON.parse(reply.value_json));
+    },
     async deleteMany(args: FixtureOptions): Promise<number> {
       assertKeys(args, ['model', 'where'], 'db.deleteMany');
       if (args.model !== 'session' || args.where?.length !== 1 || args.where[0].field !== 'userId' || (args.where[0].operator && args.where[0].operator !== 'eq')) throw new Error('V db.deleteMany requires a session userId equality filter');
@@ -1048,11 +1107,22 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     },
     async delete(args: FixtureOptions) {
       assertKeys(args, ['model', 'where'], 'db.delete');
+      if (args.model === 'account' && args.where?.length === 1 && args.where[0].field === 'id' && (!args.where[0].operator || args.where[0].operator === 'eq')) {
+       await bridge.send('internal',{method:'deleteAccount',arguments_json:transportJSON([args.where[0].value])}); return;
+      }
       if (args.model !== 'session' || args.where?.length !== 1 || args.where[0].field !== 'token' || (args.where[0].operator && args.where[0].operator !== 'eq')) throw new Error('V db.delete requires a session token equality filter');
       await bridge.send('internal', {method: 'adapterDeleteSession', arguments_json: transportJSON([args.where[0].value])});
     },
     async update<T = Record<string, unknown>>(args: FixtureOptions): Promise<T | null> {
       assertKeys(args, ["model", "where", "update"], "db.update");
+      if (args.model === 'verification' && args.where?.length === 1 && ['id','identifier'].includes(args.where[0].field) && (!args.where[0].operator || args.where[0].operator === 'eq')) {
+       const reply = await bridge.send('internal',{method:'adapterUpdateVerification',arguments_json:transportJSON([args.where[0].field,args.where[0].value,args.update])});
+       return hydrate(JSON.parse(reply.value_json));
+      }
+      if (args.model === 'twoFactor' && args.where?.length === 1 && ['id','userId'].includes(args.where[0].field) && (!args.where[0].operator || args.where[0].operator === 'eq')) {
+       const reply = await bridge.send('internal',{method:'adapterUpdateTwoFactor',arguments_json:transportJSON([args.where[0].field,args.where[0].value,args.update])});
+       return hydrate(JSON.parse(reply.value_json));
+      }
       if (args.model === 'user' && args.where?.length === 1 && ['email', 'id'].includes(args.where[0].field) && (!args.where[0].operator || args.where[0].operator === 'eq')) {
         const reply = await bridge.send('internal', {method: 'adapterUpdateUser', arguments_json: transportJSON([args.where[0].field, args.where[0].value, args.update])});
         return hydrate(JSON.parse(reply.value_json));
@@ -1061,6 +1131,11 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
         throw new Error("V fixture db.update currently requires a session id equality filter");
       const reply = await bridge.send("internal", {method: "adapterUpdateSession", arguments_json: transportJSON([args.where[0].value, args.update])});
       return hydrate(JSON.parse(reply.value_json));
+    },
+    async findOne<T = Record<string, unknown>>(args: FixtureOptions): Promise<T | null> {
+      assertKeys(args, ['model', 'where'], 'db.findOne');
+      const reply = await bridge.send('inspect', {model: args.model, where_json: transportJSON(args.where ?? [])});
+      return hydrate(JSON.parse(reply.records_json))[0] ?? null;
     },
     async findMany<T = Record<string, unknown>>(
       args: FixtureOptions,

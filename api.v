@@ -31,7 +31,10 @@ pub fn (mut a Auth) sign_up_email(input SignUpInput, ctx RequestContext) !AuthRe
 
 pub fn (mut a Auth) sign_in_email(input SignInInput, ctx RequestContext) !AuthResult {
 	r := a.invoke('POST', '/sign-in/email', json.encode(input), ctx)!
-	return decode_auth_result(r.body)!
+	return AuthResult{
+		...decode_auth_result(r.body)!
+		headers: r.headers
+	}
 }
 
 pub fn (mut a Auth) get_session(ctx RequestContext) !Lookup[SessionResult] {

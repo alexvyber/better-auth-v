@@ -11,6 +11,7 @@ mut:
 	sessions      map[string]Session
 	token_hashes  map[string]string
 	verifications map[string]Verification
+	two_factors   map[string]TwoFactorRecord
 }
 
 @[heap]
@@ -47,6 +48,7 @@ pub fn (mut s MemoryStorage) begin() ! {
 		sessions:      s.records.sessions.clone()
 		token_hashes:  s.records.token_hashes.clone()
 		verifications: s.records.verifications.clone()
+		two_factors:   s.records.two_factors.clone()
 	}
 	s.transaction = true
 }
@@ -132,6 +134,7 @@ pub fn (mut s MemoryStorage) update_user(user User) ! {
 
 pub fn (mut s MemoryStorage) delete_user(id string) ! {
 	s.check_write()!
+	s.delete_two_factors(id)!
 	s.records.users.delete(id)
 	for account in s.accounts(id)! {
 		s.records.accounts.delete(account.id)

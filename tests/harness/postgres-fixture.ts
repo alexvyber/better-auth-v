@@ -40,7 +40,8 @@ afterAll(async () => {
 });
 const snake = (value: string) => value.replace(/[A-Z]/g, letter => '_' + letter.toLowerCase());
 const columns: Record<string, string[]> = {
- user: ['id','name','email','emailVerified','image','createdAt','updatedAt'],
+ user: ['id','name','email','emailVerified','image','createdAt','updatedAt','twoFactorEnabled'],
+ twoFactor: ['id','userId','secret','backupCodes','verified','failedVerificationCount','lockedUntil'],
  session: ['id','userId','token','expiresAt','createdAt','updatedAt','ipAddress','userAgent'],
  account: ['id','userId','accountId','providerId','password','accessToken','refreshToken','idToken','accessTokenExpiresAt','refreshTokenExpiresAt','scope','createdAt','updatedAt'],
  verification: ['id','identifier','value','expiresAt','createdAt','updatedAt'],
@@ -50,7 +51,7 @@ const columns: Record<string, string[]> = {
 export async function postgresOptions(): Promise<NativePostgresOptions> {
  const running = await (cluster ??= start());
  return {connectionString: running.connection, schema: 'ba_' + randomUUID().replaceAll('-', ''), uuidIds: true,
-  tables: {user:'auth_user', session:'auth_session', account:'auth_account', verification:'auth_verification', jwks:'jwks', rateLimit:'auth_rate_limit'},
+  tables: {user:'auth_user', session:'auth_session', account:'auth_account', verification:'auth_verification', jwks:'jwks', twoFactor:'auth_two_factor', rateLimit:'auth_rate_limit'},
   fields: Object.fromEntries(Object.entries(columns).map(([model, fields]) => [model, Object.fromEntries(fields.map(field => [field, snake(field)]))])),
  };
 }

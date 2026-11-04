@@ -29,6 +29,60 @@ fn (mut a Auth) intercept_internal(name string, arguments_json string) !Lookup[s
 pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json string) !string {
 	args := json2.decode[[]json2.Any](arguments_json)!
 	match name {
+		'adapterUpdateVerification' {
+			if args.len != 3 || args[0].str() !in ['id', 'identifier'] {
+				return error('verification update requires id/identifier equality')
+			}
+			for record in c.auth.storage.verifications()! {
+				value := if args[0].str() == 'id' { record.id } else { record.identifier }
+				if value != args[1].str() { continue
+				 }
+				mut fields := json2.decode[map[string]json2.Any](encode_verification(record))!
+				for key, item in args[2].as_map() {
+					if key !in ['value', 'expiresAt', 'updatedAt'] {
+						return error('unsupported verification update field')
+					}
+					fields[key] = item
+				}
+				updated := decode_verification_record(json2.Any(fields).json_str())!
+				c.auth.storage.delete_verification(record.id)!
+				c.auth.storage.create_verification(updated)!
+				return encode_verification(updated)
+			}
+			return 'null'
+		}
+		'adapterCreateTwoFactor' {
+			if args.len != 1 { return error('two-factor create requires a record') }
+			input := json.decode(TwoFactorRecord, args[0].json_str())!
+			record := TwoFactorRecord{
+				...input
+				id: if input.id == '' { c.auth.new_id('twoFactor')! } else { input.id }
+			}
+			c.save_two_factor(record, true)!
+			return encode_two_factor(record)
+		}
+		'adapterUpdateTwoFactor' {
+			if args.len != 3 || args[0].str() !in ['id', 'userId'] {
+				return error('two-factor update requires id/userId equality')
+			}
+			for record in c.two_factors('')! {
+				value := if args[0].str() == 'id' { record.id } else { record.user_id }
+				if value != args[1].str() { continue
+				 }
+				mut fields := json2.decode[map[string]json2.Any](json.encode(record))!
+				for key, item in args[2].as_map() {
+					if key !in ['secret', 'backupCodes', 'verified', 'failedVerificationCount',
+						'lockedUntil'] {
+						return error('unsupported two-factor update field')
+					}
+					fields[key] = item
+				}
+				updated := json.decode(TwoFactorRecord, json2.Any(fields).json_str())!
+				c.save_two_factor(updated, false)!
+				return encode_two_factor(updated)
+			}
+			return 'null'
+		}
 		'setOAuthNonceRequirement' {
 			if args.len != 2 { return error('nonce mutation requires provider and boolean') }
 			c.auth.oauth_nonce_requirements[args[0].str()] = args[1].bool()

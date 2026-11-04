@@ -15,14 +15,15 @@ fn (storage &PostgresStorage) sql_type(model string, field string) !string {
 			return explicit
 		}
 	}
-	if field == 'id' || (field == 'userId' && model in ['session', 'account']) { return if storage.options.uuid_ids {
+	if field == 'id' || (field == 'userId' && model in ['session', 'account', 'twoFactor']) { return if storage.options.uuid_ids {
 			'uuid'
 		} else {
 			'text'
 		}
 	 }
 	if storage.is_date(model, field) { return 'timestamptz' }
-	if field == 'emailVerified' { return 'boolean' }
+	if field in ['emailVerified', 'verified'] { return 'boolean' }
+	if model == 'twoFactor' && field == 'failedVerificationCount' { return 'integer' }
 	if model == 'rateLimit' && field in ['count', 'lastRequest'] { return 'bigint' }
 	if extra := storage.additional(model)[field] {
 		return match extra.field_type {
@@ -51,7 +52,7 @@ pub fn (mut storage PostgresStorage) migrate() ! {
 
 		'better-auth-v:migrate:' + storage.options.schema)!
 	storage.connection.exec('CREATE SCHEMA IF NOT EXISTS ${sql_identifier(storage.options.schema)}')!
-	for model in ['user', 'session', 'account', 'verification', 'jwks', 'rateLimit'] {
+	for model in ['user', 'session', 'account', 'verification', 'jwks', 'rateLimit', 'twoFactor'] {
 		mut definitions := []string{}
 		for field in storage.logical_fields(model) {
 			kind := storage.sql_type(model, field)!
@@ -75,11 +76,18 @@ pub fn (mut storage PostgresStorage) migrate() ! {
 			if model == 'verification' && field in ['identifier', 'value', 'expiresAt'] {
 				constraints += ' NOT NULL'
 			}
+			if model == 'twoFactor' && field in ['userId', 'secret', 'backupCodes'] {
+				constraints += ' NOT NULL'
+			}
+			if model == 'twoFactor' && field == 'verified' { constraints += ' DEFAULT true' }
+			if model == 'twoFactor' && field == 'failedVerificationCount' {
+				constraints += ' DEFAULT 0'
+			}
 			if model == 'jwks' && field in ['publicKey', 'privateKey'] { constraints += ' NOT NULL' }
 			if model == 'rateLimit' && field in ['count', 'lastRequest'] {
 				constraints += ' NOT NULL'
 			}
-			if field == 'userId' && model in ['session', 'account'] {
+			if field == 'userId' && model in ['session', 'account', 'twoFactor'] {
 				constraints += ' REFERENCES ${storage.table('user')} (${storage.column_sql('user', 'id')}) ON DELETE CASCADE'
 			}
 			definitions << storage.column_sql(model, field) + ' ' + kind + constraints
@@ -98,7 +106,7 @@ pub fn (mut storage PostgresStorage) migrate() ! {
 	storage.connection.exec('CREATE UNIQUE INDEX IF NOT EXISTS ${storage.index_name('account',
 		'subject')} ON ${storage.table('account')} (${storage.column_sql('account', 'providerId')},${storage.column_sql('account',
 		'accountId')})')!
-	for model in ['session', 'account'] {
+	for model in ['session', 'account', 'twoFactor'] {
 		storage.connection.exec('CREATE INDEX IF NOT EXISTS ${storage.index_name(model, 'user')} ON ${storage.table(model)} (${storage.column_sql(model,
 			'userId')})')!
 	}

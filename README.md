@@ -51,6 +51,9 @@ There is no dependency on a web framework.
   identifiers, atomic consumption, reservation gates and update/delete operations.
 - Email OTP verification, sign-in, reset and email changes with hashed/encrypted
   storage, resend policies and attempt limits; anonymous users and guest merge hooks.
+- Two-factor TOTP enrollment and verification, delivered OTPs, recovery codes,
+  trusted-device rotation, per-challenge attempt caps and account lockout; native
+  memory/SQLite/PostgreSQL factor storage and mapped PostgreSQL columns.
 - Generic OIDC discovery, signature/nonce verification, profile policy callbacks,
   trusted same-email linking and provisioned-user signup controls.
 - Native Redis secondary storage with GETDEL/Lua atomics, fixed counter TTLs,

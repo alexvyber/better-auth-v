@@ -1,0 +1,680 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/two-factor/two-factor.test.ts",
+  "sha256": "8a98de0460dfb27477155bebb12589f5056240efc02a5689125d56f192d061dc",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "two factor",
+      "suites": [
+        "two factor"
+      ],
+      "test": "should return uri and backup codes and shouldn't enable twoFactor yet",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor",
+      "suites": [
+        "two factor"
+      ],
+      "test": "should use custom issuer from request parameter",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor",
+      "suites": [
+        "two factor"
+      ],
+      "test": "should fallback to appName when no issuer provided",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor",
+      "suites": [
+        "two factor"
+      ],
+      "test": "should enable twoFactor",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor",
+      "suites": [
+        "two factor"
+      ],
+      "test": "should require two factor",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor",
+      "suites": [
+        "two factor"
+      ],
+      "test": "should fail if two factor cookie is missing",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor",
+      "suites": [
+        "two factor"
+      ],
+      "test": "should fail when passing invalid TOTP code with expected error code",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor",
+      "suites": [
+        "two factor"
+      ],
+      "test": "should generate backup codes",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor",
+      "suites": [
+        "two factor"
+      ],
+      "test": "should allow sign in with backup code",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor",
+      "suites": [
+        "two factor"
+      ],
+      "test": "should trust device",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor",
+      "suites": [
+        "two factor"
+      ],
+      "test": "should limit OTP verification attempts",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor",
+      "suites": [
+        "two factor"
+      ],
+      "test": "should disable two factor",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "OTP-only enablement",
+      "suites": [
+        "OTP-only enablement"
+      ],
+      "test": "should enable 2FA with OTP method",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "OTP-only enablement",
+      "suites": [
+        "OTP-only enablement"
+      ],
+      "test": "should only report OTP in twoFactorMethods at sign-in",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "OTP-only enablement",
+      "suites": [
+        "OTP-only enablement"
+      ],
+      "test": "should reject OTP enable when sendOTP is not configured",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "OTP-only enablement",
+      "suites": [
+        "OTP-only enablement"
+      ],
+      "test": "should reject TOTP enable when totpOptions.disable is set",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "OTP-only enablement",
+      "suites": [
+        "OTP-only enablement"
+      ],
+      "test": "should preserve existing TOTP row when enabling OTP",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor auth API",
+      "suites": [
+        "two factor auth API"
+      ],
+      "test": "should enable two factor with OTP method",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor auth API",
+      "suites": [
+        "two factor auth API"
+      ],
+      "test": "should request second factor",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor auth API",
+      "suites": [
+        "two factor auth API"
+      ],
+      "test": "should send otp",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor auth API",
+      "suites": [
+        "two factor auth API"
+      ],
+      "test": "should verify otp",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor auth API",
+      "suites": [
+        "two factor auth API"
+      ],
+      "test": "should disable two factor",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "view backup codes",
+      "suites": [
+        "view backup codes"
+      ],
+      "test": "should return parsed array of backup codes, not JSON string",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "view backup codes",
+      "suites": [
+        "view backup codes"
+      ],
+      "test": "should return array after generating new backup codes",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "view backup codes",
+      "suites": [
+        "view backup codes"
+      ],
+      "test": "should successfully regenerate backup codes multiple times",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "view backup codes",
+      "suites": [
+        "view backup codes"
+      ],
+      "test": "should correctly update backup codes after verification",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "view backup codes",
+      "suites": [
+        "view backup codes"
+      ],
+      "test": "should not expose viewBackupCodes to client",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trust device server-side validation",
+      "suites": [
+        "trust device server-side validation"
+      ],
+      "test": "should force 2FA when server-side trust record is expired",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trust device server-side validation",
+      "suites": [
+        "trust device server-side validation"
+      ],
+      "test": "should preserve trust device after sign-out",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trust device server-side validation",
+      "suites": [
+        "trust device server-side validation"
+      ],
+      "test": "should revoke trust device when disabling 2FA",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trustDeviceMaxAge",
+      "suites": [
+        "trustDeviceMaxAge"
+      ],
+      "test": "should use custom trustDeviceMaxAge for the trust device cookie",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trustDeviceMaxAge",
+      "suites": [
+        "trustDeviceMaxAge"
+      ],
+      "test": "should use default 30 days when trustDeviceMaxAge is not specified",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "twoFactorCookieMaxAge",
+      "suites": [
+        "twoFactorCookieMaxAge"
+      ],
+      "test": "should use custom twoFactorCookieMaxAge for the two-factor cookie",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "twoFactorCookieMaxAge",
+      "suites": [
+        "twoFactorCookieMaxAge"
+      ],
+      "test": "should use default 10 minutes when twoFactorCookieMaxAge is not specified",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "twoFactorTable option",
+      "suites": [
+        "twoFactorTable option"
+      ],
+      "test": "should use custom table name for two factor data",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "OTP storage modes",
+      "suites": [
+        "OTP storage modes",
+        "hashed OTP storage"
+      ],
+      "test": "should verify OTP when stored as hashed",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "OTP storage modes",
+      "suites": [
+        "OTP storage modes",
+        "hashed OTP storage"
+      ],
+      "test": "should reject invalid OTP when stored as hashed",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "OTP storage modes",
+      "suites": [
+        "OTP storage modes",
+        "encrypted OTP storage"
+      ],
+      "test": "should verify OTP when stored as encrypted",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "OTP storage modes",
+      "suites": [
+        "OTP storage modes",
+        "custom hash function OTP storage"
+      ],
+      "test": "should verify OTP with custom hash function",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "pre-migration twoFactor rows (verified absent)",
+      "suites": [
+        "pre-migration twoFactor rows (verified absent)"
+      ],
+      "test": "should complete enrollment when verified is null",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "imported Base32 TOTP secrets",
+      "suites": [
+        "imported Base32 TOTP secrets"
+      ],
+      "test": "returns the normalized secret in the TOTP URI ($form)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "imported Base32 TOTP secrets",
+      "suites": [
+        "imported Base32 TOTP secrets"
+      ],
+      "test": "verifies codes from an imported secret ($form)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "imported Base32 TOTP secrets",
+      "suites": [
+        "imported Base32 TOTP secrets"
+      ],
+      "test": "completes sign-in with an imported secret",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "TOTP enrollment verification",
+      "suites": [
+        "TOTP enrollment verification"
+      ],
+      "test": "should create twoFactor row with verified=false on enableTwoFactor",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "TOTP enrollment verification",
+      "suites": [
+        "TOTP enrollment verification"
+      ],
+      "test": "should mark TOTP as verified after verifyTOTP during enrollment",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "TOTP enrollment verification",
+      "suites": [
+        "TOTP enrollment verification"
+      ],
+      "test": "rejects re-enrollment while a $state TOTP is active",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "TOTP enrollment verification",
+      "suites": [
+        "TOTP enrollment verification"
+      ],
+      "test": "allows restarting an unverified TOTP enrollment",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "TOTP enrollment verification",
+      "suites": [
+        "TOTP enrollment verification"
+      ],
+      "test": "should reject unverified TOTP during sign-in and allow OTP fallback",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor passwordless",
+      "suites": [
+        "two factor passwordless"
+      ],
+      "test": "allows enabling without password for users without credentials",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor passwordless",
+      "suites": [
+        "two factor passwordless"
+      ],
+      "test": "allows getting totp uri without password",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor passwordless",
+      "suites": [
+        "two factor passwordless"
+      ],
+      "test": "allows generating backup codes without password",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor passwordless",
+      "suites": [
+        "two factor passwordless"
+      ],
+      "test": "allows disabling without password",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two factor password still required for credential accounts",
+      "suites": [
+        "two factor password still required for credential accounts"
+      ],
+      "test": "rejects enabling without password for credential users",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "checkPassword must not leak credential presence via error codes",
+      "suites": [
+        "checkPassword must not leak credential presence via error codes"
+      ],
+      "test": "uses INVALID_PASSWORD for wrong password and when credential row is missing",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "twoFactorMethods in sign-in response",
+      "suites": [
+        "twoFactorMethods in sign-in response",
+        "totp enabled in config, otp disabled"
+      ],
+      "test": "should not redirect when user has not verified totp",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "twoFactorMethods in sign-in response",
+      "suites": [
+        "twoFactorMethods in sign-in response",
+        "totp enabled in config, otp disabled"
+      ],
+      "test": "should return twoFactorMethods: ['totp'] when user has verified totp",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "twoFactorMethods in sign-in response",
+      "suites": [
+        "twoFactorMethods in sign-in response",
+        "totp enabled in config, otp enabled"
+      ],
+      "test": "should return twoFactorMethods: ['otp'] when user has 2fa enabled but no totp row",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "twoFactorMethods in sign-in response",
+      "suites": [
+        "twoFactorMethods in sign-in response",
+        "totp enabled in config, otp enabled"
+      ],
+      "test": "should exclude unverified totp from twoFactorMethods",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "twoFactorMethods in sign-in response",
+      "suites": [
+        "twoFactorMethods in sign-in response",
+        "totp enabled in config, otp enabled"
+      ],
+      "test": "should return twoFactorMethods: ['totp', 'otp'] when user has verified totp",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "twoFactorMethods in sign-in response",
+      "suites": [
+        "twoFactorMethods in sign-in response",
+        "totp disabled in config, otp enabled"
+      ],
+      "test": "should return twoFactorMethods: ['otp'] when totp is disabled in config",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "2FA enforcement scope",
+      "suites": [
+        "2FA enforcement scope"
+      ],
+      "test": "should not challenge 2FA on magic-link sign-in",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "2FA enforcement scope",
+      "suites": [
+        "2FA enforcement scope"
+      ],
+      "test": "should not challenge 2FA on authenticated non-sign-in endpoints",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "backup codes storage configurations",
+      "suites": [
+        "backup codes storage configurations"
+      ],
+      "test": "`should preserve ${mode.name} storage format after backup code verification`",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor password length",
+      "suites": [
+        "two-factor password length"
+      ],
+      "test": "enable should ignore an overlong optional password for a passwordless user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor password length",
+      "suites": [
+        "two-factor password length"
+      ],
+      "test": "enable should reject a password longer than maxPasswordLength before hashing",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor password length",
+      "suites": [
+        "two-factor password length"
+      ],
+      "test": "get-totp-uri should reject a password longer than maxPasswordLength before hashing",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

@@ -76,7 +76,7 @@ pub fn open_postgres(options PostgresOptions) !PostgresStorage {
 pub fn (mut storage PostgresStorage) configure_fields(user_fields map[string]AdditionalField, session_fields map[string]AdditionalField) ! {
 	storage.user_fields = user_fields.clone()
 	storage.session_fields = session_fields.clone()
-	for model in ['user', 'session', 'account', 'verification', 'jwks', 'rateLimit'] {
+	for model in ['user', 'session', 'account', 'verification', 'jwks', 'rateLimit', 'twoFactor'] {
 		mut used := map[string]bool{}
 		for field in storage.logical_fields(model) {
 			column := storage.column(model, field)
@@ -117,6 +117,8 @@ const postgres_core_fields = {
 	'verification': ['id', 'identifier', 'value', 'expiresAt', 'createdAt', 'updatedAt']
 	'jwks':         ['id', 'publicKey', 'privateKey', 'alg', 'crv', 'createdAt', 'expiresAt']
 	'rateLimit':    ['key', 'count', 'lastRequest']
+	'twoFactor':    ['id', 'userId', 'secret', 'backupCodes', 'verified', 'failedVerificationCount',
+		'lockedUntil']
 }
 
 fn (storage &PostgresStorage) additional(model string) map[string]AdditionalField {
@@ -139,7 +141,7 @@ fn (storage &PostgresStorage) logical_fields(model string) []string {
 
 fn (storage &PostgresStorage) is_date(model string, field string) bool {
 	if field in ['createdAt', 'updatedAt', 'expiresAt', 'accessTokenExpiresAt',
-		'refreshTokenExpiresAt'] {
+		'refreshTokenExpiresAt', 'lockedUntil'] {
 		return true
 	}
 	return (storage.additional(model)[field] or { AdditionalField{} }).field_type == 'date'

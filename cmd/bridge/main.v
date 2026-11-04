@@ -22,6 +22,9 @@ struct Options {
 	account_linking_enabled           bool
 	trusted_linking_providers         []string
 	disable_email_sign_up             bool
+	app_name                          string = 'Better Auth'
+	two_factor_callbacks              []string
+	two_factor                        ?better_auth.TwoFactorOptions
 	anonymous                         ?better_auth.AnonymousOptions
 	anonymous_callbacks               []string
 	email_otp                         ?better_auth.EmailOTPOptions
@@ -624,6 +627,55 @@ fn main() {
 		return
 	}
 	mut plugins := [better_auth.Plugin(better_auth.BearerPlugin{})]
+	if given := opts.two_factor {
+		mut settings := given
+		mut otp := given.otp_options
+		mut backup := given.backup_code_options
+		if 'send' in opts.two_factor_callbacks { otp = better_auth.TwoFactorOTPOptions{
+				...otp
+				send: fn (mut context better_auth.EndpointContext, user better_auth.User, code string) ! {
+					otp_callback('twoFactor.send', '{"user":' + better_auth.encode_user(user) + ',"otp":' + json.encode(code) + '}', mut context)!}
+			} }
+		if 'hash' in opts.two_factor_callbacks { otp = better_auth.TwoFactorOTPOptions{
+				...otp
+				hash: fn (mut context better_auth.EndpointContext, value string) !string {
+					return json2.decode[string](otp_callback('twoFactor.hash', json.encode(value), mut context)!)}
+			} }
+		if 'encrypt' in opts.two_factor_callbacks { otp = better_auth.TwoFactorOTPOptions{
+				...otp
+				encrypt: fn (mut context better_auth.EndpointContext, value string) !string {
+					return json2.decode[string](otp_callback('twoFactor.encrypt', json.encode(value), mut context)!)}
+			} }
+		if 'decrypt' in opts.two_factor_callbacks { otp = better_auth.TwoFactorOTPOptions{
+				...otp
+				decrypt: fn (mut context better_auth.EndpointContext, value string) !string {
+					return json2.decode[string](otp_callback('twoFactor.decrypt', json.encode(value), mut context)!)}
+			} }
+		if 'backupEncrypt' in opts.two_factor_callbacks { backup = better_auth.BackupCodeOptions{
+				...backup
+				encrypt: fn (mut context better_auth.EndpointContext, value string) !string {
+					return json2.decode[string](otp_callback('twoFactor.backupEncrypt', json.encode(value), mut context)!)}
+			} }
+		if 'backupDecrypt' in opts.two_factor_callbacks { backup = better_auth.BackupCodeOptions{
+				...backup
+				decrypt: fn (mut context better_auth.EndpointContext, value string) !string {
+					return json2.decode[string](otp_callback('twoFactor.backupDecrypt', json.encode(value), mut context)!)}
+			} }
+		if 'backupGenerate' in opts.two_factor_callbacks { backup = better_auth.BackupCodeOptions{
+				...backup
+				generate: fn (mut context better_auth.EndpointContext) ![]string {
+					return json.decode([]string, otp_callback('twoFactor.backupGenerate', 'null', mut context)!)}
+			} }
+		settings = better_auth.TwoFactorOptions{
+			...settings
+			otp_options:         otp
+			backup_code_options: backup
+		}
+		plugins << better_auth.TwoFactorPlugin{
+			options: settings
+		}
+	}
+
 	if opts.admin_schema { plugins << better_auth.AdminSchemaPlugin{
 			default_role: opts.admin_default_role
 		} }
@@ -835,6 +887,7 @@ fn main() {
 		generic << settings
 	}
 	mut auth := better_auth.new(better_auth.Config{
+		app_name:                  opts.app_name
 		id_strategy:               opts.id_strategy
 		generate_id:               if opts.custom_id_generator {
 			fn (model string) !string {
@@ -1152,11 +1205,22 @@ fn main() {
 			'request' {
 				start := state.emails.len
 				log_start := state.logs.len
-				response := if command.direct {
-					auth.call(command.request)
+				mut response := better_auth.Response{}
+				if command.direct {
+					response = auth.call_result(command.request) or {
+						message := 'Internal server error'
+						emit(Reply{
+							id:           command.id
+							error:        message
+							error_status: 500
+							error_code:   'INTERNAL_SERVER_ERROR'
+						})
+						continue
+					}
 				} else {
-					auth.handle(command.request)
+					response = auth.handle(command.request)
 				}
+
 				emit(Reply{
 					id:       command.id
 					response: response
@@ -1165,12 +1229,48 @@ fn main() {
 				})
 			}
 			'inspect' {
+				if command.model == 'session' {
+					mut records := []better_auth.Session{}
+					users := storage.users() or {
+						emit(Reply{ id: command.id, error: err.msg() })
+						continue
+					}
+					for user in users {
+						records << storage.sessions(user.id) or { []better_auth.Session{} }
+					}
+					encoded := filter_inspection('[' +
+						records.map(better_auth.encode_session(it)).join(',') + ']',
+						command.where_json) or {
+						emit(Reply{ id: command.id, error: err.msg() })
+						continue
+					}
+					emit(Reply{ id: command.id, records_json: encoded })
+					continue
+				}
+				if command.model == 'twoFactor' {
+					if mut storage is better_auth.TwoFactorStorage {
+						records := storage.two_factors('') or {
+							emit(Reply{ id: command.id, error: err.msg() })
+							continue
+						}
+						encoded := filter_inspection('[' +
+							records.map(better_auth.encode_two_factor(it)).join(',') + ']',
+							command.where_json) or {
+							emit(Reply{ id: command.id, error: err.msg() })
+							continue
+						}
+						emit(Reply{ id: command.id, records_json: encoded })
+						continue
+					}
+				}
 				if command.model == 'verification' {
 					records := storage.verifications() or {
 						emit(Reply{ id: command.id, error: err.msg() })
 						continue
 					}
-					encoded := filter_inspection(json.encode(records), command.where_json) or {
+					encoded := filter_inspection('[' +
+						records.map(better_auth.encode_verification(it)).join(',') + ']',
+						command.where_json) or {
 						emit(Reply{ id: command.id, error: err.msg() })
 						continue
 					}

@@ -101,11 +101,14 @@ pub:
 
 pub struct AuthResult {
 pub:
-	session  ?Session @[skip]
-	redirect bool
-	token    ?string
-	url      ?string
-	user     User
+	two_factor_redirect bool     @[json: twoFactorRedirect; omitempty]
+	two_factor_methods  []string @[json: twoFactorMethods; omitempty]
+	headers             []Header @[skip]
+	session             ?Session @[skip]
+	redirect            bool
+	token               ?string
+	url                 ?string
+	user                User
 }
 
 pub struct APIError {
@@ -188,6 +191,7 @@ pub:
 
 pub struct Config {
 pub:
+	app_name                          string              = 'Better Auth'
 	id_strategy                       string              = 'random'
 	generate_id                       fn (string) !string = no_id_generator
 	verification                      VerificationOptions

@@ -1,0 +1,131 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/two-factor/two-factor.security.test.ts",
+  "sha256": "c810bfb5cf925ac689e9c02027e1ae1b42129bcd3fa00186eb9207c16d504289",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "two-factor security: sign-in does not leak session cookies (cookieCache enabled)",
+      "suites": [
+        "two-factor security: sign-in does not leak session cookies (cookieCache enabled)"
+      ],
+      "test": "$path: response carries no valid signed session_token or session_data",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported legacy JS adapter injection, username/phone entry points and JS middleware newSession probes"
+    },
+    {
+      "suite": "two-factor security: sign-in does not leak session cookies (cookieCache enabled)",
+      "suites": [
+        "two-factor security: sign-in does not leak session cookies (cookieCache enabled)"
+      ],
+      "test": "$path: replaying captured cookies cannot authenticate or disable 2FA",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Unported legacy JS adapter injection, username/phone entry points and JS middleware newSession probes"
+    },
+    {
+      "suite": "two-factor security: sign-in does not leak session cookies (cookieCache disabled)",
+      "suites": [
+        "two-factor security: sign-in does not leak session cookies (cookieCache disabled)"
+      ],
+      "test": "response carries no valid signed session_token on 2FA-required sign-in",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor security: sign-in does not leak session cookies (cookieCache disabled)",
+      "suites": [
+        "two-factor security: sign-in does not leak session cookies (cookieCache disabled)"
+      ],
+      "test": "replaying any cookies captured from the response cannot authenticate",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor security: chunked session_data is fully scrubbed on 2FA-required sign-in",
+      "suites": [
+        "two-factor security: chunked session_data is fully scrubbed on 2FA-required sign-in"
+      ],
+      "test": "test setup exercises chunked session_data cookies",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor security: chunked session_data is fully scrubbed on 2FA-required sign-in",
+      "suites": [
+        "two-factor security: chunked session_data is fully scrubbed on 2FA-required sign-in"
+      ],
+      "test": "no session_data.N chunk leaks a non-empty value and replay cannot authenticate",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor security: 2FA challenge is single-use and expiry-bounded",
+      "suites": [
+        "two-factor security: 2FA challenge is single-use and expiry-bounded"
+      ],
+      "test": "rejects an expired two-factor sign-in challenge even with a valid TOTP",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor security: 2FA challenge is single-use and expiry-bounded",
+      "suites": [
+        "two-factor security: 2FA challenge is single-use and expiry-bounded"
+      ],
+      "test": "two concurrent verifications of the same challenge yield exactly one session",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor security: OTP attempts are atomic under concurrency",
+      "suites": [
+        "two-factor security: OTP attempts are atomic under concurrency"
+      ],
+      "test": "counts wrong guesses up to the limit then locks out",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor security: OTP attempts are atomic under concurrency",
+      "suites": [
+        "two-factor security: OTP attempts are atomic under concurrency"
+      ],
+      "test": "a concurrent burst of wrong guesses cannot exceed the attempt budget",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor security: OTP attempts are atomic under concurrency",
+      "suites": [
+        "two-factor security: OTP attempts are atomic under concurrency"
+      ],
+      "test": "concurrent correct codes mint at most one session",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

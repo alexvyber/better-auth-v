@@ -34,7 +34,7 @@
     "plugins": {
       "files": 45,
       "declarations": 1315,
-      "importedFiles": 8
+      "importedFiles": 12
     },
     "adapters": {
       "files": 16,
@@ -27265,7 +27265,7 @@
       "path": "packages/better-auth/src/plugins/two-factor/two-factor.account-lockout.test.ts",
       "sha256": "06f852ca7c9b30202dc30a680aeadeaa15b71400733fb9a4a788730ac048040c",
       "group": "plugins",
-      "status": "unported",
+      "status": "imported-partial-file",
       "kind": "runtime",
       "declarations": [
         {
@@ -27373,7 +27373,7 @@
       "path": "packages/better-auth/src/plugins/two-factor/two-factor.attempt-cap.test.ts",
       "sha256": "82a88b99e7f8d60faa57f1ff127ef5d1372bff51c6eeb5d6d1ca24ac5bf0c55d",
       "group": "plugins",
-      "status": "unported",
+      "status": "imported-partial-file",
       "kind": "runtime",
       "declarations": [
         {
@@ -27418,7 +27418,7 @@
       "path": "packages/better-auth/src/plugins/two-factor/two-factor.security.test.ts",
       "sha256": "c810bfb5cf925ac689e9c02027e1ae1b42129bcd3fa00186eb9207c16d504289",
       "group": "plugins",
-      "status": "unported",
+      "status": "imported-partial-file",
       "kind": "runtime",
       "declarations": [
         {
@@ -27526,7 +27526,7 @@
       "path": "packages/better-auth/src/plugins/two-factor/two-factor.test.ts",
       "sha256": "8a98de0460dfb27477155bebb12589f5056240efc02a5689125d56f192d061dc",
       "group": "plugins",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {

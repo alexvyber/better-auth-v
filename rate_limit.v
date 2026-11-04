@@ -108,6 +108,12 @@ fn (mut a Auth) rate_limit(path string) !Lookup[Response] {
 		}
 		if options.rate_limit.window > longest_window { longest_window = options.rate_limit.window }
 	}
+	if a.two_factor_options() != none && path.starts_with('/two-factor/') {
+		rule = RateLimitRule{
+			max:    3
+			window: 10
+		}
+	}
 	mut matched := false
 	for pattern, custom in a.config.rate_limit_rules {
 		if custom.window > longest_window { longest_window = custom.window }

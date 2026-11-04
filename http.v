@@ -185,7 +185,16 @@ fn (mut a Auth) process(req Request, direct bool) Response {
 
 // Complete only a context obtained from this server's prepare_request().
 // Preparation permits application hooks to await work without locking storage.
+pub fn (mut a Auth) call_result(request Request) !Response {
+	prepared := a.prepare_request(request, true)!
+	return a.handle_prepared_result(prepared, true)
+}
+
 pub fn (mut a Auth) handle_prepared(prepared PreparedRequest) Response {
+	return a.handle_prepared_result(prepared, false) or { error_response(err) }
+}
+
+fn (mut a Auth) handle_prepared_result(prepared PreparedRequest, propagate_server_errors bool) !Response {
 	a.mutex.@lock()
 	defer { a.mutex.unlock() }
 	if a.closed {
@@ -214,8 +223,14 @@ pub fn (mut a Auth) handle_prepared(prepared PreparedRequest) Response {
 		headers: headers
 		request: if direct { none } else { ?Request(normalized) }
 	}
-	r := if response := prepared.response { response } else { a.process_checked(normalized, direct) or {
-			error_response(err)} }
+	r := if response := prepared.response {
+		response
+	} else {
+		a.process_checked(normalized, direct) or {
+			if propagate_server_errors && err !is APIError { return err }
+			error_response(err)
+		}
+	}
 	mut result := r
 	parsed_url := urllib.parse(normalized.url) or { urllib.URL{} }
 	mut plugin_endpoint := false
@@ -446,6 +461,7 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 				}
 				return err
 			}
+			if challenge := (a.two_factor_sign_in(result)!).value { return challenge }
 			token := result.token or { return error('missing session token') }
 			session := result.session or { return error('missing created session') }
 			r := Response{

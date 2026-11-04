@@ -82,7 +82,7 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   Secondary storage holds live session tokens and user snapshots.
 - Optional images are emitted as null, including synthetic registration responses.
 - SQLite tables use typed indexed identity columns plus JSON record payloads;
-  they do not match upstream's physical schema. Schema v5 is owned by this project;
+  they do not match upstream's physical schema. Schema v6 is owned by this project;
   migrations preserve v1 rows. Account identity columns support actual SQL aliases.
 - Email verification uses upstream-compatible HS256 JWTs; repeated verification
   is idempotent. Old native opaque verification links remain readable until their
@@ -365,7 +365,7 @@ schema generation/introspection, full secondary
 storage parity, full stateless/account-cookie behavior, complete JWT/JWKS plugin parity,
 custom-field validators/transforms,
 remaining database-column mapping options, richer hooks,
-username/phone authentication, TOTP/recovery codes, passkeys, admin,
+username/phone authentication, remaining two-factor integration details, passkeys, admin,
 organizations/teams/RBAC, API keys, OAuth/OIDC server functionality,
 SSO/SAML/SCIM, and payment/integration plugins remain unimplemented.
 
@@ -504,3 +504,47 @@ Prisma schema/migration equivalence, arbitrary query/filter/join APIs, plugin-ow
 tables, introspection, pooling/reconnect policy, serial IDs and live TypeScript/V
 coexistence remain unverified or unimplemented. No tests connect to Brand Map or
 Nabu databases. MongoDB remains required for Nabu.
+
+
+## Two-factor authentication
+
+`TwoFactorPlugin` contributes protected `twoFactorEnabled` and implements enable,
+disable, TOTP URI/verification, backup-code generation/verification, and delivered
+OTP send/verification routes under `/two-factor/`. `TwoFactorOptions` configures
+issuer, TOTP digits/period, passwordless handling, optional immediate enrollment,
+OTP storage/delivery/expiry/attempts, recovery-code storage/generation and device/
+challenge lifetimes. Plain, hashed, encrypted and supplied OTP codecs are supported;
+recovery codes support plain/encrypted/supplied storage. Secrets use native symmetric
+encryption with the configured retained keys. Imported `base32:` secrets decode
+before HMAC-SHA1 verification. Native vectors cover RFC 4226 and RFC 6238.
+
+Email/password sign-in creates a signed, expiring challenge and removes the pending
+session before any JWT/OTT issuance. Valid TOTP/recovery submissions consume a
+per-challenge gate, and completion atomically burns the challenge before creating
+a session. Recovery codes are persisted as used before session creation. Failed
+attempts persist across requests; factor records carry shared account lockout state.
+PostgreSQL locks factor rows across independent connections. OTP-only accounts
+without a factor row use the OTP attempt cap, matching upstream's current limit.
+Trusted devices require live server records and rotate on use. Disabling removes
+factor records, rotates the current session and revokes the supplied device record.
+HTTP two-factor routes use the upstream three-per-ten-second rule when rate limiting
+is enabled; trusted calls bypass HTTP limits. The typed `AuthResult` exposes a
+`two_factor_redirect` flag, methods and response headers for pending sign-ins.
+
+TOTP generation and viewing recovery codes are trusted-only routes; HTTP requests
+receive 404. `call_result` preserves unexpected native server errors for trusted
+transports; `call`/HTTP handling still return sanitized responses. Authenticated
+re-verification does not issue a replacement session or clear account lockout state.
+
+All 71 main upstream cases pass. Additional imported attempt/security/lockout cases
+bring coverage to 91 runtime cases, repeated on PostgreSQL. The server-error attempt
+case runs unchanged in its own fixture: the serialized bridge can spend all allowed
+concurrent guesses in the earlier test, exhausting the shared account budget. The
+original shared-account suite ordering remains unverified, so that file remains a
+partial import. Legacy JavaScript adapter fallbacks, direct atomic-method injection,
+username/phone sign-in probes and JavaScript `newSession` middleware probes remain
+explicit exclusions. The other selected cases cover cookie/chunk scrubbing, stale
+replays, expiry, concurrency and mixed-factor account limits. Three integration
+contracts cover JWT/OTT ordering, application fixed-code storage and cross-process
+PostgreSQL redemption; another checks the HTTP plugin rate rule. This does not prove
+all plugin/framework/database combinations or live Brand Map integration.

@@ -1,0 +1,54 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/two-factor/two-factor.attempt-cap.test.ts",
+  "sha256": "82a88b99e7f8d60faa57f1ff127ef5d1372bff51c6eeb5d6d1ca24ac5bf0c55d",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "two-factor security: TOTP enforces a per-challenge attempt cap",
+      "suites": [
+        "two-factor security: TOTP enforces a per-challenge attempt cap"
+      ],
+      "test": "locks out after the limit and cancels the challenge",
+      "selected": false,
+      "executionSurface": "native-isolated-account-server-error",
+      "upstreamDisabled": false,
+      "reason": "Other attempt cases run separately; serialized bridge exhausts shared account budget in the original suite ordering"
+    },
+    {
+      "suite": "two-factor security: TOTP enforces a per-challenge attempt cap",
+      "suites": [
+        "two-factor security: TOTP enforces a per-challenge attempt cap"
+      ],
+      "test": "a concurrent burst cannot exceed the attempt budget",
+      "selected": false,
+      "executionSurface": "native-isolated-account-server-error",
+      "upstreamDisabled": false,
+      "reason": "Other attempt cases run separately; serialized bridge exhausts shared account budget in the original suite ordering"
+    },
+    {
+      "suite": "two-factor security: TOTP enforces a per-challenge attempt cap",
+      "suites": [
+        "two-factor security: TOTP enforces a per-challenge attempt cap"
+      ],
+      "test": "a server error during verification does not spend an attempt slot",
+      "selected": true,
+      "executionSurface": "native-isolated-account-server-error",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor security: backup codes enforce a per-challenge attempt cap",
+      "suites": [
+        "two-factor security: backup codes enforce a per-challenge attempt cap"
+      ],
+      "test": "counts wrong backup codes up to the limit then locks out",
+      "selected": false,
+      "executionSurface": "native-isolated-account-server-error",
+      "upstreamDisabled": false,
+      "reason": "Other attempt cases run separately; serialized bridge exhausts shared account budget in the original suite ordering"
+    }
+  ]
+}

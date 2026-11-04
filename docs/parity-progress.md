@@ -661,8 +661,26 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   under ignored build/deps. This does not prove compatibility with live Brand Map
   databases or complete Prisma/plugin/query parity. MongoDB remains open for Nabu.
 
-The latest verification passes 1525 TypeScript cases across 79 files, all 91 native
-V test functions across 30 files (including all 20,034 Unicode vectors), TypeScript
+- Added native two-factor storage (SQLite schema v6, map snapshots, mapped
+  PostgreSQL factor rows), encrypted TOTP enrollment/confirmation, delivered OTPs,
+  recovery-code codecs, trusted devices, challenge caps and account lockout. The
+  sign-in gate runs before cookie/JWT/OTT issuance. Passwordless controls and custom
+  codecs remain application-supplied callbacks. Account changes preserve lockout
+  state on authenticated re-verification. Factor row locks protect PostgreSQL
+  operations across connections.
+- All 71 main upstream two-factor runtime cases pass; 20 selected security/attempt/
+  lockout cases also pass, with the server-error case isolated unchanged to avoid
+  the serialized fixture spending the shared account budget in a previous burst.
+  The original attempt file remains partial: its complete shared-account ordering
+  has not passed. The same 91 cases repeat on mapped PostgreSQL. Legacy JS adapter
+  fallback/direct atomic injection, username/phone probes and middleware newSession
+  probes remain excluded. Four owned cases cover Brand Map fixed-code codecs,
+  JWT/OTT ordering, separate-process PostgreSQL redemption and HTTP rate limits.
+  Three native functions cover RFC vectors, imported Base32/window handling and
+  typed sign-in challenge responses. No application database was touched.
+
+The latest verification passes 1711 TypeScript cases across 90 files, all 94 native
+V test functions across 31 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus
@@ -670,8 +688,8 @@ passes.
 
 The user resumed work and authorized incremental commits and pushes to
 `alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.
-The objective remains incomplete. The corpus currently records 31 completely
-imported files, five partial imports and 400 unported files; imported status describes source
+The objective remains incomplete. The corpus currently records 32 completely
+imported files, eight partial imports and 396 unported files; imported status describes source
 preservation, not broad feature completion.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise

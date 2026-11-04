@@ -1,0 +1,120 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/two-factor/two-factor.account-lockout.test.ts",
+  "sha256": "06f852ca7c9b30202dc30a680aeadeaa15b71400733fb9a4a788730ac048040c",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "two-factor: account-level lockout across challenges",
+      "suites": [
+        "two-factor: account-level lockout across challenges"
+      ],
+      "test": "enforces account lockout through legacy adapter fallbacks",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported legacy JS adapter injection, username/phone entry points and JS middleware newSession probes"
+    },
+    {
+      "suite": "two-factor: account-level lockout across challenges",
+      "suites": [
+        "two-factor: account-level lockout across challenges"
+      ],
+      "test": "consumes an email OTP once through legacy adapter fallbacks",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported legacy JS adapter injection, username/phone entry points and JS middleware newSession probes"
+    },
+    {
+      "suite": "two-factor: account-level lockout across challenges",
+      "suites": [
+        "two-factor: account-level lockout across challenges"
+      ],
+      "test": "allows a backup code to be consumed once through legacy adapter fallbacks",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported legacy JS adapter injection, username/phone entry points and JS middleware newSession probes"
+    },
+    {
+      "suite": "two-factor: account-level lockout across challenges",
+      "suites": [
+        "two-factor: account-level lockout across challenges"
+      ],
+      "test": "locks the account after failures accumulate across separate challenges",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor: account-level lockout across challenges",
+      "suites": [
+        "two-factor: account-level lockout across challenges"
+      ],
+      "test": "counts failures from all factors toward one account lock",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor: account-level lockout across challenges",
+      "suites": [
+        "two-factor: account-level lockout across challenges"
+      ],
+      "test": "counts email-OTP failures toward the same account lock",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor: account-level lockout across challenges",
+      "suites": [
+        "two-factor: account-level lockout across challenges"
+      ],
+      "test": "resets the counter on a successful verification",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor: account-level lockout across challenges",
+      "suites": [
+        "two-factor: account-level lockout across challenges"
+      ],
+      "test": "releases the lock once its window elapses",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor: account-level lockout across challenges",
+      "suites": [
+        "two-factor: account-level lockout across challenges"
+      ],
+      "test": "does not lock when account lockout is disabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor: account-level lockout across challenges",
+      "suites": [
+        "two-factor: account-level lockout across challenges"
+      ],
+      "test": "counts a row with no prior failure count without locking on the first failure",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "two-factor: account-level lockout across challenges",
+      "suites": [
+        "two-factor: account-level lockout across challenges"
+      ],
+      "test": "sets the lock with a guarded counter transition",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported legacy JS adapter injection, username/phone entry points and JS middleware newSession probes"
+    }
+  ]
+}

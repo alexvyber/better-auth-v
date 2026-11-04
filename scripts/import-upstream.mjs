@@ -16,6 +16,23 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+ ...['attempt-cap', 'account-lockout', 'security'].map(kind => ({
+ file:'two-factor-'+kind, path:'packages/better-auth/src/plugins/two-factor/two-factor.'+kind+'.test.ts',
+ suites: kind === 'security' ? new Set([
+ 'two-factor security: sign-in does not leak session cookies (cookieCache disabled)',
+ 'two-factor security: chunked session_data is fully scrubbed on 2FA-required sign-in',
+ 'two-factor security: 2FA challenge is single-use and expiry-bounded',
+ 'two-factor security: OTP attempts are atomic under concurrency']) : null,
+ includeHelpers: kind !== 'account-lockout', helpers: kind === 'account-lockout' ? new Set(['setup']) : undefined,
+ skippedTests: kind === 'attempt-cap' ? new Set(['a server error during verification does not spend an attempt slot']) : kind === 'account-lockout' ? new Set([
+ 'enforces account lockout through legacy adapter fallbacks', 'consumes an email OTP once through legacy adapter fallbacks',
+ 'allows a backup code to be consumed once through legacy adapter fallbacks', 'sets the lock with a guarded counter transition']) : undefined,
+ imports: 'import type { BetterAuthOptions, GenericEndpointContext } from "@better-auth/core";\nimport type { SecondaryStorage } from "@better-auth/core/db";\nimport { createOTP } from "@better-auth/utils/otp";\nimport { describe, expect, it } from "vitest";\nimport { symmetricDecrypt } from "better-auth/crypto";\nimport { convertSetCookieToCookie } from "../harness/two-factor.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport type { User, Session, Verification } from "better-auth";\nimport { DEFAULT_SECRET } from "../harness/constants.js";\nimport { TWO_FACTOR_ERROR_CODES } from "better-auth/plugins/two-factor";\nimport type { TwoFactorOptions, TwoFactorTable, UserWithTwoFactor } from "better-auth/plugins/two-factor";\nimport { twoFactor } from "../harness/plugins.js";\nconst DEFAULT_TWO_FACTOR_ALLOWED_ATTEMPTS = 5;\n',
+ unportedReason: 'Unported legacy JS adapter injection, username/phone entry points and JS middleware newSession probes',
+ })),
+ {file:'two-factor', path:'packages/better-auth/src/plugins/two-factor/two-factor.test.ts', suites:null,
+ imports: 'import { APIError, BASE_ERROR_CODES } from "@better-auth/core/error";\nimport { base32 } from "@better-auth/utils/base32";\nimport { createOTP } from "@better-auth/utils/otp";\nimport { describe, expect, it, vi } from "vitest";\nimport { createAuthClient } from "better-auth/client";\nimport { applySetCookies, parseSetCookieHeader } from "../harness/cookies.js";\nimport { symmetricDecrypt, symmetricEncrypt } from "better-auth/crypto";\nimport { convertSetCookieToCookie } from "../harness/two-factor.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { DEFAULT_SECRET } from "../harness/constants.js";\nimport { anonymous, twoFactor, magicLink } from "../harness/plugins.js";\nimport { TWO_FACTOR_ERROR_CODES } from "better-auth/plugins/two-factor";\nimport { twoFactorClient } from "better-auth/client/plugins";\nimport type {TwoFactorTable,UserWithTwoFactor} from "../harness/two-factor.js";\n',
+ },
  {file: 'postgres-sign-in', source_file: 'sign-in', suites: null, executionSurface: 'native-postgres-uuid-mapped-physical-schema',
  imports: 'import { APIError, BASE_ERROR_CODES } from "@better-auth/core/error";\nimport { describe, expect, it, vi } from "vitest";\nimport { parseSetCookieHeader } from "better-auth/cookies";\nimport { getTestInstance } from "../harness/postgres-fixture.js";\n',
  },
@@ -174,8 +191,15 @@ const plans = [
     ]),
   },
 ];
+const attemptPlan = plans.find(plan => plan.file === 'two-factor-attempt-cap');
+plans.push({...attemptPlan, file: 'two-factor-attempt-server-error',
+ suites: new Set(['two-factor security: TOTP enforces a per-challenge attempt cap']),
+ skippedTests: undefined, nestedSuites: new Set(),
+ includeTests: new Set(['a server error during verification does not spend an attempt slot']),
+ executionSurface: 'native-isolated-account-server-error',
+ unportedReason: 'Other attempt cases run separately; serialized bridge exhausts shared account budget in the original suite ordering'});
 // Repeat intact assertions over native PostgreSQL; these copies do not expand the unique corpus.
-for (const name of ['one-time-token', 'email-otp', 'password-reset', 'session-api']) {
+for (const name of ['one-time-token', 'email-otp', 'password-reset', 'session-api', 'two-factor', 'two-factor-account-lockout', 'two-factor-security', 'two-factor-attempt-cap', 'two-factor-attempt-server-error']) {
  const original = plans.find(plan => plan.file === name);
  plans.push({...original, file: 'postgres-' + name, source_file: original.source_file ?? name,
   ...(name === 'session-api' ? {suites: new Set(['session'])} : {}),
@@ -198,6 +222,10 @@ for (const plan of plans) {
     (plan.imports ?? "") + (plan.extraImports ?? "");
   for (const statement of sourceFile.statements) {
     if (ts.isExpressionStatement(statement) && ts.isCallExpression(statement.expression) && plan.setupCalls?.has(statement.expression.expression.getText(sourceFile))) {
+      output += '\n' + statement.getText(sourceFile) + '\n';
+      continue;
+    }
+    if (ts.isFunctionDeclaration(statement) && statement.name && plan.helpers?.has(statement.name.text)) {
       output += '\n' + statement.getText(sourceFile) + '\n';
       continue;
     }

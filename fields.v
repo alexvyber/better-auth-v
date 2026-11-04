@@ -64,6 +64,7 @@ fn decode_account(encoded string) !Account {
 fn decode_auth_result(encoded string) !AuthResult {
 	result := json.decode(AuthResult, encoded)!
 	fields := json2.decode[map[string]json2.Any](encoded)!
+	if result.two_factor_redirect { return result }
 	return AuthResult{
 		...result
 		user: decode_user((fields['user'] or { return error('missing user') }).json_str())!

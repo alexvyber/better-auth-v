@@ -81,6 +81,7 @@ pub fn (p GitHubProvider) exchange(code string, verifier string, redirect_uri st
 		return fail(502, 'OAUTH_TOKEN_ERROR', 'Provider token exchange failed')
 	}
 	token := json.decode(GitHubToken, response.body)!
+	tokens := parse_oauth_tokens(response.body, time.now().unix_milli())!
 	if token.access_token == '' {
 		return fail(400, 'OAUTH_TOKEN_ERROR', 'Provider rejected the authorization code')
 	}
@@ -124,6 +125,7 @@ pub fn (p GitHubProvider) exchange(code string, verifier string, redirect_uri st
 		return fail(403, 'EMAIL_NOT_VERIFIED', 'Email not verified')
 	}
 	return OAuthIdentity{
+		tokens:         tokens
 		profile:        json2.decode[map[string]json2.Any](profile_response.body)!
 		id:             profile.id.str()
 		email:          selected

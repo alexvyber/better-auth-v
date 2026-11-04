@@ -18,6 +18,10 @@ struct Options {
 	organization_schema               bool
 	organization_teams                bool
 	logout_providers                  []better_auth.GenericOAuthLogoutProvider
+	google_provider                   ?better_auth.GoogleProvider
+	store_account_cookie              bool
+	account_cookie_bind_user          ?bool
+	encrypt_oauth_tokens              bool
 	endpoint_plugins                  []RemoteEndpointPlugin
 	jwt_plugin                        bool
 	jwt_expiration_json               string
@@ -623,6 +627,16 @@ fn main() {
 		logout_providers << better_auth.OAuthLogoutProvider(provider)
 	}
 	defaults := better_auth.Config{}
+	mut providers := []better_auth.OAuthProvider{}
+	if google := opts.google_provider {
+		providers << better_auth.GoogleProvider{
+			...google
+			transport:    RemoteOAuthTransport{}
+			clock_millis: fn [state] () i64 {
+				return state.now_millis
+			}
+		}
+	}
 	mut auth := better_auth.new(better_auth.Config{
 		stateless_sessions:                opts.stateless_sessions
 		cookie_cache:                      better_auth.CookieCacheConfig{
@@ -654,6 +668,10 @@ fn main() {
 			callback_with_context('transaction.beforeCommit', '{}', mut context)!
 		}
 		logout_providers:                  logout_providers
+		social_providers:                  providers
+		store_account_cookie:              opts.store_account_cookie
+		account_cookie_bind_user:          opts.account_cookie_bind_user
+		encrypt_oauth_tokens:              opts.encrypt_oauth_tokens
 		base_url:                          opts.base_url
 		base_path:                         opts.base_path
 		secret:                            opts.secret

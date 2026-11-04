@@ -7,8 +7,9 @@ import json
 import net.urllib
 import x.json2
 
-// OIDC providers must validate ID-token issuer, audience, nonce, signature, and
-// expiry inside exchange(). GitHub uses its authenticated profile/email APIs.
+// Code exchanges obtain identity from the provider's authenticated token/profile
+// transport. Direct ID-token credentials need a separate issuer/audience/nonce/
+// signature/expiry verification path; they must not enter exchange().
 pub interface OAuthProvider {
 	id() string
 	authorization_url(string, string, string) !string
@@ -24,6 +25,17 @@ pub:
 	image             ?string
 	additional_fields map[string]json2.Any
 	profile           map[string]json2.Any
+	tokens            OAuthTokens
+}
+
+pub struct OAuthTokens {
+pub:
+	access_token             ?string
+	refresh_token            ?string
+	id_token                 string
+	access_token_expires_at  ?string
+	refresh_token_expires_at ?string
+	scope                    ?string
 }
 
 struct OAuthState {
@@ -114,9 +126,16 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 	}
 	email := normalize_email(identity.email)!
 	mut user := User{}
+	mut selected_account := Account{}
 	if account := (a.storage.account_by_provider(provider_id, identity.id)!).value {
 		user = (a.storage.user(account.user_id)!).value or {
 			return fail(400, 'USER_NOT_FOUND', 'User not found')
+		}
+
+		patch := a.oauth_account_patch(identity.tokens, account.scope or { '' })!
+		if patch.len > 0 { a.update_account_record(account, json2.Any(patch).json_str())! }
+		selected_account = (a.storage.account_by_id(account.id)!).value or {
+			return fail(400, 'ACCOUNT_NOT_FOUND', 'Account not found')
 		}
 	} else {
 		// Email equality never silently links an existing local account.
@@ -150,19 +169,32 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 			})
 		 }
 		user = a.persist_user(user)!
-		a.persist_account(Account{
+		base_account := Account{
 			id:          random_token()!
 			user_id:     user.id
 			provider_id: provider_id
 			account_id:  identity.id
-		})!
+		}
+		patch := a.oauth_account_patch(identity.tokens, '')!
+		selected_account = a.persist_account(decode_account(merge_record_json(json.encode(base_account),
+			json2.Any(patch).json_str())!)!)!
+	}
+	if selected_account.account_id != identity.id || selected_account.provider_id != provider_id
+		|| selected_account.user_id != user.id {
+		return fail(409, 'account_hook_binding_conflict',
+			'Account hook changed the selected authentication binding')
 	}
 	a.remove_verification(record.id)!
 	session := a.make_session(user.id, RequestContext{ headers: req.headers }, true)!
-	return a.oauth_cookie(a.set_cookie(Response{
+	mut response := Response{
 		status:  302
 		headers: [
 			Header{'location', stored.callback_url},
 		]
-	}, session.token, true), '', true)
+	}
+	if a.config.store_account_cookie {
+		response = a.set_account_cookie(response, json.encode(selected_account))!
+	}
+	response = a.set_session_cookies(response, SessionResult{ session: session, user: user })!
+	return a.oauth_cookie(response, '', true)
 }

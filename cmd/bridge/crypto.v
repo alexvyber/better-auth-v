@@ -11,6 +11,20 @@ fn crypto_command() ! {
 	args := (fields['args'] or { return error('missing crypto arguments') }).as_array()
 	mut encoded := 'null'
 	match op.str() {
+		'setTokenUtil' {
+			if args[0] is json2.Null {
+				encoded = 'null'
+			} else if args[0] is map[string]json2.Any {
+				encoded = '{"$undefined":true}'
+			} else {
+				encoded = json.encode(better_auth.encrypt_oauth_token(args[0].str(),
+					better_auth.decode_symmetric_secret(args[1])!, args[2].bool())!)
+			}
+		}
+		'decryptOAuthToken' {
+			encoded = json.encode(better_auth.decrypt_oauth_token(args[0].str(),
+				better_auth.decode_symmetric_secret(args[1])!, args[2].bool())!)
+		}
 		'parseEnvelope' {
 			if envelope := better_auth.parse_secret_envelope(args[0].str()) {
 				encoded = json.encode(envelope)

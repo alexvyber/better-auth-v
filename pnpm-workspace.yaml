@@ -1,2 +1,4 @@
 allowBuilds:
   esbuild: true
+  # Node-only interception needs no browser worker installation.
+  msw: false

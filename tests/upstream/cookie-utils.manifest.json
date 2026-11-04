@@ -935,9 +935,9 @@
         "account cookie sync on user switch"
       ],
       "test": "keeps the fresh account cookie issued for the new user when the request carries another user's stale account cookie",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: Google OAuth and account cookie synchronization"
+      "reason": null
     },
     {
       "suite": "account cookie sync on user switch",
@@ -945,9 +945,9 @@
         "account cookie sync on user switch"
       ],
       "test": "still expires another user's stale account cookie when the response issues no fresh one",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: Google OAuth and account cookie synchronization"
+      "reason": null
     },
     {
       "suite": "getCookieCache expiry (compact strategy)",

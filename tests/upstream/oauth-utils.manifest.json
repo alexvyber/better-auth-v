@@ -1,0 +1,140 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/oauth2/utils.test.ts",
+  "sha256": "7db6836af664300fe53e5a1920889ed3d19c553c0ae6364f2d7f8e4c7412a855",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "decryptOAuthToken",
+      "suites": [
+        "decryptOAuthToken"
+      ],
+      "test": "should return empty token as-is",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "decryptOAuthToken",
+      "suites": [
+        "decryptOAuthToken"
+      ],
+      "test": "should return token as-is when encryption is disabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "decryptOAuthToken",
+      "suites": [
+        "decryptOAuthToken"
+      ],
+      "test": "should decrypt encrypted token when encryption is enabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "decryptOAuthToken",
+      "suites": [
+        "decryptOAuthToken"
+      ],
+      "test": "should handle migration: return unencrypted token as-is when encryption is enabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "decryptOAuthToken",
+      "suites": [
+        "decryptOAuthToken"
+      ],
+      "test": "should handle migration: JWT-style tokens should be returned as-is",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "decryptOAuthToken",
+      "suites": [
+        "decryptOAuthToken"
+      ],
+      "test": "should handle migration: token with odd length should be returned as-is",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "migration scenario - issue #6018",
+      "suites": [
+        "migration scenario - issue #6018"
+      ],
+      "test": "should handle Google OAuth token stored before encryption was enabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "migration scenario - issue #6018",
+      "suites": [
+        "migration scenario - issue #6018"
+      ],
+      "test": "should handle refresh token that was stored unencrypted",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "migration scenario - issue #6018",
+      "suites": [
+        "migration scenario - issue #6018"
+      ],
+      "test": "should still decrypt properly encrypted tokens",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "setTokenUtil",
+      "suites": [
+        "setTokenUtil"
+      ],
+      "test": "should return null/undefined as-is",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "setTokenUtil",
+      "suites": [
+        "setTokenUtil"
+      ],
+      "test": "should return token as-is when encryption is disabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "setTokenUtil",
+      "suites": [
+        "setTokenUtil"
+      ],
+      "test": "should encrypt token when encryption is enabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "setTokenUtil",
+      "suites": [
+        "setTokenUtil"
+      ],
+      "test": "should produce tokens that can be decrypted",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

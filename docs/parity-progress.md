@@ -374,8 +374,28 @@ or corpus inventory contains unimplemented behavior.
   floating-point defaults and compact clipping. Session TTL fractions, other
   malformed-option behavior and account-cookie/provider work remain incomplete.
 
-The latest `make check` passes 843 TypeScript cases across 41 files, all 70 native
-V test functions across 18 files (including all 20,034 Unicode vectors), TypeScript
+- Added the native Google authorization-code provider and reusable HTTP transport.
+  Grants carry PKCE, redirect/credential/scope parameters and provider hints; code
+  response profiles enforce configured hosted domains. Added account token/expiry/
+  scope fields, code-exchange token persistence for Google/GitHub, optional token
+  encryption with plaintext migration, refresh-token retention and scope union.
+  OAuth account hooks cannot change the selected identity binding. Added native
+  rotated-secret account-cookie JWE, bounded chunks, attribute/lifetime handling,
+  logout cleanup and session-user binding. Fresh pending account cookies survive a
+  stale request cookie on user switch. OAuth callbacks now issue session cache as
+  well as token cookies. The TS provider transport supplies HTTP bytes through MSW;
+  policy and storage remain native. All 97 declarations of the original cookies
+  file now run (115 runtime cases), including the two original Google/account switch
+  regressions. The complete OAuth token-utility source adds 13 cases, with unchanged
+  assertions. Nine independent Google/account cases and four native tests verify
+  PKCE/grants, token storage/encryption/dates, refresh-token retention, grant union,
+  hosted-domain enforcement, hook rollback, redirect refusal, cookie chunks,
+  key rotation and fresh-cookie preservation. Direct Google ID-token credentials,
+  broader provider options, account linking, token refresh, account endpoints,
+  error redirects and full stateless OAuth remain incomplete.
+
+The latest `make check` passes 867 TypeScript cases across 43 files, all 74 native
+V test functions across 20 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus

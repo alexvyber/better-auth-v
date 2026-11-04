@@ -93,10 +93,17 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   preserves existing passwordless credential account identity; it has no HTTP route.
 - Magic links sign in existing users only. Registration through a magic link is
   not implemented.
-- OAuth currently has a GitHub provider. The provider interface supports other
-  implementations, but Google/OIDC validation is not supplied. Account linking,
-  access/refresh-token persistence and refresh, and upstream OAuth error redirects
-  are absent. Explicit logout providers can construct end-session URLs from stored
+- OAuth supplies GitHub and a Google authorization-code provider. Google constructs
+  PKCE grants, exchanges through a redirect-refusing native HTTP transport, decodes
+  the profile from the authenticated token response, and enforces hosted-domain
+  restrictions. The test transport delegates only HTTP bytes to Node/MSW; provider
+  decisions and persistence stay in V. Direct Google ID-token credential verification,
+  client-ID arrays, broader provider options/callbacks, account linking, automatic
+  token refresh, and upstream OAuth error redirects remain unimplemented. OAuth
+  identities can supply access/refresh/ID tokens, precise token expiries and scopes;
+  code exchanges persist them, retain omitted refresh tokens and union granted scopes.
+  Access/refresh token encryption is optional and migration-aware. Account hooks
+  cannot change the selected OAuth identity binding. Explicit logout providers can construct end-session URLs from stored
   account ID tokens; generic logout config supports callback/client/state parameters,
   latest-account ordering, and provider fallback. Local sign-out succeeds and clears
   cookies even if session persistence or provider URL creation fails. Generic OAuth
@@ -133,8 +140,15 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   from absence. Canonical chunk reconstruction and pending-cookie cleanup are
   available separately. Response attribute parsing supports HTTP dates; full
   JavaScript Date-string coercion (including nonstandard numeric strings and exact
-  local-time/two-digit-year rules) remains incomplete. Account-cookie synchronization
-  and the remaining cookie integration suites are outstanding.
+  local-time/two-digit-year rules) remains incomplete.
+- Account cookies support rotated-secret JWE, configurable attributes/lifetimes,
+  bounded chunks, stale-chunk cleanup and logout expiry. Session-cache writes bind
+  account data to the current user when an account store is configured, refreshing
+  matching data and expiring another user's stale data. Pending fresh account
+  cookies take precedence over stale request cookies during a user switch. Native
+  callers can select the binding policy explicitly; the default follows the native
+  stateless setting. This coverage does not establish complete stateless OAuth,
+  account APIs, token refresh, or every provider integration.
 - `get_cookie_cache` reads standalone snapshots without database access or a
   separate session-token cookie. It verifies compact HMAC, HS256/384/512 JWT,
   native/upstream JWE, and supported asymmetric or symmetric public JWKS profiles.
@@ -277,13 +291,18 @@ tests establishes only their covered behavior, not complete upstream parity.
 - The complete upstream crypto secret-rotation and OAuth purpose-isolation files
   also run with native crypto helpers. Independent TS crypto exchanges ciphertext,
   JWEs, and encrypted private JWKs with V.
-- The cookies source is partially imported: 95 declarations run as 113 cases against
-  native helpers and auth flows, with two account-cookie/OAuth declarations still
-  unported. Field filtering, sensitive-session cache bypass, and all chunking tests
+- The complete cookies source is imported: 97 declarations run as 115 cases against
+  native helpers and auth flows. Field filtering, sensitive-session cache bypass,
+  account-cookie user switching, and all chunking tests
   are included, including oversized-cache fallback and actual serialized-line budgets.
   Native standalone readers report schema warnings through a supplied logger;
   the fixture forwards native events to the active endpoint logger. Broader logger
   context/metadata parity, including chunking debug metadata, remains incomplete.
+- The complete OAuth token-utility source runs 13 native-backed cases, covering
+  encryption, null/undefined representation, and plaintext-token migration. Nine
+  independent Google/account cases verify grants, storage/encryption, token dates,
+  scope union, refresh-token retention, hook binding, redirect refusal and chunks.
+  The separate Google provider and OAuth/account source files remain unported.
   Four independent helper contracts compare V with the published TS implementation
   on malformed encodings, attribute metadata, ordered merging, and secure selection.
   Another 14 standalone reader cases use independent HMAC/JOSE/upstream ciphertext

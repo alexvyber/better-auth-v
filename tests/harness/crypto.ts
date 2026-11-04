@@ -15,6 +15,13 @@ function native(op: string, args: unknown[]): any {
   if (reply.status !== 0) throw new Error(reply.stderr.trim());
   return JSON.parse(reply.stdout);
 }
+export async function setTokenUtil(token: string | null | undefined, ctx: {secretConfig: Secret; options: {account?: {encryptOAuthTokens?: boolean}}}): Promise<string | null | undefined> {
+  const result = native('setTokenUtil', [token === undefined ? {$undefined: true} : token, ctx.secretConfig, ctx.options.account?.encryptOAuthTokens ?? false]);
+  return result && typeof result === 'object' && result.$undefined ? undefined : result;
+}
+export async function decryptOAuthToken(token: string, ctx: {secretConfig: Secret; options: {account?: {encryptOAuthTokens?: boolean}}}): Promise<string> {
+  return native('decryptOAuthToken', [token, ctx.secretConfig, ctx.options.account?.encryptOAuthTokens ?? false]);
+}
 function hydrateSecret(value: any): Secret {
   return typeof value === 'string' ? value : {...value, keys: new Map(Object.entries(value.keys).map(([version, key]) => [Number(version), key as string]))};
 }
@@ -30,7 +37,7 @@ export async function symmetricEncodeJWT(payload: Record<string, unknown>, key: 
 export async function symmetricDecodeJWT<T = any>(token: string, key: Secret, salt: string): Promise<T | null> {
   return native('symmetricDecodeJWT', [token, key, salt, Math.floor(Date.now() / 1000)]);
 }
-export async function signJWT(payload: Record<string, unknown>, secret: string, expiresIn = 3600): Promise<string> {
+export async function signJWT(payload: any, secret: string, expiresIn = 3600): Promise<string> {
   return native('signJWT', [payload, secret, expiresIn, Math.floor(Date.now() / 1000)]);
 }
 export async function verifyJWT<T = any>(token: string, secret: string): Promise<T | null> {

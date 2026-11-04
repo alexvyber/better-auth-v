@@ -113,7 +113,20 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 			return '{"payload":${js_json(json2.Any(payload))}}'
 		}
 		'cookieInfo' {
-			return '{"sessionToken":{"name":${json.encode(c.auth.cookie_name())}},"sessionData":{"name":${json.encode(c.auth.cache_cookie_name())}}}'
+			mut cookies := map[string]json2.Any{}
+			for kind, cookie in c.auth.auth_cookie_factory().get_cookies() {
+				cookies[kind] = {
+					'name':       json2.Any(cookie.name)
+					'attributes': json2.Any(cookie.attributes)
+				}
+			}
+			return json2.Any(cookies).json_str()
+		}
+		'secretConfig' {
+			match c.auth.secret_config {
+				string { return json.encode(c.auth.secret_config) }
+				SecretConfig { return encode_secret_config(c.auth.secret_config) }
+			}
 		}
 		'sessionFromContext' {
 			if args.len < 3 {

@@ -260,17 +260,18 @@ fn (mut a Auth) set_cache_cookie(response Response, current SessionResult) !Resp
 	if chunk_size <= 0 || data.len > chunk_size * 100 {
 		a.config.log('warn',
 			'Session cookie is too large to store even after chunking, so the cookie cache was skipped. Reduce the cached data size or avoid storing this data in cookies.')
-		return result
+		return a.sync_account_cookie(result, current)
 	}
 	if data.len <= chunk_size {
-		return with_header(result, 'set-cookie', a.cache_cookie_header(base, data, age))
+		return a.sync_account_cookie(with_header(result, 'set-cookie', a.cache_cookie_header(base,
+			data, age)), current)
 	}
 	for offset := 0; offset < data.len; offset += chunk_size {
 		end := if offset + chunk_size < data.len { offset + chunk_size } else { data.len }
 		result = with_header(result, 'set-cookie', a.cache_cookie_header('${base}.${offset / chunk_size}',
 			data[offset..end], age))
 	}
-	return result
+	return a.sync_account_cookie(result, current)
 }
 
 fn (mut a Auth) set_session_cookies(response Response, current SessionResult) !Response {

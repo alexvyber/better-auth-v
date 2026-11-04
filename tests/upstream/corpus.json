@@ -14,7 +14,7 @@
     "utilities-and-tooling": {
       "files": 275,
       "declarations": 4594,
-      "importedFiles": 5
+      "importedFiles": 6
     },
     "e2e": {
       "files": 71,
@@ -12145,7 +12145,7 @@
       "path": "packages/better-auth/src/cookies/cookies.test.ts",
       "sha256": "b7e9b4646b6b95d201789c79742896545dfa09c6d80b73b44a27140a3b4b0bb0",
       "group": "utilities-and-tooling",
-      "status": "imported-partial-file",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {
@@ -15942,7 +15942,7 @@
       "path": "packages/better-auth/src/oauth2/utils.test.ts",
       "sha256": "7db6836af664300fe53e5a1920889ed3d19c553c0ae6364f2d7f8e4c7412a855",
       "group": "utilities-and-tooling",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {

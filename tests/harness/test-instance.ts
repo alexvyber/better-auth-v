@@ -25,6 +25,7 @@ interface FixtureLoggerOptions extends FixtureOptions {
   log?: NonNullable<BetterAuthOptions['logger']>['log'];
 }
 interface ServerOptions {
+	socialProviders?: BetterAuthOptions['socialProviders'];
   plugins?: BetterAuthOptions['plugins'];
   database?: BetterAuthOptions["database"];
   baseURL?: BetterAuthOptions['baseURL'];
@@ -77,6 +78,7 @@ afterAll(async () => {
 });
 
 const routes: Record<string, [string, string]> = {
+  signInSocial: ["POST", "/sign-in/social"],
   signUpEmail: ["POST", "/sign-up/email"],
   signInEmail: ["POST", "/sign-in/email"],
   getSession: ["GET", "/get-session"],
@@ -123,7 +125,7 @@ function hydrate(value: any): any {
     const result = Object.fromEntries(
       Object.entries(value).filter(([key]) => key !== "$vSession").map(([key, item]) => [
         key,
-        ["createdAt", "updatedAt", "expiresAt"].includes(key) &&
+        ["createdAt", "updatedAt", "expiresAt", "accessTokenExpiresAt", "refreshTokenExpiresAt"].includes(key) &&
         typeof item === "string"
           ? new Date(item)
           : hydrate(item),
@@ -159,6 +161,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       "secondaryStorage",
       "databaseHooks",
       "account",
+      "socialProviders",
     ],
     "options",
   );
@@ -360,7 +363,14 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     }
   }
 
-  assertKeys(options.account ?? {}, ['fields'], 'account');
+  assertKeys(options.account ?? {}, ['fields', 'storeAccountCookie', 'encryptOAuthTokens'], 'account');
+  assertKeys(options.socialProviders ?? {}, ['google'], 'socialProviders');
+  const google = options.socialProviders?.google;
+  if (typeof google === 'function') throw new Error('Unported provider option callback');
+  if (google) {
+    assertKeys(google, ['clientId', 'clientSecret', 'enabled', 'scope', 'disableDefaultScope', 'accessType', 'display', 'hd', 'prompt', 'includeGrantedScopes', 'redirectURI'], 'socialProviders.google');
+    if (typeof google.clientId !== 'string') throw new Error('Unported Google client ID array');
+  }
   assertKeys(options.account?.fields ?? {}, ['id', 'userId', 'providerId', 'accountId'], 'account.fields');
   if (options.baseURL !== undefined && typeof options.baseURL !== 'string') throw new Error('Live dynamic baseURL configuration remains unported');
   const baseURL = typeof options.baseURL === 'string' ? options.baseURL : `http://localhost:${config.port ?? 3000}`;
@@ -426,7 +436,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     adapter, internalAdapter, options, password,
     secret: options.secrets?.[0]?.value ?? options.secret ?? 'better-auth-secret-that-is-long-enough-for-validation-test',
     session: null as unknown,
-    authCookies: {} as {sessionToken: {name: string}; sessionData: {name: string}},
+    authCookies: {} as {sessionToken: {name: string}; sessionData: {name: string}; accountData: {name: string}; dontRememberToken: {name: string}},
+    secretConfig: '' as string | import('@better-auth/core').SecretConfig,
     async nativeValidateRedirect(values: unknown[]) {
       try { await bridge.send('internal', {method: 'validateRedirect', arguments_json: transportJSON([values])}); }
       catch (error) {
@@ -515,6 +526,10 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   if (typeof session.cookieCache?.version === 'function') {
     callbacks['cache.version'] = (payload) => (session.cookieCache!.version as Function)(hydrate(payload.session), hydrate(payload.user));
   }
+  if (google && google.enabled !== false) callbacks['oauth.fetch'] = async request => {
+    const response = await fetch(request.url, {method: request.method, headers: request.headers, body: request.method === 'GET' ? undefined : request.body, redirect: 'manual'});
+    return {status: response.status, body: await response.text(), headers: [...response.headers].map(([name, value]) => ({name, value}))};
+  };
   callbacks['transaction.beforeCommit'] = async () => {
     try { await context.adapter.transaction(async () => undefined); }
     catch (error) { const state = currentOperation.getStore(); if (state) state.transactionError = error; throw error; }
@@ -629,6 +644,10 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       disable_origin_check: advanced.disableOriginCheck === true,
       skip_origin_check_paths: [...skippedOriginPaths, ...(Array.isArray(advanced.disableOriginCheck) ? advanced.disableOriginCheck : [])],
       cookie_names: cookieNames,
+      google_provider: google && google.enabled !== false ? google : null,
+      store_account_cookie: options.account?.storeAccountCookie ?? false,
+      encrypt_oauth_tokens: options.account?.encryptOAuthTokens ?? false,
+      account_cookie_bind_user: !(Object.hasOwn(options, 'database') && options.database === undefined),
       default_cookie_attributes_json: JSON.stringify(advanced.defaultCookieAttributes ?? {}),
       cookie_attributes_json: JSON.stringify(cookieAttributes),
       cookie_prefix: advanced.cookiePrefix ?? 'better-auth',
@@ -699,6 +718,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   const emails: any[] = [];
   const cookieInfo = await bridge.send('internal', {method: 'cookieInfo'});
   context.authCookies = JSON.parse(cookieInfo.value_json);
+  const secretInfo = JSON.parse((await bridge.send('internal', {method: 'secretConfig'})).value_json);
+  context.secretConfig = typeof secretInfo === 'string' ? secretInfo : {...secretInfo, keys: new Map(Object.entries(secretInfo.keys).map(([version, value]) => [Number(version), value as string]))};
   async function dispatch(request: Request, direct = false) {
     return currentOperation.run({request: direct ? undefined : safeCloneRequest(request)}, async () => {
     let result;

@@ -98,6 +98,7 @@ fn (a &Auth) set_cookie(r Response, token string, remember bool) Response {
 fn (a &Auth) clear_cookie(r Response) Response {
 	value := a.cookie_header(a.cookie_name(), '', '/', i64(0))
 	mut result := a.clear_cache_cookie(with_header(r, 'set-cookie', value))
+	if a.config.store_account_cookie { result = a.clear_account_cookies(result) }
 	marker := a.cookie_name_for('dont_remember')
 	if marker in cookie_values(a.request_context) {
 		result = with_header(result, 'set-cookie', a.cache_cookie_header(marker, '', i64(0)))

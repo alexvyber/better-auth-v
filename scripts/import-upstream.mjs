@@ -16,12 +16,15 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+  {file: 'oauth-utils', source_file: 'utils', directory: 'oauth2', suites: null, includeHelpers: true,
+   imports: 'import type { AuthContext } from "@better-auth/core";\nimport { describe, expect, it } from "vitest";\nimport { symmetricEncrypt, decryptOAuthToken, setTokenUtil } from "../harness/crypto.js";\n',
+  },
   {file: 'cookie-utils', source_file: 'cookies', directory: 'cookies',
-   suites: new Set(['cookies', 'crossSubdomainCookies', 'cookie configuration', 'cookie-utils parseSetCookieHeader', 'cookie-utils stripSecureCookiePrefix', 'cookie-utils setRequestCookie', 'getSessionCookie', 'sensitive session middleware cookie cache', 'Cookie Cache Field Filtering', 'Cookie Chunking', 'parse cookies', 'Cookie header without whitespace after semicolon', 'getChunkedCookie', 'parseCookies validation', 'applySetCookies', 'expireCookie', 'getCookieCache expiry (compact strategy)']),
+   suites: null,
    helpers: new Set(['COOKIE_CACHE_JWT_TYPE', 'COOKIE_CACHE_JWT_AUDIENCE']),
    dynamicImports: {'../test-utils/test-instance': '../harness/test-instance.js'},
+   extraImports: 'import { beforeAll, afterAll } from "vitest";\nimport type { GoogleProfile } from "@better-auth/core/social-providers";\nimport { HttpResponse, http } from "msw";\nimport { setupServer } from "msw/node";\nimport { signJWT, symmetricDecodeJWT } from "../harness/crypto.js";\nimport { DEFAULT_SECRET } from "../harness/constants.js";\n',
    imports: 'import { afterEach, describe, expect, it, vi, onTestFinished } from "vitest";\nimport type { BetterAuthOptions } from "@better-auth/core";\nimport type { AuthEndpointContext } from "@better-auth/core/context";\nimport { runWithEndpointContext } from "@better-auth/core/context";\nimport { createLogger } from "@better-auth/core/env";\nimport { safeJSONParse } from "@better-auth/core/utils/json";\nimport { createLocalJWKSet, decodeProtectedHeader, jwtVerify } from "jose";\nimport { serializeCookie } from "better-call";\nimport { jwt } from "../harness/plugins.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { base64Url } from "@better-auth/utils/base64";\nimport { createHMAC } from "@better-auth/utils/hmac";\nimport { applySetCookies, HOST_COOKIE_PREFIX, SECURE_COOKIE_PREFIX, parseSetCookieHeader, stripSecureCookiePrefix, toCookieOptions, setRequestCookie, parseCookies, getSessionCookie, getChunkedCookie, getCookieCache, getCookies, expireCookie } from "../harness/cookies.js";\n',
-   unportedReasons: {'account cookie sync on user switch': 'Unported: Google OAuth and account cookie synchronization'},
   },
   {file: 'origin-check', directory: 'api/middlewares', suites: null,
    imports: 'import { createAuthEndpoint, originCheck } from "../harness/endpoint.js";\nimport { describe, expect, it, vi } from "vitest";\nimport * as z from "zod";\nimport { createAuthClient } from "better-auth/client";\nimport { parseSetCookieHeader } from "better-auth/cookies";\nimport { getTestInstance } from "../harness/test-instance.js";\n',
@@ -121,7 +124,7 @@ for (const plan of plans) {
   const testNames = testFunctionNames(sourceFile);
   let output =
     "// Generated from pinned upstream source; do not edit assertions here.\n" +
-    (plan.imports ?? "");
+    (plan.imports ?? "") + (plan.extraImports ?? "");
   for (const statement of sourceFile.statements) {
     if (ts.isVariableStatement(statement) && statement.declarationList.declarations.some(declaration => plan.helpers?.has(declaration.name.getText(sourceFile)))) {
       output += '\n' + statement.getText(sourceFile) + '\n';

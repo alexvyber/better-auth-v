@@ -17,14 +17,19 @@ pub:
 
 pub struct Account {
 pub:
-	id          string
-	user_id     string @[json: 'userId']
-	provider_id string @[json: 'providerId']
-	account_id  string @[json: 'accountId']
-	password    string @[omitempty]
-	id_token    string @[json: idToken; omitempty]
-	created_at  string @[json: 'createdAt']
-	updated_at  string @[json: 'updatedAt']
+	id                       string
+	user_id                  string  @[json: 'userId']
+	provider_id              string  @[json: 'providerId']
+	account_id               string  @[json: 'accountId']
+	password                 string  @[omitempty]
+	id_token                 string  @[json: idToken; omitempty]
+	access_token             ?string @[json: accessToken]
+	refresh_token            ?string @[json: refreshToken]
+	access_token_expires_at  ?string @[json: accessTokenExpiresAt]
+	refresh_token_expires_at ?string @[json: refreshTokenExpiresAt]
+	scope                    ?string
+	created_at               string @[json: 'createdAt']
+	updated_at               string @[json: 'updatedAt']
 }
 
 pub struct Session {
@@ -239,6 +244,9 @@ pub:
 	trust_proxy_ip_headers            bool
 	plugins                           []Plugin
 	social_providers                  []OAuthProvider
+	store_account_cookie              bool
+	account_cookie_bind_user          ?bool
+	encrypt_oauth_tokens              bool
 	logout_providers                  []OAuthLogoutProvider
 	user_fields                       map[string]AdditionalField
 	session_fields                    map[string]AdditionalField

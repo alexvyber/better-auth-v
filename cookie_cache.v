@@ -5,12 +5,13 @@ import crypto.sha256
 import encoding.base64
 import json
 import net.urllib
+import math
 import strconv
 import x.json2
 
 struct CachedSession {
 	result     SessionResult
-	expires_at i64
+	expires_at f64
 	version    string
 }
 
@@ -20,9 +21,9 @@ fn resolve_cache_defaults(config Config) Config {
 	max_age := if cache.max_age != 0 {
 		cache.max_age
 	} else if stateless {
-		config.session_expires_in
+		f64(config.session_expires_in)
 	} else {
-		i64(300)
+		f64(300)
 	}
 	refresh := cache.refresh_cache or { stateless }
 	if refresh && !stateless {
@@ -80,20 +81,20 @@ fn (mut a Auth) encode_cookie_cache(result SessionResult) !string {
 	now := a.config.clock()
 	age := a.cache_max_age(result.session.persistent)
 	lifetime := if configured := age {
-		if configured != 0 { configured } else { i64(60) }
+		if configured != 0 { configured } else { f64(60) }
 	} else {
-		i64(60)
+		f64(60)
 	}
 	jwt_lifetime := if configured := age {
-		if configured != 0 { configured } else { i64(300) }
+		if configured != 0 { configured } else { f64(300) }
 	} else {
-		i64(300)
+		f64(300)
 	}
 	payload :=
 		js_json(json2.decode[json2.Any]('{"session":${a.session_json(result.session)},"user":${a.user_json(result.user)},"updatedAt":${a.clock_millis()},"version":${json.encode(version)}}')!)
 	if a.config.cookie_cache.strategy == 'jwe' {
-		return symmetric_encode_jwt_rotating(payload, a.secret_config, 'better-auth-session',
-			jwt_lifetime, now)
+		return symmetric_encode_jwt_rotating_with_lifetime(payload, a.secret_config,
+			'better-auth-session', jwt_lifetime, now)
 	}
 	if a.config.cookie_cache.strategy == 'jwt' {
 		if a.jwks_cache_enabled() {
@@ -103,11 +104,14 @@ fn (mut a Auth) encode_cookie_cache(result SessionResult) !string {
 			})
 		}
 		header := base64url('{"alg":"HS256"}'.bytes())
-		claims := payload[..payload.len - 1] + ',"iat":${now},"exp":${now + jwt_lifetime}}'
+		claims := payload[..payload.len - 1] + ',"iat":${now},"exp":${js_number(f64(now) +
+			jwt_lifetime)}}'
 		input := header + '.' + base64url(claims.bytes())
 		return input + '.' + a.cache_mac(input)
 	}
-	expires := a.clock_millis() + lifetime * 1000
+	// getDate(...).getTime() clips to integer milliseconds, while JWT exp
+	// remains a fractional NumericDate. Preserve the distinction on the wire.
+	expires := i64(f64(a.clock_millis()) + lifetime * 1000)
 	signed := payload[..payload.len - 1] + ',"expiresAt":${expires}}'
 	return base64url('{"session":${payload},"expiresAt":${expires},"signature":${json.encode(a.cache_mac(signed))}}'.bytes())
 }
@@ -118,23 +122,17 @@ fn numeric_date_field(fields map[string]json2.Any, name string) !f64 {
 	return value.f64()
 }
 
-fn numeric_field(fields map[string]json2.Any, name string) !i64 {
-	value := fields[name] or { return error('missing numeric claim') }
-	if value !is i64 && value !is int && value !is f64 { return error('invalid numeric claim') }
-	return value.i64()
-}
-
 fn (mut a Auth) decode_cookie_cache(value string) !CachedSession {
 	mut payload := map[string]json2.Any{}
-	mut expires := i64(0)
+	mut expires := f64(0)
 	if a.config.cookie_cache.strategy == 'jwe' {
 		payload = json2.decode[map[string]json2.Any](symmetric_decode_jwt_rotating(value,
 			a.secret_config, 'better-auth-session', a.config.clock())!)!
-		expires = numeric_field(payload, 'exp')! * 1000
+		expires = numeric_date_field(payload, 'exp')! * 1000
 	} else if a.config.cookie_cache.strategy == 'jwt' {
 		if a.jwks_cache_enabled() {
 			payload = a.verify_jwks_payload(value, true, '')!
-			expires = numeric_field(payload, 'exp')! * 1000
+			expires = numeric_date_field(payload, 'exp')! * 1000
 		} else {
 			parts := value.split('.')
 			if parts.len != 3 { return error('invalid JWT') }
@@ -146,18 +144,20 @@ fn (mut a Auth) decode_cookie_cache(value string) !CachedSession {
 				return error('invalid JWT signature')
 			}
 			payload = json2.decode[map[string]json2.Any](base64.url_decode(parts[1]).bytestr())!
-			expires = numeric_field(payload, 'exp')! * 1000
+			expires = numeric_date_field(payload, 'exp')! * 1000
 			if expires <= a.config.clock() * 1000 { return error('expired JWT') }
-			if 'nbf' in payload && numeric_field(payload, 'nbf')! > a.config.clock() {
+			if 'nbf' in payload && numeric_date_field(payload, 'nbf')! > f64(a.config.clock()) {
 				return error('JWT not yet valid')
 			}
+			if 'iat' in payload { numeric_date_field(payload, 'iat')! }
 		}
 	} else {
 		outer := json2.decode[map[string]json2.Any](base64.url_decode(value).bytestr())!
 		payload = (outer['session'] or { return error('missing payload') }).as_map()
-		expires = numeric_field(outer, 'expiresAt')!
-		encoded := js_json(json2.Any(payload))
-		signed := encoded[..encoded.len - 1] + ',"expiresAt":${expires}}'
+		expires = numeric_date_field(outer, 'expiresAt')!
+		mut signed_fields := payload.clone()
+		signed_fields['expiresAt'] = expires
+		signed := js_json(json2.Any(signed_fields))
 		signature := (outer['signature'] or { return error('missing signature') }).str()
 		if !hmac.equal(a.cache_mac(signed).bytes(), signature.bytes()) {
 			return error('invalid cache signature')
@@ -225,14 +225,14 @@ fn (a &Auth) cache_cookie_header(name string, value string, max_age ?i64) string
 	return a.cookie_header(name, value, '/', max_age)
 }
 
-fn (a &Auth) cache_max_age(persistent bool) ?i64 {
+fn (a &Auth) cache_max_age(persistent bool) ?f64 {
 	if !persistent { return none }
 	attributes := a.auth_cookie_factory().create_cookie('session_data', {
 		'maxAge': json2.Any(a.config.cookie_cache.max_age)
 	}).attributes
 	age := attributes['maxAge'] or { return none }
 	if age is json2.Null { return none }
-	return age.i64()
+	return age.f64()
 }
 
 fn (a &Auth) clear_cache_cookie(response Response) Response {
@@ -250,7 +250,11 @@ fn (mut a Auth) set_cache_cookie(response Response, current SessionResult) !Resp
 	if !(a.config.cookie_cache.enabled or { false }) { return a.clear_cache_cookie(response) }
 	data := a.encode_cookie_cache(current)!
 	base := a.cache_cookie_name()
-	age := a.cache_max_age(current.session.persistent)
+	age := if lifetime := a.cache_max_age(current.session.persistent) {
+		?i64(i64(math.floor(lifetime)))
+	} else {
+		none
+	}
 	chunk_size := 4050 - a.cache_cookie_header(base + '.99', '', age).len
 	mut result := a.clear_cache_cookie(response)
 	if chunk_size <= 0 || data.len > chunk_size * 100 {

@@ -214,6 +214,11 @@ pub fn symmetric_encode_jwt_rotating(payload string, secret SymmetricSecret, sal
 	return symmetric_encode_jwt(payload, current_symmetric_secret(secret)!, salt, expires_in, now)
 }
 
+pub fn symmetric_encode_jwt_rotating_with_lifetime(payload string, secret SymmetricSecret, salt string, expires_in f64, now i64) !string {
+	return symmetric_encode_jwt_with_lifetime(payload, current_symmetric_secret(secret)!, salt,
+		expires_in, now)
+}
+
 pub fn symmetric_decode_jwt_rotating(token string, secret SymmetricSecret, salt string, now i64) !string {
 	mut candidates := []string{}
 	match secret {

@@ -286,10 +286,10 @@ pub interface UserCreationPlugin {
 pub struct CookieCacheConfig {
 pub:
 	refresh_cache ?bool
-	update_age    ?i64
+	update_age    ?f64
 	enabled       ?bool
 	strategy      string
-	max_age       i64
+	max_age       f64
 	version       string                     = '1'
 	version_for   fn (Session, User) !string = default_cache_version @[skip]
 }

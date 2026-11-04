@@ -235,8 +235,15 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   Partitioned, expiry dates and prefix invariants. Session token lifetimes override
   descriptor Max-Age; cache lifetimes use per-cookie configuration and rememberMe.
   Malformed/unsafe attributes and oversized Max-Age are rejected at initialization.
-  Factory descriptors preserve fractional durations; issuance still uses whole-second
-  durations, and exact invalid-option/error timing remains incomplete. Native storage
+  Cache durations, refresh thresholds and per-cookie lifetime overrides retain
+  fractions. Compact expiry applies Date's millisecond clipping; JWT/JWE expiry
+  preserves fractional NumericDates, while HTTP Max-Age is floored. Existing integer
+  crypto APIs remain available alongside explicit fractional-lifetime APIs. General
+  HMAC verification supports explicit algorithm allowlists, fractional times and
+  numeric iat types. The general crypto-helper facade accepts HS256/384/512;
+  email verification remains pinned to HS256. Session
+  token TTL configuration still uses whole seconds, and exact invalid-option/error
+  timing remains incomplete. Native storage
   formats still prevent general cookie/database sharing with an upstream server.
 
 ## Remaining Better Auth scope

@@ -7,9 +7,13 @@ import time
 import x.json2
 
 pub fn sign_hmac_jwt(payload_json string, secret string, expires_in i64, now i64) !string {
+	return sign_hmac_jwt_with_lifetime(payload_json, secret, f64(expires_in), now)
+}
+
+pub fn sign_hmac_jwt_with_lifetime(payload_json string, secret string, expires_in f64, now i64) !string {
 	mut payload := json2.decode[map[string]json2.Any](payload_json)!
 	payload['iat'] = now
-	payload['exp'] = now + expires_in
+	payload['exp'] = f64(now) + expires_in
 	input := base64url('{"alg":"HS256"}'.bytes()) + '.' +
 		base64url(js_json(json2.Any(payload)).bytes())
 	return input + '.' +
@@ -17,24 +21,29 @@ pub fn sign_hmac_jwt(payload_json string, secret string, expires_in i64, now i64
 }
 
 pub fn verify_hmac_jwt(token string, secret string, now i64) !string {
+	return verify_hmac_jwt_with_algorithms(token, secret, now, ['HS256'])
+}
+
+pub fn verify_hmac_jwt_with_algorithms(token string, secret string, now i64, algorithms []string) !string {
 	parts := token.split('.')
 	if parts.len != 3 { return fail(401, 'INVALID_TOKEN', 'Invalid token') }
 	header := json2.decode[map[string]json2.Any](decode_base64url(parts[0])!.bytestr())!
-	if (header['alg'] or { json2.Any('') }).str() != 'HS256' || 'crit' in header {
+	algorithm := (header['alg'] or { json2.Any('') }).str()
+	if algorithm !in algorithms || algorithm !in ['HS256', 'HS384', 'HS512'] || 'crit' in header {
 		return fail(401, 'INVALID_TOKEN', 'Invalid token')
 	}
 	actual := decode_base64url(parts[2])!
-	expected := hmac.new(secret.bytes(), (parts[0] + '.' + parts[1]).bytes(), sha256.sum,
-		sha256.block_size)
+	expected := cookie_reader_hmac(algorithm, secret.bytes(), (parts[0] + '.' + parts[1]).bytes())!
 	if !hmac.equal(actual, expected) { return fail(401, 'INVALID_TOKEN', 'Invalid token') }
 	payload := decode_base64url(parts[1])!.bytestr()
 	claims := json2.decode[map[string]json2.Any](payload)!
-	if 'exp' in claims && numeric_field(claims, 'exp')! <= now {
+	if 'exp' in claims && numeric_date_field(claims, 'exp')! <= f64(now) {
 		return fail(401, 'TOKEN_EXPIRED', 'Token expired')
 	}
-	if 'nbf' in claims && numeric_field(claims, 'nbf')! > now {
+	if 'nbf' in claims && numeric_date_field(claims, 'nbf')! > f64(now) {
 		return fail(401, 'INVALID_TOKEN', 'Invalid token')
 	}
+	if 'iat' in claims { numeric_date_field(claims, 'iat')! }
 	return payload
 }
 

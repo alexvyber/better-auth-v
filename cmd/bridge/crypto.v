@@ -49,8 +49,8 @@ fn crypto_command() ! {
 			}
 		}
 		'symmetricEncodeJWT' {
-			encoded = json.encode(better_auth.symmetric_encode_jwt_rotating(args[0].json_str(),
-				better_auth.decode_symmetric_secret(args[1])!, args[2].str(), args[3].i64(),
+			encoded = json.encode(better_auth.symmetric_encode_jwt_rotating_with_lifetime(args[0].json_str(),
+				better_auth.decode_symmetric_secret(args[1])!, args[2].str(), args[3].f64(),
 				args[4].i64())!)
 		}
 		'symmetricDecodeJWT' {
@@ -58,6 +58,14 @@ fn crypto_command() ! {
 				better_auth.decode_symmetric_secret(args[1])!, args[2].str(), args[3].i64()) or {
 				'null'
 			}
+		}
+		'signJWT' {
+			encoded = json.encode(better_auth.sign_hmac_jwt_with_lifetime(args[0].json_str(),
+				args[1].str(), args[2].f64(), args[3].i64())!)
+		}
+		'verifyJWT' {
+			encoded = better_auth.verify_hmac_jwt_with_algorithms(args[0].str(), args[1].str(),
+				args[2].i64(), ['HS256', 'HS384', 'HS512']) or { 'null' }
 		}
 		else {
 			return error('unsupported crypto operation')

@@ -43,9 +43,13 @@ fn crypto_uuid() !string {
 // A caller supplies its clock explicitly so this primitive is deterministic in
 // tests and does not accidentally use wall time for an application-owned clock.
 pub fn symmetric_encode_jwt(payload_json string, secret string, salt string, expires_in i64, now i64) !string {
+	return symmetric_encode_jwt_with_lifetime(payload_json, secret, salt, f64(expires_in), now)
+}
+
+pub fn symmetric_encode_jwt_with_lifetime(payload_json string, secret string, salt string, expires_in f64, now i64) !string {
 	mut payload := json2.decode[map[string]json2.Any](payload_json)!
 	payload['iat'] = now
-	payload['exp'] = now + expires_in
+	payload['exp'] = f64(now) + expires_in
 	payload['jti'] = crypto_uuid()!
 	key := jwt_encryption_key(secret, salt, 64)!
 	header :=

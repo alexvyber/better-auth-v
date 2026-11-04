@@ -357,8 +357,25 @@ or corpus inventory contains unimplemented behavior.
   Fractional issuance durations, exact malformed-option/error timing, account
   cookies and remaining integration suites still need work.
 
-The latest `make check` passes 829 TypeScript cases across 40 files, all 68 native
-V test functions across 17 files (including all 20,034 Unicode vectors), TypeScript
+- Preserved fractional global/per-cookie cache lifetimes and refresh thresholds
+  end to end. Cache config now uses floating-point seconds; JWT/JWE NumericDates
+  retain fractions during encoding and decoding, compact snapshots apply Date's
+  integer-millisecond clipping, and HTTP Max-Age floors separately (negative
+  fractions remain absent). Legacy integer crypto APIs delegate to explicit
+  fractional-lifetime variants. General HMAC verification accepts the upstream
+  HS256/384/512 algorithms through an explicit allowlist, checks fractional exp/nbf,
+  and validates iat types. Email verification keeps its separate HS256-only policy;
+  the existing independent endpoint regression caught and prevented broadening it.
+  Fourteen independent cases cover every cache format with global and per-cookie
+  fractional configuration, deleting database sessions before boundary reads so
+  cache fallback cannot hide truncation. They also cover exact refresh thresholds,
+  compact submillisecond clipping, primitive JOSE interoperability, and malformed
+  claims. Two native tests exercise the new V APIs, legacy integer callers,
+  floating-point defaults and compact clipping. Session TTL fractions, other
+  malformed-option behavior and account-cookie/provider work remain incomplete.
+
+The latest `make check` passes 843 TypeScript cases across 41 files, all 70 native
+V test functions across 18 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus

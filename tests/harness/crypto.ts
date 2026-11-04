@@ -30,6 +30,12 @@ export async function symmetricEncodeJWT(payload: Record<string, unknown>, key: 
 export async function symmetricDecodeJWT<T = any>(token: string, key: Secret, salt: string): Promise<T | null> {
   return native('symmetricDecodeJWT', [token, key, salt, Math.floor(Date.now() / 1000)]);
 }
+export async function signJWT(payload: Record<string, unknown>, secret: string, expiresIn = 3600): Promise<string> {
+  return native('signJWT', [payload, secret, expiresIn, Math.floor(Date.now() / 1000)]);
+}
+export async function verifyJWT<T = any>(token: string, secret: string): Promise<T | null> {
+  return native('verifyJWT', [token, secret, Math.floor(Date.now() / 1000)]);
+}
 export function parseSecretsEnv(value?: string): {version: number; value: string}[] | null { return native('parseSecretsEnv', [value]); }
 export function validateSecretsArray(entries: {version: number; value: string}[], logger: {warn(message: string): unknown}): void {
   const warnings = native('validateSecretsArray', [entries]) as string[];

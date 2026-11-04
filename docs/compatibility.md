@@ -96,7 +96,9 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   RSA/ECDSA operations use OpenSSL 3 through a native C interface; policy remains
   in V. RSA generation currently accepts 2048–8192-bit keys. Remote URL mode
   disables local JWKS publication. Custom signing callbacks receive complete native
-  claims without minting local keys; cookie caches require local signing. Remote
+  claims without minting local keys; cookie caches require local signing. JWT
+  expiration options accept absolute numeric values, dates, and upstream duration
+  strings; an explicit payload `exp` wins. Remote
   public-key fetching is not implemented (matching the pinned verifier, which reads
   the configured local key store). Signing overrides, complete options, upstream encryption formats, and remaining
   JWT plugin tests are unported.
@@ -141,7 +143,7 @@ tests establishes only their covered behavior, not complete upstream parity.
   does not establish coverage of the separate plugin/adapter/client suites.
 - The original JWT rotation file also runs in full. The JWT plugin file is
   partially imported: its algorithm matrix, general signing, custom-store/path,
-  key-algorithm authority, and remote-signing/URL suites run, with remaining declarations explicitly
+  key-algorithm authority, remote-signing/URL, and expiration utility suites run, with remaining declarations explicitly
   unported in its manifest. Key generation in its utility tests also runs in V.
 - Differential tests compare the published TS server and V on supported scenarios,
   ignoring inherently random IDs/tokens/timestamps and documented record-format

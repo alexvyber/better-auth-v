@@ -101,3 +101,15 @@ describe('native JWT plugin boundaries', () => {
     expect((await auth.handler(new Request('http://localhost:3000/api/auth/jwks'))).status).toBe(404);
   });
 });
+
+describe('native JWT expiration options', () => {
+  it.each(['2 hours', 2000000000, new Date(2000000000500)] as const)('applies expirationTime %s and preserves explicit exp', async expirationTime => {
+    const {auth} = await getTestInstance({plugins: [jwt({jwt: {expirationTime}})]});
+    const signed = await auth.api.signJWT({body: {payload: {sub: 'expiration-user', iat: 1000}}});
+    const claims = JSON.parse(Buffer.from(signed.token.split('.')[1], 'base64url').toString());
+    expect(claims.exp).toBe(typeof expirationTime === 'string' ? 8200 : 2000000000);
+    const overridden = await auth.api.signJWT({body: {payload: {sub: 'expiration-user', exp: 12345}}});
+    const overrideClaims = JSON.parse(Buffer.from(overridden.token.split('.')[1], 'base64url').toString());
+    expect(overrideClaims.exp).toBe(12345);
+  });
+});

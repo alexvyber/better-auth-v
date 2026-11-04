@@ -293,9 +293,9 @@
         "with number input"
       ],
       "test": "should return the number as-is",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "toExpJWT",
@@ -304,9 +304,9 @@
         "with Date input"
       ],
       "test": "should convert Date to seconds timestamp",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "toExpJWT",
@@ -315,9 +315,9 @@
         "with Date input"
       ],
       "test": "should floor milliseconds",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "toExpJWT",
@@ -326,9 +326,9 @@
         "with valid TimeString input"
       ],
       "test": "should parse short format and add to iat",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "toExpJWT",
@@ -337,9 +337,9 @@
         "with valid TimeString input"
       ],
       "test": "should parse long format and add to iat",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "toExpJWT",
@@ -348,9 +348,9 @@
         "with valid TimeString input"
       ],
       "test": "should handle negative values",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "toExpJWT",
@@ -359,9 +359,9 @@
         "with invalid string input"
       ],
       "test": "should throw TypeError for invalid format",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "jwtClient types",

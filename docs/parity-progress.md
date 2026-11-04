@@ -93,7 +93,7 @@ or corpus inventory contains unimplemented behavior.
 - Extended the importer to recognize top-level parameterized suites; the partial
   JWT plugin manifest records all selected/unported declarations. Added custom
   adapter/path and stored-algorithm authority suites. The JWT plugin source file
-  now has 12 unported declarations; this is not full JWT plugin parity.
+  now has 5 unported declarations; this is not full JWT plugin parity.
 
 - Added remote JWKS URL configuration and native custom signing callbacks. Remote
   configuration disables local JWKS publication, while token issuance and session
@@ -102,10 +102,17 @@ or corpus inventory contains unimplemented behavior.
   signers without a remote URL, and custom signing for cookie-cache JWTs. All 11
   declarations in the original remote-signing/URL suites now run unchanged.
 
+- Added native JWT expiration conversion for absolute numeric claims, dates, and
+  strict upstream duration strings (including signed/relative/fractional forms).
+  All seven original expiration utility declarations now execute in V through a
+  synchronous command transport. Configured `expirationTime` controls native
+  signing and an explicit payload `exp` takes precedence. Native regression
+  coverage includes pre-epoch dates and JavaScript rounding of negative ties.
+
 ## Next infrastructure work
 
-The completed `make check` passes 341 TypeScript runtime cases across 13 files,
-44 native V test functions across 7 files (including all 20,034 Unicode vectors),
+The completed `make check` passes 351 TypeScript runtime cases across 13 files,
+45 native V test functions across 8 files (including all 20,034 Unicode vectors),
 TypeScript checking, and real HTTP migration/authentication/CSRF/restart checks.
 This includes the final custom-store publication and encrypted-key regressions.
 The complete suite was rerun successfully before committing and publishing the

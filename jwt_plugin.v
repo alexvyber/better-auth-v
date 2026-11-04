@@ -19,6 +19,7 @@ pub:
 	session_cookie_cache           bool
 	rotation_interval              i64
 	grace_period                   i64 = 2592000
+	expiration_time                ?JWTExpiration @[skip]
 	expires_in                     i64 = 900
 	issuer                         string
 	audience                       string
@@ -291,7 +292,11 @@ fn (mut a Auth) sign_jwks_payload(payload map[string]json2.Any, typ string, cook
 	} else {
 		if 'exp' !in claims {
 			issued := if 'iat' in claims { numeric_field(claims, 'iat')! } else { a.config.clock() }
-			claims['exp'] = issued + options.expires_in
+			claims['exp'] = if expiration := options.expiration_time {
+				jwt_expiration(expiration, issued)!
+			} else {
+				f64(issued + options.expires_in)
+			}
 		}
 		if 'iss' !in claims { claims['iss'] = if options.issuer != '' {
 				options.issuer

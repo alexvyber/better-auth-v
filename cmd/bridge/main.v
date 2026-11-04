@@ -8,6 +8,7 @@ import crypto.rand
 import encoding.hex
 import json
 import os
+import time
 import x.json2
 
 struct Options {
@@ -18,6 +19,7 @@ struct Options {
 	organization_teams           bool
 	endpoint_plugins             []RemoteEndpointPlugin
 	jwt_plugin                   bool
+	jwt_expiration_json          string
 	jwt_options                  better_auth.JWTOptions
 	storage                      string = 'sqlite'
 	stateless_sessions           bool
@@ -305,7 +307,29 @@ fn (_ RemoteHasher) verify(password string, hash string) !bool {
 	return json2.decode[bool](encoded)
 }
 
+fn expiration_command() ! {
+	fields := json2.decode[map[string]json2.Any](os.get_raw_line())!
+	value := fields['value'] or { return error('missing expiration') }
+	kind := fields['kind'] or { return error('missing expiration type') }
+	iat := (fields['iat'] or { return error('missing issue time') }).i64()
+	expiration := if kind.str() == 'date' {
+		better_auth.JWTExpiration(time.unix_milli(value.i64()))
+	} else if value is string {
+		better_auth.JWTExpiration(value)
+	} else {
+		better_auth.JWTExpiration(value.f64())
+	}
+	println(json.encode(better_auth.jwt_expiration(expiration, iat)!))
+}
+
 fn main() {
+	if os.args.len == 2 && os.args[1] == '--jwt-expiration' {
+		expiration_command() or {
+			eprintln(err.msg())
+			exit(1)
+		}
+		return
+	}
 	first := os.get_raw_line()
 	if first == '' { return }
 	init := json.decode(Command, first) or {
@@ -369,6 +393,21 @@ fn main() {
 				methods: opts.callback_methods
 			} }
 		mut jwt_options := opts.jwt_options
+		if opts.jwt_expiration_json != '' {
+			value := json2.decode[json2.Any](opts.jwt_expiration_json) or {
+				emit(Reply{ id: init.id, error: err.msg() })
+				return
+			}
+			expiration := if value is string {
+				better_auth.JWTExpiration(value)
+			} else {
+				better_auth.JWTExpiration(value.f64())
+			}
+			jwt_options = better_auth.JWTOptions{
+				...jwt_options
+				expiration_time: expiration
+			}
+		}
 		if 'jwt.sign' in opts.callback_methods {
 			jwt_options = better_auth.JWTOptions{
 				...jwt_options

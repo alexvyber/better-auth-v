@@ -235,7 +235,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     }
     assertKeys(jwtOptions.jwks ?? {}, ['rotationInterval', 'gracePeriod', 'disablePrivateKeyEncryption', 'jwksPath', 'keyPairConfig', 'remoteUrl'], 'jwt.jwks');
     assertKeys(jwtOptions.jwks?.keyPairConfig ?? {}, ['alg', 'crv', 'modulusLength'], 'jwt.jwks.keyPairConfig');
-    assertKeys(jwtOptions.jwt ?? {}, ['issuer', 'audience', 'sign'], 'jwt.jwt');
+    assertKeys(jwtOptions.jwt ?? {}, ['issuer', 'audience', 'sign', 'expirationTime'], 'jwt.jwt');
   }
   const stateless = Object.hasOwn(options, 'database') && options.database === undefined && !options.secondaryStorage;
   const cacheOptions = session.cookieCache ?? {};
@@ -430,6 +430,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       organization_schema: !!organizationOptions,
       organization_teams: organizationOptions?.teams?.enabled ?? false,
       endpoint_plugins: endpointPlugins,
+      jwt_expiration_json: jwtOptions?.jwt?.expirationTime === undefined ? '' : JSON.stringify(jwtOptions.jwt.expirationTime instanceof Date ? Math.floor(jwtOptions.jwt.expirationTime.getTime() / 1000) : jwtOptions.jwt.expirationTime),
       jwt_plugin: !!jwtOptions,
       custom_jwk_store: !!jwtOptions?.adapter,
       jwt_options: jwtOptions && {

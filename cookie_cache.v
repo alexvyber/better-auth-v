@@ -165,7 +165,7 @@ fn (mut a Auth) decode_cookie_cache(value string) !CachedSession {
 }
 
 fn (a &Auth) cache_cookie_name() string {
-	return a.cookie_name().all_before_last('.') + '.session_data'
+	return a.cookie_name_for('session_data')
 }
 
 fn cookie_values(ctx RequestContext) map[string]string {
@@ -205,10 +205,7 @@ fn (a &Auth) cache_cookie(ctx RequestContext) ?string {
 }
 
 fn (a &Auth) cache_cookie_header(name string, value string, max_age ?i64) string {
-	mut header := '${name}=${value}; Path=/; HttpOnly; SameSite=Lax'
-	if age := max_age { header += '; Max-Age=${age}' }
-	if a.base_url().starts_with('https://') { header += '; Secure' }
-	return header
+	return a.cookie_header(name, value, '/', max_age)
 }
 
 fn (a &Auth) clear_cache_cookie(response Response) Response {
@@ -254,7 +251,7 @@ fn (mut a Auth) cached_session(ctx RequestContext) !Lookup[CachedSession] {
 	token := a.context_token(ctx) or { return Lookup[CachedSession]{} }
 	encoded := a.cache_cookie(ctx) or { return Lookup[CachedSession]{} }
 	decoded := a.decode_cookie_cache(encoded) or { return Lookup[CachedSession]{} }
-	marker := cookie_values(ctx)[a.cookie_name().all_before_last('.') + '.dont_remember']
+	marker := cookie_values(ctx)[a.cookie_name_for('dont_remember')]
 	persistent := (a.verify_signed_value(marker) or { '' }) != 'true'
 	cached := CachedSession{
 		...decoded

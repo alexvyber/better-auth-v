@@ -18,7 +18,8 @@ There is no dependency on a web framework.
 - Registration-policy validation, duplicate-account enumeration protection,
   existing-user signup callbacks, and structured logger events.
 - Signed HTTP-only session cookies, refresh, expiration, freshness checks, device
-  listing/revocation, logout, and an opt-in bearer plugin.
+  listing/revocation, logout, and an opt-in bearer plugin. Custom cookie names,
+  prefixes, secure overrides, and cross-subdomain domains are supported.
 - Deferred GET/POST refresh, refresh suppression, nonpersistent sessions, a
   400-day cookie ceiling, and configurable session fields with update support.
 - Email verification, password reset/change, profile updates, opt-in account deletion

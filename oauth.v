@@ -40,19 +40,14 @@ fn (a &Auth) oauth_provider(id string) !OAuthProvider {
 }
 
 fn (a &Auth) oauth_cookie_name() string {
-	return if a.base_url().starts_with('https://') {
-		'__Secure-better-auth.oauth_state'
-	} else {
-		'better-auth.oauth_state'
-	}
+	return a.cookie_name_for('oauth_state')
 }
 
 fn (a &Auth) oauth_cookie(r Response, state string, clear bool) Response {
-	age := if clear { 0 } else { 600 }
+	age := if clear { i64(0) } else { i64(600) }
 	value := if clear { '' } else { urllib.query_escape(a.sign_cookie(state)) }
-	secure := if a.base_url().starts_with('https://') { '; Secure' } else { '' }
-	return with_header(r, 'set-cookie',
-		'${a.oauth_cookie_name()}=${value}; Path=${a.config.base_path}; HttpOnly; SameSite=Lax; Max-Age=${age}${secure}')
+	return with_header(r, 'set-cookie', a.cookie_header(a.oauth_cookie_name(), value,
+		a.config.base_path, age))
 }
 
 fn (mut a Auth) start_oauth(p Payload) !Response {

@@ -30,6 +30,11 @@ struct Options {
 	base_path                         string = '/api/auth'
 	secrets_json                      string
 	secret                            string = 'better-auth-test-secret-at-least-32-bytes'
+	cookie_names                      map[string]string
+	cookie_prefix                     string = 'better-auth'
+	secure_cookies                    ?bool
+	cross_subdomain_cookies           bool
+	cookie_domain                     string
 	trusted_origins                   []string
 	verification_delivery_enabled     bool
 	auto_sign_in_after_verification   bool
@@ -544,6 +549,11 @@ fn main() {
 		base_path:                         opts.base_path
 		secret:                            opts.secret
 		secrets:                           secrets
+		cookie_names:                      opts.cookie_names
+		cookie_prefix:                     opts.cookie_prefix
+		secure_cookies:                    opts.secure_cookies
+		cross_subdomain_cookies:           opts.cross_subdomain_cookies
+		cookie_domain:                     opts.cookie_domain
 		trusted_origins:                   opts.trusted_origins
 		verification_delivery_enabled:     opts.verification_delivery_enabled
 		auto_sign_in_after_verification:   opts.auto_sign_in_after_verification

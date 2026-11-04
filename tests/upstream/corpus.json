@@ -24,7 +24,7 @@
     "core-api": {
       "files": 18,
       "declarations": 452,
-      "importedFiles": 8
+      "importedFiles": 9
     },
     "client": {
       "files": 10,
@@ -5911,7 +5911,7 @@
       "path": "packages/better-auth/src/api/routes/cookie-cache-fallback.test.ts",
       "sha256": "5aa3b8c8fb3e34413289cdb65e198d79401d8f40633dc1f02fd014c91bf78d68",
       "group": "core-api",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {

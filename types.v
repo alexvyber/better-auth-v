@@ -222,6 +222,11 @@ pub:
 	clock                             fn () i64           = time.unix_now
 	clock_millis                      fn () i64           = no_millisecond_clock
 	send_email                        fn (EmailMessage) ! = discard_email
+	cookie_names                      map[string]string
+	cookie_prefix                     string = 'better-auth'
+	secure_cookies                    ?bool
+	cross_subdomain_cookies           bool
+	cookie_domain                     string
 	trust_proxy_origin_headers        bool
 	trust_proxy_ip_headers            bool
 	plugins                           []Plugin

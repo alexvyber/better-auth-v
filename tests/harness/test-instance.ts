@@ -307,9 +307,15 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
   );
   assertKeys(
     advanced,
-    ["disableCSRFCheck", "disableOriginCheck", "trustedProxyHeaders"],
+    ["disableCSRFCheck", "disableOriginCheck", "trustedProxyHeaders", "cookies", "cookiePrefix", "useSecureCookies", "crossSubDomainCookies"],
     "advanced",
   );
+  assertKeys(advanced.crossSubDomainCookies ?? {}, ['enabled', 'domain'], 'advanced.crossSubDomainCookies');
+  const cookieNames: Record<string, string> = {};
+  for (const [kind, cookie] of Object.entries(advanced.cookies ?? {}) as [string, FixtureOptions][]) {
+    assertKeys(cookie, ['name'], 'advanced.cookies.' + kind);
+    cookieNames[kind] = cookie.name ?? '';
+  }
   assertKeys(
     options.user ?? {},
     ["additionalFields", "validateUserInfo", "changeEmail", "deleteUser"],
@@ -555,6 +561,11 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       },
       store_session_in_database: session.storeSessionInDatabase ?? false,
       preserve_session_in_database: session.preserveSessionInDatabase ?? false,
+      cookie_names: cookieNames,
+      cookie_prefix: advanced.cookiePrefix ?? 'better-auth',
+      secure_cookies: advanced.useSecureCookies ?? null,
+      cross_subdomain_cookies: advanced.crossSubDomainCookies?.enabled ?? false,
+      cookie_domain: advanced.crossSubDomainCookies?.domain ?? '',
       base_url: Object.hasOwn(options, 'baseURL') && options.baseURL === undefined ? '' : baseURL,
       base_path: basePath,
       secrets_json: options.secrets === undefined ? '' : JSON.stringify(options.secrets),

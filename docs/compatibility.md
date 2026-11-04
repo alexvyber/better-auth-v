@@ -169,8 +169,13 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   Email callback failure rolls back database writes, but delivered email cannot be
   recalled on a subsequent commit failure.
 - An empty `base_url` resolves an origin from each HTTP request. Explicit trusted
-  origins remain exact strings; wildcard/dynamic allowlists, cross-subdomain
-  cookie sharing are not implemented.
+  origins remain exact strings; wildcard/dynamic allowlists remain unimplemented.
+  Cookie names/prefixes, explicit secure overrides, and cross-subdomain domains are
+  configurable and consistent across issuance/expiry, including cache chunks,
+  remember markers, and OAuth state. Cross-subdomain domains default to the
+  configured hostname. Per-cookie/default attributes beyond these options remain
+  unimplemented; the fixture rejects them. Native storage formats still prevent
+  general cookie/database sharing with an upstream server.
 
 ## Remaining Better Auth scope
 

@@ -47,6 +47,7 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 			...config
 			password_reset_expires_in: 3600
 		} }
+	validate_cookie_config(config)!
 	url := urllib.parse(config.base_url)!
 	if config.base_url != ''
 		&& (url.scheme !in ['http', 'https'] || url.host == '' || config.base_url.contains('@')

@@ -225,9 +225,20 @@ or corpus inventory contains unimplemented behavior.
   custom styling and production/error-URL routing remain separate work.
   Generic OAuth discovery, sign-in, and token exchange are still unimplemented.
 
+- Imported all 9 declarations / 11 runtime cases from the cookie-cache fallback
+  file. Retired, malformed, expired, or unverifiable cache cookies fall through to
+  authoritative token lookup, and stale base/chunk cookies are expired. Added
+  custom names/prefixes, explicit secure overrides, and cross-subdomain domains
+  across token, cache, remember-marker, and OAuth-state cookies. Names are resolved
+  independently, so custom names do not need a shared dotted prefix. Native config
+  validates names/domains before emitting headers. Four independent cases verify
+  domain derivation, matching issue/clear scopes, custom markers, secure overrides,
+  and rejection of header-injection configuration. Custom attributes are still
+  rejected by the fixture rather than ignored.
+
 ## Next infrastructure work
 
-The latest `make check` passes 567 TypeScript cases across 29 files, all 52 native
+The latest `make check` passes 582 TypeScript cases across 31 files, all 52 native
 V test functions across 10 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and

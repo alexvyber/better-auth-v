@@ -69,29 +69,23 @@ fn with_header(r Response, name string, value string) Response {
 }
 
 fn (a &Auth) cookie_name() string {
-	return if a.base_url().starts_with('https://') {
-		'__Secure-better-auth.session_token'
-	} else {
-		'better-auth.session_token'
-	}
+	return a.cookie_name_for('session_token')
 }
 
 fn (a &Auth) set_cookie(r Response, token string, remember bool) Response {
-	mut value := '${a.cookie_name()}=${urllib.query_escape(a.sign_cookie(token))}; Path=/; HttpOnly; SameSite=Lax'
-	if remember {
-		max_age := if a.config.session_expires_in > 34560000 {
-			i64(34560000)
-		} else {
-			a.config.session_expires_in
-		}
-		value += '; Max-Age=${max_age}'
+	bounded_age := if a.config.session_expires_in > 34560000 {
+		i64(34560000)
+	} else {
+		a.config.session_expires_in
 	}
-	if a.base_url().starts_with('https://') { value += '; Secure' }
+	max_age := if remember { ?i64(bounded_age) } else { none }
+	value := a.cookie_header(a.cookie_name(), urllib.query_escape(a.sign_cookie(token)), '/',
+		max_age)
 	mut result := with_header(r, 'set-cookie', value)
 	for plugin in a.config.plugins {
 		if plugin is BearerPlugin { result = with_header(result, 'set-auth-token', token) }
 	}
-	marker := a.cookie_name().all_before_last('.') + '.dont_remember'
+	marker := a.cookie_name_for('dont_remember')
 	if !remember {
 		result = with_header(result, 'set-cookie', a.cache_cookie_header(marker,
 			urllib.query_escape(a.sign_cookie('true')), none))
@@ -102,10 +96,9 @@ fn (a &Auth) set_cookie(r Response, token string, remember bool) Response {
 }
 
 fn (a &Auth) clear_cookie(r Response) Response {
-	mut value := '${a.cookie_name()}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0'
-	if a.base_url().starts_with('https://') { value += '; Secure' }
+	value := a.cookie_header(a.cookie_name(), '', '/', i64(0))
 	mut result := a.clear_cache_cookie(with_header(r, 'set-cookie', value))
-	marker := a.cookie_name().all_before_last('.') + '.dont_remember'
+	marker := a.cookie_name_for('dont_remember')
 	if marker in cookie_values(a.request_context) {
 		result = with_header(result, 'set-cookie', a.cache_cookie_header(marker, '', i64(0)))
 	}

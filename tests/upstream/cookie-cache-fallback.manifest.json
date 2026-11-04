@@ -1,0 +1,100 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/api/routes/cookie-cache-fallback.test.ts",
+  "sha256": "5aa3b8c8fb3e34413289cdb65e198d79401d8f40633dc1f02fd014c91bf78d68",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "disabled cookie cache fallback",
+      "suites": [
+        "disabled cookie cache fallback"
+      ],
+      "test": "ignores retired session_data when caching is disabled $mode",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "disabled cookie cache fallback",
+      "suites": [
+        "disabled cookie cache fallback"
+      ],
+      "test": "clears retired session_data when session_token is $state",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookieCache HMAC verification failure fallback",
+      "suites": [
+        "cookieCache HMAC verification failure fallback"
+      ],
+      "test": "should fall through to session_token DB validation when session_data HMAC fails",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookieCache HMAC verification failure fallback",
+      "suites": [
+        "cookieCache HMAC verification failure fallback"
+      ],
+      "test": "should expire malformed compact session_data and fall through to session_token DB validation",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookieCache HMAC verification failure fallback",
+      "suites": [
+        "cookieCache HMAC verification failure fallback"
+      ],
+      "test": "should still return null when both session_data and session_token are invalid",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookieCache HMAC verification failure fallback",
+      "suites": [
+        "cookieCache HMAC verification failure fallback"
+      ],
+      "test": "should work with JWT strategy when HMAC verification fails",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookieCache HMAC verification failure fallback",
+      "suites": [
+        "cookieCache HMAC verification failure fallback"
+      ],
+      "test": "should work with JWE strategy when decryption fails",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookieCache HMAC verification failure fallback",
+      "suites": [
+        "cookieCache HMAC verification failure fallback"
+      ],
+      "test": "should handle cross-subdomain cookie migration without silent logout",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookieCache HMAC verification failure fallback",
+      "suites": [
+        "cookieCache HMAC verification failure fallback"
+      ],
+      "test": "should work during cookieCache window even with stale session_data",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import {nativeRedisConfiguration} from './redis-storage.js';
 import { APIError } from "@better-auth/core/error";
 import type { BetterAuthClientOptions, BetterAuthOptions } from "@better-auth/core";
 import type { Account, Auth } from "better-auth";
@@ -205,6 +206,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     const modes = typeof storage === 'object' && storage && 'default' in storage ? [storage.default, ...Object.values(storage.overrides ?? {})] : [storage];
     if (modes.some(mode => mode !== undefined && mode !== 'plain' && mode !== 'hashed' && !(typeof mode === 'object' && mode && typeof (mode as FixtureOptions).hash === 'function'))) throw new Error('Invalid verification identifier hashing');
   }
+  const nativeRedis = nativeRedisConfiguration(options.secondaryStorage);
   const ep = options.emailAndPassword ?? {};
   const ev = options.emailVerification ?? {};
   const session = options.session ?? {};
@@ -586,7 +588,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     try { await context.adapter.transaction(async () => undefined); }
     catch (error) { const state = currentOperation.getStore(); if (state) state.transactionError = error; throw error; }
   };
-  if (options.secondaryStorage) {
+  if (options.secondaryStorage && !nativeRedis) {
     const store = options.secondaryStorage;
     for (const name of ['get', 'set', 'delete', 'getAndDelete', 'increment']) {
       if (typeof options.secondaryStorage[name] !== 'function') throw new Error(`Secondary storage requires ${name}`);
@@ -737,6 +739,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       storage: stateless || isNativeMemoryAdapter(options.database) ? 'memory' : 'sqlite',
       stateless_sessions: stateless,
       secondary_storage: !!options.secondaryStorage,
+      redis_tcp: nativeRedis?.tcp,
+      redis_key_prefix: nativeRedis?.keyPrefix,
       cookie_cache: {
         enabled: cacheOptions.enabled,
         strategy: cacheOptions.strategy,

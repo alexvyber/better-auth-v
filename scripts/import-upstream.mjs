@@ -16,6 +16,9 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+ {file: 'redis-storage', path: 'packages/redis-storage/test/redis-storage.test.ts', suites: null,
+ imports: 'import { describe, expect, it, vi } from "vitest";\nimport { redisStorage } from "../harness/redis-storage.js";\n',
+ },
  {file: 'generic-oauth', path: 'packages/better-auth/src/plugins/generic-oauth/generic-oauth.test.ts', suites: new Set(['oauth2']), nestedSuites: new Set(['id_token verification']),
  includeTests: new Set(['should not create user when sign ups are disabled', 'should create user when sign ups are disabled and sign up is requested', 'skips discovery missing %s endpoints', 'keeps explicit token exchange with incomplete discovery (custom=%s)', 'does not take down the auth API when one provider’s discovery is unreachable'.replace('’', "'"), 'should merge client-requested scopes with config scopes']),
  imports: 'import { createServer } from "node:http";\nimport type { AddressInfo } from "node:net";\nimport type { GenericEndpointContext } from "@better-auth/core";\nimport { runWithEndpointContext } from "@better-auth/core/context";\nimport { betterFetch } from "@better-fetch/fetch";\nimport { generateKeyPair, SignJWT } from "jose";\nimport { HttpResponse, http } from "msw";\nimport { setupServer } from "msw/node";\nimport { OAuth2Server } from "oauth2-mock-server";\nimport { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";\nimport { createAuthClient } from "better-auth/client";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { genericOAuth } from "../harness/plugins.js";\n',

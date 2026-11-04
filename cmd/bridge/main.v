@@ -12,6 +12,8 @@ import time
 import x.json2
 
 struct Options {
+	redis_tcp                         ?better_auth.RedisTCPOptions
+	redis_key_prefix                  string = 'better-auth:'
 	generic_oauth                     []better_auth.GenericOAuthConfig
 	generic_callbacks                 map[string][]string
 	account_linking_enabled           bool
@@ -466,6 +468,13 @@ fn expiration_command() ! {
 }
 
 fn main() {
+	if os.args.len == 2 && os.args[1] == '--redis' {
+		redis_bridge() or {
+			eprintln(err.msg())
+			exit(1)
+		}
+		return
+	}
 	if os.args.len == 2 && os.args[1] == '--oauth-token' {
 		oauth_token_command() or {
 			eprintln(err.msg())
@@ -749,6 +758,11 @@ fn main() {
 	if opts.magic_link { plugins << better_auth.MagicLinkPlugin{} }
 	mut secondary := better_auth.SecondaryStorage(better_auth.NoSecondaryStorage{})
 	if opts.secondary_storage { secondary = RemoteSecondaryStorage{} }
+	if tcp := opts.redis_tcp { secondary = better_auth.redis_storage(better_auth.RedisTCPClient{
+			options: tcp
+		}, better_auth.RedisStorageOptions{
+			key_prefix: opts.redis_key_prefix
+		}) }
 	mut secrets := ?[]better_auth.SecretEntry(none)
 	if opts.secrets_json != '' {
 		secrets = better_auth.parse_secret_entries(opts.secrets_json) or {

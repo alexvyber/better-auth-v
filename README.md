@@ -46,6 +46,14 @@ There is no dependency on a web framework.
 - Native request hooks with trust snapshots resolved before callbacks, request
   replacement/short-circuiting, and prepare/complete APIs for trusted transports.
 - A plugin endpoint interface and an existing-user magic-link plugin.
+- One-time session handoffs and trusted verification APIs, including hashed
+  identifiers, atomic consumption, reservation gates and update/delete operations.
+- Email OTP verification, sign-in, reset and email changes with hashed/encrypted
+  storage, resend policies and attempt limits; anonymous users and guest merge hooks.
+- Generic OIDC discovery, signature/nonce verification, profile policy callbacks,
+  trusted same-email linking and provisioned-user signup controls.
+- Native Redis secondary storage with GETDEL/Lua atomics, fixed counter TTLs,
+  prefix-safe scans and an authenticated RESP2 TCP client.
 - OAuth authorization-code orchestration with PKCE and browser-bound state, a
   provider interface, and a GitHub provider using verified email addresses. Explicit
   provider logout supports linked ID tokens, redirects, state, and provider fallback.
@@ -58,7 +66,9 @@ There is no dependency on a web framework.
 Tested with V 0.5.2, Node.js 24, and pnpm 12. RSA/ECDSA support requires OpenSSL 3
 development headers and libraries, discovered through V's `net.openssl` module.
 SQLite uses V's `db.sqlite` binding
-and its native SQLite dependency. The library itself has no V package dependencies.
+and its native SQLite dependency. The full test suite also requires `redis-server`
+and `redis-cli` on PATH; its isolated Redis process disables persistence. The
+library itself has no V package dependencies.
 
 ```sh
 pnpm install --frozen-lockfile

@@ -162,7 +162,8 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   gates are implemented; UUID/serial ID strategies and legacy reset/OAuth storage
   unification remain incomplete; the verification settings currently govern these trusted APIs and
   the OTT and email-OTP plugins. Update/delete-by-identifier APIs are also available.
-  Redis/application-wrapper integration is still separate work.
+  A native Redis secondary store is now available; application-specific fallback
+  wrappers and complete database integration remain separate work.
 - The native email-OTP plugin implements code creation/read APIs, delivery, checking,
   verification, sign-in/signup, password reset and authenticated email changes.
   Plain, SHA256, encrypted and application-provided codecs, resend rotation/reuse,
@@ -171,6 +172,15 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   attempt configuration has independent coverage. Unverified account promotion coordinates through database reservation keys and
   re-reads before deleting old account links and sessions. Complete callback contexts
   and additional database adapters remain open.
+- Native Redis secondary storage supports prefixed get/set/delete, GETDEL with
+  cached Lua fallback only for unknown-command errors, atomic INCR/EXPIRE counters,
+  SCAN-based listing/deduplication and non-atomic clearing with literal glob prefixes.
+  A Redis client interface supports application transports; the built-in RESP2 TCP
+  client supports AUTH/ACL names, database selection, fresh connections, bounded
+  replies and read/write deadlines without replaying interrupted mutations. TCP
+  dialing follows the V runtime timeout; TLS, pooling and Brand Map's application-
+  specific tolerant/strict wrapper behavior remain open. All upstream Redis source
+  cases run unchanged, plus real-server cross-instance session/OTT checks.
 - The native anonymous plugin supports protected guest identities, custom email/name
   generators, explicit deletion and guest-to-account callbacks before cleanup.
   Email/password, email verification, email OTP and Google OAuth flows are covered,

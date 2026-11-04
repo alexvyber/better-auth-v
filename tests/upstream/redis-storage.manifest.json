@@ -1,0 +1,120 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/redis-storage/test/redis-storage.test.ts",
+  "sha256": "e47b2a53bce396a69f8364ddd6a63a1c523e00dfdb1166fbb06188b16cccd131",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "redisStorage",
+      "suites": [
+        "redisStorage"
+      ],
+      "test": "uses GETDEL when it is supported",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "redisStorage",
+      "suites": [
+        "redisStorage"
+      ],
+      "test": "falls back to Lua when GETDEL is unavailable",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "redisStorage",
+      "suites": [
+        "redisStorage"
+      ],
+      "test": "rethrows GETDEL errors that are not unknown-command errors",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "redisStorage",
+      "suites": [
+        "redisStorage"
+      ],
+      "test": "increments atomically and sets the ttl only on creation",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "redisStorage",
+      "suites": [
+        "redisStorage"
+      ],
+      "test": "clears every prefixed key by paging through SCAN",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "redisStorage",
+      "suites": [
+        "redisStorage"
+      ],
+      "test": "does not call DEL when clearing an empty store",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "redisStorage",
+      "suites": [
+        "redisStorage"
+      ],
+      "test": "propagates a mid-iteration failure, leaving earlier pages deleted",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "redisStorage",
+      "suites": [
+        "redisStorage"
+      ],
+      "test": "lists keys via SCAN, stripping the prefix and deduping across pages",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "redisStorage",
+      "suites": [
+        "redisStorage"
+      ],
+      "test": "escapes glob metacharacters in the prefix so SCAN matches it literally",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "redisStorage",
+      "suites": [
+        "redisStorage"
+      ],
+      "test": "only sets the ttl on the call that creates the key",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "redisStorage",
+      "suites": [
+        "redisStorage"
+      ],
+      "test": "rejects invalid ttl %s before mutating Redis",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

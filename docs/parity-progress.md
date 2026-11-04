@@ -586,7 +586,20 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   signatures. MongoDB, database-backed rate limits, retry/cache, full generic
   options/linking/refresh and actual Nabu application migration remain open.
 
-The latest verification passes 1230 TypeScript cases across 65 files, all 88 native
+- Added native Redis secondary storage with application client transport and a
+  built-in RESP2 TCP transport. Policy covers prefixed commands, GETDEL compatibility
+  fallback, fixed-TTL atomic counters and safe SCAN enumeration/clearing. The TCP
+  transport authenticates each fresh connection, preserves binary UTF-8 strings,
+  bounds responses and enforces I/O deadlines without retrying interrupted mutations.
+- Imported the complete Redis package test file unchanged: 15 runtime cases. Seven
+  additional real-server/protocol cases verify cross-instance auth session/OTT
+  sharing, fixed TTLs, literal-prefix isolation, authentication errors, fragmented
+  and oversized replies, and mutation timeouts. The integration tests start an
+  isolated password-protected local Redis and shut it down afterward; redis-server
+  and redis-cli are required for those tests. TLS, pooling, native dial deadlines
+  and the application-specific tolerant/strict wrapper remain open.
+
+The latest verification passes 1252 TypeScript cases across 67 files, all 88 native
 V test functions across 28 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
@@ -595,8 +608,8 @@ passes.
 
 The user resumed work and authorized incremental commits and pushes to
 `alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.
-The objective remains incomplete. The corpus currently records 29 completely
-imported files, four partial imports and 403 unported files; imported status describes source
+The objective remains incomplete. The corpus currently records 30 completely
+imported files, four partial imports and 402 unported files; imported status describes source
 preservation, not broad feature completion.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise

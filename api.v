@@ -107,3 +107,16 @@ pub fn (mut a Auth) verify_password(password string, ctx RequestContext) !bool {
 	}), ctx)!
 	return true
 }
+
+pub fn (mut a Auth) generate_one_time_token(ctx RequestContext) !string {
+	response := a.invoke('GET', '/one-time-token/generate', '', ctx)!
+	fields := json.decode(map[string]string, response.body)!
+	return fields['token']
+}
+
+pub fn (mut a Auth) verify_one_time_token(token string, ctx RequestContext) !SessionResult {
+	response := a.invoke('POST', '/one-time-token/verify', json.encode({
+		'token': token
+	}), ctx)!
+	return decode_session_result(response.body)
+}

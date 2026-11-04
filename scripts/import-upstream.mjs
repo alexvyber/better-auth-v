@@ -16,6 +16,13 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+  {file: 'internal-adapter', path: 'packages/better-auth/src/db/internal-adapter.test.ts', suites: new Set(), extractSuite: 'consumeVerificationValue', includeHelpers: true,
+   imports: 'import { describe, expect, it, vi } from "vitest";\nimport type { SecondaryStorage } from "@better-auth/core/db";\nimport { DatabaseSync, init, getMigrations } from "../harness/verification-fixture.js";\nimport type { BetterAuthOptions } from "../harness/verification-fixture.js";\n',
+   unportedReason: 'Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected',
+  },
+  {file: 'one-time-token', path: 'packages/better-auth/src/plugins/one-time-token/one-time-token.test.ts', suites: null,
+   imports: 'import { afterEach, describe, expect, it, vi } from "vitest";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { isAPIError } from "@better-auth/core/utils/is-api-error";\nimport { oneTimeToken } from "../harness/plugins.js";\nimport { oneTimeTokenClient } from "better-auth/client/plugins";\nimport { defaultKeyHasher } from "../harness/crypto.js";\n',
+  },
   {file: 'oauth-client-assertion', path: 'packages/core/src/oauth2/client-assertion.test.ts', suites: null,
    imports: 'import { createLocalJWKSet, decodeJwt, decodeProtectedHeader, exportJWK, generateKeyPair, jwtVerify } from "jose";\nimport { describe, expect, it } from "vitest";\nimport { createPrivateKeyJwtClientAssertionGetter, signPrivateKeyJwtClientAssertion } from "../harness/oauth-token.js";\n',
   },
@@ -189,7 +196,7 @@ for (const plan of plans) {
     if (!/^(describe|suite)(\.|$)/.test(rootExpression.getText(sourceFile))) continue;
     const name = call.arguments[0].text;
     const callback = call.arguments[1];
-    const selected = plan.suites === null || plan.suites.has(name);
+    const selected = !plan.extractSuite && (plan.suites === null || plan.suites.has(name));
     const removals = [];
     function collect(node, path = [name]) {
       if (ts.isCallExpression(node)) {
@@ -205,6 +212,7 @@ for (const plan of plans) {
             node.arguments[0]?.text ??
             node.arguments[0]?.getText(sourceFile) ??
             "<dynamic>";
+          if (plan.extractSuite === title) output += '\n' + node.getText(sourceFile) + ';\n';
           for (const fn of callbacks) collect(fn.body, [...path, title]);
           return;
         }
@@ -216,7 +224,7 @@ for (const plan of plans) {
             node.arguments[0]?.text ??
             node.arguments[0]?.getText(sourceFile) ??
             "<dynamic>";
-          const include = selected && !plan.skippedTests?.has(title);
+          const include = (plan.extractSuite ? path.includes(plan.extractSuite) : selected) && !plan.skippedTests?.has(title);
           inventory.push({
             suite: name,
             suites: path,

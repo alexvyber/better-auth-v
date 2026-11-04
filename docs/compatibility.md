@@ -35,6 +35,8 @@ The default base path is `/api/auth`.
 | GET    | `/callback/:provider`      | Complete bound OAuth code/PKCE flow                       |
 | POST   | `/sign-in/magic-link`      | Plugin: email a link to an existing user                  |
 | GET    | `/magic-link/verify`       | Plugin: consume link and create session                   |
+| GET    | `/one-time-token/generate` | Plugin: issue a token bound to the authenticated session |
+| POST   | `/one-time-token/verify` | Plugin: consume once and return the existing session |
 | GET    | `/jwks`                   | JWT plugin: publish public signing keys                   |
 | GET    | `/token`                  | JWT plugin: issue a JWT for an authenticated session       |
 
@@ -128,6 +130,17 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   signing accepts JWK and unencrypted PKCS#8 inputs. These helpers do not yet supply
   account-refresh APIs, refresh scheduling or complete provider integration;
   broader response coercion and transport/error-shape parity remain incomplete.
+- The native one-time-token plugin supports precise expiry, custom generation,
+  plain/SHA256/custom hashed token storage, client-request restrictions, optional
+  cookie suppression and OTT headers when a session cookie is set. Tokens redeem
+  the existing session, expire with it and stay burned after failed session lookup.
+  Public V generation/redemption APIs and trusted verification create/find/consume
+  operations are available. Verification APIs support ordered plain/hashed prefix
+  policies, metadata, hook patches/vetoes, latest-record selection/stale cleanup,
+  atomic secondary consumption and optional DB copies. Custom identifier hashing,
+  reservation/update/delete APIs and legacy reset/OAuth storage unification remain
+  incomplete; the verification settings currently govern these trusted APIs and
+  the OTT plugin. Redis/application-wrapper integration is still separate work.
 - The HTML error endpoint validates error codes and escapes descriptions. Default
   page styling, custom themes, production redirects, and `onAPIError.errorURL`
   behavior remain unimplemented.
@@ -235,7 +248,7 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   Authentication work is serialized per instance/connection. Body limits are opt-in
   (`max_body_bytes > 0`); the default zero imposes no library cap, matching upstream.
   The native HTTP transport buffers bodies before this optional limit is enforced.
-- There is no automatic expiration-record garbage collector or durable email outbox.
+- There is no background expiration-record garbage collector or durable email outbox.
   Email callback failure rolls back database writes, but delivered email cannot be
   recalled on a subsequent commit failure.
 - An empty `base_url` resolves an origin from each HTTP request. Explicit trusted
@@ -356,7 +369,12 @@ tests establishes only their covered behavior, not complete upstream parity.
 - Three complete token/assertion source files run all 41 cases against V. Eight
   independent cases verify PEM signatures with JOSE, real HTTP grant requests,
   response-time clocks, resource indicators and callback context/errors. The full
-  corpus still contains 408 unported files and one partial import.
+  corpus now contains 406 unported files and two partial imports.
+- All 14 one-time-token source cases and all 12 internal-adapter consumption cases
+  run against V. The other 58 declarations in the internal-adapter source remain
+  unported. Nine independent cases and two native tests cover hashing, typed APIs,
+  race/burn/expiry behavior, hook patches, identifier policies and cookie/header
+  lifecycle. These cases do not establish complete internal-adapter parity.
 - Differential tests compare the published TS server and V on supported scenarios,
   ignoring inherently random IDs/tokens/timestamps and documented record-format
   differences.

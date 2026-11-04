@@ -14,7 +14,7 @@
     "utilities-and-tooling": {
       "files": 275,
       "declarations": 4594,
-      "importedFiles": 14
+      "importedFiles": 15
     },
     "e2e": {
       "files": 71,
@@ -34,7 +34,7 @@
     "plugins": {
       "files": 45,
       "declarations": 1315,
-      "importedFiles": 4
+      "importedFiles": 5
     },
     "adapters": {
       "files": 16,
@@ -14304,7 +14304,7 @@
       "path": "packages/better-auth/src/db/internal-adapter.test.ts",
       "sha256": "e4d05e4c04ec7bc6402f0ddee41599a74cdff3eb097e0d14d825cdc7980951be",
       "group": "utilities-and-tooling",
-      "status": "unported",
+      "status": "imported-partial-file",
       "kind": "runtime",
       "declarations": [
         {
@@ -23507,7 +23507,7 @@
       "path": "packages/better-auth/src/plugins/one-time-token/one-time-token.test.ts",
       "sha256": "d733a31cdaf794335b94e69691862acc62e37754e15fc54615ca9b19c9d41c6e",
       "group": "plugins",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {

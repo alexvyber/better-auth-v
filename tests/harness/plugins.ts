@@ -1,4 +1,4 @@
-import { genericOAuth as upstreamGenericOAuth, admin as upstreamAdmin, organization as upstreamOrganization } from 'better-auth/plugins';
+import { genericOAuth as upstreamGenericOAuth, admin as upstreamAdmin, organization as upstreamOrganization, oneTimeToken as upstreamOneTimeToken } from 'better-auth/plugins';
 export { jwt } from 'better-auth/plugins';
 
 // Preserve constructor inputs so the fixture can reject unimplemented options.
@@ -21,3 +21,9 @@ export const genericOAuth = ((options: Parameters<typeof upstreamGenericOAuth>[0
   inputs.set(plugin, options);
   return plugin;
 }) as typeof upstreamGenericOAuth;
+
+export const oneTimeToken = ((options?: Parameters<typeof upstreamOneTimeToken>[0]) => {
+ const plugin = upstreamOneTimeToken(options);
+ inputs.set(plugin, options ?? {});
+ return plugin;
+}) as typeof upstreamOneTimeToken;

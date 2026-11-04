@@ -12,6 +12,10 @@ import time
 import x.json2
 
 struct Options {
+	verification_options              better_auth.VerificationOptions
+	one_time_token                    ?better_auth.OneTimeTokenOptions
+	ott_generate_callback             bool
+	ott_hash_callback                 bool
 	custom_jwk_store                  bool
 	admin_schema                      bool
 	admin_default_role                string = 'user'
@@ -649,6 +653,30 @@ fn main() {
 			}
 		}
 	}
+	if given := opts.one_time_token {
+		mut settings := given
+		if opts.ott_generate_callback {
+			settings = better_auth.OneTimeTokenOptions{
+				...settings
+				generate_token: fn (mut context better_auth.EndpointContext, session better_auth.SessionResult) !string {
+					return json2.decode[string](callback_with_context('ott.generate',
+						'{"session":${better_auth.encode_session(session.session)},"user":${better_auth.encode_user(session.user)}}', mut
+						context)!)
+				}
+			}
+		}
+		if opts.ott_hash_callback {
+			settings = better_auth.OneTimeTokenOptions{
+				...settings
+				hash_token: fn (token string) !string {
+					return json2.decode[string](callback_rpc('ott.hash', json.encode(token))!)
+				}
+			}
+		}
+		plugins << better_auth.OneTimeTokenPlugin{
+			options: settings
+		}
+	}
 	if opts.magic_link { plugins << better_auth.MagicLinkPlugin{} }
 	mut secondary := better_auth.SecondaryStorage(better_auth.NoSecondaryStorage{})
 	if opts.secondary_storage { secondary = RemoteSecondaryStorage{} }
@@ -675,6 +703,7 @@ fn main() {
 		}
 	}
 	mut auth := better_auth.new(better_auth.Config{
+		verification:                      opts.verification_options
 		stateless_sessions:                opts.stateless_sessions
 		cookie_cache:                      better_auth.CookieCacheConfig{
 			...opts.cookie_cache

@@ -25,6 +25,9 @@ fn crypto_command() ! {
 			encoded = json.encode(better_auth.decrypt_oauth_token(args[0].str(),
 				better_auth.decode_symmetric_secret(args[1])!, args[2].bool())!)
 		}
+		'oneTimeTokenHash' {
+			encoded = json.encode(better_auth.default_one_time_token_hasher(args[0].str())!)
+		}
 		'parseEnvelope' {
 			if envelope := better_auth.parse_secret_envelope(args[0].str()) {
 				encoded = json.encode(envelope)

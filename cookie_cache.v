@@ -275,8 +275,10 @@ fn (mut a Auth) set_cache_cookie(response Response, current SessionResult) !Resp
 }
 
 fn (mut a Auth) set_session_cookies(response Response, current SessionResult) !Response {
-	return a.set_cache_cookie(a.set_cookie(response, current.session.token,
-		current.session.persistent), current)
+	result := a.set_cache_cookie(a.set_cookie(response, current.session.token,
+		current.session.persistent), current)!
+	a.new_session = current
+	return result
 }
 
 fn (mut a Auth) cached_session(ctx RequestContext) !Lookup[CachedSession] {

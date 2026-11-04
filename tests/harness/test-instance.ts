@@ -25,6 +25,7 @@ interface FixtureLoggerOptions extends FixtureOptions {
   log?: NonNullable<BetterAuthOptions['logger']>['log'];
 }
 interface ServerOptions {
+ verification?: BetterAuthOptions["verification"];
 	socialProviders?: BetterAuthOptions['socialProviders'];
   plugins?: BetterAuthOptions['plugins'];
   database?: BetterAuthOptions["database"];
@@ -78,6 +79,8 @@ afterAll(async () => {
 });
 
 const routes: Record<string, [string, string]> = {
+ generateOneTimeToken: ['GET', '/one-time-token/generate'],
+ verifyOneTimeToken: ['POST', '/one-time-token/verify'],
   signInSocial: ["POST", "/sign-in/social"],
   signUpEmail: ["POST", "/sign-up/email"],
   signInEmail: ["POST", "/sign-in/email"],
@@ -144,6 +147,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   assertKeys(
     options,
     [
+      "verification",
       "baseURL",
       "plugins",
       "database",
@@ -184,9 +188,16 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     throw new Error("Only SQLite fixtures are implemented");
   if (options.database !== undefined && !isNativeMemoryAdapter(options.database))
     throw new Error("Only the native memory-adapter fixture is supported as an explicit database");
+  if (options.verification) {
+    assertKeys(options.verification, ['storeInDatabase', 'disableCleanup', 'storeIdentifier'], 'verification');
+    const storage = options.verification.storeIdentifier;
+    const modes = typeof storage === 'object' && storage && 'default' in storage ? [storage.default, ...Object.values(storage.overrides ?? {})] : [storage];
+    if (modes.some(mode => mode !== undefined && mode !== 'plain' && mode !== 'hashed')) throw new Error('Unported custom verification identifier hashing');
+  }
   const ep = options.emailAndPassword ?? {};
   const ev = options.emailVerification ?? {};
   const session = options.session ?? {};
+  let ottOptions: FixtureOptions | undefined;
   let jwtOptions: FixtureOptions | undefined;
   let adminOptions: FixtureOptions | undefined;
   let organizationOptions: FixtureOptions | undefined;
@@ -199,6 +210,12 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   const endpointPlugins: FixtureOptions[] = [];
   const endpointCallbacks: Record<string, (payload: any) => Promise<unknown>> = {};
   for (const plugin of options.plugins ?? []) {
+    if (plugin.id === 'one-time-token') {
+      ottOptions = schemaPluginOptions(plugin);
+      if (!ottOptions) throw new Error('One-time-token requires a native fixture descriptor');
+      assertKeys(ottOptions, ['expiresIn', 'disableClientRequest', 'disableSetSessionCookie', 'setOttHeaderOnNewSession', 'storeToken', 'generateToken'], 'oneTimeToken');
+      continue;
+    }
     if (plugin.id === 'generic-oauth') {
       const input = schemaPluginOptions(plugin);
       if (!input) throw new Error('Generic OAuth needs its native fixture descriptor');
@@ -379,7 +396,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   let jwtCallSequence = 0;
   const callbacks: Record<string, (payload: any) => unknown> = {...endpointCallbacks};
   const internalAdapter = {} as FixtureInternalAdapter;
-  const internalNames = ['createSession', 'findSession', 'listSessions', 'updateSession', 'deleteSession', 'deleteUserSessions', 'createUser', 'updateUser', 'findUserById', 'findUserByEmail', 'createAccount', 'findCredentialAccount', 'deleteAccount', 'updateAccount', 'findAccounts', 'updatePassword'];
+  const internalNames = ['createVerificationValue', 'findVerificationValue', 'consumeVerificationValue', 'createSession', 'findSession', 'listSessions', 'updateSession', 'deleteSession', 'deleteUserSessions', 'createUser', 'updateUser', 'findUserById', 'findUserByEmail', 'createAccount', 'findCredentialAccount', 'deleteAccount', 'updateAccount', 'findAccounts', 'updatePassword'];
   for (const name of internalNames) {
     internalAdapter[name] = async (...args: any[]) => {
       const reply = await bridge.send('internal', {method: name, arguments_json: transportJSON(args)});
@@ -596,10 +613,20 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       return ep.customSyntheticUser!({coreFields, additionalFields: hydrate(payload.additionalFields), id: payload.id});
     };
   }
+  if (ottOptions?.generateToken) callbacks['ott.generate'] = payload => ottOptions.generateToken(hydrate(payload), {context, headers: currentOperation.getStore()?.request?.headers, request: currentOperation.getStore()?.request});
+  if (typeof ottOptions?.storeToken === 'object') callbacks['ott.hash'] = token => ottOptions.storeToken.hash(token);
   for (const [method, callback] of Object.entries(callbacks))
     bridge.setCallback(method, callback);
   await bridge.send("init", {
     options: {
+      verification_options: options.verification ? {
+       ...options.verification,
+       storeIdentifier: typeof options.verification.storeIdentifier === 'object' && 'default' in options.verification.storeIdentifier ? options.verification.storeIdentifier.default : options.verification.storeIdentifier,
+       overrides: typeof options.verification.storeIdentifier === 'object' && 'default' in options.verification.storeIdentifier ? options.verification.storeIdentifier.overrides : undefined,
+      } : {},
+      one_time_token: ottOptions ? {...ottOptions, storeToken: typeof ottOptions.storeToken === 'object' ? 'custom-hasher' : ottOptions.storeToken} : null,
+      ott_generate_callback: !!ottOptions?.generateToken,
+      ott_hash_callback: typeof ottOptions?.storeToken === 'object',
       admin_schema: !!adminOptions,
       admin_default_role: adminOptions?.defaultRole ?? 'user',
       organization_schema: !!organizationOptions,

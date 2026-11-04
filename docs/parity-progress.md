@@ -18,6 +18,29 @@ or corpus inventory contains unimplemented behavior.
   Named `test.extend` fixture declarations are now included; this discovered 22
   previously uncounted declarations without changing the source baseline.
 
+## Brand Map and Nabu priority
+
+The user resumed implementation on 2026-11-04, prioritizing the actual configured
+features in `/Users/alexs/bm/server`, including Nabu, while retaining the full
+pinned-upstream parity objective. Commit and push each verified batch.
+
+1. Persistence and identity foundations: PostgreSQL with the existing auth/plugin
+   schemas, UUID IDs and mappings; Redis verification/session behavior; trusted
+   verification/session APIs used by application handoffs.
+2. Authentication plugins: one-time tokens, email OTP (hashed, rotating, attempts,
+   email changes), anonymous users/link callbacks, and two-factor/TOTP/backup codes.
+3. Authorization: admin users/roles/bans/impersonation and organizations, invitations,
+   memberships, active organization, dynamic permissions and organization hooks.
+4. Nabu: MongoDB, generic OIDC discovery/verification/profile policy, trusted
+   account linking and database-backed rate limiting.
+5. Integration completion: field validators/uniqueness, OpenAPI, schema generation,
+   logger/hook contracts and application-level verification of the above. Do not
+   infer passkey/API-key/phone/team requirements from unused UI dependencies.
+
+Foundational plugin batches can proceed before complete database adapters, but
+this does not remove PostgreSQL/MongoDB/schema integration from the requirements.
+Each plugin must retain original upstream assertions and accurately report gaps.
+
 ## Implemented since the initial core
 
 - Removed all exclusions from the original sign-in test file.
@@ -486,17 +509,40 @@ or corpus inventory contains unimplemented behavior.
   account linking and full provider integration remain incomplete. Broader response
   coercion, transport error shapes and redirect-helper callback parity remain open.
 
-The latest `make check` passes 1046 TypeScript cases across 55 files, all 82 native
-V test functions across 23 files (including all 20,034 Unicode vectors), TypeScript
+- Added the native one-time-token plugin, typed generation/redemption APIs and
+  trusted verification creation/find/consume APIs. OTTs bind to an existing session,
+  support plain/SHA256/custom hashing and generation callbacks, configurable precise
+  expiry, client-request restrictions, cookie suppression and session OTT headers.
+  Consumption commits before session lookup so a revoked/expired session cannot
+  restore a token. Session-header tracking follows cookie issuance, including OTT
+  redemption, rather than raw internal session allocation.
+- Verification APIs preserve metadata and create-hook patches, implement plain/
+  hashed identifiers with ordered prefix overrides, latest-record consumption,
+  invalidation of older duplicates, expiry cleanup, delete veto/after hooks, and
+  atomic secondary-store getAndDelete with optional database copies. Read cleanup
+  preserves upstream's captured expired row for the first read. Custom identifier
+  hash callbacks, reservation/update/delete APIs and complete integration of legacy
+  token helpers remain open. These are distinct from OTT's supported custom hasher.
+- Imported all fourteen one-time-token source cases unchanged and all twelve cases
+  from the internal-adapter consumeVerificationValue suite unchanged. The other
+  58 internal-adapter declarations remain explicitly unported. Nine independent
+  cases and two native tests cover independent hashing, native typed APIs, token
+  burn after revocation, millisecond expiry boundaries, callback patches, duplicate
+  records, cookie/header lifecycle and absence of extra session creation. The
+  importer can extract an intact nested suite while retaining the complete original
+  source and inventory; fixture callbacks still execute native operations.
+
+The latest `make check` passes 1081 TypeScript cases across 58 files, all 84 native
+V test functions across 24 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus
 passes.
 
-The user authorized incremental commits and pushes to `alexvyber/better-auth-v`
-and then requested concluding the current run with a parity overview. The objective
-remains incomplete. The corpus currently records 27 completely imported files,
-one partial import and 408 unported files; imported status describes source
+The user resumed work and authorized incremental commits and pushes to
+`alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.
+The objective remains incomplete. The corpus currently records 28 completely
+imported files, two partial imports and 406 unported files; imported status describes source
 preservation, not broad feature completion.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise

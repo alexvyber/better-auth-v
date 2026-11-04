@@ -29,6 +29,9 @@ fn (mut a Auth) intercept_internal(name string, arguments_json string) !Lookup[s
 pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json string) !string {
 	args := json2.decode[[]json2.Any](arguments_json)!
 	match name {
+		'createVerificationValue', 'findVerificationValue', 'consumeVerificationValue' {
+			return c.verification_internal(name, args)
+		}
 		'validateRedirect' {
 			if args.len != 1 { return error('validateRedirect requires a callback value') }
 			for value in args[0].as_array() {

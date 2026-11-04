@@ -26,6 +26,7 @@ mut:
 	secondary_created         []Session
 	intercepting              map[string]bool
 	request_context           RequestContext
+	new_session               ?SessionResult
 	user_defined_fields       []string
 }
 

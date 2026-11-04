@@ -56,6 +56,8 @@ pub:
 
 pub struct Verification {
 pub:
+	created_at        string
+	updated_at        string
 	id                string
 	identifier        string
 	value             string
@@ -186,6 +188,7 @@ pub:
 
 pub struct Config {
 pub:
+	verification                      VerificationOptions
 	cookie_cache                      CookieCacheConfig
 	stateless_sessions                bool
 	base_url                          string = 'http://localhost:3000'

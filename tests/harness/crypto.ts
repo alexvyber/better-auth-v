@@ -51,3 +51,5 @@ export function validateSecretsArray(entries: {version: number; value: string}[]
 export function buildSecretConfig(entries: {version: number; value: string}[], legacySecret: string): SecretConfig {
   return hydrateSecret(native('buildSecretConfig', [entries, legacySecret])) as SecretConfig;
 }
+
+export async function defaultKeyHasher(token: string): Promise<string> { return native('oneTimeTokenHash', [token]); }

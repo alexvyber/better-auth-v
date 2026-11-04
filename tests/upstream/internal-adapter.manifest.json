@@ -1,0 +1,749 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/db/internal-adapter.test.ts",
+  "sha256": "e4d05e4c04ec7bc6402f0ddee41599a74cdff3eb097e0d14d825cdc7980951be",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should create oauth user with custom generate id",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should abort oauth account creation when user creation is vetoed",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "rejects createUser outside an endpoint context when validateUserInfo is configured",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "requires a provisioning source when validateUserInfo is configured",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "forces create-user as the createUser validation action",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should find session with custom userId",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should delete expired verification values on find",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should delete verification by value with hooks",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should delete verification by identifier with hooks",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should not call adapter.delete for missing verification record (prevents Prisma P2025)",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification token storage"
+      ],
+      "test": "should hash identifier when storeIdentifier is 'hashed'",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification token storage"
+      ],
+      "test": "should use overrides for specific prefixes",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification token storage"
+      ],
+      "test": "should fallback to plain lookup for old tokens",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "runs the after hook after adding user to db",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should calculate TTL correctly with Math.floor for secondary storage",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should create on secondary storage",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should delete on secondary storage",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should delete a single account",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "rejects ambiguous account keys with joins=%s",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "finds an account owner by the exact account key",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "reports an account whose owner is missing",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "finds the same credential account after the user email changes",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should delete multiple accounts for a user",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "listSessions should skip missing sessions without blanking the list",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "defers secondary session deletion until commit and discards it on rollback",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "defers secondary session creation until commit and discards it on rollback",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "rejects deferred secondary-only session creation when persistence fails",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "keeps a secondary-only session write inside the transaction even when deferral is requested",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "preserves sessions created after user session deletion is requested",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "keeps stored sessions when the revocation snapshot cannot be read",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "listSessions should skip malformed session data (valid JSON but wrong structure)",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "listSessions should skip corrupt/unparsable sessions without blanking the list",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "listSessions should return empty array when all sessions are missing/corrupt",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "findSessions skips $caseName without discarding valid sessions",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should update session and active-sessions list in secondary storage",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should deduplicate sessions when active-sessions list contains duplicates",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification secondary storage"
+      ],
+      "test": "should store verification in secondary storage by default",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification secondary storage"
+      ],
+      "test": "should find verification from secondary storage",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification secondary storage"
+      ],
+      "test": "should NOT store in database when secondary-only mode",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification secondary storage"
+      ],
+      "test": "should delete verification from secondary storage",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification secondary storage"
+      ],
+      "test": "should store in both when storeInDatabase is true",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification secondary storage"
+      ],
+      "test": "should fallback to database when not in secondary storage",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification secondary storage"
+      ],
+      "test": "should set correct TTL based on expiresAt",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "safeJSONParse date revival in secondary storage"
+      ],
+      "test": "should return Date objects from findVerificationValue when storage returns pre-parsed objects",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "safeJSONParse date revival in secondary storage"
+      ],
+      "test": "should correctly detect expired verification when storage returns pre-parsed objects",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "safeJSONParse date revival in secondary storage"
+      ],
+      "test": "should return Date objects for all date fields across multiple reads",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "safeJSONParse date revival in secondary storage"
+      ],
+      "test": "should preserve non-date string fields when reviving dates",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "returns the row to the first caller and null to subsequent reads",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "yields exactly one winner under concurrent consume",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "returns null for an unknown identifier",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "returns null when the row exists but has already expired",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "aborts the consume when a delete.before hook returns false",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "fires delete.after only for the winning racer",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "consumes via the original identifier when storeIdentifier is hashed",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "consumes the latest row and invalidates stale rows for the identifier",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "uses secondary storage getAndDelete when verification values are storage-only",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "returns null when the secondary storage row has already expired",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "rehydrates string `expiresAt` from secondary storage JSON",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "returns null when secondary storage `expiresAt` cannot be parsed",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "returns true the first time and the row is findable",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "returns false the second time for the same identifier",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "yields exactly one winner under concurrent reserve",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "reserves independently across different identifiers",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "fails closed when verification reservation is secondary-storage-only",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue",
+        "with configured id strategies"
+      ],
+      "test": "yields exactly one winner when ids are uuids",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue",
+        "with configured id strategies"
+      ],
+      "test": "keeps reserving when ids are database-generated numbers",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "returns true the first time and the row is findable",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "returns false the second time for the same identifier",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "yields exactly one winner under concurrent reserve",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "reserves independently across different identifiers",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected"
+    }
+  ]
+}

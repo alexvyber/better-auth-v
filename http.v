@@ -201,6 +201,9 @@ pub fn (mut a Auth) handle_prepared(prepared PreparedRequest) Response {
 		method:  req.method.to_upper()
 		headers: headers
 	}
+	previous_session := a.new_session
+	a.new_session = none
+	defer { a.new_session = previous_session }
 	previous_context := a.request_context
 	defer { a.request_context = previous_context }
 	a.request_context = RequestContext{
@@ -331,6 +334,7 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 			}
 		}
 	}
+	result = a.one_time_token_new_session(result)!
 	if a.transaction_active { a.commit_transaction()! }
 	return result
 }

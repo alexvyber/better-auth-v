@@ -97,9 +97,15 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   PKCE grants, exchanges through a redirect-refusing native HTTP transport, decodes
   the profile from the authenticated token response, and enforces hosted-domain
   restrictions. The test transport delegates only HTTP bytes to Node/MSW; provider
-  decisions and persistence stay in V. Direct Google ID-token credential verification,
-  client-ID arrays, broader provider options/callbacks, account linking, automatic
-  token refresh, and upstream OAuth error redirects remain unimplemented. OAuth
+  decisions and persistence stay in V. Google also supports direct ID-token
+  credentials with RS256 pinning, trusted Google key retrieval, required claims,
+  issuer/audience/nonce checks, hosted-domain policy, 30-second clock tolerance and
+  a one-hour maximum age. Client-ID arrays and disabling ID-token sign-in are
+  supported. The direct branch creates sessions/account cookies without code-flow
+  state and persists the pinned branch's access/ID-token fields. Google preserves
+  unverified email claims under its default policy. Broader provider options/
+  callbacks and email-verification policies, account linking, automatic token
+  refresh, and upstream OAuth error redirects remain unimplemented. OAuth
   identities can supply access/refresh/ID tokens, precise token expiries and scopes;
   code exchanges persist them, retain omitted refresh tokens and union granted scopes.
   Access/refresh token encryption is optional and migration-aware. Account hooks
@@ -302,7 +308,13 @@ tests establishes only their covered behavior, not complete upstream parity.
   encryption, null/undefined representation, and plaintext-token migration. Nine
   independent Google/account cases verify grants, storage/encryption, token dates,
   scope union, refresh-token retention, hook binding, redirect refusal and chunks.
-  The separate Google provider and OAuth/account source files remain unported.
+- The complete Google provider source runs 15 native-backed cases. A native ID-token
+  verification kernel and ten additional integration cases cover required claims,
+  forgery/algorithm rejection, clock/age boundaries, nonce, audience arrays, disabled
+  sign-in, JWK metadata, critical headers and direct-session issuance. Standalone
+  verification iterates matching keys; the provider resolver selects the first,
+  matching their separate source contracts. Other provider and OAuth/account source
+  files remain unported; these cases do not establish full Google/OAuth parity.
   Four independent helper contracts compare V with the published TS implementation
   on malformed encodings, attribute metadata, ordered merging, and secure selection.
   Another 14 standalone reader cases use independent HMAC/JOSE/upstream ciphertext

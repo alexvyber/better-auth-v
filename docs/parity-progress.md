@@ -394,8 +394,28 @@ or corpus inventory contains unimplemented behavior.
   broader provider options, account linking, token refresh, account endpoints,
   error redirects and full stateless OAuth remain incomplete.
 
-The latest `make check` passes 867 TypeScript cases across 43 files, all 74 native
-V test functions across 20 files (including all 20,034 Unicode vectors), TypeScript
+- Added a native ID-token verification kernel and Google-specific verification
+  with RS256 pinning, trusted key retrieval, required claims, both Google issuers,
+  audience/nonce checks, 30-second clock skew, one-hour maximum age and hosted-domain
+  enforcement. Standalone helpers try matching candidates; the provider resolver
+  uses its first matching key. Shared account creation/update logic now serves both
+  code and direct-token sign-in. The direct route rejects malformed/unsupported
+  credentials, verifies before any account write, returns sessions without OAuth
+  state, and preserves the pinned branch's token-field behavior. Google client-ID
+  arrays and disableIdTokenSignIn are supported, and default Google flows preserve
+  unverified email claims. The complete separate Google provider test file imports
+  all 15 declarations unchanged; its HTTP mocks remain fixture transport only.
+  Ten independent integration cases compare JOSE at clock/age boundaries and cover
+  forged/none/HMAC tokens, missing claims, nonce, key selection/import metadata,
+  hosted domains, direct session/cookie issuance, input validation, redirects and
+  critical headers with a valid independently signed signature. Two native tests
+  cover the V verifier, hashed/exact nonces, tolerance and resolver distinctions.
+  Generalized the importer for pinned core source paths and retained top-level mock
+  setup calls. Other ID-token provider configurations/callbacks, provider options,
+  account linking, refresh and full email-verification/error handling remain open.
+
+The latest `make check` passes 892 TypeScript cases across 45 files, all 76 native
+V test functions across 21 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus

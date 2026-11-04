@@ -16,6 +16,25 @@ pub interface OAuthProvider {
 	exchange(string, string, string) !OAuthIdentity
 }
 
+pub interface OAuthIDTokenProvider {
+	supports_id_token() bool
+	verify_id_token(string, string) Lookup[string]
+	user_info(OAuthTokens) !Lookup[OAuthIdentity]
+}
+
+struct OAuthAccountIdentity {
+	user    User
+	account Account
+}
+
+struct DirectIDToken {
+	token         string
+	nonce         string
+	access_token  ?string @[json: accessToken]
+	refresh_token ?string @[json: refreshToken]
+	expires_at    ?f64    @[json: expiresAt]
+}
+
 pub struct OAuthIdentity {
 pub:
 	id                string
@@ -64,6 +83,49 @@ fn (a &Auth) oauth_cookie(r Response, state string, clear bool) Response {
 
 fn (mut a Auth) start_oauth(p Payload) !Response {
 	provider := a.oauth_provider(p.provider)!
+	if input := p.id_token {
+		if provider is OAuthIDTokenProvider {
+			if !provider.supports_id_token() {
+				return fail(404, 'ID_TOKEN_NOT_SUPPORTED',
+					'Provider does not support id token sign-in')
+			}
+			if provider.verify_id_token(input.token, input.nonce).value == none {
+				return fail(401, 'INVALID_TOKEN', 'Invalid token')
+			}
+			info := (provider.user_info(OAuthTokens{
+				id_token:      input.token
+				access_token:  input.access_token
+				refresh_token: input.refresh_token
+			})!).value or { return fail(401, 'FAILED_TO_GET_USER_INFO', 'Failed to get user info') }
+			if info.email == '' { return fail(401, 'USER_EMAIL_NOT_FOUND', 'User email not found') }
+			if info.id == '' {
+				return fail(401, 'FAILED_TO_GET_USER_INFO', 'Failed to get user info')
+			}
+			// The pinned direct-token branch persists access/ID tokens; its refresh
+			// token and expiresAt inputs are not included in the account write.
+			identity := OAuthIdentity{
+				...info
+				tokens: OAuthTokens{
+					id_token:     input.token
+					access_token: input.access_token
+				}
+			}
+			account := a.oauth_identity_account(identity, p.provider, false)!
+			session := a.make_session(account.user.id, a.request_context, true)!
+			mut response := Response{
+				headers: [Header{'content-type', 'application/json'}]
+				body:    '{"redirect":false,"token":${json.encode(session.token)},"user":${a.user_json(account.user)}}'
+			}
+			if a.config.store_account_cookie {
+				response = a.set_account_cookie(response, json.encode(account.account))!
+			}
+			return a.set_session_cookies(response, SessionResult{
+				session: session
+				user:    account.user
+			})
+		}
+		return fail(404, 'ID_TOKEN_NOT_SUPPORTED', 'Provider does not support id token sign-in')
+	}
 	state := random_token()!
 	verifier := random_token()!
 	challenge := base64.url_encode(sha256.sum(verifier.bytes())).trim_right('=')
@@ -121,7 +183,23 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 	}
 	redirect_uri := a.base_url().trim_right('/') + a.config.base_path + '/callback/' + provider_id
 	identity := provider.exchange(code, stored.verifier, redirect_uri)!
-	if identity.id == '' || !identity.email_verified {
+	account := a.oauth_identity_account(identity, provider_id, provider !is GoogleProvider)!
+	a.remove_verification(record.id)!
+	session := a.make_session(account.user.id, RequestContext{ headers: req.headers }, true)!
+	mut response := Response{
+		status:  302
+		headers: [Header{'location', stored.callback_url}]
+	}
+	if a.config.store_account_cookie {
+		response = a.set_account_cookie(response, json.encode(account.account))!
+	}
+	response =
+		a.set_session_cookies(response, SessionResult{ session: session, user: account.user })!
+	return a.oauth_cookie(response, '', true)
+}
+
+fn (mut a Auth) oauth_identity_account(identity OAuthIdentity, provider_id string, require_verified bool) !OAuthAccountIdentity {
+	if identity.id == '' || (require_verified && !identity.email_verified) {
 		return fail(403, 'EMAIL_NOT_VERIFIED', 'Email not verified')
 	}
 	email := normalize_email(identity.email)!
@@ -149,7 +227,7 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 				map[string]json2.Any{}, true)!
 			id:                random_token()!
 			email:             email
-			email_verified:    true
+			email_verified:    identity.email_verified
 			name:              identity.name
 			image:             identity.image
 			created_at:        now
@@ -184,17 +262,8 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 		return fail(409, 'account_hook_binding_conflict',
 			'Account hook changed the selected authentication binding')
 	}
-	a.remove_verification(record.id)!
-	session := a.make_session(user.id, RequestContext{ headers: req.headers }, true)!
-	mut response := Response{
-		status:  302
-		headers: [
-			Header{'location', stored.callback_url},
-		]
+	return OAuthAccountIdentity{
+		user:    user
+		account: selected_account
 	}
-	if a.config.store_account_cookie {
-		response = a.set_account_cookie(response, json.encode(selected_account))!
-	}
-	response = a.set_session_cookies(response, SessionResult{ session: session, user: user })!
-	return a.oauth_cookie(response, '', true)
 }

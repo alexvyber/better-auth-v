@@ -452,6 +452,13 @@ fn expiration_command() ! {
 }
 
 fn main() {
+	if os.args.len == 2 && os.args[1] == '--google' {
+		google_command() or {
+			eprintln(err.msg())
+			exit(1)
+		}
+		return
+	}
 	if os.args.len == 2 && os.args[1] == '--cookies' {
 		cookie_command() or {
 			eprintln(err.msg())

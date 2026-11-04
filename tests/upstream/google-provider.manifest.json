@@ -1,0 +1,172 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/core/src/social-providers/google.test.ts",
+  "sha256": "3a1c7c2e607253faff49259f4ba25d83a4125f1318a671ab40ec43f74721db5b",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "google hosted domain (hd) enforcement",
+      "suites": [
+        "google hosted domain (hd) enforcement",
+        "idToken.verifyClaims"
+      ],
+      "test": "accepts a token whose hd claim matches the configured hd",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "google hosted domain (hd) enforcement",
+      "suites": [
+        "google hosted domain (hd) enforcement",
+        "idToken.verifyClaims"
+      ],
+      "test": "rejects a token whose hd claim does not match",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "google hosted domain (hd) enforcement",
+      "suites": [
+        "google hosted domain (hd) enforcement",
+        "idToken.verifyClaims"
+      ],
+      "test": "rejects a token missing the hd claim when hd is configured",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "google hosted domain (hd) enforcement",
+      "suites": [
+        "google hosted domain (hd) enforcement",
+        "idToken.verifyClaims"
+      ],
+      "test": "accepts any Workspace hd when hd is configured as a wildcard",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "google hosted domain (hd) enforcement",
+      "suites": [
+        "google hosted domain (hd) enforcement",
+        "idToken.verifyClaims"
+      ],
+      "test": "rejects a token missing the hd claim when hd is configured as a wildcard",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "google hosted domain (hd) enforcement",
+      "suites": [
+        "google hosted domain (hd) enforcement",
+        "idToken.verifyClaims"
+      ],
+      "test": "does not define an hd claim verifier when hd is not configured",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "google hosted domain (hd) enforcement",
+      "suites": [
+        "google hosted domain (hd) enforcement",
+        "getUserInfo"
+      ],
+      "test": "returns the user when the hd claim matches",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "google hosted domain (hd) enforcement",
+      "suites": [
+        "google hosted domain (hd) enforcement",
+        "getUserInfo"
+      ],
+      "test": "returns null when the hd claim does not match",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "google hosted domain (hd) enforcement",
+      "suites": [
+        "google hosted domain (hd) enforcement",
+        "getUserInfo"
+      ],
+      "test": "returns null when the hd claim is missing and hd is configured",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "google hosted domain (hd) enforcement",
+      "suites": [
+        "google hosted domain (hd) enforcement",
+        "getUserInfo"
+      ],
+      "test": "returns the user for any Workspace hd when hd is configured as a wildcard",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "google hosted domain (hd) enforcement",
+      "suites": [
+        "google hosted domain (hd) enforcement",
+        "getUserInfo"
+      ],
+      "test": "returns null when the hd claim is missing and hd is configured as a wildcard",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "google hosted domain (hd) enforcement",
+      "suites": [
+        "google hosted domain (hd) enforcement",
+        "getUserInfo"
+      ],
+      "test": "returns the user regardless of hd when hd is not configured",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyGoogleIdToken",
+      "suites": [
+        "verifyGoogleIdToken"
+      ],
+      "test": "verifies an id token without requiring a kid header",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyGoogleIdToken",
+      "suites": [
+        "verifyGoogleIdToken"
+      ],
+      "test": "accepts a token whose nbf is a few seconds ahead of the server clock",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "verifyGoogleIdToken",
+      "suites": [
+        "verifyGoogleIdToken"
+      ],
+      "test": "rejects tokens signed with symmetric algorithms before fetching Google keys",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

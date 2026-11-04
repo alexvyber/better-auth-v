@@ -4,26 +4,37 @@ import net.urllib
 import time
 import x.json2
 
-// Google's authorization-code flow. Direct ID-token credentials and arbitrary
-// provider callbacks are separate surfaces and are not accepted by this provider.
+// Google's code exchange and ID-token verifier use separate trust policies.
 pub struct GoogleProvider {
 pub:
-	client_id              string @[json: clientId]
-	client_secret          string @[json: clientSecret]
-	scope                  []string
-	disable_default_scope  bool   @[json: disableDefaultScope]
-	access_type            string @[json: accessType]
-	display                string
-	hd                     string
-	prompt                 string
-	include_granted_scopes bool = true           @[json: includeGrantedScopes]
-	redirect_uri           string         @[json: redirectURI]
-	transport              OAuthTransport = OAuthHTTPTransport{} @[skip]
-	clock_millis           fn () i64      = cookie_reader_clock      @[skip]
+	client_id                string   @[json: clientId]
+	client_ids               []string @[json: clientIds]
+	client_secret            string   @[json: clientSecret]
+	scope                    []string
+	disable_default_scope    bool   @[json: disableDefaultScope]
+	access_type              string @[json: accessType]
+	display                  string
+	hd                       string
+	prompt                   string
+	include_granted_scopes   bool = true           @[json: includeGrantedScopes]
+	redirect_uri             string         @[json: redirectURI]
+	disable_id_token_sign_in bool           @[json: disableIdTokenSignIn]
+	transport                OAuthTransport = OAuthHTTPTransport{} @[skip]
+	clock_millis             fn () i64      = cookie_reader_clock      @[skip]
 }
 
 pub fn (_ GoogleProvider) id() string {
 	return 'google'
+}
+
+fn (provider GoogleProvider) primary_client_id() string {
+	if provider.client_ids.len > 0 { return provider.client_ids[0] }
+	return provider.client_id
+}
+
+fn (provider GoogleProvider) audiences() []string {
+	if provider.client_ids.len > 0 { return provider.client_ids }
+	return [provider.client_id]
 }
 
 pub fn google_hosted_domain_allowed(configured string, claim json2.Any) bool {
@@ -34,7 +45,7 @@ pub fn google_hosted_domain_allowed(configured string, claim json2.Any) bool {
 }
 
 pub fn (provider GoogleProvider) authorization_url(state string, challenge string, redirect_uri string) !string {
-	if provider.client_id == '' || provider.client_secret == '' {
+	if provider.primary_client_id() == '' || provider.client_secret == '' {
 		return error('CLIENT_ID_AND_SECRET_REQUIRED')
 	}
 	if challenge == '' { return error('codeVerifier is required for Google') }
@@ -45,7 +56,7 @@ pub fn (provider GoogleProvider) authorization_url(state string, challenge strin
 	}
 	mut query := urllib.new_values()
 	for key, value in {
-		'client_id':             provider.client_id
+		'client_id':             provider.primary_client_id()
 		'redirect_uri':          if provider.redirect_uri != '' {
 			provider.redirect_uri
 		} else {
@@ -74,7 +85,7 @@ pub fn (provider GoogleProvider) authorization_url(state string, challenge strin
 pub fn (provider GoogleProvider) exchange(code string, verifier string, redirect_uri string) !OAuthIdentity {
 	mut body := urllib.new_values()
 	for key, value in {
-		'client_id':     provider.client_id
+		'client_id':     provider.primary_client_id()
 		'client_secret': provider.client_secret
 		'code':          code
 		'grant_type':    'authorization_code'
@@ -109,19 +120,7 @@ pub fn (provider GoogleProvider) exchange(code string, verifier string, redirect
 	if !google_hosted_domain_allowed(provider.hd, profile['hd'] or { json2.Any(json2.Null{}) }) {
 		return fail(403, 'OAUTH_HOSTED_DOMAIN_MISMATCH', 'Google hosted domain does not match')
 	}
-	return OAuthIdentity{
-		id:             (profile['sub'] or { json2.Any('') }).str()
-		email:          (profile['email'] or { json2.Any('') }).str()
-		email_verified: (profile['email_verified'] or { json2.Any(false) }) == json2.Any(true)
-		name:           (profile['name'] or { json2.Any('') }).str()
-		image:          if image := profile['picture'] {
-			if image is string { ?string(image) } else { none }
-		} else {
-			none
-		}
-		profile:        profile
-		tokens:         tokens
-	}
+	return google_profile_identity(profile, tokens)
 }
 
 pub fn parse_oauth_tokens(encoded string, now_millis i64) !OAuthTokens {

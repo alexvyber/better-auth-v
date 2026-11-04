@@ -8,7 +8,8 @@ import net.http
 struct Payload {
 	state                 string
 	provider              string
-	disable_redirect      bool @[json: 'disableRedirect']
+	id_token              ?DirectIDToken @[json: idToken]
+	disable_redirect      bool           @[json: 'disableRedirect']
 	email                 string
 	password              string
 	name                  string
@@ -293,6 +294,7 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 				}
 			}
 		}
+		if path == '/sign-in/social' { validate_direct_id_token_body(fields)! }
 	}
 	payload := if req.method == 'POST' { json.decode(Payload, body) or {
 			return fail(400, 'VALIDATION_ERROR', 'Validation Error')} } else { Payload{} }

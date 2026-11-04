@@ -14,7 +14,7 @@
     "utilities-and-tooling": {
       "files": 275,
       "declarations": 4594,
-      "importedFiles": 6
+      "importedFiles": 7
     },
     "e2e": {
       "files": 71,
@@ -38528,7 +38528,7 @@
       "path": "packages/core/src/social-providers/google.test.ts",
       "sha256": "3a1c7c2e607253faff49259f4ba25d83a4125f1318a671ab40ec43f74721db5b",
       "group": "utilities-and-tooling",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {

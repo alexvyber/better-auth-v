@@ -368,8 +368,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   const google = options.socialProviders?.google;
   if (typeof google === 'function') throw new Error('Unported provider option callback');
   if (google) {
-    assertKeys(google, ['clientId', 'clientSecret', 'enabled', 'scope', 'disableDefaultScope', 'accessType', 'display', 'hd', 'prompt', 'includeGrantedScopes', 'redirectURI'], 'socialProviders.google');
-    if (typeof google.clientId !== 'string') throw new Error('Unported Google client ID array');
+    assertKeys(google, ['clientId', 'clientSecret', 'enabled', 'scope', 'disableDefaultScope', 'accessType', 'display', 'hd', 'prompt', 'includeGrantedScopes', 'redirectURI', 'disableIdTokenSignIn'], 'socialProviders.google');
   }
   assertKeys(options.account?.fields ?? {}, ['id', 'userId', 'providerId', 'accountId'], 'account.fields');
   if (options.baseURL !== undefined && typeof options.baseURL !== 'string') throw new Error('Live dynamic baseURL configuration remains unported');
@@ -644,7 +643,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       disable_origin_check: advanced.disableOriginCheck === true,
       skip_origin_check_paths: [...skippedOriginPaths, ...(Array.isArray(advanced.disableOriginCheck) ? advanced.disableOriginCheck : [])],
       cookie_names: cookieNames,
-      google_provider: google && google.enabled !== false ? google : null,
+      google_provider: google && google.enabled !== false ? {...google, clientId: Array.isArray(google.clientId) ? '' : google.clientId, clientIds: Array.isArray(google.clientId) ? google.clientId : undefined} : null,
       store_account_cookie: options.account?.storeAccountCookie ?? false,
       encrypt_oauth_tokens: options.account?.encryptOAuthTokens ?? false,
       account_cookie_bind_user: !(Object.hasOwn(options, 'database') && options.database === undefined),

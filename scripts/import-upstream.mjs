@@ -16,6 +16,9 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+  {file: 'google-provider', path: 'packages/core/src/social-providers/google.test.ts', suites: null, includeHelpers: true, setupCalls: new Set(['vi.mock']),
+   imports: 'import { exportJWK, generateKeyPair, generateSecret, SignJWT } from "jose";\nimport { beforeEach, describe, expect, it, vi } from "vitest";\nimport { betterFetch } from "@better-fetch/fetch";\nimport { google, verifyGoogleIdToken } from "../harness/google.js";\n',
+  },
   {file: 'oauth-utils', source_file: 'utils', directory: 'oauth2', suites: null, includeHelpers: true,
    imports: 'import type { AuthContext } from "@better-auth/core";\nimport { describe, expect, it } from "vitest";\nimport { symmetricEncrypt, decryptOAuthToken, setTokenUtil } from "../harness/crypto.js";\n',
   },
@@ -112,7 +115,7 @@ const plans = [
   },
 ];
 for (const plan of plans) {
-  const relativePath = `packages/better-auth/src/${plan.directory ?? "api/routes"}/${plan.source_file ?? plan.file}.test.ts`;
+  const relativePath = plan.path ?? `packages/better-auth/src/${plan.directory ?? "api/routes"}/${plan.source_file ?? plan.file}.test.ts`;
   const source = readFileSync(resolve(repo, relativePath), "utf8");
   const sourceFile = ts.createSourceFile(
     plan.file + ".test.ts",
@@ -126,6 +129,10 @@ for (const plan of plans) {
     "// Generated from pinned upstream source; do not edit assertions here.\n" +
     (plan.imports ?? "") + (plan.extraImports ?? "");
   for (const statement of sourceFile.statements) {
+    if (ts.isExpressionStatement(statement) && ts.isCallExpression(statement.expression) && plan.setupCalls?.has(statement.expression.expression.getText(sourceFile))) {
+      output += '\n' + statement.getText(sourceFile) + '\n';
+      continue;
+    }
     if (ts.isVariableStatement(statement) && statement.declarationList.declarations.some(declaration => plan.helpers?.has(declaration.name.getText(sourceFile)))) {
       output += '\n' + statement.getText(sourceFile) + '\n';
       continue;

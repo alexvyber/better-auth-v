@@ -23,6 +23,10 @@ const plans = [
     suites: new Set(['jwt', 'signJWT - alg: $alg', 'jwt - custom adapter', 'jwt - custom jwksPath', 'jwt - signing algorithm comes from the key', 'jwt - remote signing', 'jwt - remote url', 'toExpJWT']),
     imports: 'import { beforeEach, describe, expect, expectTypeOf, it, vi } from "vitest";\nimport { createAuthClient } from "better-auth/client";\nimport { jwtClient } from "better-auth/client/plugins";\nimport { createLocalJWKSet, jwtVerify, decodeJwt, exportJWK, generateKeyPair, SignJWT } from "jose";\nimport { parseCookies } from "better-auth/cookies";\nimport type { JWKOptions, JwtOptions, Jwk } from "better-auth/plugins/jwt";\nimport type { JSONWebKeySet } from "jose";\nimport type { GenericEndpointContext } from "@better-auth/core";\nimport { generateExportedKeyPair, toExpJWT, createCookieCacheSigner, SESSION_COOKIE_JWT_TYPE } from "../harness/jwt.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { jwt } from "../harness/plugins.js";\n',
   },
+  ...['sign-overrides', 'multi-alg'].map(file => ({
+    file: 'jwt-' + file, source_file: file, directory: 'plugins/jwt', suites: null, includeHelpers: true,
+    imports: 'import type { AuthContext, GenericEndpointContext } from "@better-auth/core";\nimport type { JWTPayload } from "jose";\nimport { decodeProtectedHeader } from "jose";\nimport { describe, expect, it, vi } from "vitest";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { jwt } from "../harness/plugins.js";\nimport { getJwksAdapter, signJWT, generateExportedKeyPair } from "../harness/jwt.js";\nimport type { JWSAlgorithms, Jwk } from "better-auth/plugins/jwt";\n',
+  })),
   {
     file: 'jwt-rotation', source_file: 'rotation', directory: 'plugins/jwt', suites: null,
     imports: 'import { afterEach, describe, expect, it, vi } from "vitest";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { jwt } from "../harness/plugins.js";\nimport type { Jwk } from "better-auth/plugins/jwt";\n',
@@ -98,6 +102,10 @@ for (const plan of plans) {
         )
         .replace('"../../plugins/admin/admin"', '"../harness/plugins.js"');
       output += text + "\n";
+      continue;
+    }
+    if (plan.includeHelpers && !ts.isExpressionStatement(statement)) {
+      output += '\n' + statement.getText(sourceFile) + '\n';
       continue;
     }
     if (

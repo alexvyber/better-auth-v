@@ -411,8 +411,9 @@ fn main() {
 		if 'jwt.sign' in opts.callback_methods {
 			jwt_options = better_auth.JWTOptions{
 				...jwt_options
-				sign: fn (payload string) !string {
-					return json2.decode[string](callback_rpc('jwt.sign', payload)!)
+				sign_with: fn (payload string, header string, signing better_auth.JWTSigningConfig) !string {
+					return json2.decode[string](callback_rpc('jwt.sign', '{"payload":' + payload +
+						',"header":' + header + ',"config":' + json.encode(signing) + '}')!)
 				}
 			}
 		}

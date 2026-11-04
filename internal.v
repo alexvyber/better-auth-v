@@ -43,6 +43,52 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 			public, private := generate_exported_keypair(options)!
 			return '{"publicWebKey":${public},"privateWebKey":${private},"alg":${json.encode(options.algorithm)}}'
 		}
+		'adapterCreateJWK' {
+			if args.len != 1 { return error('adapterCreateJWK requires a record') }
+			input := json.decode(Jwk, args[0].json_str())!
+			key := Jwk{
+				...input
+				id: if input.id == '' { random_token()! } else { input.id }
+			}
+			c.auth.storage.create_jwk(key)!
+			return json.encode(key)
+		}
+		'jwkLookup' {
+			if args.len != 3 {
+				return error('jwkLookup requires a method, value, and default algorithm')
+			}
+			current := c.auth.jwt_options()!
+			options := JWTOptions{
+				...current
+				algorithm: if args[2].str() != '' { args[2].str() } else { current.algorithm }
+			}
+			method := args[0].str()
+			if method == 'getAllKeys' { return json.encode(c.auth.jwk_records(options)!) }
+			key := c.auth.lookup_jwk(options, if method == 'getKeyById' {
+				?string(args[1].str())
+			} else {
+				none
+			}, if method == 'getLatestKeyByAlg' { ?string(args[1].str()) } else { none })!
+			return if value := key.value { json.encode(value) } else { 'null' }
+		}
+		'signJWTWith' {
+			if args.len != 2 { return error('signJWTWith requires payload and signing config') }
+			fields := args[1].as_map()
+			config := JWTSigningConfig{
+				signing_key_id:    if value := fields['signingKeyId'] {
+					?string(value.str())
+				} else {
+					none
+				}
+				signing_algorithm: if value := fields['signingAlgorithm'] {
+					?string(value.str())
+				} else {
+					none
+				}
+				header_json:       (fields['header'] or { json2.Any(map[string]json2.Any{}) }).json_str()
+			}
+			return json.encode(c.sign_jwt_with(args[0].json_str(), config)!)
+		}
 		'signJWT' {
 			if args.len != 1 { return error('signJWT requires a payload') }
 			return '{"token":${json.encode(c.sign_jwt(args[0].json_str())!)}}'

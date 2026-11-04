@@ -1,0 +1,120 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/jwt/sign-overrides.test.ts",
+  "sha256": "6cc94e2adac31a9673feeaca39f32c9848e441a5824ac0fcc18dfe3988abb995",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "signJWT — signing key overrides",
+      "suites": [
+        "signJWT — signing key overrides"
+      ],
+      "test": "uses the latest key when neither signingKeyId nor signingAlgorithm is set",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signJWT — signing key overrides",
+      "suites": [
+        "signJWT — signing key overrides"
+      ],
+      "test": "signingKeyId routes through getKeyById and overrides latest-key selection",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signJWT — signing key overrides",
+      "suites": [
+        "signJWT — signing key overrides"
+      ],
+      "test": "signingAlgorithm picks the most recent key with that alg",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signJWT — signing key overrides",
+      "suites": [
+        "signJWT — signing key overrides"
+      ],
+      "test": "signingKeyId pointing at a missing key throws (does not silently fall back)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signJWT — signing key overrides",
+      "suites": [
+        "signJWT — signing key overrides"
+      ],
+      "test": "signingAlgorithm with no matching key throws (does not auto-mint)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signJWT — signing key overrides",
+      "suites": [
+        "signJWT — signing key overrides"
+      ],
+      "test": "signingKeyId + mismatched signingAlgorithm throws to surface the conflict",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signJWT — signing key overrides",
+      "suites": [
+        "signJWT — signing key overrides"
+      ],
+      "test": "signingKeyId + matching signingAlgorithm succeeds",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "JWKS adapter helpers",
+      "suites": [
+        "JWKS adapter helpers"
+      ],
+      "test": "getKeyById finds a provisioned key",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "JWKS adapter helpers",
+      "suites": [
+        "JWKS adapter helpers"
+      ],
+      "test": "getKeyById returns undefined for an unknown id",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "JWKS adapter helpers",
+      "suites": [
+        "JWKS adapter helpers"
+      ],
+      "test": "getLatestKeyByAlg returns the most recent key matching the algorithm",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "JWKS adapter helpers",
+      "suites": [
+        "JWKS adapter helpers"
+      ],
+      "test": "getLatestKeyByAlg returns undefined when no matching key exists",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

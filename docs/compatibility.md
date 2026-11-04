@@ -100,7 +100,10 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   expiration options accept absolute numeric values, dates, and upstream duration
   strings; an explicit payload `exp` wins. Remote
   public-key fetching is not implemented (matching the pinned verifier, which reads
-  the configured local key store). Signing overrides, complete options, upstream encryption formats, and remaining
+  the configured local key store). Trusted signing supports key-ID and algorithm
+  pins, configured extra-algorithm lazy minting, and protected profile headers.
+  Resolved alg/kid override caller header fields; custom signers receive all three
+  callback arguments. Complete options, upstream encryption formats, and remaining
   JWT plugin tests are unported.
 - `stateless_sessions` treats the signed cookie as authoritative when no secondary
   store is configured. Native defaults enable JWE caching and refresh; refreshing
@@ -141,7 +144,7 @@ tests establishes only their covered behavior, not complete upstream parity.
   replaced fixtures/imports and unchanged assertions. Their per-file manifests
   record the pinned source and declaration inventory. Passing these four files
   does not establish coverage of the separate plugin/adapter/client suites.
-- The original JWT rotation file also runs in full. The JWT plugin file is
+- The original JWT rotation, signing-override, and multi-algorithm files run in full. The JWT plugin file is
   partially imported: its algorithm matrix, general signing, custom-store/path,
   key-algorithm authority, remote-signing/URL, and expiration utility suites run, with remaining declarations explicitly
   unported in its manifest. Key generation in its utility tests also runs in V.

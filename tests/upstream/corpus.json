@@ -34,7 +34,7 @@
     "plugins": {
       "files": 45,
       "declarations": 1315,
-      "importedFiles": 2
+      "importedFiles": 4
     },
     "adapters": {
       "files": 16,
@@ -21394,7 +21394,7 @@
       "path": "packages/better-auth/src/plugins/jwt/multi-alg.test.ts",
       "sha256": "3337b7b6fcbc87e3557553cfe921a36d79a104321d92343bc7841b70226a877b",
       "group": "plugins",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {
@@ -21628,7 +21628,7 @@
       "path": "packages/better-auth/src/plugins/jwt/sign-overrides.test.ts",
       "sha256": "6cc94e2adac31a9673feeaca39f32c9848e441a5824ac0fcc18dfe3988abb995",
       "group": "plugins",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {

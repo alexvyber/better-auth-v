@@ -6,13 +6,16 @@ import crypto.hmac
 import crypto.rand
 import crypto.sha256
 import json
+import time
 import x.json2
 
 pub struct JWTOptions {
 pub:
 	algorithm                      string
+	key_pair_configs               []JWTKeyPairConfig
 	remote_url                     string
 	sign                           fn (string) !string = local_jwt_sign @[skip]
+	sign_with                      fn (string, string, JWTSigningConfig) !string = local_jwt_sign_with @[skip]
 	curve                          string
 	modulus_length                 int      = 2048
 	key_store                      JWKStore = NoJWKStore{} @[skip]
@@ -27,6 +30,28 @@ pub:
 	disable_private_key_encryption bool
 	disable_setting_jwt_header     bool
 	jwks_path                      string = '/jwks'
+}
+
+pub struct JWTKeyPairConfig {
+pub:
+	algorithm      string
+	curve          string
+	modulus_length int = 2048
+}
+
+pub struct JWTSigningConfig {
+pub:
+	signing_key_id    ?string @[json: signingKeyId]
+	signing_algorithm ?string @[json: signingAlgorithm]
+	header_json       string = '{}'
+}
+
+fn local_jwt_sign_with(_ string, _ string, _ JWTSigningConfig) !string {
+	return error('custom JWT signer is not configured')
+}
+
+fn (options JWTOptions) custom_signer() bool {
+	return options.sign != local_jwt_sign || options.sign_with != local_jwt_sign_with
 }
 
 // A custom signer receives the complete JWT claims as JSON. Key management belongs
@@ -69,7 +94,7 @@ fn (mut a Auth) jwk_records(options JWTOptions) ![]Jwk {
 		}
 		records = store.get_keys(mut context)!
 	}
-	return records.map(normalize_jwk(it, options))
+	return records
 }
 
 fn normalize_jwk(key Jwk, options JWTOptions) Jwk {
@@ -210,30 +235,91 @@ fn (mut a Auth) create_signing_key(options JWTOptions) !Jwk {
 	return normalize_jwk(created, options)
 }
 
-fn (mut a Auth) signing_key(options JWTOptions) !Jwk {
-	mut primary := ?Jwk(none)
+fn (mut a Auth) lookup_jwk(options JWTOptions, id ?string, algorithm ?string) !Lookup[Jwk] {
 	mut latest := ?Jwk(none)
 	for key in a.jwk_records(options)! {
+		if requested := id {
+			if key.id == requested { return Lookup[Jwk]{
+					value: key
+				} }
+			continue
+		}
 		if expires := key.expires_at {
 			if epoch(expires)! <= a.config.clock() { continue
 			 }
 		}
+		if requested := algorithm {
+			if normalize_jwk(key, options).alg != requested { continue
+			 }
+		}
 		if previous := latest {
-			if epoch(key.created_at)! > epoch(previous.created_at)! { latest = key }
+			if time.parse_rfc3339(key.created_at)!.unix_milli() > time.parse_rfc3339(previous.created_at)!.unix_milli() {
+				latest = key
+			}
 		} else {
 			latest = key
 		}
-		if key.alg == options.algorithm {
-			if previous := primary {
-				if epoch(key.created_at)! > epoch(previous.created_at)! { primary = key }
-			} else {
-				primary = key
+	}
+	return Lookup[Jwk]{
+		value: latest
+	}
+}
+
+fn (mut a Auth) signing_key_with(options JWTOptions, config JWTSigningConfig) !Jwk {
+	if id := config.signing_key_id {
+		raw_key := (a.lookup_jwk(options, id, none)!).value or {
+			return error('signJWT: signingKeyId "${id}" not found in JWKS. The key must be provisioned before it can be referenced.')
+		}
+
+		key := normalize_jwk(raw_key, options)
+		if algorithm := config.signing_algorithm {
+			if key.alg != algorithm {
+				description := if raw_key.alg == '' {
+					'unset (inherits keyPairConfig.alg "${options.algorithm}")'
+				} else {
+					key.alg
+				}
+				return error('signJWT: signingKeyId "${id}" has alg "${description}" but signingAlgorithm was set to "${algorithm}".')
 			}
 		}
+		if expires := key.expires_at {
+			if epoch(expires)! <= a.config.clock() {
+				return error('signJWT: requested signing key is expired and an explicit kid/alg was provided; not auto-minting a replacement. Rotate the key explicitly.')
+			}
+		}
+		return key
 	}
-	if key := primary { return key }
-	if key := latest { return key }
+	if algorithm := config.signing_algorithm {
+		if key := (a.lookup_jwk(options, none, algorithm)!).value {
+			return normalize_jwk(key, options)
+		}
+		if algorithm == options.algorithm { return a.create_signing_key(options) }
+		for extra in options.key_pair_configs {
+			if extra.algorithm == algorithm {
+				return a.create_signing_key(JWTOptions{
+					...options
+					algorithm:      extra.algorithm
+					curve:          extra.curve
+					modulus_length: extra.modulus_length
+				})
+			}
+		}
+		advertised := if options.key_pair_configs.len == 0 {
+			'none'
+		} else {
+			options.key_pair_configs.map(it.algorithm).join(', ')
+		}
+		return error('signJWT: no key with alg "${algorithm}" found in JWKS. The plugin auto-mints only one key matching keyPairConfig.alg="${options.algorithm}"; additional algs configured via keyPairConfigs: ${advertised}. Add "${algorithm}" to jwks.keyPairConfigs so the plugin provisions it on first use, or mint the key explicitly via createJwk().')
+	}
+	if key := (a.lookup_jwk(options, none, options.algorithm)!).value {
+		return normalize_jwk(key, options)
+	}
+	if key := (a.lookup_jwk(options, none, none)!).value { return normalize_jwk(key, options) }
 	return a.create_signing_key(options)
+}
+
+fn (mut a Auth) signing_key(options JWTOptions) !Jwk {
+	return a.signing_key_with(options, JWTSigningConfig{})
 }
 
 fn (mut a Auth) public_jwks_json() !string {
@@ -245,7 +331,8 @@ fn (mut a Auth) public_jwks_json() !string {
 		if stored.len == 0 { return error('No key sets found after creating a signing key') }
 	}
 	mut keys := []string{}
-	for key in stored {
+	for raw_key in stored {
+		key := normalize_jwk(raw_key, options)
 		if expires := key.expires_at {
 			if epoch(expires)! + options.grace_period <= a.config.clock() { continue
 			 }
@@ -275,10 +362,12 @@ fn (mut a Auth) public_jwks_json() !string {
 }
 
 fn (mut a Auth) sign_jwks_payload(payload map[string]json2.Any, typ string, cookie bool) !string {
+	return a.sign_jwks_payload_with(payload, typ, cookie, JWTSigningConfig{})
+}
+
+fn (mut a Auth) sign_jwks_payload_with(payload map[string]json2.Any, typ string, cookie bool, config JWTSigningConfig) !string {
 	options := a.jwt_options()!
-	mut header := {
-		'alg': json2.Any(options.algorithm)
-	}
+	mut header := json2.decode[map[string]json2.Any](config.header_json)!
 	if typ != '' { header['typ'] = typ }
 	mut claims := payload.clone()
 	if cookie {
@@ -317,10 +406,13 @@ fn (mut a Auth) sign_jwks_payload(payload map[string]json2.Any, typ string, cook
 			}
 		}
 	}
+	if !cookie && options.sign_with != local_jwt_sign_with {
+		return options.sign_with(js_json(json2.Any(claims)), config.header_json, config)
+	}
 	if !cookie && options.sign != local_jwt_sign {
 		return options.sign(js_json(json2.Any(claims)))
 	}
-	key := a.signing_key(options)!
+	key := a.signing_key_with(options, config)!
 	header['alg'] = key.alg
 	header['kid'] = key.id
 	input := base64url(json2.Any(header).json_str().bytes()) + '.' +
@@ -374,7 +466,7 @@ fn (mut a Auth) verify_jwks_payload(token string, cookie bool, issuer_override s
 			break
 		}
 	}
-	key := found or { return error('unknown JWT kid') }
+	key := normalize_jwk(found or { return error('unknown JWT kid') }, options)
 	if (header['alg'] or { json2.Any('') }).str() != key.alg {
 		return error('JWT algorithm does not match stored key')
 	}
@@ -506,4 +598,17 @@ pub fn (mut a Auth) get_token(context RequestContext) !string {
 	return (json2.decode[map[string]json2.Any](response.body)!['token'] or {
 		return error('missing JWT')
 	}).str()
+}
+
+// Trusted callers can pin a signing key or declared algorithm and supply profile
+// headers. Resolved key identity always overrides caller alg/kid header fields.
+pub fn (mut context EndpointContext) sign_jwt_with(payload_json string, config JWTSigningConfig) !string {
+	return context.auth.sign_jwks_payload_with(json2.decode[map[string]json2.Any](payload_json)!,
+		'', false, config)
+}
+
+pub fn (mut a Auth) sign_jwt_with(payload_json string, config JWTSigningConfig) !string {
+	return a.with_internal(fn [payload_json, config] (mut context EndpointContext) !string {
+		return context.sign_jwt_with(payload_json, config)
+	})
 }

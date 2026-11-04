@@ -237,3 +237,38 @@ fn test_remote_jwt_configuration_requires_explicit_algorithm_and_local_cookie_ke
 		assert false, 'invalid remote signing configuration was accepted'
 	}
 }
+
+fn test_native_signing_pins_use_transaction_context_and_rollback_key_creation() ! {
+	mut storage := open_memory()
+	mut auth := new(Config{
+		secret:  '12345678901234567890123456789012'
+		plugins: [
+			Plugin(JWTPlugin{
+				options: JWTOptions{
+					key_pair_configs: [JWTKeyPairConfig{ algorithm: 'ES256' }]
+				}
+			}),
+		]
+	}, storage)!
+	defer { auth.close() or {} }
+	auth.with_internal(fn (mut context EndpointContext) !string {
+		context.sign_jwt_with('{"sub":"rollback"}', JWTSigningConfig{ signing_algorithm: 'ES256' })!
+		return error('roll back new signing key')
+	}) or { assert err.msg() == 'roll back new signing key' }
+	assert storage.jwks()!.len == 0
+	token := auth.sign_jwt_with('{"sub":"profile"}', JWTSigningConfig{
+		signing_algorithm: 'ES256'
+		header_json:       '{"typ":"logout+jwt","alg":"none","kid":"forged"}'
+	})!
+	fields := json2.decode[map[string]json2.Any](decode_base64url(token.split('.')[0])!.bytestr())!
+	assert fields['alg']!.str() == 'ES256'
+	assert fields['typ']!.str() == 'logout+jwt'
+	assert fields['kid']!.str() == storage.jwks()![0].id
+	assert (auth.verify_jwt(token, '')!).value != none
+	auth.sign_jwt_with('{"sub":"missing"}', JWTSigningConfig{ signing_key_id: 'absent' }) or {
+		assert err.msg().contains('not found')
+		assert storage.jwks()!.len == 1
+		return
+	}
+	assert false, 'missing signing key must fail without minting a replacement'
+}

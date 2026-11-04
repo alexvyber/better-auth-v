@@ -56,6 +56,8 @@ interface FixtureInternalAdapter extends Record<string, (...args: any[]) => Prom
 }
 interface FixtureTransactionAdapter {
   findOne(query: FixtureOptions): Promise<any>;
+  create<I, O>(query: {model: string; data: I}): Promise<O>;
+  findMany<T>(query: {model: string}): Promise<T[]>;
   options: {adapterConfig: {transaction: boolean}};
   transaction(callback: (transaction: FixtureTransactionAdapter) => Promise<unknown>): Promise<unknown>;
 }
@@ -233,7 +235,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       assertKeys(jwtOptions.adapter, ['getJwks', 'createJwk'], 'jwt.adapter');
       for (const method of ['getJwks', 'createJwk']) if (jwtOptions.adapter[method] !== undefined && typeof jwtOptions.adapter[method] !== 'function') throw new Error(`Invalid custom JWK callback: ${method}`);
     }
-    assertKeys(jwtOptions.jwks ?? {}, ['rotationInterval', 'gracePeriod', 'disablePrivateKeyEncryption', 'jwksPath', 'keyPairConfig', 'remoteUrl'], 'jwt.jwks');
+    assertKeys(jwtOptions.jwks ?? {}, ['rotationInterval', 'gracePeriod', 'disablePrivateKeyEncryption', 'jwksPath', 'keyPairConfig', 'remoteUrl', 'keyPairConfigs'], 'jwt.jwks');
     assertKeys(jwtOptions.jwks?.keyPairConfig ?? {}, ['alg', 'crv', 'modulusLength'], 'jwt.jwks.keyPairConfig');
     assertKeys(jwtOptions.jwt ?? {}, ['issuer', 'audience', 'sign', 'expirationTime'], 'jwt.jwt');
   }
@@ -327,6 +329,16 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     callbacks['internal.' + name] = (args: any[]) => internalAdapter[name](...args);
   }
   const adapter: FixtureTransactionAdapter = {
+    async create<I, O>(query: {model: string; data: I}): Promise<O> {
+      if (query.model !== 'jwks') throw new Error('Unsupported adapter create model');
+      const reply = await bridge.send('internal', {method: 'adapterCreateJWK', arguments_json: transportJSON([query.data])});
+      return hydrate(JSON.parse(reply.value_json));
+    },
+    async findMany<T>(query: {model: string}): Promise<T[]> {
+      if (query.model !== 'jwks') throw new Error('Unsupported adapter findMany model');
+      const reply = await bridge.send('internal', {method: 'jwkLookup', arguments_json: transportJSON(['getAllKeys', '', ''])});
+      return hydrate(JSON.parse(reply.value_json));
+    },
     async findOne(query) {
       const reply = await bridge.send('internal', {method: 'adapterFindOne', arguments_json: transportJSON([query])});
       return hydrate(JSON.parse(reply.value_json));
@@ -339,6 +351,15 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     secret: options.secret ?? 'better-auth-secret-that-is-long-enough-for-validation-test',
     session: null as unknown,
     authCookies: {} as {sessionToken: {name: string}; sessionData: {name: string}},
+    async nativeSignJWT(payload: unknown, signing: unknown) {
+      const reply = await bridge.send('internal', {method: 'signJWTWith', arguments_json: transportJSON([payload, signing])});
+      return JSON.parse(reply.value_json) as string;
+    },
+    async nativeJwkLookup(method: string, value: string, algorithm: string) {
+      const reply = await bridge.send('internal', {method: 'jwkLookup', arguments_json: transportJSON([method, value, algorithm])});
+      const result = hydrate(JSON.parse(reply.value_json));
+      return result === null ? undefined : result;
+    },
     async nativeVerifyCookieJWT(token: string) {
       const reply = await bridge.send('internal', {method: 'verifyCookieJWT', arguments_json: transportJSON([token])});
       return JSON.parse(reply.value_json);
@@ -355,7 +376,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     try { return await adapter.findOne(query); }
     catch (error) { const state = currentOperation.getStore(); if (state) state.storeFailure = error; throw error; }
   };
-  if (jwtOptions?.jwt?.sign) callbacks['jwt.sign'] = payload => jwtOptions!.jwt.sign(payload);
+  if (jwtOptions?.jwt?.sign) callbacks['jwt.sign'] = ({payload, header, config}) => jwtOptions!.jwt.sign(payload, Object.keys(header).length ? header : undefined, {signingKeyId: config.signingKeyId ?? undefined, signingAlgorithm: config.signingAlgorithm ?? undefined});
   if (jwtOptions?.adapter) {
     const store = jwtOptions.adapter;
     if (store.getJwks) callbacks['jwt.getJwks'] = () => store.getJwks({context});
@@ -436,6 +457,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       jwt_options: jwtOptions && {
         algorithm: jwtOptions.jwks?.keyPairConfig?.alg ?? '',
         remote_url: jwtOptions.jwks?.remoteUrl ?? '',
+        key_pair_configs: (jwtOptions.jwks?.keyPairConfigs ?? []).map((key: FixtureOptions) => { assertKeys(key, ['alg', 'crv', 'modulusLength'], 'jwt.jwks.keyPairConfigs'); return {algorithm: key.alg, curve: key.crv ?? '', modulus_length: key.modulusLength ?? 2048}; }),
         curve: jwtOptions.jwks?.keyPairConfig?.crv ?? '',
         modulus_length: jwtOptions.jwks?.keyPairConfig?.modulusLength ?? 2048,
         session_cookie_cache: jwtOptions.sessionCookieCache ?? false,

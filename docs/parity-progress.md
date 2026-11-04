@@ -109,10 +109,19 @@ or corpus inventory contains unimplemented behavior.
   signing and an explicit payload `exp` takes precedence. Native regression
   coverage includes pre-epoch dates and JavaScript rounding of negative ties.
 
+- Added signing-key ID/algorithm pins, declared extra-algorithm lazy minting,
+  live-key lookup, millisecond key ordering, and protected profile headers. Missing
+  or expired pinned keys fail without replacement; explicit algorithm conflicts
+  preserve legacy-row inheritance details. Custom signers receive protected
+  headers and signing overrides. Both complete upstream signing-override and
+  multi-algorithm source files now run (33 declarations); their adapter and
+  key-generation helpers execute in V. Native tests cover mint rollback inside
+  an existing transaction and resolved key authority over caller alg/kid headers.
+
 ## Next infrastructure work
 
-The completed `make check` passes 351 TypeScript runtime cases across 13 files,
-45 native V test functions across 8 files (including all 20,034 Unicode vectors),
+The completed `make check` passes 384 TypeScript runtime cases across 15 files,
+46 native V test functions across 8 files (including all 20,034 Unicode vectors),
 TypeScript checking, and real HTTP migration/authentication/CSRF/restart checks.
 This includes the final custom-store publication and encrypted-key regressions.
 The complete suite was rerun successfully before committing and publishing the
@@ -130,7 +139,7 @@ pushes to `alexvyber/better-auth-v`. The objective remains incomplete.
    cancellation results, full context, transaction-disabled behavior, and remaining
    adapter operations/observability. Cache effects are not distributed transactions;
    rollback cleanup is best effort and cannot reverse existing updates/deletes.
-2. Complete the remaining JWT plugin suites: signing overrides, full option/callback
+2. Complete the remaining JWT plugin suites: full option/callback
    handling, and upstream encryption formats. Verify combinations with deferred
    read-only session GET and other hooks; JWT header issuance can rotate keys.
 3. Implement complete admin and organization plugins beyond their schema/creation

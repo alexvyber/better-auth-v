@@ -296,8 +296,21 @@ or corpus inventory contains unimplemented behavior.
 
 ## Next infrastructure work
 
-The latest `make check` passes 676 TypeScript cases across 36 files, all 58 native
-V test functions across 13 files (including all 20,034 Unicode vectors), TypeScript
+- Added native request/response cookie utilities, attribute conversion, secure
+  prefix removal, request mutation/merging, session-token selection, canonical
+  chunk reconstruction, and pending-cookie expiry cleanup. Imported 58 original
+  declarations (76 runtime cases) from the cookies source without changing their
+  assertions; the remaining 39 declarations stay explicitly unported. The TS
+  facade translates Headers, Map, Date and NaN representations while V performs
+  parsing, selection, encoding and merging. Ordered entries preserve numeric cookie
+  names across JSON. Four independent runtime contracts compare published helpers,
+  and three native tests cover malformed UTF-8, encoded controls, round trips,
+  chunk ordering/cleanup and attribute overrides. General Date-string coercion,
+  standalone cache reading, account-cookie synchronization and broader cookie
+  configuration still require work.
+
+The latest `make check` passes 756 TypeScript cases across 38 files, all 61 native
+V test functions across 14 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus

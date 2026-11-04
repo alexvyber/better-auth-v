@@ -1,0 +1,983 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/cookies/cookies.test.ts",
+  "sha256": "b7e9b4646b6b95d201789c79742896545dfa09c6d80b73b44a27140a3b4b0bb0",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "cookies",
+      "suites": [
+        "cookies"
+      ],
+      "test": "should set cookies with default options",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: production cookie initialization and general cookie attribute configuration"
+    },
+    {
+      "suite": "cookies",
+      "suites": [
+        "cookies"
+      ],
+      "test": "should set multiple cookies",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: production cookie initialization and general cookie attribute configuration"
+    },
+    {
+      "suite": "cookies",
+      "suites": [
+        "cookies"
+      ],
+      "test": "should use secure cookies",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: production cookie initialization and general cookie attribute configuration"
+    },
+    {
+      "suite": "cookies",
+      "suites": [
+        "cookies"
+      ],
+      "test": "should use secure cookies when the base url is https",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: production cookie initialization and general cookie attribute configuration"
+    },
+    {
+      "suite": "cookies",
+      "suites": [
+        "cookies",
+        "production environment"
+      ],
+      "test": "should use secure cookies when baseURL is not configured",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: production cookie initialization and general cookie attribute configuration"
+    },
+    {
+      "suite": "crossSubdomainCookies",
+      "suites": [
+        "crossSubdomainCookies"
+      ],
+      "test": "should update cookies with custom domain",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported in this import: broader cookie configuration suites"
+    },
+    {
+      "suite": "crossSubdomainCookies",
+      "suites": [
+        "crossSubdomainCookies"
+      ],
+      "test": "should use default domain from baseURL if not provided",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported in this import: broader cookie configuration suites"
+    },
+    {
+      "suite": "cookie configuration",
+      "suites": [
+        "cookie configuration"
+      ],
+      "test": "should return correct cookie options based on configuration",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: standalone cookie descriptor factory"
+    },
+    {
+      "suite": "cookie-utils parseSetCookieHeader",
+      "suites": [
+        "cookie-utils parseSetCookieHeader"
+      ],
+      "test": "handles Expires with commas and multiple cookies",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils parseSetCookieHeader",
+      "suites": [
+        "cookie-utils parseSetCookieHeader"
+      ],
+      "test": "decodes URI-encoded cookie values",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils parseSetCookieHeader",
+      "suites": [
+        "cookie-utils parseSetCookieHeader"
+      ],
+      "test": "handles cookie with Expires followed by cookie without Expires",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils parseSetCookieHeader",
+      "suites": [
+        "cookie-utils parseSetCookieHeader"
+      ],
+      "test": "handles Expires when cookie value contains gmt substring",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils parseSetCookieHeader",
+      "suites": [
+        "cookie-utils parseSetCookieHeader"
+      ],
+      "test": "handles non-standard Expires=0",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils parseSetCookieHeader",
+      "suites": [
+        "cookie-utils parseSetCookieHeader"
+      ],
+      "test": "handles RFC 850 date format",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils parseSetCookieHeader",
+      "suites": [
+        "cookie-utils parseSetCookieHeader"
+      ],
+      "test": "handles asctime date format (no comma in date)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils parseSetCookieHeader",
+      "suites": [
+        "cookie-utils parseSetCookieHeader"
+      ],
+      "test": "handles mixed cookies with and without Expires",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils parseSetCookieHeader",
+      "suites": [
+        "cookie-utils parseSetCookieHeader"
+      ],
+      "test": "parses partitioned as a boolean cookie attribute",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils parseSetCookieHeader",
+      "suites": [
+        "cookie-utils parseSetCookieHeader"
+      ],
+      "test": "converts parsed cookie attributes into cookie options",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils stripSecureCookiePrefix",
+      "suites": [
+        "cookie-utils stripSecureCookiePrefix"
+      ],
+      "test": "should strip __Secure- prefix from cookie name",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils stripSecureCookiePrefix",
+      "suites": [
+        "cookie-utils stripSecureCookiePrefix"
+      ],
+      "test": "should strip __Host- prefix from cookie name",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils stripSecureCookiePrefix",
+      "suites": [
+        "cookie-utils stripSecureCookiePrefix"
+      ],
+      "test": "should return cookie name unchanged if no prefix",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils stripSecureCookiePrefix",
+      "suites": [
+        "cookie-utils stripSecureCookiePrefix"
+      ],
+      "test": "should handle cookie names with prefix-like strings in the middle",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils stripSecureCookiePrefix",
+      "suites": [
+        "cookie-utils stripSecureCookiePrefix"
+      ],
+      "test": "should handle empty string",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils stripSecureCookiePrefix",
+      "suites": [
+        "cookie-utils stripSecureCookiePrefix"
+      ],
+      "test": "should handle cookie names that are exactly the prefix",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils stripSecureCookiePrefix",
+      "suites": [
+        "cookie-utils stripSecureCookiePrefix"
+      ],
+      "test": "should prioritize __Secure- prefix over __Host- prefix",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils stripSecureCookiePrefix",
+      "suites": [
+        "cookie-utils stripSecureCookiePrefix"
+      ],
+      "test": "should handle cookie names with dots and special characters",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils setRequestCookie",
+      "suites": [
+        "cookie-utils setRequestCookie"
+      ],
+      "test": "writes a cookie when the header is empty",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils setRequestCookie",
+      "suites": [
+        "cookie-utils setRequestCookie"
+      ],
+      "test": "preserves existing cookies and joins with `; ` per RFC 6265",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils setRequestCookie",
+      "suites": [
+        "cookie-utils setRequestCookie"
+      ],
+      "test": "replaces an existing cookie of the same name rather than duplicating it",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils setRequestCookie",
+      "suites": [
+        "cookie-utils setRequestCookie"
+      ],
+      "test": "ignores malformed pairs in the existing header",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils setRequestCookie",
+      "suites": [
+        "cookie-utils setRequestCookie"
+      ],
+      "test": "percent-encodes reserved cookie-octet bytes when serializing",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cookie-utils setRequestCookie",
+      "suites": [
+        "cookie-utils setRequestCookie"
+      ],
+      "test": "treats input as semantic and percent-encodes literal double-quotes",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "getSessionCookie",
+      "suites": [
+        "getSessionCookie"
+      ],
+      "test": "should return the correct session cookie",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "getSessionCookie",
+      "suites": [
+        "getSessionCookie"
+      ],
+      "test": "should work with Headers object directly",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "getSessionCookie",
+      "suites": [
+        "getSessionCookie"
+      ],
+      "test": "should work with Headers-like object that has inherited 'headers' property",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "getSessionCookie",
+      "suites": [
+        "getSessionCookie"
+      ],
+      "test": "should work with cross-realm Headers-like object (instanceof fails)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "getSessionCookie",
+      "suites": [
+        "getSessionCookie"
+      ],
+      "test": "should return the correct session cookie on production",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "getSessionCookie",
+      "suites": [
+        "getSessionCookie",
+        "with '%s' separator",
+        "with %s prefix (%s)"
+      ],
+      "test": "finds cookie with config %j",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "getSessionCookie",
+      "suites": [
+        "getSessionCookie"
+      ],
+      "test": "prefers the __Secure- cookie when a non-secure leftover is also present",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "getSessionCookie",
+      "suites": [
+        "getSessionCookie"
+      ],
+      "test": "does not fall back to a non-secure cookie when the __Secure- value is empty",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "getSessionCookie",
+      "suites": [
+        "getSessionCookie"
+      ],
+      "test": "should allow override cookie prefix with secure cookies",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "getSessionCookie",
+      "suites": [
+        "getSessionCookie"
+      ],
+      "test": "should allow override cookie name",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "getSessionCookie",
+      "suites": [
+        "getSessionCookie"
+      ],
+      "test": "should return cookie cache",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: standalone cookie-cache reader and associated session helper integrations"
+    },
+    {
+      "suite": "getSessionCookie",
+      "suites": [
+        "getSessionCookie"
+      ],
+      "test": "should respect dontRememberMe when storing session in cookie cache",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "getSessionCookie",
+      "suites": [
+        "getSessionCookie"
+      ],
+      "test": "should return null if the cookie is invalid",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: standalone cookie-cache reader and associated session helper integrations"
+    },
+    {
+      "suite": "getSessionCookie",
+      "suites": [
+        "getSessionCookie"
+      ],
+      "test": "should throw an error if the secret is not provided",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: standalone cookie-cache reader and associated session helper integrations"
+    },
+    {
+      "suite": "getSessionCookie",
+      "suites": [
+        "getSessionCookie"
+      ],
+      "test": "should chunk large cookies instead of logging error",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sensitive session middleware cookie cache",
+      "suites": [
+        "sensitive session middleware cookie cache"
+      ],
+      "test": "should not let request query re-enable cookie cache on sensitive endpoints",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: cookie-cache middleware integration"
+    },
+    {
+      "suite": "Cookie Cache Field Filtering",
+      "suites": [
+        "Cookie Cache Field Filtering"
+      ],
+      "test": "should exclude user fields with returned: false from cookie cache",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: cookie-cache field filtering and account cache integration"
+    },
+    {
+      "suite": "Cookie Cache Field Filtering",
+      "suites": [
+        "Cookie Cache Field Filtering"
+      ],
+      "test": "should correctly filter multiple user fields based on returned config",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: cookie-cache field filtering and account cache integration"
+    },
+    {
+      "suite": "Cookie Cache Field Filtering",
+      "suites": [
+        "Cookie Cache Field Filtering"
+      ],
+      "test": "should reduce cookie size when large fields are excluded",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: cookie-cache field filtering and account cache integration"
+    },
+    {
+      "suite": "Cookie Cache Field Filtering",
+      "suites": [
+        "Cookie Cache Field Filtering"
+      ],
+      "test": "should maintain session field filtering (regression check)",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: cookie-cache field filtering and account cache integration"
+    },
+    {
+      "suite": "Cookie Cache Field Filtering",
+      "suites": [
+        "Cookie Cache Field Filtering"
+      ],
+      "test": "should include unknown user fields for backward compatibility",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: cookie-cache field filtering and account cache integration"
+    },
+    {
+      "suite": "Cookie Cache Field Filtering",
+      "suites": [
+        "Cookie Cache Field Filtering"
+      ],
+      "test": "should work with JWT strategy",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: cookie-cache field filtering and account cache integration"
+    },
+    {
+      "suite": "Cookie Cache Field Filtering",
+      "suites": [
+        "Cookie Cache Field Filtering"
+      ],
+      "test": "should work with JWT strategy backed by JWKS keys",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: cookie-cache field filtering and account cache integration"
+    },
+    {
+      "suite": "Cookie Cache Field Filtering",
+      "suites": [
+        "Cookie Cache Field Filtering"
+      ],
+      "test": "should work with compact strategy",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: cookie-cache field filtering and account cache integration"
+    },
+    {
+      "suite": "Cookie Cache Field Filtering",
+      "suites": [
+        "Cookie Cache Field Filtering"
+      ],
+      "test": "should use the configured logger for an invalid signed compact cookie",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: cookie-cache field filtering and account cache integration"
+    },
+    {
+      "suite": "Cookie Cache Field Filtering",
+      "suites": [
+        "Cookie Cache Field Filtering"
+      ],
+      "test": "should return null for invalid JWT token",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: cookie-cache field filtering and account cache integration"
+    },
+    {
+      "suite": "Cookie Cache Field Filtering",
+      "suites": [
+        "Cookie Cache Field Filtering"
+      ],
+      "test": "should require a secret when helper verification has no JWKS",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: cookie-cache field filtering and account cache integration"
+    },
+    {
+      "suite": "Cookie Cache Field Filtering",
+      "suites": [
+        "Cookie Cache Field Filtering"
+      ],
+      "test": "should reject JWT plugin tokens that are not cookie-cache JWTs",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: cookie-cache field filtering and account cache integration"
+    },
+    {
+      "suite": "Cookie Cache Field Filtering",
+      "suites": [
+        "Cookie Cache Field Filtering"
+      ],
+      "test": "should return null when JWKS verification uses the wrong key set",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: cookie-cache field filtering and account cache integration"
+    },
+    {
+      "suite": "Cookie Cache Field Filtering",
+      "suites": [
+        "Cookie Cache Field Filtering"
+      ],
+      "test": "should default to compact strategy when not specified",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: cookie-cache field filtering and account cache integration"
+    },
+    {
+      "suite": "Cookie Chunking",
+      "suites": [
+        "Cookie Chunking"
+      ],
+      "test": "should chunk cookies when they exceed 4KB",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: full cookie chunk lifecycle integration"
+    },
+    {
+      "suite": "Cookie Chunking",
+      "suites": [
+        "Cookie Chunking"
+      ],
+      "test": "should chunk JWKS-backed JWT cookies when they exceed 4KB",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: full cookie chunk lifecycle integration"
+    },
+    {
+      "suite": "Cookie Chunking",
+      "suites": [
+        "Cookie Chunking"
+      ],
+      "test": "should reconstruct chunked cookies correctly",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: full cookie chunk lifecycle integration"
+    },
+    {
+      "suite": "Cookie Chunking",
+      "suites": [
+        "Cookie Chunking"
+      ],
+      "test": "should clean up all chunks when deleting session",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: full cookie chunk lifecycle integration"
+    },
+    {
+      "suite": "Cookie Chunking",
+      "suites": [
+        "Cookie Chunking"
+      ],
+      "test": "should NOT chunk cookies when they are under 4KB",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: full cookie chunk lifecycle integration"
+    },
+    {
+      "suite": "Cookie Chunking",
+      "suites": [
+        "Cookie Chunking"
+      ],
+      "test": "should chunk session cache when attributes push the line over the limit",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: full cookie chunk lifecycle integration"
+    },
+    {
+      "suite": "Cookie Chunking",
+      "suites": [
+        "Cookie Chunking"
+      ],
+      "test": "skips the session cache and warns when it is too large to chunk",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: full cookie chunk lifecycle integration"
+    },
+    {
+      "suite": "Cookie Chunking",
+      "suites": [
+        "Cookie Chunking"
+      ],
+      "test": "skips the session cache and warns when the prefix alone overflows",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: full cookie chunk lifecycle integration"
+    },
+    {
+      "suite": "parse cookies",
+      "suites": [
+        "parse cookies"
+      ],
+      "test": "should parse cookies into key-value map",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "parse cookies",
+      "suites": [
+        "parse cookies"
+      ],
+      "test": "should securely parse the signed cookies with padding",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Cookie header without whitespace after semicolon",
+      "suites": [
+        "Cookie header without whitespace after semicolon"
+      ],
+      "test": "parseCookies returns each pair when separator is `;` only",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Cookie header without whitespace after semicolon",
+      "suites": [
+        "Cookie header without whitespace after semicolon"
+      ],
+      "test": "parseCookies tolerates mixed `;`, `; `, and `;\\t` separators",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Cookie header without whitespace after semicolon",
+      "suites": [
+        "Cookie header without whitespace after semicolon"
+      ],
+      "test": "getSessionCookie finds the session cookie when separator is `;` only",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Cookie header without whitespace after semicolon",
+      "suites": [
+        "Cookie header without whitespace after semicolon"
+      ],
+      "test": "getChunkedCookie reconstructs chunks across `;`-only separators",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "getChunkedCookie",
+      "suites": [
+        "getChunkedCookie"
+      ],
+      "test": "ignores non-canonical chunk name %s",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "parseCookies validation",
+      "suites": [
+        "parseCookies validation"
+      ],
+      "test": "returns empty map for empty header",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "parseCookies validation",
+      "suites": [
+        "parseCookies validation"
+      ],
+      "test": "rejects names containing characters outside RFC 7230 token",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "parseCookies validation",
+      "suites": [
+        "parseCookies validation"
+      ],
+      "test": "rejects values containing control chars, double-quote, or backslash",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "parseCookies validation",
+      "suites": [
+        "parseCookies validation"
+      ],
+      "test": "accepts values with space and comma (real-world deviation)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "parseCookies validation",
+      "suites": [
+        "parseCookies validation"
+      ],
+      "test": "splits on first `=` only, preserving subsequent `=` in value",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "parseCookies validation",
+      "suites": [
+        "parseCookies validation"
+      ],
+      "test": "rejects entries with CR/LF in raw key or value (no trim escape)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "parseCookies validation",
+      "suites": [
+        "parseCookies validation"
+      ],
+      "test": "strips double-quoted values per RFC 6265 §4.1.1",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "applySetCookies",
+      "suites": [
+        "applySetCookies"
+      ],
+      "test": "merges into empty Cookie header",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "applySetCookies",
+      "suites": [
+        "applySetCookies"
+      ],
+      "test": "strips Set-Cookie attributes (only name=value lands)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "applySetCookies",
+      "suites": [
+        "applySetCookies"
+      ],
+      "test": "merges multiple Set-Cookie values",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "applySetCookies",
+      "suites": [
+        "applySetCookies"
+      ],
+      "test": "last-wins on duplicate cookie name (existing + new)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "applySetCookies",
+      "suites": [
+        "applySetCookies"
+      ],
+      "test": "re-encodes Set-Cookie values containing reserved bytes on wire join",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "applySetCookies",
+      "suites": [
+        "applySetCookies"
+      ],
+      "test": "strips RFC 6265 quoted-string wrapping from Set-Cookie values",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "expireCookie",
+      "suites": [
+        "expireCookie"
+      ],
+      "test": "preserves attributes",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "expireCookie",
+      "suites": [
+        "expireCookie"
+      ],
+      "test": "scrubs collapsed Set-Cookie headers when getSetCookie is unavailable",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "account cookie sync on user switch",
+      "suites": [
+        "account cookie sync on user switch"
+      ],
+      "test": "keeps the fresh account cookie issued for the new user when the request carries another user's stale account cookie",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: Google OAuth and account cookie synchronization"
+    },
+    {
+      "suite": "account cookie sync on user switch",
+      "suites": [
+        "account cookie sync on user switch"
+      ],
+      "test": "still expires another user's stale account cookie when the response issues no fresh one",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: Google OAuth and account cookie synchronization"
+    },
+    {
+      "suite": "getCookieCache expiry (compact strategy)",
+      "suites": [
+        "getCookieCache expiry (compact strategy)"
+      ],
+      "test": "returns the session for a fresh snapshot",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: standalone cookie-cache reader"
+    },
+    {
+      "suite": "getCookieCache expiry (compact strategy)",
+      "suites": [
+        "getCookieCache expiry (compact strategy)"
+      ],
+      "test": "returns null when the embedded session has expired",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: standalone cookie-cache reader"
+    },
+    {
+      "suite": "getCookieCache expiry (compact strategy)",
+      "suites": [
+        "getCookieCache expiry (compact strategy)"
+      ],
+      "test": "returns null when the cache window has elapsed",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: standalone cookie-cache reader"
+    }
+  ]
+}

@@ -14,7 +14,7 @@
     "utilities-and-tooling": {
       "files": 275,
       "declarations": 4594,
-      "importedFiles": 4
+      "importedFiles": 5
     },
     "e2e": {
       "files": 71,
@@ -12145,7 +12145,7 @@
       "path": "packages/better-auth/src/cookies/cookies.test.ts",
       "sha256": "b7e9b4646b6b95d201789c79742896545dfa09c6d80b73b44a27140a3b4b0bb0",
       "group": "utilities-and-tooling",
-      "status": "unported",
+      "status": "imported-partial-file",
       "kind": "runtime",
       "declarations": [
         {

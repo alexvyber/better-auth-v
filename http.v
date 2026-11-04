@@ -12,6 +12,7 @@ struct Payload {
 	scopes                []string
 	login_hint            string            @[json: loginHint]
 	additional_params     map[string]string @[json: additionalParams]
+	request_sign_up       bool              @[json: requestSignUp]
 	disable_redirect      bool              @[json: 'disableRedirect']
 	email                 string
 	password              string

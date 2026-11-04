@@ -7,7 +7,8 @@ import { beforeAll, afterAll, afterEach, describe, expect, it, vi } from "vitest
 import { signJWT } from "../harness/crypto.js";
 import { DEFAULT_SECRET } from "../harness/constants.js";
 import { getTestInstance } from "../harness/test-instance.js";
-import { anonymous } from "../harness/plugins.js";
+import { anonymous, genericOAuth } from "../harness/plugins.js";
+import { OAuth2Server } from "oauth2-mock-server";
 import { anonymousClient } from "better-auth/client/plugins";
 
 function stripSessionCookie(
@@ -555,4 +556,99 @@ describe("anonymous", async () => {
 			"Anonymous users cannot sign in again anonymously",
 		);
 	});;
+});
+
+describe("anonymous linking through generic oauth (Expo)", async () => {
+	const linkAccountFn = vi.fn();
+	const providerId = "test";
+	const server = new OAuth2Server();
+	await server.start();
+	const port = Number(server.issuer.url?.split(":")[2]!);
+
+	afterAll(async () => {
+		await server.stop();
+	});
+
+	const { client, sessionSetter, cookieSetter, customFetchImpl } =
+		await getTestInstance(
+			{
+				plugins: [
+					anonymous({
+						async onLinkAccount(data) {
+							linkAccountFn(data);
+						},
+					}),
+					genericOAuth({
+						config: [
+							{
+								providerId,
+								discoveryUrl: `http://localhost:${port}/.well-known/openid-configuration`,
+								clientId: "test-client-id",
+								clientSecret: "test-client-secret",
+								pkce: true,
+							},
+						],
+					}),
+				],
+			},
+			{
+				clientOptions: {
+					plugins: [anonymousClient()],
+				},
+			},
+		);
+
+	beforeAll(async () => {
+		await server.issuer.keys.generate("RS256");
+	});
+
+	server.service.on("beforeUserinfo", (userInfoResponse) => {
+		userInfoResponse.body = {
+			email: "anon-generic-oauth@test.com",
+			name: "Anon Generic OAuth",
+			sub: "anon-generic-oauth",
+			email_verified: true,
+		};
+		userInfoResponse.statusCode = 200;
+	});
+
+	it("links the anonymous account when the callback lacks the session cookie", async () => {
+		linkAccountFn.mockClear();
+		const anonHeaders = new Headers();
+		await client.signIn.anonymous({
+			fetchOptions: { onSuccess: sessionSetter(anonHeaders) },
+		});
+
+		// Generic providers sign in through /sign-in/social; the before-hook
+		// captures the anonymous user id from this request's session cookie.
+		const signInRes = await client.signIn.social({
+			provider: providerId,
+			callbackURL: "http://localhost:3000/dashboard",
+			fetchOptions: {
+				onSuccess: cookieSetter(anonHeaders),
+				headers: anonHeaders,
+			},
+		});
+
+		// Follow the provider redirect to obtain the callback URL (code + state).
+		let callbackLocation: string | null = null;
+		await betterFetch(signInRes.data?.url || "", {
+			method: "GET",
+			redirect: "manual",
+			onError(context) {
+				callbackLocation = context.response.headers.get("location");
+			},
+		});
+		if (!callbackLocation) throw new Error("No redirect location found");
+
+		// Return to the callback without the session cookie (Expo in-app browser).
+		await betterFetch(callbackLocation, {
+			method: "GET",
+			customFetchImpl,
+			headers: stripSessionCookie(anonHeaders),
+			onError() {},
+		});
+
+		expect(linkAccountFn).toHaveBeenCalledWith(expect.any(Object));
+	});
 });

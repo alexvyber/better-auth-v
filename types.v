@@ -201,6 +201,10 @@ pub:
 	skip_origin_check_paths           []string
 	trusted_origins_for               fn (RequestContext) ![]string = no_trusted_origins
 	email_and_password                bool = true
+	disable_email_sign_up             bool
+	generic_oauth                     []GenericOAuthConfig
+	trusted_linking_providers         []string
+	account_linking_enabled           bool
 	require_email_verification        bool
 	send_verification_on_sign_up      ?bool
 	send_verification_on_sign_in      bool

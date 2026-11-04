@@ -12,6 +12,11 @@ import time
 import x.json2
 
 struct Options {
+	generic_oauth                     []better_auth.GenericOAuthConfig
+	generic_callbacks                 map[string][]string
+	account_linking_enabled           bool
+	trusted_linking_providers         []string
+	disable_email_sign_up             bool
 	anonymous                         ?better_auth.AnonymousOptions
 	anonymous_callbacks               []string
 	email_otp                         ?better_auth.EmailOTPOptions
@@ -766,7 +771,39 @@ fn main() {
 			}
 		}
 	}
+	mut generic := []better_auth.GenericOAuthConfig{}
+	for input in opts.generic_oauth {
+		provider_id := input.provider_id
+		methods := opts.generic_callbacks[provider_id] or { []string{} }
+		mut settings := better_auth.GenericOAuthConfig{
+			...input
+			transport:    RemoteOAuthTransport{}
+			clock_millis: fn [state] () i64 {
+				return state.now_millis
+			}
+		}
+		if 'token' in methods { settings = better_auth.GenericOAuthConfig{
+				...settings
+				get_token: fn [provider_id] (code string, verifier string, redirect_uri string) !better_auth.OAuthTokens {
+					encoded := callback_rpc('generic.token.' + provider_id, json.encode({
+						'code':         code
+						'codeVerifier': verifier
+						'redirectURI':  redirect_uri
+					}))!return json.decode(better_auth.OAuthTokens, encoded)}
+			} }
+		if 'map' in methods { settings = better_auth.GenericOAuthConfig{
+				...settings
+				map_profile: fn [provider_id] (profile string) !string {
+					return callback_rpc('generic.map.' + provider_id, profile)}
+			} }
+		generic << settings
+	}
 	mut auth := better_auth.new(better_auth.Config{
+		generic_oauth:             generic
+		account_linking_enabled:   opts.account_linking_enabled
+		trusted_linking_providers: opts.trusted_linking_providers
+		disable_email_sign_up:     opts.disable_email_sign_up
+
 		verification:                      better_auth.VerificationOptions{
 			...opts.verification_options
 			hash_identifier: fn [opts] (identifier string) !string {

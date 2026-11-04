@@ -1,0 +1,1304 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/generic-oauth/generic-oauth.test.ts",
+  "sha256": "24e339e801fb7dcbe70245cae104169ae132609df41bac8276f75803f29980d4",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should discover end_session_endpoint for provider logout",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should delete state cookie with path attribute",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should complete full sign-in flow and return correct session data",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should redirect to the provider and handle the response for a new user",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "encodes callbackURL in the verify-email link for a new unverified OAuth user",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should resolve getAccessToken after first-time generic-oauth sign-in (storeAccountCookie + JWE)",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "keeps implicit links usable across stateless instances",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "refreshes once the accessTokenExpiresIn window passes when the provider omits expires_in",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "does not refresh a provider that omits expires_in when accessTokenExpiresIn is unset",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "applies accessTokenExpiresIn to a custom getToken result",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "forwards refreshTokenParams (incl. dynamic + ctx + protected keys) to the token endpoint on refresh",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should redirect to the provider and handle the response after linked",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should handle invalid provider ID",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should handle server error during OAuth flow",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should work with custom redirect uri",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should not create user when sign ups are disabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "blocks the session with error=email_not_verified when requireEmailVerification is set",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should create user when sign ups are disabled and sign up is requested",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should redirect to cross-origin errorCallbackURL when a session hook throws APIError",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should pass authorization headers in oAuth2Callback",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should delete oauth user with verification flow without password",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should handle numeric account IDs correctly and prevent duplicate accounts",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "rejects sign-in when the provider omits an account id, preventing account collisions",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "rejects sign-in when a custom getUserInfo returns an empty id",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "does not switch a plain OAuth account from id to sub",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "completes sign-in when accountSubject derives identity from a non-standard profile field",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "uses the OIDC sub when the userinfo id field is empty",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "uses the OIDC sub when the userinfo id field is null",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "uses the OIDC sub as the account subject when userinfo also has an id field",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "links provider aliases as separate accounts of one user when mutable profile fields change",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "keeps different OIDC subjects separate when a mutable id field is reused",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should handle custom getUserInfo returning numeric ID",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should handle accountSubject returning a numeric subject",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should handle Strava OAuth with custom mapProfileToUser",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "redirects with email_not_found when both the provider and mapProfileToUser omit email",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should work with cookie-based state storage",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should reject cookie-backed OAuth when callback state does not match the issued state",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should redirect to the error page when a GET callback arrives without state",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should await async mapProfileToUser",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "keeps provider sub in raw data when the plain OAuth id is empty",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Okta Provider Helper"
+      ],
+      "test": "should return correct GenericOAuthConfig",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Okta Provider Helper"
+      ],
+      "test": "should handle issuer with trailing slash",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Okta Provider Helper"
+      ],
+      "test": "should allow overriding scopes",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Okta Provider Helper"
+      ],
+      "test": "should allow overriding other options",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Auth0 Provider Helper"
+      ],
+      "test": "should return correct GenericOAuthConfig",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Auth0 Provider Helper"
+      ],
+      "test": "normalizes an Auth0 domain supplied as %s",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Auth0 Provider Helper"
+      ],
+      "test": "should allow overriding scopes",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Auth0 Provider Helper"
+      ],
+      "test": "should allow overriding other options",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Microsoft Entra ID Provider Helper"
+      ],
+      "test": "should return correct GenericOAuthConfig",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Microsoft Entra ID Provider Helper"
+      ],
+      "test": "should handle tenant ID as GUID",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Microsoft Entra ID Provider Helper"
+      ],
+      "test": "should allow overriding scopes",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Microsoft Entra ID Provider Helper"
+      ],
+      "test": "should allow overriding other options",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Microsoft Entra ID Provider Helper"
+      ],
+      "test": "skips the Microsoft provider when discovery is unavailable",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Microsoft Entra ID Provider Helper"
+      ],
+      "test": "rejects the multi-tenant %s endpoint because it cannot provide a stable issuer",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Microsoft Entra ID Provider Helper"
+      ],
+      "test": "rejects a missing tenant ID from an untyped runtime configuration",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Microsoft Entra ID Provider Helper"
+      ],
+      "test": "should use oid from the ID token as the account id instead of sub",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Microsoft Entra ID Provider Helper"
+      ],
+      "test": "should ignore Graph userinfo when its subject %s",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Microsoft Entra ID Provider Helper"
+      ],
+      "test": "keeps the placeholder unverified for an unexpected null Graph email claim",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Microsoft Entra ID Provider Helper"
+      ],
+      "test": "should normalize personal Microsoft account givenname and familyname claims",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Microsoft Entra ID Provider Helper"
+      ],
+      "test": "should fall back to ID token claims when Graph userinfo fails",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Microsoft Entra ID Provider Helper"
+      ],
+      "test": "should return token claims without fetching Graph when accessToken is missing",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Microsoft Entra ID Provider Helper"
+      ],
+      "test": "rejects an ID token whose oid is %s",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Slack Provider Helper"
+      ],
+      "test": "should return correct GenericOAuthConfig",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Slack Provider Helper"
+      ],
+      "test": "should allow overriding scopes",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Slack Provider Helper"
+      ],
+      "test": "should allow overriding other options",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Yandex Provider Helper"
+      ],
+      "test": "should return correct GenericOAuthConfig",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Yandex Provider Helper"
+      ],
+      "test": "returns null when Yandex does not return an email",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "HubSpot Provider Helper"
+      ],
+      "test": "sends the access token as a single path segment encoded once",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "HubSpot Provider Helper"
+      ],
+      "test": "returns null without calling HubSpot when the access token is missing",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Keycloak Provider Helper"
+      ],
+      "test": "should return correct GenericOAuthConfig",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Keycloak Provider Helper"
+      ],
+      "test": "should handle issuer with trailing slash",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Keycloak Provider Helper"
+      ],
+      "test": "should allow overriding scopes",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Keycloak Provider Helper"
+      ],
+      "test": "should allow overriding other options",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should integrate okta provider helper with genericOAuth",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should integrate auth0 provider helper with genericOAuth",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should integrate microsoftEntraId provider helper with genericOAuth",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should integrate slack provider helper with genericOAuth",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should integrate keycloak provider helper with genericOAuth",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should support custom getToken for non-standard providers",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should handle errors in custom getToken",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should support GET-based token endpoints for non-standard providers",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Duplicate Provider ID Detection"
+      ],
+      "test": "should warn when duplicate provider IDs are detected",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Duplicate Provider ID Detection"
+      ],
+      "test": "should warn about multiple duplicate provider IDs",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Duplicate Provider ID Detection"
+      ],
+      "test": "should not warn when all provider IDs are unique",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Duplicate Provider ID Detection"
+      ],
+      "test": "should not warn when only one provider is configured",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "Duplicate Provider ID Detection"
+      ],
+      "test": "should warn when provider ID appears more than twice",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "storeIdentifier: hashed"
+      ],
+      "test": "should complete oauth flow when verification identifiers are hashed",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should merge client-requested scopes with config scopes",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should warn when generic provider ID shadows a built-in social provider",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should pass discovered issuer to the provider for RFC 9207 validation",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "tokenEndpointAuth"
+      ],
+      "test": "should send client_assertion instead of client_secret at the token endpoint",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "tokenEndpointAuth"
+      ],
+      "test": "should reject secretless token endpoint auth combined with clientSecret",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "tokenEndpointAuth"
+      ],
+      "test": "should reject %s token endpoint auth without clientSecret",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "should use custom name when provided in config",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "IDP-initiated bounce (allowIdpInitiated)"
+      ],
+      "test": "should bounce a stateless callback to the provider's authorize endpoint when the provider opts in",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "IDP-initiated bounce (allowIdpInitiated)"
+      ],
+      "test": "should redirect to the error page when a stateless callback arrives for a provider without the flag",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "IDP-initiated bounce (allowIdpInitiated)"
+      ],
+      "test": "should not bounce on an empty `state=` parameter, only on truly stateless callbacks",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "IDP-initiated bounce (allowIdpInitiated)"
+      ],
+      "test": "should not bounce when state is present even if allowIdpInitiated is on",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "validateUserInfo callback"
+      ],
+      "test": "should reject sign-in with provider metadata and raw profile",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "validateUserInfo callback"
+      ],
+      "test": "should work in stateless mode (no database)",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "id_token verification"
+      ],
+      "test": "should reject an id_token not signed by the discovery JWKS",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "id_token verification"
+      ],
+      "test": "should use claims from an id_token verified against the discovery JWKS",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "id_token verification"
+      ],
+      "test": "should bind a discovery id_token to the authorization request nonce",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "id_token verification"
+      ],
+      "test": "should reject a discovery id_token with a mismatched nonce",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "id_token verification"
+      ],
+      "test": "should reject a discovery id_token that omits the nonce claim",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "id_token verification"
+      ],
+      "test": "should not bind a nonce when id_token nonce binding is disabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "id_token verification"
+      ],
+      "test": "should drop a configured nonce param for providers without nonce binding",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "id_token verification"
+      ],
+      "test": "should reject a discovery id_token when state carries no expected nonce",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "id_token verification"
+      ],
+      "test": "should sign in with a client-submitted id_token for a discovery provider",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "id_token verification"
+      ],
+      "test": "should keep the decode posture for providers without discovery",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "id_token verification"
+      ],
+      "test": "skips a provider when required ID token verification metadata is unavailable",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "id_token verification"
+      ],
+      "test": "skips a provider when discovery returns a malformed jwks_uri",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "skips discovery missing %s endpoints",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "keeps explicit token exchange with incomplete discovery (custom=%s)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2"
+      ],
+      "test": "does not take down the auth API when one provider's discovery is unreachable",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "retrying discovery that failed at startup"
+      ],
+      "test": "recovers a provider once the IdP is reachable",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "retrying discovery that failed at startup"
+      ],
+      "test": "recovers a provider requested through the popup start endpoint",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "retrying discovery that failed at startup"
+      ],
+      "test": "recovers a provider after a later plugin replaces the provider list",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "oauth2",
+      "suites": [
+        "oauth2",
+        "retrying discovery that failed at startup"
+      ],
+      "test": "recovers the provider in every auth instance that shares one plugin object and adapter",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "redirect_uri composition under dynamic baseURL",
+      "suites": [
+        "redirect_uri composition under dynamic baseURL"
+      ],
+      "test": "composes an absolute redirect_uri for a generic-oauth provider at the default basePath",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "redirect_uri composition under dynamic baseURL",
+      "suites": [
+        "redirect_uri composition under dynamic baseURL"
+      ],
+      "test": "composes an absolute redirect_uri for a generic-oauth provider at a custom basePath",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "redirect_uri composition under dynamic baseURL",
+      "suites": [
+        "redirect_uri composition under dynamic baseURL"
+      ],
+      "test": "composes an absolute redirect_uri for a built-in social provider",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    },
+    {
+      "suite": "redirect_uri composition under dynamic baseURL",
+      "suites": [
+        "redirect_uri composition under dynamic baseURL"
+      ],
+      "test": "normalizes custom callbackPath values without a leading slash",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+    }
+  ]
+}

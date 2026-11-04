@@ -165,7 +165,7 @@
       "test": "does not delete when the new session is still anonymous",
       "selected": false,
       "upstreamDisabled": false,
-      "reason": "Unported direct middleware-object injection and generic-OIDC anonymous callback integration"
+      "reason": "Unported direct middleware-object injection; all HTTP anonymous and OAuth integration cases selected"
     },
     {
       "suite": "anonymous",
@@ -176,7 +176,7 @@
       "test": "deletes the previous anonymous user when linking a new account",
       "selected": false,
       "upstreamDisabled": false,
-      "reason": "Unported direct middleware-object injection and generic-OIDC anonymous callback integration"
+      "reason": "Unported direct middleware-object injection; all HTTP anonymous and OAuth integration cases selected"
     },
     {
       "suite": "anonymous linking through generic oauth (Expo)",
@@ -184,9 +184,9 @@
         "anonymous linking through generic oauth (Expo)"
       ],
       "test": "links the anonymous account when the callback lacks the session cookie",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported direct middleware-object injection and generic-OIDC anonymous callback integration"
+      "reason": null
     }
   ]
 }

@@ -16,10 +16,15 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
- {file: 'anonymous', path: 'packages/better-auth/src/plugins/anonymous/anon.test.ts', suites: new Set(['anonymous']), includeHelpers: true, setupCalls: new Set(['beforeAll', 'afterEach', 'afterAll']),
+ {file: 'generic-oauth', path: 'packages/better-auth/src/plugins/generic-oauth/generic-oauth.test.ts', suites: new Set(['oauth2']), nestedSuites: new Set(['id_token verification']),
+ includeTests: new Set(['should not create user when sign ups are disabled', 'should create user when sign ups are disabled and sign up is requested', 'skips discovery missing %s endpoints', 'keeps explicit token exchange with incomplete discovery (custom=%s)', 'does not take down the auth API when one provider’s discovery is unreachable'.replace('’', "'"), 'should merge client-requested scopes with config scopes']),
+ imports: 'import { createServer } from "node:http";\nimport type { AddressInfo } from "node:net";\nimport type { GenericEndpointContext } from "@better-auth/core";\nimport { runWithEndpointContext } from "@better-auth/core/context";\nimport { betterFetch } from "@better-fetch/fetch";\nimport { generateKeyPair, SignJWT } from "jose";\nimport { HttpResponse, http } from "msw";\nimport { setupServer } from "msw/node";\nimport { OAuth2Server } from "oauth2-mock-server";\nimport { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";\nimport { createAuthClient } from "better-auth/client";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { genericOAuth } from "../harness/plugins.js";\n',
+ unportedReason: 'Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected',
+ },
+ {file: 'anonymous', path: 'packages/better-auth/src/plugins/anonymous/anon.test.ts', suites: new Set(['anonymous', 'anonymous linking through generic oauth (Expo)']), includeHelpers: true, setupCalls: new Set(['beforeAll', 'afterEach', 'afterAll']),
  skippedSuites: new Set(['anonymous cleanup safeguards']),
- imports: 'import type { GoogleProfile } from "@better-auth/core/social-providers";\nimport { betterFetch } from "@better-fetch/fetch";\nimport { HttpResponse, http } from "msw";\nimport { setupServer } from "msw/node";\nimport { beforeAll, afterAll, afterEach, describe, expect, it, vi } from "vitest";\nimport { signJWT } from "../harness/crypto.js";\nimport { DEFAULT_SECRET } from "../harness/constants.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { anonymous } from "../harness/plugins.js";\nimport { anonymousClient } from "better-auth/client/plugins";\n',
- unportedReason: 'Unported direct middleware-object injection and generic-OIDC anonymous callback integration',
+ imports: 'import type { GoogleProfile } from "@better-auth/core/social-providers";\nimport { betterFetch } from "@better-fetch/fetch";\nimport { HttpResponse, http } from "msw";\nimport { setupServer } from "msw/node";\nimport { beforeAll, afterAll, afterEach, describe, expect, it, vi } from "vitest";\nimport { signJWT } from "../harness/crypto.js";\nimport { DEFAULT_SECRET } from "../harness/constants.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { anonymous, genericOAuth } from "../harness/plugins.js";\nimport { OAuth2Server } from "oauth2-mock-server";\nimport { anonymousClient } from "better-auth/client/plugins";\n',
+ unportedReason: 'Unported direct middleware-object injection; all HTTP anonymous and OAuth integration cases selected',
  },
   {file: 'email-otp', path: 'packages/better-auth/src/plugins/email-otp/email-otp.test.ts', suites: null,
    imports: 'import { afterEach, describe, expect, it, vi } from "vitest";\nimport { createAuthClient } from "better-auth/client";\nimport { getCookieCache, parseSetCookieHeader } from "../harness/cookies.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { bearer, emailOTP } from "../harness/plugins.js";\nimport { emailOTPClient } from "better-auth/client/plugins";\nimport { splitAtLastColon } from "../harness/crypto.js";\n',
@@ -225,7 +230,7 @@ for (const plan of plans) {
             "<dynamic>";
           if (extractedSuites.includes(title)) extractions.push(node);
           for (const fn of callbacks) collect(fn.body, [...path, title]);
-          if (plan.skippedSuites?.has(title) && (selected || path.some(title => extractedSuites.includes(title)))) removals.push([node.getFullStart(), node.end]);
+          if ((plan.skippedSuites?.has(title) && (selected || path.some(title => extractedSuites.includes(title)))) || (selected && plan.nestedSuites && !plan.nestedSuites.has(title) && !path.some(title => plan.nestedSuites.has(title)))) removals.push([node.getFullStart(), node.end]);
           return;
         }
         if (
@@ -236,7 +241,7 @@ for (const plan of plans) {
             node.arguments[0]?.text ??
             node.arguments[0]?.getText(sourceFile) ??
             "<dynamic>";
-          const include = (extractedSuites.length ? path.some(title => extractedSuites.includes(title)) : selected) && !plan.skippedTests?.has(title) && !path.some(title => plan.skippedSuites?.has(title));
+          const include = (extractedSuites.length ? path.some(title => extractedSuites.includes(title)) : selected) && !plan.skippedTests?.has(title) && !path.some(title => plan.skippedSuites?.has(title)) && (!plan.nestedSuites || path.some(title => plan.nestedSuites.has(title)) || plan.includeTests?.has(title));
           inventory.push({
             suite: name,
             suites: path,
@@ -256,16 +261,17 @@ for (const plan of plans) {
       ts.forEachChild(node, (child) => collect(child, path));
     }
     collect(callback.body);
+    const normalizedRemovals = removals.filter(([from, to]) => !removals.some(([outerFrom, outerTo]) => outerFrom <= from && outerTo >= to && (outerFrom < from || outerTo > to)));
     for (const node of extractions) {
       const start = node.getStart(sourceFile);
       let text = node.getText(sourceFile);
-      for (const [from, to] of removals.filter(([from, to]) => from >= start && to <= node.end).sort((a, b) => b[0] - a[0])) text = text.slice(0, from - start) + text.slice(to - start);
+      for (const [from, to] of normalizedRemovals.filter(([from, to]) => from >= start && to <= node.end).sort((a, b) => b[0] - a[0])) text = text.slice(0, from - start) + text.slice(to - start);
       output += '\n' + text + ';\n';
     }
     if (selected) {
       const start = statement.getStart(sourceFile);
       let text = source.slice(start, statement.end);
-      const edits = removals.map(([from, to]) => [from, to, '']);
+      const edits = normalizedRemovals.map(([from, to]) => [from, to, '']);
       function remapDynamicImport(node) {
         if (ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword) {
           const specifier = node.arguments[0];

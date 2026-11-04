@@ -214,6 +214,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   let jwtOptions: FixtureOptions | undefined;
   let adminOptions: FixtureOptions | undefined;
   let organizationOptions: FixtureOptions | undefined;
+  const genericProviders: FixtureOptions[] = [];
   const logoutProviders: FixtureOptions[] = [];
   const requestHooks: Array<(request: Request, context: FixtureOptions) => unknown> = [];
   const skippedOriginPaths: string[] = [];
@@ -247,7 +248,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       if (!input) throw new Error('Generic OAuth needs its native fixture descriptor');
       assertKeys(input, ['config'], 'genericOAuth');
       for (const provider of input.config) {
-        assertKeys(provider, ['providerId', 'clientId', 'clientSecret', 'authorizationUrl', 'tokenUrl', 'userInfoUrl', 'endSessionEndpoint', 'disableProviderLogout', 'postLogoutRedirectURI'], 'genericOAuth.config');
+        assertKeys(provider, ['providerId', 'name', 'clientId', 'clientSecret', 'discoveryUrl', 'discoveryHeaders', 'authorizationUrl', 'tokenUrl', 'userInfoUrl', 'endSessionEndpoint', 'disableProviderLogout', 'postLogoutRedirectURI', 'redirectURI', 'pkce', 'requireIdTokenVerification', 'disableIdTokenNonceBinding', 'disableSignUp', 'disableImplicitSignUp', 'authentication', 'tokenEndpointAuth', 'authorizationUrlParams', 'tokenUrlParams', 'authorizationHeaders', 'scopes', 'prompt', 'accessType', 'responseType', 'responseMode', 'mapProfileToUser', 'getToken'], 'genericOAuth.config');
+        if (provider.discoveryUrl || provider.authorizationUrl) genericProviders.push(provider);
         logoutProviders.push({providerId: provider.providerId, clientId: provider.clientId, endSessionEndpoint: provider.endSessionEndpoint ?? '', disableProviderLogout: provider.disableProviderLogout ?? false, postLogoutRedirectURI: provider.postLogoutRedirectURI ?? ''});
       }
       continue;
@@ -330,6 +332,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     ep,
     [
       "enabled",
+      "disableSignUp",
       "requireEmailVerification",
       "autoSignIn",
       "minPasswordLength",
@@ -406,7 +409,13 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     }
   }
 
-  assertKeys(options.account ?? {}, ['fields', 'storeAccountCookie', 'encryptOAuthTokens'], 'account');
+  assertKeys(options.account ?? {}, ['fields', 'storeAccountCookie', 'encryptOAuthTokens', 'accountLinking'], 'account');
+  if (options.account?.accountLinking) {
+    assertKeys(options.account.accountLinking, ['enabled', 'trustedProviders', 'allowDifferentEmails'], 'account.accountLinking');
+    if (options.account.accountLinking.allowDifferentEmails) throw new Error('Different-email account linking remains unported');
+    if (options.account.accountLinking.trustedProviders && !Array.isArray(options.account.accountLinking.trustedProviders)) throw new Error('Dynamic trusted providers remain unported');
+  }
+
   assertKeys(options.socialProviders ?? {}, ['google'], 'socialProviders');
   const google = options.socialProviders?.google;
   if (typeof google === 'function') throw new Error('Unported provider option callback');
@@ -476,6 +485,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   };
   const context = {
     adapter, internalAdapter, options, password,
+    socialProviders: [] as {id: string; requiresIdTokenNonce?: boolean}[],
     secret: options.secrets?.[0]?.value ?? options.secret ?? 'better-auth-secret-that-is-long-enough-for-validation-test',
     session: null as unknown,
     authCookies: {} as {sessionToken: {name: string}; sessionData: {name: string}; accountData: {name: string}; dontRememberToken: {name: string}},
@@ -568,7 +578,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   if (typeof session.cookieCache?.version === 'function') {
     callbacks['cache.version'] = (payload) => (session.cookieCache!.version as Function)(hydrate(payload.session), hydrate(payload.user));
   }
-  if (google && google.enabled !== false) callbacks['oauth.fetch'] = async request => {
+  if ((google && google.enabled !== false) || genericProviders.length) callbacks['oauth.fetch'] = async request => {
     const response = await fetch(request.url, {method: request.method, headers: request.headers, body: request.method === 'GET' ? undefined : request.body, redirect: 'manual'});
     return {status: response.status, body: await response.text(), headers: [...response.headers].map(([name, value]) => ({name, value}))};
   };
@@ -650,6 +660,16 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     if (!policy || typeof policy.hash !== 'function') throw new Error('No custom hash for identifier');
     return policy.hash(identifier);
   };
+  const genericCallbacks: Record<string, string[]> = {};
+  for (const provider of genericProviders) {
+    const methods: string[] = [];
+    if (provider.getToken) { methods.push('token'); callbacks['generic.token.' + provider.providerId] = async data => {
+      const tokens = await provider.getToken(data);
+      return {access_token: tokens.accessToken ?? null, refresh_token: tokens.refreshToken ?? null, id_token: tokens.idToken ?? '', access_token_expires_at: tokens.accessTokenExpiresAt?.toISOString(), refresh_token_expires_at: tokens.refreshTokenExpiresAt?.toISOString(), scope: tokens.scopes?.join(',') ?? null};
+    }; }
+    if (provider.mapProfileToUser) { methods.push('map'); callbacks['generic.map.' + provider.providerId] = profile => provider.mapProfileToUser(profile); }
+    genericCallbacks[provider.providerId] = methods;
+  }
   const otpCallbackNames: string[] = [];
   const otpContext = (payload: FixtureOptions) => {
     const request = payload.request ? new Request(payload.request.url, {method: payload.request.method, headers: payload.request.headers, body: payload.request.method === 'POST' ? payload.request.body : undefined}) : undefined;
@@ -670,6 +690,11 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     bridge.setCallback(method, callback);
   await bridge.send("init", {
     options: {
+      generic_oauth: genericProviders.map(({getToken: _getToken, mapProfileToUser: _mapProfile, ...provider}) => provider),
+      generic_callbacks: genericCallbacks,
+      account_linking_enabled: options.account?.accountLinking?.enabled ?? false,
+      trusted_linking_providers: options.account?.accountLinking?.trustedProviders ?? [],
+      disable_email_sign_up: ep.disableSignUp ?? false,
       anonymous: anonymousOptions,
       anonymous_callbacks: anonymousCallbackNames,
       email_otp: otpOptions ? {...otpOptions, storeOTP: typeof otpOptions.storeOTP === 'object' ? (otpOptions.storeOTP.hash ? 'custom-hash' : 'custom-encryption') : otpOptions.storeOTP} : null,
@@ -800,6 +825,15 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   const emails: any[] = [];
   const cookieInfo = await bridge.send('internal', {method: 'cookieInfo'});
   context.authCookies = JSON.parse(cookieInfo.value_json);
+  context.socialProviders = JSON.parse((await bridge.send('internal', {method: 'listOAuthProviders', arguments_json: '[]'})).value_json);
+  for (const provider of context.socialProviders) {
+    let required = provider.requiresIdTokenNonce;
+    Object.defineProperty(provider, 'requiresIdTokenNonce', {get: () => required, set: value => {
+      required = value;
+      void bridge.send('internal', {method: 'setOAuthNonceRequirement', arguments_json: transportJSON([provider.id, value])});
+    }});
+  }
+
   const secretInfo = JSON.parse((await bridge.send('internal', {method: 'secretConfig'})).value_json);
   context.secretConfig = typeof secretInfo === 'string' ? secretInfo : {...secretInfo, keys: new Map(Object.entries(secretInfo.keys).map(([version, value]) => [Number(version), value as string]))};
   async function dispatch(request: Request, direct = false) {

@@ -122,8 +122,8 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   supported. The direct branch creates sessions/account cookies without code-flow
   state and persists the pinned branch's access/ID-token fields. Google preserves
   unverified email claims under its default policy. Broader provider options/
-  callbacks and email-verification policies, account linking, automatic token
-  refresh, and upstream OAuth error redirects remain unimplemented. OAuth
+  callbacks and email-verification policies, general account linking, automatic token
+  refresh and complete upstream OAuth error redirects remain incomplete. OAuth
   identities can supply access/refresh/ID tokens, precise token expiries and scopes;
   code exchanges persist them, retain omitted refresh tokens and union granted scopes.
   Access/refresh token encryption is optional and migration-aware. Account hooks
@@ -140,6 +140,17 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   signing accepts JWK and unencrypted PKCS#8 inputs. These helpers do not yet supply
   account-refresh APIs, refresh scheduling or complete provider integration;
   broader response coercion and transport/error-shape parity remain incomplete.
+- Native generic OAuth/OIDC supports discovery, explicit endpoint overrides, PKCE,
+  token-endpoint Basic/body authentication, application token/profile callbacks,
+  JWKS signatures, issuer/audience/time/nonce checks, direct ID tokens and safe
+  missing-metadata/provider handling. Signup and implicit-signup gates, trusted
+  same-email linking and new-user/error redirects support Nabu's configuration.
+  Public password signup can be disabled independently of provisioned login.
+  The full ID-token verification suite and selected discovery/signup source cases
+  run unchanged. Nabu integration tests cover verified pre-provisioned identity,
+  unprovisioned/unverified rejection, Basic/PKCE and replay prevention. MongoDB,
+  database-backed rate limits, discovery retry/cache, provider refresh callbacks,
+  full linking/options behavior and actual Nabu application integration remain open.
 - The native one-time-token plugin supports precise expiry, custom generation,
   plain/SHA256/custom hashed token storage, client-request restrictions, optional
   cookie suppression and OTT headers when a session cookie is set. Tokens redeem
@@ -165,8 +176,8 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   Email/password, email verification, email OTP and Google OAuth flows are covered,
   including recovering the guest from server-owned OAuth state on a cookie-less
   callback and rejecting client-supplied guest IDs. Disabling cleanup preserves the
-  guest. Generic-OIDC integration and direct middleware-object unit fixtures remain
-  unported; schema aliases still use the native JSON payload schema.
+  guest. Generic-OIDC cookie-less callback integration is now covered too; two
+  direct middleware-object unit fixtures remain unported; schema aliases still use the native JSON payload schema.
 - The HTML error endpoint validates error codes and escapes descriptions. Default
   page styling, custom themes, production redirects, and `onAPIError.errorURL`
   behavior remain unimplemented.

@@ -568,11 +568,26 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   a Brand Map style domain merge callback with nested native adapter calls, hashed
   email-OTP upgrades, cleanup disabling and explicit deletion/token revocation.
   One native test covers protected guest identity, repeated sign-in and deletion.
-  The generic-OIDC Expo case and two direct JS middleware-mock cases remain
-  explicitly unported; the anonymous file is a partial import.
+  The generic-OIDC Expo case is now imported too; two direct JS middleware-mock
+  cases remain explicitly unported; the anonymous file is a partial import.
 
-The latest verification passes 1204 TypeScript cases across 63 files, all 87 native
-V test functions across 27 files (including all 20,034 Unicode vectors), TypeScript
+- Added native generic OAuth/OIDC discovery, PKCE, Basic/body token authentication,
+  token/profile application callbacks, signature-verified JWKS identities and bound
+  request nonces. Provider metadata failures skip affected providers; known-valid
+  callbacks produce upstream-style signup/error redirects. Trusted same-email
+  linking, explicit/implicit signup gates and separate password registration
+  controls support the current Nabu login configuration.
+- Imported all twelve generic-OAuth ID-token cases unchanged plus selected scope,
+  signup and discovery cases (21 runtime cases total). Added the original generic-
+  OAuth anonymous Expo callback case. Four independent Nabu cases exercise a real
+  mock IdP, Basic credentials without body secrets, PKCE, verified provisioning
+  policy, same-user linking, replay prevention and disabled password registration.
+  A native signed-token test covers discovery, subject selection, nonce and forged
+  signatures. MongoDB, database-backed rate limits, retry/cache, full generic
+  options/linking/refresh and actual Nabu application migration remain open.
+
+The latest verification passes 1230 TypeScript cases across 65 files, all 88 native
+V test functions across 28 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus
@@ -581,7 +596,7 @@ passes.
 The user resumed work and authorized incremental commits and pushes to
 `alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.
 The objective remains incomplete. The corpus currently records 29 completely
-imported files, three partial imports and 404 unported files; imported status describes source
+imported files, four partial imports and 403 unported files; imported status describes source
 preservation, not broad feature completion.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise

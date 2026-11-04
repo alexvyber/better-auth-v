@@ -28,6 +28,7 @@ mut:
 	request_context           RequestContext
 	new_session               ?SessionResult
 	anonymous_link_session    ?SessionResult
+	oauth_nonce_requirements  map[string]bool
 	user_defined_fields       []string
 }
 
@@ -38,7 +39,8 @@ struct RateBucket {
 }
 
 pub fn new(input_config Config, storage Storage) !&Auth {
-	mut config := resolve_cache_defaults(resolve_plugin_fields(input_config))
+	mut config :=
+		resolve_cache_defaults(resolve_plugin_fields(resolve_generic_oauth_config(input_config)!))
 	if environment := os.getenv_opt('BETTER_AUTH_TRUSTED_ORIGINS') {
 		mut origins := config.trusted_origins.clone()
 		origins << environment.split(',').filter(it != '')
@@ -293,8 +295,9 @@ fn (mut a Auth) make_session(user_id string, ctx RequestContext, remember bool) 
 }
 
 fn (mut a Auth) sign_up(input SignUpInput, ctx RequestContext) !AuthResult {
-	if !a.config.email_and_password {
-		return fail(400, 'EMAIL_PASSWORD_DISABLED', 'Email and password sign up is not enabled')
+	if !a.config.email_and_password || a.config.disable_email_sign_up {
+		return fail(400, 'EMAIL_PASSWORD_SIGN_UP_DISABLED',
+			'Email and password sign up is not enabled')
 	}
 	email := normalize_email(input.email)!
 	a.check_password(input.password)!

@@ -37,6 +37,8 @@ fn send_two_factor_otp(mut context EndpointContext, _ Request) !Response {
 	challenge := context.two_factor_challenge()!
 	code := context.new_email_otp(options.codec(), challenge.user.email, 'two-factor')!
 	stored := context.store_email_otp(options.codec(), code)!
+	// Rotation cannot depend on distinct millisecond creation timestamps.
+	context.delete_verification_by_identifier('2fa-otp-' + challenge.key)!
 	context.create_verification_value(Verification{
 		identifier:        '2fa-otp-' + challenge.key
 		value:             stored + ':0'

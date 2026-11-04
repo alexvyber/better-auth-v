@@ -215,6 +215,8 @@ fn (mut context EndpointContext) matches_email_otp(options EmailOTPOptions, stor
 fn (mut context EndpointContext) create_email_otp_record(options EmailOTPOptions, identifier string, otp string) ! {
 	stored := context.store_email_otp(options, otp)!
 	expires := i64(f64(context.auth.clock_millis()) + options.expires_in * 1000)
+	// Rotation cannot depend on distinct millisecond creation timestamps.
+	context.delete_verification_by_identifier(identifier)!
 	context.create_verification_value(Verification{
 		identifier:        identifier
 		value:             stored + ':0'

@@ -1,0 +1,150 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/core/src/oauth2/client-assertion.test.ts",
+  "sha256": "d527b5b3ad93fc4febaba847835e1abf82c6a2e02712d59d18e64b3c352d9e45",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "signPrivateKeyJwtClientAssertion",
+      "suites": [
+        "signPrivateKeyJwtClientAssertion"
+      ],
+      "test": "signs a valid JWT with RSA JWK",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signPrivateKeyJwtClientAssertion",
+      "suites": [
+        "signPrivateKeyJwtClientAssertion"
+      ],
+      "test": "signs a valid JWT with EdDSA JWK",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signPrivateKeyJwtClientAssertion",
+      "suites": [
+        "signPrivateKeyJwtClientAssertion"
+      ],
+      "test": "includes kid in JWT header when provided",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signPrivateKeyJwtClientAssertion",
+      "suites": [
+        "signPrivateKeyJwtClientAssertion"
+      ],
+      "test": "produces unique jti on each call",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signPrivateKeyJwtClientAssertion",
+      "suites": [
+        "signPrivateKeyJwtClientAssertion"
+      ],
+      "test": "auto-extracts kid from JWK when not explicitly provided",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signPrivateKeyJwtClientAssertion",
+      "suites": [
+        "signPrivateKeyJwtClientAssertion"
+      ],
+      "test": "prefers explicit kid over JWK-embedded kid",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signPrivateKeyJwtClientAssertion",
+      "suites": [
+        "signPrivateKeyJwtClientAssertion"
+      ],
+      "test": "auto-extracts alg from JWK when not explicitly provided",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signPrivateKeyJwtClientAssertion",
+      "suites": [
+        "signPrivateKeyJwtClientAssertion"
+      ],
+      "test": "rejects a JWK whose embedded alg is not allowed for private_key_jwt",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signPrivateKeyJwtClientAssertion",
+      "suites": [
+        "signPrivateKeyJwtClientAssertion"
+      ],
+      "test": "rejects a JWK whose embedded alg conflicts with the explicit algorithm",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signPrivateKeyJwtClientAssertion",
+      "suites": [
+        "signPrivateKeyJwtClientAssertion"
+      ],
+      "test": "rejects a disallowed embedded alg even when an explicit algorithm is set",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signPrivateKeyJwtClientAssertion",
+      "suites": [
+        "signPrivateKeyJwtClientAssertion"
+      ],
+      "test": "rejects a disallowed explicit algorithm passed by JavaScript callers",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signPrivateKeyJwtClientAssertion",
+      "suites": [
+        "signPrivateKeyJwtClientAssertion"
+      ],
+      "test": "createPrivateKeyJwtClientAssertionGetter throws eagerly on misconfiguration",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signPrivateKeyJwtClientAssertion",
+      "suites": [
+        "signPrivateKeyJwtClientAssertion"
+      ],
+      "test": "throws when neither JWK nor PEM is provided",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "signPrivateKeyJwtClientAssertion",
+      "suites": [
+        "signPrivateKeyJwtClientAssertion"
+      ],
+      "test": "creates a private_key_jwt client assertion getter",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

@@ -120,6 +120,14 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   latest-account ordering, and provider fallback. Local sign-out succeeds and clears
   cookies even if session persistence or provider URL creation fails. Generic OAuth
   discovery and sign-in are not supplied by this logout support.
+- Standalone native token helpers build authorization-code, refresh-token and
+  client-credentials requests with public, secret-post, secret-Basic, private-key
+  JWT and custom callback authentication. They enforce credential/assertion
+  conflicts, preserve repeated resource indicators, protect refresh-owned keys,
+  refuse redirects and normalize returned scopes/deadlines. Native assertion
+  signing accepts JWK and unencrypted PKCS#8 inputs. These helpers do not yet supply
+  account-refresh APIs, refresh scheduling or complete provider integration;
+  broader response coercion and transport/error-shape parity remain incomplete.
 - The HTML error endpoint validates error codes and escapes descriptions. Default
   page styling, custom themes, production redirects, and `onAPIError.errorURL`
   behavior remain unimplemented.
@@ -279,7 +287,7 @@ storage parity, full stateless/account-cookie behavior, complete JWT/JWKS plugin
 custom-field validators/transforms,
 general database-column mapping, richer hooks,
 username/email OTP/phone authentication, TOTP/recovery codes, passkeys, admin,
-organizations/teams/RBAC, API keys, JWT/JWKS, OAuth/OIDC provider functionality,
+organizations/teams/RBAC, API keys, OAuth/OIDC server functionality,
 SSO/SAML/SCIM, and payment/integration plugins remain unimplemented.
 
 Unsupported capabilities are not advertised as working endpoints. Source test
@@ -345,6 +353,10 @@ tests establishes only their covered behavior, not complete upstream parity.
   helper/HTTP cases cover ordered queries, native PKCE, async options callbacks,
   Unicode/malformed encodings, reserved parameters and Google request integration.
   Eight more ID-token cases compare empty issuer lists and JOSE duration boundaries.
+- Three complete token/assertion source files run all 41 cases against V. Eight
+  independent cases verify PEM signatures with JOSE, real HTTP grant requests,
+  response-time clocks, resource indicators and callback context/errors. The full
+  corpus still contains 408 unported files and one partial import.
 - Differential tests compare the published TS server and V on supported scenarios,
   ignoring inherently random IDs/tokens/timestamps and documented record-format
   differences.

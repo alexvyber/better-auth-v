@@ -1,6 +1,6 @@
 # Full-parity work log
 
-The active objective is full Better Auth parity, including the remaining features
+The objective is full Better Auth parity, including the remaining features
 and upstream tests. The project is not complete while the compatibility contract
 or corpus inventory contains unimplemented behavior.
 
@@ -467,15 +467,37 @@ or corpus inventory contains unimplemented behavior.
   Broader WHATWG URL normalization, remaining provider options, OAuth state/account
   flows, linking and refresh remain incomplete.
 
-The latest `make check` passes 997 TypeScript cases across 51 files, all 82 native
+- Added native token request builders for authorization-code, refresh-token and
+  client-credentials grants. Strategies cover public clients, secret-in-body,
+  correctly form-encoded Basic credentials, private-key JWT and custom request
+  callbacks. Native policy enforces manual-assertion pairing, conflicting secret/
+  strategy rejection, primary client identity, refresh-owned/unsafe parameter
+  filtering and repeated resource indicators. Callback errors retain their causes
+  through the platform fixture. Redirect-refusing requests and normalized responses
+  remain native, including response-time token deadlines.
+- Added native private-key JWT assertion validation/signing with eager option
+  checks, algorithm/kid precedence, fresh RFC 7523 claims and unique jti. JWK and
+  unencrypted PKCS#8 inputs use native Ed25519/OpenSSL primitives. The complete
+  client-assertion, private-key authentication and refresh helper source files run
+  all 39 declarations as 41 cases unchanged. Eight independent cases verify PKCS#8
+  RSA/PSS/ECDSA/Ed25519 assertions with JOSE, real HTTP grants, fractional expiries,
+  response-time clocks, scope differences and async callback context/errors.
+  These are standalone grant helpers; account refresh endpoints, automatic refresh,
+  account linking and full provider integration remain incomplete. Broader response
+  coercion, transport error shapes and redirect-helper callback parity remain open.
+
+The latest `make check` passes 1046 TypeScript cases across 55 files, all 82 native
 V test functions across 23 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus
 passes.
 
-The user resumed the full-parity objective and authorized incremental commits and
-pushes to `alexvyber/better-auth-v`. The objective remains incomplete.
+The user authorized incremental commits and pushes to `alexvyber/better-auth-v`
+and then requested concluding the current run with a parity overview. The objective
+remains incomplete. The corpus currently records 27 completely imported files,
+one partial import and 408 unported files; imported status describes source
+preservation, not broad feature completion.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise
    cancellation results, full context, remaining transaction combinations, and remaining

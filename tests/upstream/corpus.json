@@ -14,7 +14,7 @@
     "utilities-and-tooling": {
       "files": 275,
       "declarations": 4594,
-      "importedFiles": 11
+      "importedFiles": 14
     },
     "e2e": {
       "files": 71,
@@ -36825,7 +36825,7 @@
       "path": "packages/core/src/oauth2/client-assertion.test.ts",
       "sha256": "d527b5b3ad93fc4febaba847835e1abf82c6a2e02712d59d18e64b3c352d9e45",
       "group": "utilities-and-tooling",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {
@@ -37167,7 +37167,7 @@
       "path": "packages/core/src/oauth2/private-key-jwt-authentication.test.ts",
       "sha256": "ccd83783ce4ef55483ae5959f30174b11fb768d48e70ef9a207164564553d658",
       "group": "utilities-and-tooling",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {
@@ -37329,7 +37329,7 @@
       "path": "packages/core/src/oauth2/refresh-access-token.test.ts",
       "sha256": "320674f90d8f920f3baf8d556d7e805b37afd00d2aecc846bfbbe8b9abcc0f19",
       "group": "utilities-and-tooling",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {

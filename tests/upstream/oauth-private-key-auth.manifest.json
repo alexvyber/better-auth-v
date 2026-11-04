@@ -1,0 +1,180 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/core/src/oauth2/private-key-jwt-authentication.test.ts",
+  "sha256": "ccd83783ce4ef55483ae5959f30174b11fb768d48e70ef9a207164564553d658",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "private_key_jwt OAuth2 helpers",
+      "suites": [
+        "private_key_jwt OAuth2 helpers"
+      ],
+      "test": "signs authorization-code assertions with the request tokenEndpoint",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "private_key_jwt OAuth2 helpers",
+      "suites": [
+        "private_key_jwt OAuth2 helpers"
+      ],
+      "test": "passes request context to custom assertion getters",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "private_key_jwt OAuth2 helpers",
+      "suites": [
+        "private_key_jwt OAuth2 helpers"
+      ],
+      "test": "signs refresh-token assertions with the request tokenEndpoint",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "private_key_jwt OAuth2 helpers",
+      "suites": [
+        "private_key_jwt OAuth2 helpers"
+      ],
+      "test": "signs client-credentials assertions with the request tokenEndpoint",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "private_key_jwt OAuth2 helpers",
+      "suites": [
+        "private_key_jwt OAuth2 helpers"
+      ],
+      "test": "rejects private_key_jwt combined with a client secret",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "private_key_jwt OAuth2 helpers",
+      "suites": [
+        "private_key_jwt OAuth2 helpers"
+      ],
+      "test": "rejects manual client assertions when tokenEndpointAuth is configured",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "private_key_jwt OAuth2 helpers",
+      "suites": [
+        "private_key_jwt OAuth2 helpers"
+      ],
+      "test": "rejects private_key_jwt when no tokenEndpoint is available",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "private_key_jwt OAuth2 helpers",
+      "suites": [
+        "private_key_jwt OAuth2 helpers"
+      ],
+      "test": "supports explicit public-client token endpoint authentication",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "private_key_jwt OAuth2 helpers",
+      "suites": [
+        "private_key_jwt OAuth2 helpers"
+      ],
+      "test": "defaults to public-client token endpoint authentication without clientSecret",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "private_key_jwt OAuth2 helpers",
+      "suites": [
+        "private_key_jwt OAuth2 helpers"
+      ],
+      "test": "rejects public-client token endpoint authentication without clientId",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "private_key_jwt OAuth2 helpers",
+      "suites": [
+        "private_key_jwt OAuth2 helpers"
+      ],
+      "test": "rejects public-client token endpoint authentication with client credentials",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "private_key_jwt OAuth2 helpers",
+      "suites": [
+        "private_key_jwt OAuth2 helpers"
+      ],
+      "test": "supports explicit client_secret_basic token endpoint authentication",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "private_key_jwt OAuth2 helpers",
+      "suites": [
+        "private_key_jwt OAuth2 helpers"
+      ],
+      "test": "form-url-encodes clientId and clientSecret for client_secret_basic per RFC 6749 §2.3.1",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "private_key_jwt OAuth2 helpers",
+      "suites": [
+        "private_key_jwt OAuth2 helpers"
+      ],
+      "test": "rejects %s token endpoint authentication without clientId",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "private_key_jwt OAuth2 helpers",
+      "suites": [
+        "private_key_jwt OAuth2 helpers"
+      ],
+      "test": "customizes token endpoint request authentication",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "private_key_jwt OAuth2 helpers",
+      "suites": [
+        "private_key_jwt OAuth2 helpers"
+      ],
+      "test": "rejects custom authentication with only %s",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "private_key_jwt OAuth2 helpers",
+      "suites": [
+        "private_key_jwt OAuth2 helpers"
+      ],
+      "test": "uses configured clientId over additional token client_id parameters",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/core/src/oauth2/refresh-access-token.test.ts",
+  "sha256": "320674f90d8f920f3baf8d556d7e805b37afd00d2aecc846bfbbe8b9abcc0f19",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "refreshAccessToken",
+      "suites": [
+        "refreshAccessToken"
+      ],
+      "test": "should set accessTokenExpiresAt when expires_in is returned",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "refreshAccessToken",
+      "suites": [
+        "refreshAccessToken"
+      ],
+      "test": "should set refreshTokenExpiresAt when refresh_token_expires_in is returned",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "refreshAccessToken",
+      "suites": [
+        "refreshAccessToken"
+      ],
+      "test": "should not set refreshTokenExpiresAt when refresh_token_expires_in is not returned",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "refreshAccessToken",
+      "suites": [
+        "refreshAccessToken"
+      ],
+      "test": "normalizes scope returned from refresh token responses",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "refreshAccessToken",
+      "suites": [
+        "refreshAccessToken"
+      ],
+      "test": "passes resource indicators through refresh token requests",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "refreshAccessToken",
+      "suites": [
+        "refreshAccessToken"
+      ],
+      "test": "drops refresh params owned by the refresh flow or unsafe object keys",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "parseScopeField",
+      "suites": [
+        "parseScopeField"
+      ],
+      "test": "accepts strings, arrays, empty values, and malformed provider output",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "mergeScopes",
+      "suites": [
+        "mergeScopes"
+      ],
+      "test": "normalizes stored and incoming scopes before merging",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

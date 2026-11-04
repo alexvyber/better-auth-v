@@ -7,6 +7,7 @@
 #include <openssl/rsa.h>
 #include <openssl/ec.h>
 #include <openssl/crypto.h>
+#include <openssl/pem.h>
 #include <string.h>
 #include <stdio.h>
 #include <limits.h>
@@ -89,7 +90,18 @@ static int ba_export_bn(EVP_PKEY *key,const char *param,const char *name,int wid
 }
 static int ba_export_key(EVP_PKEY *key,const char *alg,int priv,char *out,size_t cap,size_t *used) {
     int width=ba_ec_width(alg);
-    if(width) {
+    if(!strcmp(alg,"EdDSA")) {
+        unsigned char raw[32]; size_t length=sizeof(raw);
+        if(!EVP_PKEY_is_a(key,"ED25519") || !EVP_PKEY_get_raw_public_key(key,raw,&length) || length!=32 ||
+           !ba_append(out,cap,used,"{\"kty\":\"OKP\",\"crv\":\"Ed25519\"") ||
+           !ba_append_part(out,cap,used,"x",raw,length)) return 0;
+        if(priv) {
+            length=sizeof(raw);
+            if(!EVP_PKEY_get_raw_private_key(key,raw,&length) || length!=32) return 0;
+            int ok=ba_append_part(out,cap,used,"d",raw,length);
+            OPENSSL_cleanse(raw,sizeof(raw)); if(!ok) return 0;
+        }
+    } else if(width) {
         char prefix[80]; snprintf(prefix,sizeof(prefix),"{\"kty\":\"EC\",\"crv\":\"%s\"",ba_ec_curve(alg));
         if(!ba_append(out,cap,used,prefix)||!ba_export_bn(key,OSSL_PKEY_PARAM_EC_PUB_X,"x",width,out,cap,used)||
            !ba_export_bn(key,OSSL_PKEY_PARAM_EC_PUB_Y,"y",width,out,cap,used)) return 0;
@@ -105,6 +117,14 @@ static int ba_export_key(EVP_PKEY *key,const char *alg,int priv,char *out,size_t
         }
     }
     return ba_append(out,cap,used,"}");
+}
+static int ba_no_pem_password(char *buf,int size,int rwflag,void *user) { (void)buf;(void)size;(void)rwflag;(void)user;return 0; }
+static int ba_private_pem_jwk(const char *pem,const char *alg,unsigned char *out,size_t cap,size_t *length) {
+    BIO *bio=BIO_new_mem_buf(pem,-1); if(!bio) return 0;
+    EVP_PKEY *key=PEM_read_bio_PrivateKey(bio,NULL,ba_no_pem_password,NULL); BIO_free(bio);
+    if(!key) return 0;
+    size_t used=0; int ok=ba_export_key(key,alg,1,(char*)out,cap,&used);
+    EVP_PKEY_free(key); if(ok) *length=used; return ok;
 }
 static int ba_generate_jwk(const char *alg,int bits,unsigned char *out,size_t cap,size_t *length) {
     int ec=ba_ec_width(alg), ok=0; EVP_PKEY *key=NULL; EVP_PKEY_CTX *ctx=NULL; size_t used=0;

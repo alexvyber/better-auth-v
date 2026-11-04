@@ -9,6 +9,16 @@ fn oauth_helper_command() ! {
 	fields := json2.decode[map[string]json2.Any](os.get_raw_line())!
 	op := (fields['op'] or { json2.Any('') }).str()
 	match op {
+		'parse-scope' {
+			println(json.encode(better_auth.oauth_scope_field(fields['value'] or {
+				json2.Any(json2.Null{})
+			})))
+		}
+		'merge-scopes' {
+			println(json.encode(better_auth.merge_oauth_scopes((fields['stored'] or {
+				json2.Any('')
+			}).str(), (fields['incoming'] or { json2.Any([]json2.Any{}) }).as_array().map(it.str()))))
+		}
 		'reserved' {
 			println(json.encode(better_auth.reserved_authorization_params))
 		}

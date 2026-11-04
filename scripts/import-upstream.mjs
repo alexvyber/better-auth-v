@@ -16,6 +16,15 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+  {file: 'oauth-client-assertion', path: 'packages/core/src/oauth2/client-assertion.test.ts', suites: null,
+   imports: 'import { createLocalJWKSet, decodeJwt, decodeProtectedHeader, exportJWK, generateKeyPair, jwtVerify } from "jose";\nimport { describe, expect, it } from "vitest";\nimport { createPrivateKeyJwtClientAssertionGetter, signPrivateKeyJwtClientAssertion } from "../harness/oauth-token.js";\n',
+  },
+  {file: 'oauth-private-key-auth', path: 'packages/core/src/oauth2/private-key-jwt-authentication.test.ts', suites: null, includeHelpers: true, setupCalls: new Set(['vi.mock']),
+   imports: 'import { base64 } from "@better-auth/utils/base64";\nimport { decodeJwt, exportJWK, generateKeyPair } from "jose";\nimport { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";\nimport { betterFetch } from "@better-fetch/fetch";\nimport { CLIENT_ASSERTION_TYPE, createPrivateKeyJwtClientAssertionGetter, clientCredentialsToken, refreshAccessToken, authorizationCodeRequest, validateAuthorizationCode } from "../harness/oauth-token.js";\n',
+  },
+  {file: 'oauth-refresh', path: 'packages/core/src/oauth2/refresh-access-token.test.ts', suites: null, includeHelpers: true, setupCalls: new Set(['vi.mock']),
+   imports: 'import { beforeEach, describe, expect, it, vi } from "vitest";\nimport { betterFetch } from "@better-fetch/fetch";\nimport { refreshAccessToken, mergeScopes, parseScopeField } from "../harness/oauth-token.js";\n',
+  },
   {file: 'social', path: 'packages/better-auth/src/social.test.ts', suites: new Set(['Google Provider - includeGrantedScopes']),
    imports: 'import { describe, expect, it } from "vitest";\nimport { getTestInstance } from "../harness/test-instance.js";\n',
    unportedReason: 'Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented',

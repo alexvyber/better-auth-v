@@ -11,6 +11,19 @@ fn C.ba_chacha_decrypt(&u8, &u8, &u8, usize, &u8) int
 fn C.ba_generate_jwk(&char, int, &u8, usize, &usize) int
 fn C.ba_sign_jwk(&char, &&char, &u8, usize, &u8, usize, &usize) int
 fn C.ba_verify_jwk(&char, &&char, &u8, usize, &u8, usize) int
+fn C.ba_private_pem_jwk(&char, &char, &u8, usize, &usize) int
+
+fn openssl_private_pem_jwk(pem string, algorithm string) !string {
+	if !pem.starts_with('-----BEGIN PRIVATE KEY-----') {
+		return error('privateKeyPem must be PKCS#8 formatted')
+	}
+	mut output := []u8{len: 65536}
+	mut length := usize(0)
+	if C.ba_private_pem_jwk(pem.str, algorithm.str, output.data, usize(output.len), &length) != 1 {
+		return error('OpenSSL PKCS#8 import failed')
+	}
+	return output[..int(length)].bytestr()
+}
 
 const jwt_algorithms = ['EdDSA', 'ES256', 'ES384', 'ES512', 'RS256', 'RS384', 'RS512', 'PS256',
 	'PS384', 'PS512']

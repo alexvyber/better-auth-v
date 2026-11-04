@@ -166,9 +166,9 @@ pnpm test
 The archive checksum is pinned in `upstream.lock.json`. The importer changes
 imports and the test fixture. Sign-in, password, sign-up, session, JWT rotation,
 JWT signing-override/multi-algorithm, crypto secret-rotation, and encryption-purpose
-files are included in full. The main JWT file includes all runtime declarations;
-its two client type declarations remain unported. Per-file manifests record these
-boundaries.
+files are included in full, including the main JWT file. Its two pure TS client
+type checks are identified separately and backed by native HTTP client integration
+coverage. Per-file manifests record these boundaries.
 Selected test bodies and assertions remain unchanged. `tests/upstream/corpus.json`
 inventories the full pinned source test corpus, including currently unported files.
 The separately pinned npm package `better-auth@1.7.15` supplies the real client,

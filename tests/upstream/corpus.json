@@ -21009,7 +21009,7 @@
       "path": "packages/better-auth/src/plugins/jwt/jwt.test.ts",
       "sha256": "de3adb46f1ee4e1b143ad26919622f23a0065c2184508d45093182d324bf8d29",
       "group": "plugins",
-      "status": "imported-partial-file",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {

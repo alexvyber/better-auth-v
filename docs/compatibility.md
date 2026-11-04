@@ -105,8 +105,7 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   callback arguments. Session JWTs support payload and subject callbacks, including
   null-subject fallback to the user ID. An empty configured base URL resolves from
   the current request; direct calls remain unresolved and emit upstream warnings.
-  Per-call option replacement and the two client type declarations in the main
-  JWT test file remain unported.
+  Per-call signing-option replacement remains unimplemented.
 - Symmetric crypto supports upstream XChaCha20-Poly1305, versioned key envelopes,
   retired-key lookup, explicit legacy keys, JWE key rotation, and isolated OAuth
   purpose derivation. Secret environment/configuration helpers execute in V.
@@ -156,12 +155,12 @@ tests establishes only their covered behavior, not complete upstream parity.
   replaced fixtures/imports and unchanged assertions. Their per-file manifests
   record the pinned source and declaration inventory. Passing these four files
   does not establish coverage of the separate plugin/adapter/client suites.
-- The original JWT rotation, signing-override, and multi-algorithm files run in full.
-  The main JWT file runs every runtime declaration, including the native SQLite
-  transaction/migration regression; its two client type declarations are unported. The JWT plugin file is
-  partially imported: its algorithm matrix, general signing, custom-store/path,
-  key-algorithm authority, remote-signing/URL, expiration utility, and unresolved-origin suites run, with remaining declarations explicitly
-  unported in its manifest. Key generation in its utility tests also runs in V.
+- All four original JWT plugin source files run in full, including the native SQLite
+  transaction/migration regression and key-generation helpers. The two pure TS
+  client type declarations are labeled separately in the manifest and backed by
+  an additional typed-client test exercising signup, optional/null field updates,
+  sessions, JWKS retrieval, and JWT issuance against V. They validate the supported
+  official TS client pairing, not a claim that V has TS compile-time generics.
 - The complete upstream crypto secret-rotation and OAuth purpose-isolation files
   also run with native crypto helpers. Independent TS crypto exchanges ciphertext,
   JWEs, and encrypted private JWKs with V.

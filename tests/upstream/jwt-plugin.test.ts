@@ -2,12 +2,12 @@
 import { betterAuth, getMigrations, DatabaseSync, NodeSqliteDialect, runWithTransaction } from "../harness/native-auth.js";
 import { beforeEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 import { createAuthClient } from "better-auth/client";
-import { jwtClient } from "better-auth/client/plugins";
+import { jwtClient, inferAdditionalFields } from "better-auth/client/plugins";
 import { createLocalJWKSet, jwtVerify, decodeJwt, exportJWK, generateKeyPair, SignJWT } from "jose";
 import { parseCookies } from "better-auth/cookies";
 import type { JWKOptions, JwtOptions, Jwk } from "better-auth/plugins/jwt";
 import type { JSONWebKeySet } from "jose";
-import type { GenericEndpointContext } from "@better-auth/core";
+import type { BetterAuthClientPlugin, GenericEndpointContext } from "@better-auth/core";
 import { generateExportedKeyPair, toExpJWT, createCookieCacheSigner, SESSION_COOKIE_JWT_TYPE } from "../harness/jwt.js";
 import { getTestInstance } from "../harness/test-instance.js";
 import { jwt } from "../harness/plugins.js";
@@ -876,6 +876,42 @@ describe("toExpJWT", () => {
 			expect(() => toExpJWT("" as any, iat)).toThrow(TypeError);
 			expect(() => toExpJWT("abc123" as any, iat)).toThrow(TypeError);
 		});
+	});
+});
+
+describe("jwtClient types", () => {
+	it("should be assignable to BetterAuthClientPlugin", () => {
+		const plugin: BetterAuthClientPlugin = jwtClient();
+		const plugins: BetterAuthClientPlugin[] = [jwtClient()];
+		expect(plugin.id).toBe("better-auth-client");
+		expect(plugins).toHaveLength(1);
+	});
+
+	it("should preserve additional user fields when combined with inferAdditionalFields", () => {
+		const client = createAuthClient({
+			plugins: [
+				inferAdditionalFields({
+					user: {
+						logo: {
+							type: "string",
+							required: false,
+						},
+					},
+				}),
+				jwtClient(),
+			],
+		});
+
+		type UpdateUserBody = NonNullable<Parameters<typeof client.updateUser>[0]>;
+
+		const body = {
+			logo: "https://example.com/logo.png",
+		} satisfies UpdateUserBody;
+		expect(body.logo).toBe("https://example.com/logo.png");
+		expectTypeOf<UpdateUserBody>().toMatchTypeOf<{
+			logo?: string | null | undefined;
+		}>();
+		expectTypeOf(client.jwks).toBeFunction();
 	});
 });
 

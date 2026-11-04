@@ -369,9 +369,10 @@
         "jwtClient types"
       ],
       "test": "should be assignable to BetterAuthClientPlugin",
-      "selected": false,
+      "selected": true,
+      "executionSurface": "official-ts-client-types; native integration covered by tests/jwt-client-contract.test.ts",
       "upstreamDisabled": false,
-      "reason": "Unported: client compile-time declarations need equivalent native/facade coverage; running only the existing upstream TS client does not establish V parity"
+      "reason": null
     },
     {
       "suite": "jwtClient types",
@@ -379,9 +380,10 @@
         "jwtClient types"
       ],
       "test": "should preserve additional user fields when combined with inferAdditionalFields",
-      "selected": false,
+      "selected": true,
+      "executionSurface": "official-ts-client-types; native integration covered by tests/jwt-client-contract.test.ts",
       "upstreamDisabled": false,
-      "reason": "Unported: client compile-time declarations need equivalent native/facade coverage; running only the existing upstream TS client does not establish V parity"
+      "reason": null
     },
     {
       "suite": "jwt - signing algorithm comes from the key",

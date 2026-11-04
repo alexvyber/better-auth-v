@@ -93,7 +93,7 @@ or corpus inventory contains unimplemented behavior.
 - Extended the importer to recognize top-level parameterized suites; the partial
   JWT plugin manifest records all selected/unported declarations. Added custom
   adapter/path and stored-algorithm authority suites. The JWT plugin source file
-  now has 2 unported client type declarations; this is not full JWT plugin parity.
+  is now imported in full; passing it does not establish full JWT plugin parity.
 
 - Added remote JWKS URL configuration and native custom signing callbacks. Remote
   configuration disables local JWKS publication, while token issuance and session
@@ -138,8 +138,8 @@ or corpus inventory contains unimplemented behavior.
   endpoint context issues tokens without reacquiring the connection lock. An
   independent test verifies missing migrations, key visibility inside a nested
   transaction, rollback on an outer JS failure, and successful subsequent issuance.
-  The main JWT file now runs every runtime declaration; its two client type
-  declarations remain explicitly unported. Nonempty short secrets warn rather
+  The main JWT file then ran every runtime declaration; its client type checks
+  are recorded separately below. Nonempty short secrets warn rather
   than fail initialization, matching pinned upstream; empty secrets still fail.
 
 - Added upstream-compatible XChaCha20-Poly1305 (V HChaCha20 derivation plus
@@ -165,19 +165,22 @@ or corpus inventory contains unimplemented behavior.
   Cookie signature acceptance remains current-secret-only, matching pinned
   upstream. Initialization failures now close their bridge cleanly.
 
+- Added a typed official-client integration test covering optional/null additional
+  fields through native signup, profile updates, sessions, JWKS, and JWT issuance.
+  Imported the final two JWT source declarations unchanged; their manifest labels
+  identify them as TS client type checks with separate native integration coverage.
+  All four JWT source files now run in full. These checks establish the supported
+  official TS client pairing, not TS-style compile-time generics in the V API.
+
 ## Next infrastructure work
 
-The completed `make check` passes 457 TypeScript runtime cases across 20 files,
-52 native V test functions across 10 files (including all 20,034 Unicode vectors),
-TypeScript checking, and real HTTP migration/authentication/CSRF/restart checks.
-This includes the final custom-store publication and encrypted-key regressions.
-The complete suite was rerun successfully before committing and publishing the
-repository. TypeScript checking, V formatting, and `git diff --check` pass.
-The complete session run contains 80 cases and the complete sign-up run contains
-37. Additional tests check cache cryptography, binding, chunk cleanup, stateless
-behavior, JWT verification, key persistence, and API boundaries. V formatting and
-`git diff --check` also pass. These counts do not imply that the full upstream
-corpus passes.
+The latest full TypeScript run passes 460 cases across 21 files. The preceding
+`make check` passed all 52 native V test functions across 10 files (including all
+20,034 Unicode vectors), TypeScript checking, and real HTTP migration/auth/CSRF/
+restart checks. The subsequent changes add only client tests/import metadata;
+all TypeScript checks pass. The complete session file contains 80 cases and the
+complete sign-up file contains 37. V formatting and `git diff --check` pass.
+These counts do not imply that the full upstream corpus passes.
 
 The user resumed the full-parity objective and authorized incremental commits and
 pushes to `alexvyber/better-auth-v`. The objective remains incomplete.

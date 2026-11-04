@@ -1,9 +1,13 @@
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import type {CookieCachePayload} from '@better-auth/core';
+import type {BetterAuthOptions} from 'better-auth';
 
 export const SECURE_COOKIE_PREFIX = '__Secure-';
 export const HOST_COOKIE_PREFIX = '__Host-';
+type AuthCookie = {name: string; attributes: Record<string, any>};
+export const getCookies = (options: BetterAuthOptions): {sessionToken: AuthCookie; sessionData: AuthCookie; accountData: AuthCookie; dontRememberToken: AuthCookie} => native({op: 'get-cookies', options});
+export const createCookieGetter = (options: BetterAuthOptions) => (name: string, attributes: Record<string, unknown> = {}): AuthCookie => native({op: 'create-cookie', options, name, attributes});
 type CookieAttributes = {value: string; expires?: Date; [key: string]: unknown};
 
 // Only translate native results into platform objects; parsing, selection and

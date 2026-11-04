@@ -11,21 +11,22 @@ pub struct Auth {
 pub:
 	config Config
 mut:
-	warned_origin_csrf      bool
-	initial_trusted_origins []string
-	storage                 Storage
-	secret_config           SymmetricSecret
-	mutex                   &sync.Mutex = sync.new_mutex()
-	limits                  map[string]RateBucket
-	closed                  bool
-	secondary               SecondaryStorage
-	transaction_active      bool
-	transactions_enabled    bool
-	pending_tasks           []AfterCommitTask
-	secondary_created       []Session
-	intercepting            map[string]bool
-	request_context         RequestContext
-	user_defined_fields     []string
+	production_cookie_default bool
+	warned_origin_csrf        bool
+	initial_trusted_origins   []string
+	storage                   Storage
+	secret_config             SymmetricSecret
+	mutex                     &sync.Mutex = sync.new_mutex()
+	limits                    map[string]RateBucket
+	closed                    bool
+	secondary                 SecondaryStorage
+	transaction_active        bool
+	transactions_enabled      bool
+	pending_tasks             []AfterCommitTask
+	secondary_created         []Session
+	intercepting              map[string]bool
+	request_context           RequestContext
+	user_defined_fields       []string
 }
 
 struct RateBucket {
@@ -181,13 +182,14 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 		}
 	}
 	return &Auth{
-		initial_trusted_origins: initial_trusted_origins
-		user_defined_fields:     input_config.user_fields.keys()
-		config:                  config
-		secret_config:           secret_config
-		transactions_enabled:    config.database_transactions
-		storage:                 storage
-		secondary:               config.secondary_storage
+		production_cookie_default: os.getenv('NODE_ENV') == 'production'
+		initial_trusted_origins:   initial_trusted_origins
+		user_defined_fields:       input_config.user_fields.keys()
+		config:                    config
+		secret_config:             secret_config
+		transactions_enabled:      config.database_transactions
+		storage:                   storage
+		secondary:                 config.secondary_storage
 	}
 }
 

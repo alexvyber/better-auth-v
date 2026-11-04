@@ -5,6 +5,22 @@ import json
 import os
 import x.json2
 
+fn bridge_cookie_attributes(encoded string) !map[string]map[string]json2.Any {
+	fields := json2.decode[map[string]json2.Any](encoded)!
+	mut result := map[string]map[string]json2.Any{}
+	for key, value in fields {
+		result[key] = value.as_map().clone()
+	}
+	return result
+}
+
+fn bridge_auth_cookie(cookie better_auth.AuthCookie) json2.Any {
+	return json2.Any({
+		'name':       json2.Any(cookie.name)
+		'attributes': json2.Any(cookie.attributes)
+	})
+}
+
 fn cookie_command() ! {
 	input := json2.decode[map[string]json2.Any](os.get_raw_line())!
 	op := (input['op'] or { json2.Any('') }).str()
@@ -12,6 +28,22 @@ fn cookie_command() ! {
 	name := (input['name'] or { json2.Any('') }).str()
 	value := (input['value'] or { json2.Any('') }).str()
 	match op {
+		'get-cookies', 'create-cookie' {
+			factory := better_auth.create_cookie_getter((input['options'] or {
+				json2.Any(map[string]json2.Any{})
+			}).json_str(), os.getenv('NODE_ENV') == 'production')!
+			if op == 'get-cookies' {
+				mut cookies := map[string]json2.Any{}
+				for kind, cookie in factory.get_cookies() {
+					cookies[kind] = bridge_auth_cookie(cookie)
+				}
+				println(json2.Any(cookies).json_str())
+			} else {
+				println(bridge_auth_cookie(factory.create_cookie(name, (input['attributes'] or {
+					json2.Any(map[string]json2.Any{})
+				}).as_map())).json_str())
+			}
+		}
 		'cache-open' {
 			config := json.decode(better_auth.CookieCacheReadConfig, (input['config'] or {
 				json2.Any(map[string]json2.Any{})

@@ -12,9 +12,9 @@
         "cookies"
       ],
       "test": "should set cookies with default options",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: production cookie initialization and general cookie attribute configuration"
+      "reason": null
     },
     {
       "suite": "cookies",
@@ -22,9 +22,9 @@
         "cookies"
       ],
       "test": "should set multiple cookies",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: production cookie initialization and general cookie attribute configuration"
+      "reason": null
     },
     {
       "suite": "cookies",
@@ -32,9 +32,9 @@
         "cookies"
       ],
       "test": "should use secure cookies",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: production cookie initialization and general cookie attribute configuration"
+      "reason": null
     },
     {
       "suite": "cookies",
@@ -42,9 +42,9 @@
         "cookies"
       ],
       "test": "should use secure cookies when the base url is https",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: production cookie initialization and general cookie attribute configuration"
+      "reason": null
     },
     {
       "suite": "cookies",
@@ -53,9 +53,9 @@
         "production environment"
       ],
       "test": "should use secure cookies when baseURL is not configured",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: production cookie initialization and general cookie attribute configuration"
+      "reason": null
     },
     {
       "suite": "crossSubdomainCookies",
@@ -63,9 +63,9 @@
         "crossSubdomainCookies"
       ],
       "test": "should update cookies with custom domain",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported in this import: broader cookie configuration suites"
+      "reason": null
     },
     {
       "suite": "crossSubdomainCookies",
@@ -73,9 +73,9 @@
         "crossSubdomainCookies"
       ],
       "test": "should use default domain from baseURL if not provided",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported in this import: broader cookie configuration suites"
+      "reason": null
     },
     {
       "suite": "cookie configuration",
@@ -83,9 +83,9 @@
         "cookie configuration"
       ],
       "test": "should return correct cookie options based on configuration",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: standalone cookie descriptor factory"
+      "reason": null
     },
     {
       "suite": "cookie-utils parseSetCookieHeader",

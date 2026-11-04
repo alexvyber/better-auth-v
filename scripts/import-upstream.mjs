@@ -17,8 +17,9 @@ if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
   {file: 'cookie-utils', source_file: 'cookies', directory: 'cookies',
-   suites: new Set(['cookie-utils parseSetCookieHeader', 'cookie-utils stripSecureCookiePrefix', 'cookie-utils setRequestCookie', 'getSessionCookie', 'parse cookies', 'Cookie header without whitespace after semicolon', 'getChunkedCookie', 'parseCookies validation', 'applySetCookies', 'expireCookie', 'getCookieCache expiry (compact strategy)']),
-   imports: 'import { describe, expect, it, vi } from "vitest";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { base64Url } from "@better-auth/utils/base64";\nimport { createHMAC } from "@better-auth/utils/hmac";\nimport { applySetCookies, HOST_COOKIE_PREFIX, SECURE_COOKIE_PREFIX, parseSetCookieHeader, stripSecureCookiePrefix, toCookieOptions, setRequestCookie, parseCookies, getSessionCookie, getChunkedCookie, getCookieCache, expireCookie } from "../harness/cookies.js";\n',
+   suites: new Set(['cookies', 'crossSubdomainCookies', 'cookie configuration', 'cookie-utils parseSetCookieHeader', 'cookie-utils stripSecureCookiePrefix', 'cookie-utils setRequestCookie', 'getSessionCookie', 'parse cookies', 'Cookie header without whitespace after semicolon', 'getChunkedCookie', 'parseCookies validation', 'applySetCookies', 'expireCookie', 'getCookieCache expiry (compact strategy)']),
+   dynamicImports: {'../test-utils/test-instance': '../harness/test-instance.js'},
+   imports: 'import { afterEach, describe, expect, it, vi } from "vitest";\nimport type { BetterAuthOptions } from "@better-auth/core";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { base64Url } from "@better-auth/utils/base64";\nimport { createHMAC } from "@better-auth/utils/hmac";\nimport { applySetCookies, HOST_COOKIE_PREFIX, SECURE_COOKIE_PREFIX, parseSetCookieHeader, stripSecureCookiePrefix, toCookieOptions, setRequestCookie, parseCookies, getSessionCookie, getChunkedCookie, getCookieCache, getCookies, expireCookie } from "../harness/cookies.js";\n',
    unportedReasons: {'cookies': 'Unported: production cookie initialization and general cookie attribute configuration', 'crossSubdomainCookies': 'Unported in this import: broader cookie configuration suites', 'cookie configuration': 'Unported: standalone cookie descriptor factory', 'getSessionCookie': 'Unported: standalone cookie-cache reader and associated session helper integrations', 'sensitive session middleware cookie cache': 'Unported: cookie-cache middleware integration', 'Cookie Cache Field Filtering': 'Unported: cookie-cache field filtering and account cache integration', 'Cookie Chunking': 'Unported: full cookie chunk lifecycle integration', 'account cookie sync on user switch': 'Unported: Google OAuth and account cookie synchronization', 'getCookieCache expiry (compact strategy)': 'Unported: standalone cookie-cache reader'},
   },
   {file: 'origin-check', directory: 'api/middlewares', suites: null,
@@ -204,8 +205,20 @@ for (const plan of plans) {
     if (selected) {
       const start = statement.getStart(sourceFile);
       let text = source.slice(start, statement.end);
-      for (const [from, to] of removals.reverse())
-        text = text.slice(0, from - start) + text.slice(to - start);
+      const edits = removals.map(([from, to]) => [from, to, '']);
+      function remapDynamicImport(node) {
+        if (ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword) {
+          const specifier = node.arguments[0];
+          if (specifier && ts.isStringLiteral(specifier) && plan.dynamicImports?.[specifier.text]
+            && !removals.some(([from, to]) => specifier.pos >= from && specifier.end <= to)) {
+            edits.push([specifier.getStart(sourceFile), specifier.end, JSON.stringify(plan.dynamicImports[specifier.text])]);
+          }
+        }
+        ts.forEachChild(node, remapDynamicImport);
+      }
+      remapDynamicImport(statement);
+      for (const [from, to, replacement] of edits.sort((a, b) => b[0] - a[0]))
+        text = text.slice(0, from - start) + replacement + text.slice(to - start);
       output += "\n" + text + "\n";
     }
   }

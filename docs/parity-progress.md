@@ -324,8 +324,25 @@ or corpus inventory contains unimplemented behavior.
 
 ## Next infrastructure work
 
-The latest `make check` passes 776 TypeScript cases across 39 files, all 63 native
-V test functions across 15 files (including all 20,034 Unicode vectors), TypeScript
+- Added the native `CookieFactory`, standalone descriptor/getter counterparts,
+  default/per-cookie attribute configuration, shared HTTP serialization and cache
+  lifetime selection. Native auth now captures the production security fallback
+  instead of changing it from each request scheme, matching the pinned source;
+  cross-domain rebuilding still uses the resolved origin. Preserved IPv6 domain
+  brackets and Host/Secure/Partitioned/SameSite=None serializer invariants. Expiry
+  writes preserve configured attributes, and cache/marker/token Max-Age precedence
+  follows their separate upstream rules. Imported all basic/production/domain/
+  configuration suites, including an import-path-only adaptation of the original
+  production dynamic import. The cookies source now runs 72 declarations as 90
+  cases, with 25 declarations still unported. Twenty-two independent runtime cases
+  compare fresh official-process descriptors and actual native issuance/expiry;
+  two native tests cover factory isolation and prefix/header rules. Corrected an
+  older owned JWT-origin test's cookie-security assumption against upstream source.
+  Fractional issuance durations, exact malformed-option/error timing, account
+  cookies and remaining integration suites still need work.
+
+The latest `make check` passes 806 TypeScript cases across 40 files, all 65 native
+V test functions across 16 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus

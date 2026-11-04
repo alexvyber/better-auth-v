@@ -56,6 +56,7 @@ pub:
 	header_json       string = '{}'
 	options           ?JWTOptions @[skip]
 	resolved_key      ?Jwk        @[skip]
+	cookie_expires_in ?i64        @[skip]
 }
 
 pub fn jwt_signing_config_from_json(encoded string) !JWTSigningConfig {
@@ -412,10 +413,12 @@ fn (mut a Auth) sign_jwks_payload_with(payload map[string]json2.Any, typ string,
 	mut claims := payload.clone()
 	if cookie {
 		claims['iat'] = a.config.clock()
-		claims['exp'] = a.config.clock() + a.config.cookie_cache.max_age
+		data := decode_session_result(json2.Any(payload).json_str())!
+		claims['exp'] = a.config.clock() + (config.cookie_expires_in or {
+			a.config.cookie_cache.max_age
+		})
 		claims['iss'] = a.base_url()
 		claims['aud'] = 'better-auth:session-cache'
-		data := decode_session_result(json2.Any(payload).json_str())!
 		claims['sub'] = data.user.id
 		claims['sid'] = data.session.token
 	} else {

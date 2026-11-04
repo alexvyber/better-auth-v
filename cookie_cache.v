@@ -78,21 +78,32 @@ fn (a &Auth) cache_version(result SessionResult) !string {
 fn (mut a Auth) encode_cookie_cache(result SessionResult) !string {
 	version := a.cache_version(result)!
 	now := a.config.clock()
-	lifetime := if result.session.persistent { a.config.cookie_cache.max_age } else { i64(60) }
+	age := a.cache_max_age(result.session.persistent)
+	lifetime := if configured := age {
+		if configured != 0 { configured } else { i64(60) }
+	} else {
+		i64(60)
+	}
+	jwt_lifetime := if configured := age {
+		if configured != 0 { configured } else { i64(300) }
+	} else {
+		i64(300)
+	}
 	payload :=
 		js_json(json2.decode[json2.Any]('{"session":${a.session_json(result.session)},"user":${a.user_json(result.user)},"updatedAt":${a.clock_millis()},"version":${json.encode(version)}}')!)
 	if a.config.cookie_cache.strategy == 'jwe' {
 		return symmetric_encode_jwt_rotating(payload, a.secret_config, 'better-auth-session',
-			a.config.cookie_cache.max_age, now)
+			jwt_lifetime, now)
 	}
 	if a.config.cookie_cache.strategy == 'jwt' {
 		if a.jwks_cache_enabled() {
-			return a.sign_jwks_payload(json2.decode[map[string]json2.Any](payload)!,
-				'better-auth.session-cache+jwt', true)
+			return a.sign_jwks_payload_with(json2.decode[map[string]json2.Any](payload)!,
+				'better-auth.session-cache+jwt', true, JWTSigningConfig{
+				cookie_expires_in: jwt_lifetime
+			})
 		}
 		header := base64url('{"alg":"HS256"}'.bytes())
-		claims := payload[..payload.len - 1] + ',"iat":${now},"exp":${now +
-			a.config.cookie_cache.max_age}}'
+		claims := payload[..payload.len - 1] + ',"iat":${now},"exp":${now + jwt_lifetime}}'
 		input := header + '.' + base64url(claims.bytes())
 		return input + '.' + a.cache_mac(input)
 	}
@@ -214,6 +225,16 @@ fn (a &Auth) cache_cookie_header(name string, value string, max_age ?i64) string
 	return a.cookie_header(name, value, '/', max_age)
 }
 
+fn (a &Auth) cache_max_age(persistent bool) ?i64 {
+	if !persistent { return none }
+	attributes := a.auth_cookie_factory().create_cookie('session_data', {
+		'maxAge': json2.Any(a.config.cookie_cache.max_age)
+	}).attributes
+	age := attributes['maxAge'] or { return none }
+	if age is json2.Null { return none }
+	return age.i64()
+}
+
 fn (a &Auth) clear_cache_cookie(response Response) Response {
 	mut result := response
 	base := a.cache_cookie_name()
@@ -229,7 +250,7 @@ fn (mut a Auth) set_cache_cookie(response Response, current SessionResult) !Resp
 	if !(a.config.cookie_cache.enabled or { false }) { return a.clear_cache_cookie(response) }
 	data := a.encode_cookie_cache(current)!
 	base := a.cache_cookie_name()
-	age := if current.session.persistent { ?i64(a.config.cookie_cache.max_age) } else { none }
+	age := a.cache_max_age(current.session.persistent)
 	chunk_size := 4050 - a.cache_cookie_header(base + '.99', '', age).len
 	mut result := a.clear_cache_cookie(response)
 	if chunk_size <= 0 || data.len > chunk_size * 100 {

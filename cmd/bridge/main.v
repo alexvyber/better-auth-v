@@ -34,6 +34,8 @@ struct Options {
 	disable_origin_check              bool
 	skip_origin_check_paths           []string
 	cookie_names                      map[string]string
+	default_cookie_attributes_json    string = '{}'
+	cookie_attributes_json            string = '{}'
 	cookie_prefix                     string = 'better-auth'
 	secure_cookies                    ?bool
 	cross_subdomain_cookies           bool
@@ -660,6 +662,12 @@ fn main() {
 		disable_origin_check:              opts.disable_origin_check
 		skip_origin_check_paths:           opts.skip_origin_check_paths
 		cookie_names:                      opts.cookie_names
+		default_cookie_attributes:         json2.decode[map[string]json2.Any](opts.default_cookie_attributes_json) or {
+			panic(err)
+		}
+		cookie_attributes:                 bridge_cookie_attributes(opts.cookie_attributes_json) or {
+			panic(err)
+		}
 		cookie_prefix:                     opts.cookie_prefix
 		secure_cookies:                    opts.secure_cookies
 		cross_subdomain_cookies:           opts.cross_subdomain_cookies

@@ -320,14 +320,16 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   );
   assertKeys(
     advanced,
-    ["disableCSRFCheck", "disableOriginCheck", "trustedProxyHeaders", "cookies", "cookiePrefix", "useSecureCookies", "crossSubDomainCookies"],
+    ["disableCSRFCheck", "disableOriginCheck", "trustedProxyHeaders", "cookies", "cookiePrefix", "useSecureCookies", "crossSubDomainCookies", "defaultCookieAttributes"],
     "advanced",
   );
   assertKeys(advanced.crossSubDomainCookies ?? {}, ['enabled', 'domain'], 'advanced.crossSubDomainCookies');
   const cookieNames: Record<string, string> = {};
+  const cookieAttributes: Record<string, Record<string, unknown>> = {};
   for (const [kind, cookie] of Object.entries(advanced.cookies ?? {}) as [string, FixtureOptions][]) {
-    assertKeys(cookie, ['name'], 'advanced.cookies.' + kind);
+    assertKeys(cookie, ['name', 'attributes'], 'advanced.cookies.' + kind);
     cookieNames[kind] = cookie.name ?? '';
+    cookieAttributes[kind] = cookie.attributes ?? {};
   }
   assertKeys(
     options.user ?? {},
@@ -627,6 +629,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       disable_origin_check: advanced.disableOriginCheck === true,
       skip_origin_check_paths: [...skippedOriginPaths, ...(Array.isArray(advanced.disableOriginCheck) ? advanced.disableOriginCheck : [])],
       cookie_names: cookieNames,
+      default_cookie_attributes_json: JSON.stringify(advanced.defaultCookieAttributes ?? {}),
+      cookie_attributes_json: JSON.stringify(cookieAttributes),
       cookie_prefix: advanced.cookiePrefix ?? 'better-auth',
       secure_cookies: advanced.useSecureCookies ?? null,
       cross_subdomain_cookies: advanced.crossSubDomainCookies?.enabled ?? false,

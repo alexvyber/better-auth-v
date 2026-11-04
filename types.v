@@ -229,6 +229,8 @@ pub:
 	clock_millis                      fn () i64           = no_millisecond_clock
 	send_email                        fn (EmailMessage) ! = discard_email
 	cookie_names                      map[string]string
+	default_cookie_attributes         map[string]json2.Any
+	cookie_attributes                 map[string]map[string]json2.Any
 	cookie_prefix                     string = 'better-auth'
 	secure_cookies                    ?bool
 	cross_subdomain_cookies           bool

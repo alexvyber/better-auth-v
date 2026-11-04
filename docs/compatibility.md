@@ -134,7 +134,7 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   available separately. Response attribute parsing supports HTTP dates; full
   JavaScript Date-string coercion (including nonstandard numeric strings and exact
   local-time/two-digit-year rules) remains incomplete. Account-cookie synchronization
-  and general cookie attributes remain outstanding.
+  and the remaining cookie integration suites are outstanding.
 - `get_cookie_cache` reads standalone snapshots without database access or a
   separate session-token cookie. It verifies compact HMAC, HS256/384/512 JWT,
   native/upstream JWE, and supported asymmetric or symmetric public JWKS profiles.
@@ -224,9 +224,19 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   Cookie names/prefixes, explicit secure overrides, and cross-subdomain domains are
   configurable and consistent across issuance/expiry, including cache chunks,
   remember markers, and OAuth state. Cross-subdomain domains default to the
-  configured hostname. Per-cookie/default attributes beyond these options remain
-  unimplemented; the fixture rejects them. Native storage formats still prevent
-  general cookie/database sharing with an upstream server.
+  configured hostname, preserving IPv6 brackets. A native `CookieFactory` supports
+  secure/default/domain policy and default/per-cookie attribute precedence; its
+  descriptors also understand explicit dynamic protocols, although live dynamic
+  baseURL resolution remains unimplemented. Without a configured static base URL,
+  auth captures its production fallback at initialization. Request HTTPS alone does
+  not change that choice, except when cross-domain cookies rebuild for the resolved
+  base URL. HTTP output supports custom paths, domains, HttpOnly, SameSite, Secure,
+  Partitioned, expiry dates and prefix invariants. Session token lifetimes override
+  descriptor Max-Age; cache lifetimes use per-cookie configuration and rememberMe.
+  Malformed/unsafe attributes and oversized Max-Age are rejected at initialization.
+  Factory descriptors preserve fractional durations; issuance still uses whole-second
+  durations, and exact invalid-option/error timing remains incomplete. Native storage
+  formats still prevent general cookie/database sharing with an upstream server.
 
 ## Remaining Better Auth scope
 
@@ -259,13 +269,16 @@ tests establishes only their covered behavior, not complete upstream parity.
 - The complete upstream crypto secret-rotation and OAuth purpose-isolation files
   also run with native crypto helpers. Independent TS crypto exchanges ciphertext,
   JWEs, and encrypted private JWKs with V.
-- The cookies source is partially imported: 64 declarations run as 82 cases against
-  native helpers and auth flows, with 33 unported declarations recorded explicitly.
+- The cookies source is partially imported: 72 declarations run as 90 cases against
+  native helpers and auth flows, with 25 unported declarations recorded explicitly.
   Four independent helper contracts compare V with the published TS implementation
   on malformed encodings, attribute metadata, ordered merging, and secure selection.
   Another 14 standalone reader cases use independent HMAC/JOSE/upstream ciphertext
   and compare schema/defaults, expiry, async versions, key selection and profile
   binding with the published reader.
+  Another 22 factory/configuration cases compare descriptors with a fresh official
+  process and check actual issuance/expiry, captured security defaults, prefix rules,
+  and cache lifetimes across all supported formats.
 - Differential tests compare the published TS server and V on supported scenarios,
   ignoring inherently random IDs/tokens/timestamps and documented record-format
   differences.

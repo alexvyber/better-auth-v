@@ -299,7 +299,9 @@ fn test_request_resolved_origins_do_not_leak_into_direct_jwt_calls() ! {
 	mut cookies := []string{}
 	for header in signup.headers {
 		if header.name == 'set-cookie' {
-			assert header.value.contains('; Secure')
+			// Without a configured base URL, cookie security uses the captured
+			// production default; resolving this HTTPS request does not change it.
+			assert header.value.contains('; Secure') == auth.production_cookie_default
 			cookies << header.value.all_before(';')
 		}
 	}

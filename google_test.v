@@ -43,7 +43,7 @@ fn test_native_google_code_exchange_and_authorization_configuration() ! {
 	}
 	url := urllib.parse(provider.authorization_url('state', 'challenge',
 		'http://localhost:3000/api/auth/callback/google')!)!
-	assert (url.query().get('scope') or { '' }) == 'email profile openid calendar'
+	assert (url.query().get('scope') or { '' }) == 'email profile openid calendar email'
 	assert (url.query().get('include_granted_scopes') or { '' }) == 'true'
 	assert (url.query().get('hd') or { '' }) == 'example.com'
 	identity := provider.exchange('code', 'verifier',

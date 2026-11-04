@@ -368,7 +368,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   const google = options.socialProviders?.google;
   if (typeof google === 'function') throw new Error('Unported provider option callback');
   if (google) {
-    assertKeys(google, ['clientId', 'clientSecret', 'enabled', 'scope', 'disableDefaultScope', 'accessType', 'display', 'hd', 'prompt', 'includeGrantedScopes', 'redirectURI', 'disableIdTokenSignIn'], 'socialProviders.google');
+    assertKeys(google, ['clientId', 'clientSecret', 'enabled', 'scope', 'disableDefaultScope', 'accessType', 'display', 'hd', 'prompt', 'includeGrantedScopes', 'redirectURI', 'authorizationEndpoint', 'disableIdTokenSignIn'], 'socialProviders.google');
   }
   assertKeys(options.account?.fields ?? {}, ['id', 'userId', 'providerId', 'accountId'], 'account.fields');
   if (options.baseURL !== undefined && typeof options.baseURL !== 'string') throw new Error('Live dynamic baseURL configuration remains unported');

@@ -1,0 +1,50 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/core/src/oauth2/create-authorization-url.test.ts",
+  "sha256": "1d21a61afd56d6b64b400cd71a7a1de66040c6305bab27ddac6b6876681955f8",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "createAuthorizationURL",
+      "suites": [
+        "createAuthorizationURL"
+      ],
+      "test": "appends additionalParams as query string entries",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "createAuthorizationURL",
+      "suites": [
+        "createAuthorizationURL"
+      ],
+      "test": "omits scope when the resolved scope list is empty",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "createAuthorizationURL",
+      "suites": [
+        "createAuthorizationURL"
+      ],
+      "test": "silently drops reserved OAuth params supplied via additionalParams",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "createAuthorizationURL",
+      "suites": [
+        "createAuthorizationURL"
+      ],
+      "test": "exposes the reserved param list for downstream consumers",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

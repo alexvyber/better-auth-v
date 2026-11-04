@@ -1,0 +1,863 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/social.test.ts",
+  "sha256": "541df252e14d98020e8fead14d84f267d44b4ea4ea34179932957f7f1deb7c09",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "Social Providers",
+      "suites": [
+        "Social Providers"
+      ],
+      "test": "should be able to add social providers",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Social Providers",
+      "suites": [
+        "Social Providers"
+      ],
+      "test": "should forward additionalParams to the authorization URL",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Social Providers",
+      "suites": [
+        "Social Providers"
+      ],
+      "test": "should reject additionalParams that collide with reserved OAuth params",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Social Providers",
+      "suites": [
+        "Social Providers"
+      ],
+      "test": "should be able to sign in with social providers",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Social Providers",
+      "suites": [
+        "Social Providers"
+      ],
+      "test": "redirects a built-in callback with no state to error=state_not_found",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Social Providers",
+      "suites": [
+        "Social Providers"
+      ],
+      "test": "redirects to the per-flow errorCallbackURL when state validation fails",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Social Providers",
+      "suites": [
+        "Social Providers"
+      ],
+      "test": "should be able to sign in with async social provider",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Social Providers",
+      "suites": [
+        "Social Providers"
+      ],
+      "test": "Should use callback URL if the user is already registered",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Social Providers",
+      "suites": [
+        "Social Providers"
+      ],
+      "test": "should be able to map profile to user",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Social Providers",
+      "suites": [
+        "Social Providers"
+      ],
+      "test": "should be protected from callback URL attacks",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Social Providers",
+      "suites": [
+        "Social Providers"
+      ],
+      "test": "should refresh the access token",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Redirect URI",
+      "suites": [
+        "Redirect URI"
+      ],
+      "test": "should infer redirect uri",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Redirect URI",
+      "suites": [
+        "Redirect URI"
+      ],
+      "test": "should respect custom redirect uri",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Disable implicit signup",
+      "suites": [
+        "Disable implicit signup"
+      ],
+      "test": "Should not create user when implicit sign up is disabled",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Disable implicit signup",
+      "suites": [
+        "Disable implicit signup"
+      ],
+      "test": "Should create user when implicit sign up is disabled but it is requested",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Disable signup",
+      "suites": [
+        "Disable signup",
+        "ID-token sign-in"
+      ],
+      "test": "rejects ID-token sign-in for a new user $scenario",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Disable signup",
+      "suites": [
+        "Disable signup",
+        "ID-token sign-in"
+      ],
+      "test": "allows an existing ID-token user to sign in when provider sign-up is disabled",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Disable signup",
+      "suites": [
+        "Disable signup",
+        "ID-token sign-in"
+      ],
+      "test": "keeps the top-level provider sign-up restriction for ID-token sign-in",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Disable signup",
+      "suites": [
+        "Disable signup"
+      ],
+      "test": "Should not create user when sign up is disabled",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "signin",
+      "suites": [
+        "signin"
+      ],
+      "test": "should allow user info override during sign in",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "signin",
+      "suites": [
+        "signin"
+      ],
+      "test": "should allow user info override during sign in",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "signin",
+      "suites": [
+        "signin"
+      ],
+      "test": "should allow additional data in oauth state",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "signin",
+      "suites": [
+        "signin"
+      ],
+      "test": "should not allow overriding oauth code verifier, expiresAt, callbackURL, errorURL, newUserURL, link, requestSignUp",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "updateAccountOnSignIn",
+      "suites": [
+        "updateAccountOnSignIn"
+      ],
+      "test": "should not update account on sign in",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Google Provider — multiple client IDs",
+      "suites": [
+        "Google Provider — multiple client IDs"
+      ],
+      "test": "accepts an id token issued for the %s client",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Google Provider — multiple client IDs",
+      "suites": [
+        "Google Provider — multiple client IDs"
+      ],
+      "test": "rejects an id token whose audience is not configured",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Google Provider — multiple client IDs",
+      "suites": [
+        "Google Provider — multiple client IDs"
+      ],
+      "test": "returns 401 over HTTP when a verified profile resolves an invalid account subject",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Google Provider — multiple client IDs",
+      "suites": [
+        "Google Provider — multiple client IDs"
+      ],
+      "test": "uses the first configured client id when building the authorization URL",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Google Provider — multiple client IDs",
+      "suites": [
+        "Google Provider — multiple client IDs"
+      ],
+      "test": "rejects an empty clientId array at sign-in time",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Google Provider — multiple client IDs",
+      "suites": [
+        "Google Provider — multiple client IDs"
+      ],
+      "test": "returns 403 EMAIL_NOT_VERIFIED for an unverified id token when the provider requires verification",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Google Provider — hosted domain on id_token sign-in",
+      "suites": [
+        "Google Provider — hosted domain on id_token sign-in"
+      ],
+      "test": "accepts an id token whose hd claim matches the configured hosted domain",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Google Provider — hosted domain on id_token sign-in",
+      "suites": [
+        "Google Provider — hosted domain on id_token sign-in"
+      ],
+      "test": "rejects an id token whose hd claim is a different hosted domain",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Google Provider — hosted domain on id_token sign-in",
+      "suites": [
+        "Google Provider — hosted domain on id_token sign-in"
+      ],
+      "test": "rejects an id token with no hd claim when a hosted domain is configured",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Multi-client ID support — other widened providers",
+      "suites": [
+        "Multi-client ID support — other widened providers"
+      ],
+      "test": "%s uses the first entry of the clientId array for the auth URL",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Multi-client ID support — other widened providers",
+      "suites": [
+        "Multi-client ID support — other widened providers"
+      ],
+      "test": "%s rejects an empty clientId array",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Apple Provider",
+      "suites": [
+        "Apple Provider"
+      ],
+      "test": "should not use email as fallback for name when name is not provided",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Apple Provider",
+      "suites": [
+        "Apple Provider"
+      ],
+      "test": "should use firstName and lastName when provided in token.user",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Apple Provider",
+      "suites": [
+        "Apple Provider"
+      ],
+      "test": "should pass user name via idToken body for Apple sign-in",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Apple Provider",
+      "suites": [
+        "Apple Provider"
+      ],
+      "test": "should result in empty name when idToken body has no user field for Apple",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Apple Provider",
+      "suites": [
+        "Apple Provider"
+      ],
+      "test": "should pass request ctx to verifyIdToken for id-token sign-in",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "verifyIdToken request ctx — account linking",
+      "suites": [
+        "verifyIdToken request ctx — account linking"
+      ],
+      "test": "should pass request ctx to verifyIdToken for id-token account linking",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Vercel Provider",
+      "suites": [
+        "Vercel Provider"
+      ],
+      "test": "should configure Vercel provider correctly",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Vercel Provider",
+      "suites": [
+        "Vercel Provider"
+      ],
+      "test": "should initiate Vercel OAuth flow with PKCE",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Vercel Provider",
+      "suites": [
+        "Vercel Provider"
+      ],
+      "test": "should complete Vercel OAuth flow and create user",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Vercel Provider",
+      "suites": [
+        "Vercel Provider"
+      ],
+      "test": "should use preferred_username as fallback for name",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Vercel Provider",
+      "suites": [
+        "Vercel Provider"
+      ],
+      "test": "should allow additional scopes",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Vercel Provider",
+      "suites": [
+        "Vercel Provider"
+      ],
+      "test": "should support mapProfileToUser",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Vercel Provider",
+      "suites": [
+        "Vercel Provider"
+      ],
+      "test": "should redirect existing Vercel users to callback URL",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Microsoft Provider",
+      "suites": [
+        "Microsoft Provider"
+      ],
+      "test": "should support verifyIdToken with custom function",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Microsoft Provider",
+      "suites": [
+        "Microsoft Provider"
+      ],
+      "test": "should verify id token using JWKS endpoint",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Microsoft Provider",
+      "suites": [
+        "Microsoft Provider"
+      ],
+      "test": "should support id token sign in",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Microsoft Provider",
+      "suites": [
+        "Microsoft Provider"
+      ],
+      "test": "should reject id token sign in when oid is missing",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Microsoft Provider",
+      "suites": [
+        "Microsoft Provider"
+      ],
+      "test": "should report id_token sign-in unsupported when disableIdTokenSignIn is true",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Microsoft Provider",
+      "suites": [
+        "Microsoft Provider"
+      ],
+      "test": "should verify issuer when specific tenant is configured",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Microsoft Provider",
+      "suites": [
+        "Microsoft Provider"
+      ],
+      "test": "builds an authorization URL without clientSecret (public client)",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Cloudflare Provider",
+      "suites": [
+        "Cloudflare Provider"
+      ],
+      "test": "should configure Cloudflare provider correctly",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Cloudflare Provider",
+      "suites": [
+        "Cloudflare Provider"
+      ],
+      "test": "should initiate Cloudflare OAuth flow with PKCE",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Cloudflare Provider",
+      "suites": [
+        "Cloudflare Provider"
+      ],
+      "test": "should not send an empty scope parameter when default scopes are disabled",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Cloudflare Provider",
+      "suites": [
+        "Cloudflare Provider"
+      ],
+      "test": "should include additional Cloudflare API scopes",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Cloudflare Provider",
+      "suites": [
+        "Cloudflare Provider"
+      ],
+      "test": "should complete Cloudflare OAuth flow and create user",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Cloudflare Provider",
+      "suites": [
+        "Cloudflare Provider"
+      ],
+      "test": "uses $name authentication",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Cloudflare Provider",
+      "suites": [
+        "Cloudflare Provider"
+      ],
+      "test": "should support public clients",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Cloudflare Provider",
+      "suites": [
+        "Cloudflare Provider"
+      ],
+      "test": "derives the profile from the Cloudflare API /user endpoint, not the OIDC userinfo endpoint",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Railway Provider",
+      "suites": [
+        "Railway Provider"
+      ],
+      "test": "should configure Railway provider correctly",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Railway Provider",
+      "suites": [
+        "Railway Provider"
+      ],
+      "test": "should initiate Railway OAuth flow with PKCE",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Railway Provider",
+      "suites": [
+        "Railway Provider"
+      ],
+      "test": "should complete Railway OAuth flow and create user",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "validateUserInfo callback",
+      "suites": [
+        "validateUserInfo callback"
+      ],
+      "test": "should allow sign-in when validateUserInfo returns void",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "validateUserInfo callback",
+      "suites": [
+        "validateUserInfo callback"
+      ],
+      "test": "should reject redirect sign-in with source metadata and raw profile",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "validateUserInfo callback",
+      "suites": [
+        "validateUserInfo callback"
+      ],
+      "test": "should work in stateless mode (no database)",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "validateUserInfo callback",
+      "suites": [
+        "validateUserInfo callback"
+      ],
+      "test": "should reject idToken sign-in when validateUserInfo returns error",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "validateUserInfo callback",
+      "suites": [
+        "validateUserInfo callback"
+      ],
+      "test": "fires create-user on first OAuth sign-in and sign-in on the return",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "validateUserInfo callback",
+      "suites": [
+        "validateUserInfo callback"
+      ],
+      "test": "re-validates a returning OAuth user against the fresh provider identity",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "validateUserInfo callback",
+      "suites": [
+        "validateUserInfo callback"
+      ],
+      "test": "re-validates a returning OAuth user on the id-token (API) surface",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "validateUserInfo callback",
+      "suites": [
+        "validateUserInfo callback"
+      ],
+      "test": "reports link-account for an implicit link and persists no orphaned link when rejected",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Reddit Provider — profile email mapping",
+      "suites": [
+        "Reddit Provider — profile email mapping"
+      ],
+      "test": "never uses oauth_client_id as the email and falls back to a unique per-user email",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Reddit Provider — profile email mapping",
+      "suites": [
+        "Reddit Provider — profile email mapping"
+      ],
+      "test": "uses the email supplied by mapProfileToUser and ignores oauth_client_id",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "account.scope path-dependent semantics",
+      "suites": [
+        "account.scope path-dependent semantics"
+      ],
+      "test": "preserves stored scope on sign-in re-authentication when token claim is narrower",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "account.scope path-dependent semantics",
+      "suites": [
+        "account.scope path-dependent semantics"
+      ],
+      "test": "unions stored scope with newly granted scopes on linkSocial incremental authorization",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "account.scope path-dependent semantics",
+      "suites": [
+        "account.scope path-dependent semantics"
+      ],
+      "test": "preserves stored scope on /refresh-token when the refresh response is narrower",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "account.scope path-dependent semantics",
+      "suites": [
+        "account.scope path-dependent semantics"
+      ],
+      "test": "does not write stale account cookie scope on /refresh-token",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
+    },
+    {
+      "suite": "Google Provider - includeGrantedScopes",
+      "suites": [
+        "Google Provider - includeGrantedScopes"
+      ],
+      "test": "includes `include_granted_scopes=true` in the authorization URL by default",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Google Provider - includeGrantedScopes",
+      "suites": [
+        "Google Provider - includeGrantedScopes"
+      ],
+      "test": "includes `include_granted_scopes=true` when explicitly enabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Google Provider - includeGrantedScopes",
+      "suites": [
+        "Google Provider - includeGrantedScopes"
+      ],
+      "test": "lets additionalParams disable `include_granted_scopes` for a single flow",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Google Provider - includeGrantedScopes",
+      "suites": [
+        "Google Provider - includeGrantedScopes"
+      ],
+      "test": "omits `include_granted_scopes` from the authorization URL when disabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Google Provider - includeGrantedScopes",
+      "suites": [
+        "Google Provider - includeGrantedScopes"
+      ],
+      "test": "lets additionalParams re-enable `include_granted_scopes` for a single flow",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

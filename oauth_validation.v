@@ -45,3 +45,29 @@ fn validate_direct_id_token_body(fields map[string]json2.Any) ! {
 		}
 	}
 }
+
+fn validate_oauth_authorization_body(fields map[string]json2.Any) ! {
+	if scopes := fields['scopes'] {
+		if scopes !is []json2.Any || scopes.as_array().any(it !is string) {
+			return fail(400, 'VALIDATION_ERROR', 'scopes must be an array of strings')
+		}
+	}
+	if hint := fields['loginHint'] {
+		if hint !is string { return fail(400, 'VALIDATION_ERROR', 'loginHint must be a string') }
+	}
+	if additional := fields['additionalParams'] {
+		if additional !is map[string]json2.Any {
+			return fail(400, 'VALIDATION_ERROR', 'additionalParams must be an object')
+		}
+		for name, value in additional.as_map() {
+			if value !is string {
+				return fail(400, 'VALIDATION_ERROR', 'additionalParams values must be strings')
+			}
+			if name in reserved_authorization_params {
+				return fail(400, 'VALIDATION_ERROR',
+					'additionalParams cannot include reserved OAuth parameters: ' +
+					reserved_authorization_params.join(','))
+			}
+		}
+	}
+}

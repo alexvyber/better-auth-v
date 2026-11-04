@@ -97,7 +97,13 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   PKCE grants, exchanges through a redirect-refusing native HTTP transport, decodes
   the profile from the authenticated token response, and enforces hosted-domain
   restrictions. The test transport delegates only HTTP bytes to Node/MSW; provider
-  decisions and persistence stay in V. Google also supports direct ID-token
+  decisions and persistence stay in V. The shared authorization builder handles
+  PKCE, reserved parameters, endpoint/redirect overrides and ordered form-encoded
+  query updates. Google accepts per-request scopes, login hints and additional
+  parameters, rejects reserved/malformed input, preserves repeated scopes and
+  sets Location for redirect responses. Full WHATWG URL normalization and the
+  remaining state/account/provider options are still incomplete.
+  Google also supports direct ID-token
   credentials with RS256 pinning, trusted Google key retrieval, required claims,
   issuer/audience/nonce checks, hosted-domain policy, 30-second clock tolerance and
   a one-hour maximum age. Client-ID arrays and disabling ID-token sign-in are
@@ -333,6 +339,12 @@ tests establishes only their covered behavior, not complete upstream parity.
   Another 22 factory/configuration cases compare descriptors with a fresh official
   process and check actual issuance/expiry, captured security defaults, prefix rules,
   and cache lifetimes across all supported formats.
+- Complete shared authorization-URL (4) and Basic-credential (13) source cases run
+  against V. Five social source cases cover Google's includeGrantedScopes options;
+  its remaining 80 declarations are explicitly unported. Another 28 independent
+  helper/HTTP cases cover ordered queries, native PKCE, async options callbacks,
+  Unicode/malformed encodings, reserved parameters and Google request integration.
+  Eight more ID-token cases compare empty issuer lists and JOSE duration boundaries.
 - Differential tests compare the published TS server and V on supported scenarios,
   ignoring inherently random IDs/tokens/timestamps and documented record-format
   differences.

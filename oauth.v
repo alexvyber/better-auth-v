@@ -22,6 +22,10 @@ pub interface OAuthIDTokenProvider {
 	user_info(OAuthTokens) !Lookup[OAuthIdentity]
 }
 
+pub interface OAuthAuthorizationProvider {
+	authorization_request(input OAuthAuthorizationRequest, challenge string) !string
+}
+
 struct OAuthAccountIdentity {
 	user    User
 	account Account
@@ -130,7 +134,17 @@ fn (mut a Auth) start_oauth(p Payload) !Response {
 	verifier := random_token()!
 	challenge := base64.url_encode(sha256.sum(verifier.bytes())).trim_right('=')
 	redirect_uri := a.base_url().trim_right('/') + a.config.base_path + '/callback/' + provider.id()
-	url := provider.authorization_url(state, challenge, redirect_uri)!
+	url := if provider is OAuthAuthorizationProvider {
+		provider.authorization_request(OAuthAuthorizationRequest{
+			state:             state
+			redirect_uri:      redirect_uri
+			scopes:            p.scopes
+			login_hint:        p.login_hint
+			additional_params: p.additional_params
+		}, challenge)!
+	} else {
+		provider.authorization_url(state, challenge, redirect_uri)!
+	}
 	callback := if p.callback_url == '' { a.base_url() } else { p.callback_url }
 	a.persist_verification(Verification{
 		id:                digest(state)
@@ -143,10 +157,11 @@ fn (mut a Auth) start_oauth(p Payload) !Response {
 		expires_at:        a.config.clock() + 600
 		expires_at_millis: a.clock_millis() + 600000
 	})!
-	response := Response{
+	mut response := Response{
 		headers: [Header{'content-type', 'application/json'}]
 		body:    '{"redirect":${!p.disable_redirect},"url":${json.encode(url)}}'
 	}
+	if !p.disable_redirect { response = with_header(response, 'location', url) }
 	return a.oauth_cookie(response, state, false)
 }
 

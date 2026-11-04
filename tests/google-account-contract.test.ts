@@ -46,7 +46,7 @@ describe('native Google code flow and account cookies', () => {
     expect(response.status).toBe(302);
     expect(response.headers.get('location')).toBe('/done');
     expect(url.origin + url.pathname).toBe('https://accounts.google.com/o/oauth2/v2/auth');
-    expect(url.searchParams.get('scope')).toBe('email profile openid calendar');
+    expect(url.searchParams.get('scope')).toBe('email profile openid calendar email');
     expect(url.searchParams.has('include_granted_scopes')).toBe(false);
     expect(url.searchParams.get('access_type')).toBe('offline');
     expect(requests).toHaveLength(1);

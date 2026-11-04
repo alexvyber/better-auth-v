@@ -10,6 +10,7 @@ pub:
 	client_id                string   @[json: clientId]
 	client_ids               []string @[json: clientIds]
 	client_secret            string   @[json: clientSecret]
+	authorization_endpoint   string   @[json: authorizationEndpoint]
 	scope                    []string
 	disable_default_scope    bool   @[json: disableDefaultScope]
 	access_type              string @[json: accessType]
@@ -45,41 +46,43 @@ pub fn google_hosted_domain_allowed(configured string, claim json2.Any) bool {
 }
 
 pub fn (provider GoogleProvider) authorization_url(state string, challenge string, redirect_uri string) !string {
+	return provider.authorization_request(OAuthAuthorizationRequest{
+		state:        state
+		redirect_uri: redirect_uri
+	}, challenge)
+}
+
+pub fn (provider GoogleProvider) authorization_request(input OAuthAuthorizationRequest, challenge string) !string {
 	if provider.primary_client_id() == '' || provider.client_secret == '' {
 		return error('CLIENT_ID_AND_SECRET_REQUIRED')
 	}
 	if challenge == '' { return error('codeVerifier is required for Google') }
 	mut scopes := if provider.disable_default_scope { []string{} } else { ['email', 'profile',
 			'openid'] }
-	for scope in provider.scope {
-		if scope !in scopes { scopes << scope }
+	scopes << provider.scope
+	scopes << input.scopes
+	mut additional := map[string]string{}
+	if provider.include_granted_scopes { additional['include_granted_scopes'] = 'true' }
+	for name, value in input.additional_params {
+		additional[name] = value
 	}
-	mut query := urllib.new_values()
-	for key, value in {
-		'client_id':             provider.primary_client_id()
-		'redirect_uri':          if provider.redirect_uri != '' {
-			provider.redirect_uri
-		} else {
-			redirect_uri
+	return create_oauth_authorization_url_with_challenge(OAuthAuthorizationRequest{
+		options:                OAuthAuthorizationOptions{
+			client_id:              provider.primary_client_id()
+			authorization_endpoint: provider.authorization_endpoint
+			redirect_uri:           provider.redirect_uri
 		}
-		'response_type':         'code'
-		'scope':                 scopes.join(' ')
-		'state':                 state
-		'code_challenge':        challenge
-		'code_challenge_method': 'S256'
-	} {
-		query.set(key, value)
-	}
-	for key, value in {
-		'access_type': provider.access_type
-		'display':     provider.display
-		'hd':          provider.hd
-		'prompt':      provider.prompt
-	} {
-		if value != '' { query.set(key, value) }
-	}
-	if provider.include_granted_scopes { query.set('include_granted_scopes', 'true') }
-	return 'https://accounts.google.com/o/oauth2/v2/auth?' + query.encode()
+		authorization_endpoint: 'https://accounts.google.com/o/oauth2/v2/auth'
+		state:                  input.state
+		scopes:                 scopes
+		redirect_uri:           input.redirect_uri
+		access_type:            provider.access_type
+		display:                if input.display != '' { input.display } else { provider.display }
+		login_hint:             input.login_hint
+		hd:                     provider.hd
+		prompt:                 provider.prompt
+		additional_params:      additional
+	}, challenge)
 }
 
 pub fn (provider GoogleProvider) exchange(code string, verifier string, redirect_uri string) !OAuthIdentity {

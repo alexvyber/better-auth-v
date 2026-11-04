@@ -16,6 +16,16 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+  {file: 'social', path: 'packages/better-auth/src/social.test.ts', suites: new Set(['Google Provider - includeGrantedScopes']),
+   imports: 'import { describe, expect, it } from "vitest";\nimport { getTestInstance } from "../harness/test-instance.js";\n',
+   unportedReason: 'Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented',
+  },
+  {file: 'oauth-basic-credentials', path: 'packages/core/src/oauth2/basic-credentials.test.ts', suites: null,
+   imports: 'import { describe, expect, it } from "vitest";\nimport { encodeBasicCredentials, decodeBasicCredentials } from "../harness/oauth-helpers.js";\n',
+  },
+  {file: 'oauth-authorization-url', path: 'packages/core/src/oauth2/create-authorization-url.test.ts', suites: null, includeHelpers: true,
+   imports: 'import { describe, expect, it } from "vitest";\nimport { createAuthorizationURL, RESERVED_AUTHORIZATION_PARAMS } from "../harness/oauth-helpers.js";\n',
+  },
   {file: 'verify-id-token', path: 'packages/core/src/oauth2/verify-id-token.test.ts', suites: null, includeHelpers: true,
    testSurfaces: {'verifyProviderIdToken': 'native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows'},
    imports: 'import { createHash } from "node:crypto";\nimport type { JWK } from "jose";\nimport { createLocalJWKSet, exportJWK, generateKeyPair, SignJWT } from "jose";\nimport { describe, expect, it } from "vitest";\nimport type { OAuthIdTokenConfig } from "@better-auth/core/oauth2";\nimport { apple, cognito, facebook, google, microsoft, paypal, supportsIdTokenSignIn, verifyProviderIdToken } from "../harness/id-token.js";\n',
@@ -207,7 +217,7 @@ for (const plan of plans) {
             upstreamDisabled: /\.(skip|todo|fails)(\.|$)/.test(callee),
             reason: include
               ? null
-              : (plan.unportedReasons?.[name] ?? "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"),
+              : (plan.unportedReasons?.[name] ?? plan.unportedReason ?? "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"),
           });
           if (selected && !include)
             removals.push([node.getFullStart(), node.end]);

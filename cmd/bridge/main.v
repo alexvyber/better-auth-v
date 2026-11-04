@@ -452,6 +452,14 @@ fn expiration_command() ! {
 }
 
 fn main() {
+	if os.args.len == 2 && os.args[1] == '--oauth-helpers' {
+		oauth_helper_command() or {
+			eprintln(err.msg())
+			exit(1)
+		}
+		return
+	}
+
 	if os.args.len == 2 && os.args[1] == '--provider-id-token' {
 		provider_id_token_command() or {
 			eprintln(err.msg())

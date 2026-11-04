@@ -9,7 +9,10 @@ struct Payload {
 	state                 string
 	provider              string
 	id_token              ?DirectIDToken @[json: idToken]
-	disable_redirect      bool           @[json: 'disableRedirect']
+	scopes                []string
+	login_hint            string            @[json: loginHint]
+	additional_params     map[string]string @[json: additionalParams]
+	disable_redirect      bool              @[json: 'disableRedirect']
 	email                 string
 	password              string
 	name                  string
@@ -294,7 +297,10 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 				}
 			}
 		}
-		if path == '/sign-in/social' { validate_direct_id_token_body(fields)! }
+		if path == '/sign-in/social' {
+			validate_oauth_authorization_body(fields)!
+			validate_direct_id_token_body(fields)!
+		}
 	}
 	payload := if req.method == 'POST' { json.decode(Payload, body) or {
 			return fail(400, 'VALIDATION_ERROR', 'Validation Error')} } else { Payload{} }

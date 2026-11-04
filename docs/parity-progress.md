@@ -443,8 +443,32 @@ or corpus inventory contains unimplemented behavior.
   full Apple/Cognito/Facebook/Microsoft OAuth or account integration. Remote-key
   caching, remaining provider options and the broader account APIs remain open.
 
-The latest `make check` passes 939 TypeScript cases across 47 files, all 80 native
-V test functions across 22 files (including all 20,034 Unicode vectors), TypeScript
+- Corrected ID-token configuration boundaries: explicit empty issuer allowlists
+  reject tokens; max-token-age parsing follows JOSE's unit grammar and rounding
+  before applying a negative sign, and occurs after key resolution/signature checks.
+  Eight additional independent cases compare JOSE, including invalid month units,
+  large finite durations and callback ordering.
+- Added the shared native authorization-URL builder and Basic credential helpers.
+  The complete pinned helper sources run all four URL and thirteen credential
+  cases unchanged. The builder preserves query order, replaces duplicate controlled
+  keys, derives S256 PKCE, protects reserved parameters, supports configured endpoint/
+  redirect overrides, scope joiners and claim requests, and uses native WHATWG-style
+  form/UTF-8 encoding. Basic decoding follows the pinned lenient base64/percent
+  behavior and validates the scheme, separator and nonempty credential halves.
+- Routed Google authorization through the shared builder. Per-request scopes,
+  login hints and additional parameters reach native policy; reserved/malformed
+  parameters are rejected at the HTTP boundary. Redirect responses set Location
+  only when requested. Google preserves duplicate scopes like the pinned provider;
+  two older owned tests had incorrectly expected deduplication and were corrected
+  against the source. Imported all five includeGrantedScopes cases from social.test
+  unchanged, with the other 80 declarations explicitly unported in its manifest.
+  Twenty-eight independent helper/HTTP cases and two native tests cover encoding,
+  malformed input, query handling, options callbacks, PKCE and Google integration.
+  Broader WHATWG URL normalization, remaining provider options, OAuth state/account
+  flows, linking and refresh remain incomplete.
+
+The latest `make check` passes 997 TypeScript cases across 51 files, all 82 native
+V test functions across 23 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus

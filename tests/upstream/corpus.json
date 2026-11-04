@@ -14,7 +14,7 @@
     "utilities-and-tooling": {
       "files": 275,
       "declarations": 4594,
-      "importedFiles": 8
+      "importedFiles": 11
     },
     "e2e": {
       "files": 71,
@@ -28625,7 +28625,7 @@
       "path": "packages/better-auth/src/social.test.ts",
       "sha256": "541df252e14d98020e8fead14d84f267d44b4ea4ea34179932957f7f1deb7c09",
       "group": "utilities-and-tooling",
-      "status": "unported",
+      "status": "imported-partial-file",
       "kind": "runtime",
       "declarations": [
         {
@@ -36699,7 +36699,7 @@
       "path": "packages/core/src/oauth2/basic-credentials.test.ts",
       "sha256": "9f202118cd9a6e85f5133624e2b226ad2ba42593de5ac688516d7d70dd026ecb",
       "group": "utilities-and-tooling",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {
@@ -36960,7 +36960,7 @@
       "path": "packages/core/src/oauth2/create-authorization-url.test.ts",
       "sha256": "1d21a61afd56d6b64b400cd71a7a1de66040c6305bab27ddac6b6876681955f8",
       "group": "utilities-and-tooling",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {

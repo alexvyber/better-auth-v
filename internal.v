@@ -43,6 +43,14 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 			public, private := generate_exported_keypair(options)!
 			return '{"publicWebKey":${public},"privateWebKey":${private},"alg":${json.encode(options.algorithm)}}'
 		}
+		'getTokenFromContext' {
+			if args.len != 1 { return error('getTokenFromContext requires headers') }
+			mut headers := map[string]string{}
+			for field, value in args[0].as_map() {
+				headers[field.to_lower()] = value.str()
+			}
+			return '{"token":${json.encode(c.get_token(RequestContext{ headers: headers })!)}}'
+		}
 		'adapterCreateJWK' {
 			if args.len != 1 { return error('adapterCreateJWK requires a record') }
 			input := json.decode(Jwk, args[0].json_str())!

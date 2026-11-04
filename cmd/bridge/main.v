@@ -21,6 +21,7 @@ struct Options {
 	jwt_plugin                   bool
 	jwt_expiration_json          string
 	jwt_options                  better_auth.JWTOptions
+	defer_migrations             bool
 	storage                      string = 'sqlite'
 	stateless_sessions           bool
 	cookie_cache                 better_auth.CookieCacheConfig
@@ -368,9 +369,11 @@ fn main() {
 			emit(Reply{ id: init.id, error: err.msg() })
 			return
 		}
-		sqlite_storage.migrate() or {
-			emit(Reply{ id: init.id, error: err.msg() })
-			return
+		if !opts.defer_migrations {
+			sqlite_storage.migrate() or {
+				emit(Reply{ id: init.id, error: err.msg() })
+				return
+			}
 		}
 		storage = sqlite_storage
 	} else if opts.storage != 'memory' {
@@ -564,6 +567,27 @@ fn main() {
 		}
 		state.now = command.now
 		match command.op {
+			'migrate' {
+				if mut storage is better_auth.SQLiteStorage {
+					storage.migrate() or {
+						emit(Reply{ id: command.id, error: err.msg() })
+						continue
+					}
+				} else {
+					emit(Reply{ id: command.id, error: 'explicit migrations require native SQLite' })
+					continue
+				}
+				emit(Reply{ id: command.id })
+			}
+			'transaction' {
+				value := auth.with_internal(fn [command] (mut context better_auth.EndpointContext) !string {
+					return callback_with_context(command.method, '{}', mut context)
+				}) or {
+					emit(Reply{ id: command.id, error: err.msg() })
+					continue
+				}
+				emit(Reply{ id: command.id, value_json: value })
+			}
 			'internal' {
 				log_start := state.logs.len
 				value := auth.with_internal(fn [command] (mut context better_auth.EndpointContext) !string {

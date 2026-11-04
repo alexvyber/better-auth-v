@@ -282,9 +282,9 @@
         "jwt - JWKS minting inside an active transaction"
       ],
       "test": "mints the first signing key through the transaction-scoped adapter instead of deadlocking on the connection",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "toExpJWT",
@@ -371,7 +371,7 @@
       "test": "should be assignable to BetterAuthClientPlugin",
       "selected": false,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": "Unported: client compile-time declarations need equivalent native/facade coverage; running only the existing upstream TS client does not establish V parity"
     },
     {
       "suite": "jwtClient types",
@@ -381,7 +381,7 @@
       "test": "should preserve additional user fields when combined with inferAdditionalFields",
       "selected": false,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": "Unported: client compile-time declarations need equivalent native/facade coverage; running only the existing upstream TS client does not establish V parity"
     },
     {
       "suite": "jwt - signing algorithm comes from the key",

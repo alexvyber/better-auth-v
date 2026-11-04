@@ -65,6 +65,8 @@ export class Bridge {
     this.callbacks.set(method, callback);
   }
 
+  removeCallback(method: string) { this.callbacks.delete(method); }
+
   constructor() {
     this.child = spawn(
       fileURLToPath(new URL("../../build/auth-bridge", import.meta.url)),
@@ -94,6 +96,7 @@ export class Bridge {
         this.abort(error instanceof Error ? error : new Error(String(error)));
       }
     });
+    this.child.stdin.on("error", (error) => this.abort(error));
     this.child.on("error", (error) => this.abort(error));
     this.child.on("exit", (code, signal) => {
       this.closed = true;

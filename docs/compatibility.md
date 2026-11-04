@@ -148,7 +148,9 @@ tests establishes only their covered behavior, not complete upstream parity.
   replaced fixtures/imports and unchanged assertions. Their per-file manifests
   record the pinned source and declaration inventory. Passing these four files
   does not establish coverage of the separate plugin/adapter/client suites.
-- The original JWT rotation, signing-override, and multi-algorithm files run in full. The JWT plugin file is
+- The original JWT rotation, signing-override, and multi-algorithm files run in full.
+  The main JWT file runs every runtime declaration, including the native SQLite
+  transaction/migration regression; its two client type declarations are unported. The JWT plugin file is
   partially imported: its algorithm matrix, general signing, custom-store/path,
   key-algorithm authority, remote-signing/URL, expiration utility, and unresolved-origin suites run, with remaining declarations explicitly
   unported in its manifest. Key generation in its utility tests also runs in V.
@@ -169,6 +171,10 @@ tests establishes only their covered behavior, not complete upstream parity.
 - Plugin endpoint descriptors run session/freshness checks in V before invoking
   their JS business callback within the native context. Unsupported middleware,
   constructor options, and endpoint schema features fail explicitly.
+- Raw auth/dialect descriptors in the transaction fixture select V SQLite with
+  explicit migrations. Transaction callbacks execute in V; currently only the
+  token endpoint and internal operations are exposed inside that fixture scope.
+  Nested transaction wrappers share the existing native transaction.
 - Native HTTP integration runs a real V server and checks credentials, cookies,
   CSRF, revocation, and persistence after restart.
 

@@ -20,8 +20,9 @@ const plans = [
   { file: "password", directory: "crypto", suites: null },
   {
     file: 'jwt-plugin', source_file: 'jwt', directory: 'plugins/jwt',
-    suites: new Set(['jwt', 'signJWT - alg: $alg', 'jwt - custom adapter', 'jwt - custom jwksPath', 'jwt - signing algorithm comes from the key', 'jwt - remote signing', 'jwt - remote url', 'toExpJWT', 'jwt - unresolved issuer and audience']),
-    imports: 'import { beforeEach, describe, expect, expectTypeOf, it, vi } from "vitest";\nimport { createAuthClient } from "better-auth/client";\nimport { jwtClient } from "better-auth/client/plugins";\nimport { createLocalJWKSet, jwtVerify, decodeJwt, exportJWK, generateKeyPair, SignJWT } from "jose";\nimport { parseCookies } from "better-auth/cookies";\nimport type { JWKOptions, JwtOptions, Jwk } from "better-auth/plugins/jwt";\nimport type { JSONWebKeySet } from "jose";\nimport type { GenericEndpointContext } from "@better-auth/core";\nimport { generateExportedKeyPair, toExpJWT, createCookieCacheSigner, SESSION_COOKIE_JWT_TYPE } from "../harness/jwt.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { jwt } from "../harness/plugins.js";\n',
+    unportedReasons: {'jwtClient types': 'Unported: client compile-time declarations need equivalent native/facade coverage; running only the existing upstream TS client does not establish V parity'},
+    suites: new Set(['jwt', 'signJWT - alg: $alg', 'jwt - custom adapter', 'jwt - custom jwksPath', 'jwt - signing algorithm comes from the key', 'jwt - remote signing', 'jwt - remote url', 'toExpJWT', 'jwt - unresolved issuer and audience', 'jwt - JWKS minting inside an active transaction']),
+    imports: 'import { betterAuth, getMigrations, DatabaseSync, NodeSqliteDialect, runWithTransaction } from "../harness/native-auth.js";\nimport { beforeEach, describe, expect, expectTypeOf, it, vi } from "vitest";\nimport { createAuthClient } from "better-auth/client";\nimport { jwtClient } from "better-auth/client/plugins";\nimport { createLocalJWKSet, jwtVerify, decodeJwt, exportJWK, generateKeyPair, SignJWT } from "jose";\nimport { parseCookies } from "better-auth/cookies";\nimport type { JWKOptions, JwtOptions, Jwk } from "better-auth/plugins/jwt";\nimport type { JSONWebKeySet } from "jose";\nimport type { GenericEndpointContext } from "@better-auth/core";\nimport { generateExportedKeyPair, toExpJWT, createCookieCacheSigner, SESSION_COOKIE_JWT_TYPE } from "../harness/jwt.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { jwt } from "../harness/plugins.js";\n',
   },
   ...['sign-overrides', 'multi-alg'].map(file => ({
     file: 'jwt-' + file, source_file: file, directory: 'plugins/jwt', suites: null, includeHelpers: true,
@@ -155,7 +156,7 @@ for (const plan of plans) {
             upstreamDisabled: /\.(skip|todo|fails)(\.|$)/.test(callee),
             reason: include
               ? null
-              : "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration",
+              : (plan.unportedReasons?.[name] ?? "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"),
           });
           if (selected && !include)
             removals.push([node.getFullStart(), node.end]);

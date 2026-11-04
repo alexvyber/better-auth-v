@@ -36,7 +36,11 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 		|| url.raw_query != '' || url.fragment != '' || url.path !in ['', '/']) {
 		return error('base_url must be an HTTP(S) origin')
 	}
-	if config.secret.len < 32 { return error('secret must contain at least 32 bytes') }
+	if config.secret == '' { return error('secret is required') }
+	if config.secret.len < 32 {
+		config.log('warn',
+			'[better-auth] Warning: your secret should be at least 32 characters long for adequate security.')
+	}
 	if config.cookie_cache.strategy !in ['compact', 'jwt', 'jwe'] || config.cookie_cache.max_age <= 0 || (config.cookie_cache.update_age or {
 		0
 	}) < 0 {

@@ -93,7 +93,7 @@ or corpus inventory contains unimplemented behavior.
 - Extended the importer to recognize top-level parameterized suites; the partial
   JWT plugin manifest records all selected/unported declarations. Added custom
   adapter/path and stored-algorithm authority suites. The JWT plugin source file
-  now has 3 unported declarations; this is not full JWT plugin parity.
+  now has 2 unported client type declarations; this is not full JWT plugin parity.
 
 - Added remote JWKS URL configuration and native custom signing callbacks. Remote
   configuration disables local JWKS publication, while token issuance and session
@@ -132,9 +132,19 @@ or corpus inventory contains unimplemented behavior.
   cover multiple HTTPS origins, cross-origin rejection, and no request-origin
   leakage into subsequent direct calls.
 
+- Ported the original active-transaction key-minting regression. Raw constructor
+  and SQLite dialect descriptors now open V SQLite storage with explicit native
+  migrations; transaction callbacks run within a real V transaction. The trusted
+  endpoint context issues tokens without reacquiring the connection lock. An
+  independent test verifies missing migrations, key visibility inside a nested
+  transaction, rollback on an outer JS failure, and successful subsequent issuance.
+  The main JWT file now runs every runtime declaration; its two client type
+  declarations remain explicitly unported. Nonempty short secrets warn rather
+  than fail initialization, matching pinned upstream; empty secrets still fail.
+
 ## Next infrastructure work
 
-The completed `make check` passes 389 TypeScript runtime cases across 15 files,
+The completed `make check` passes 391 TypeScript runtime cases across 16 files,
 47 native V test functions across 8 files (including all 20,034 Unicode vectors),
 TypeScript checking, and real HTTP migration/authentication/CSRF/restart checks.
 This includes the final custom-store publication and encrypted-key regressions.

@@ -61,10 +61,12 @@ interface FixtureTransactionAdapter {
   findOne(query: FixtureOptions): Promise<any>;
   create<I, O>(query: {model: string; data: I}): Promise<O>;
   findMany<T>(query: {model: string}): Promise<T[]>;
+  nativeRunWithTransaction<T>(callback: () => Promise<T>): Promise<T>;
   options: {adapterConfig: {transaction: boolean}};
   transaction(callback: (transaction: FixtureTransactionAdapter) => Promise<unknown>): Promise<unknown>;
 }
 const instances = new Set<Bridge>();
+const nativeTransactionScope = new AsyncLocalStorage<boolean>();
 const currentUserHeaders = new AsyncLocalStorage<Headers>();
 const currentOperation = new AsyncLocalStorage<{ transactionError?: unknown; storeFailure?: unknown }>();
 afterAll(async () => {
@@ -158,6 +160,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
   assertKeys(
     config,
     [
+      "deferMigrations",
       "disableTestUser",
       "testUser",
       "port",
@@ -332,6 +335,21 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     callbacks['internal.' + name] = (args: any[]) => internalAdapter[name](...args);
   }
   const adapter: FixtureTransactionAdapter = {
+    async nativeRunWithTransaction<T>(callback: () => Promise<T>): Promise<T> {
+      if (nativeTransactionScope.getStore()) return callback();
+      const method = 'transaction.' + crypto.randomUUID();
+      let result: T;
+      let cause: unknown;
+      let failed = false;
+      bridge.setCallback(method, () => nativeTransactionScope.run(true, async () => {
+        try { result = await callback(); return null; }
+        catch (error) { failed = true; cause = error; throw error; }
+      }));
+      try { await bridge.send('transaction', {method}); }
+      catch (error) { throw failed ? cause : error; }
+      finally { bridge.removeCallback(method); }
+      return result!;
+    },
     async create<I, O>(query: {model: string; data: I}): Promise<O> {
       if (query.model !== 'jwks') throw new Error('Unsupported adapter create model');
       const reply = await bridge.send('internal', {method: 'adapterCreateJWK', arguments_json: transportJSON([query.data])});
@@ -460,6 +478,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       organization_teams: organizationOptions?.teams?.enabled ?? false,
       endpoint_plugins: endpointPlugins,
       jwt_expiration_json: jwtOptions?.jwt?.expirationTime === undefined ? '' : JSON.stringify(jwtOptions.jwt.expirationTime instanceof Date ? Math.floor(jwtOptions.jwt.expirationTime.getTime() / 1000) : jwtOptions.jwt.expirationTime),
+      defer_migrations: config.deferMigrations ?? false,
       jwt_plugin: !!jwtOptions,
       custom_jwk_store: !!jwtOptions?.adapter,
       jwt_options: jwtOptions && {
@@ -576,7 +595,10 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
         url.searchParams.set(key, String(value));
       const headers = new Headers(args.headers);
       headers.set("content-type", "application/json");
-      const response = await dispatch(
+      if (nativeTransactionScope.getStore() && (name !== 'getToken' || requestMethod !== 'GET')) throw new Error('Unported native transaction API: ' + name);
+      const response = nativeTransactionScope.getStore()
+        ? new Response((await bridge.send('internal', {method: 'getTokenFromContext', arguments_json: transportJSON([Object.fromEntries(headers)])})).value_json, {headers: {'content-type': 'application/json'}})
+        : await dispatch(
         new Request(url, {
           method: requestMethod,
           headers,

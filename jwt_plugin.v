@@ -644,3 +644,10 @@ pub fn (mut a Auth) sign_jwt_with(payload_json string, config JWTSigningConfig) 
 		return context.sign_jwt_with(payload_json, config)
 	})
 }
+
+// Trusted operations that already own the connection must use their context;
+// reacquiring Auth's mutex or starting a nested DB transaction would deadlock.
+pub fn (mut context EndpointContext) get_token(request RequestContext) !string {
+	current := context.auth.require_session(request, false)!
+	return context.auth.session_jwt(current)
+}

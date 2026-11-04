@@ -196,6 +196,30 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 			c.auth.remove_session(args[0].str())!
 			return 'null'
 		}
+		'updateAccount' {
+			if args.len != 2 { return error('updateAccount requires id and patch') }
+			account := (c.auth.storage.account_by_id(args[0].str())!).value or { return 'null' }
+			c.auth.update_account_record(account, args[1].json_str())!
+			return 'null'
+		}
+		'findAccounts' {
+			return json.encode(c.auth.storage.accounts(args[0].str())!)
+		}
+		'adapterUpdateUser' {
+			if args.len != 3 { return error('adapterUpdateUser requires field, value and patch') }
+			current := if args[0].str() == 'email' {
+				c.auth.storage.user_by_email(args[1].str())!
+			} else if args[0].str() == 'id' {
+				c.auth.storage.user(args[1].str())!
+			} else {
+				return error('unsupported user filter')
+			}
+			user := current.value or { return 'null' }
+			updated := decode_user(merge_record_json(encode_user(user), args[2].json_str())!)!
+			if updated.id != user.id { return error('cannot change primary key') }
+			c.auth.storage.update_user(updated)!
+			return encode_user(updated)
+		}
 		'updatePassword' {
 			if args.len != 2 { return error('updatePassword requires user id and password hash') }
 			c.auth.update_password(args[0].str(), args[1].str())!

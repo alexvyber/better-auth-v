@@ -62,6 +62,10 @@ fn (mut a Auth) queue_task(task AfterCommitTask) ! {
 }
 
 fn (mut a Auth) run_task(task AfterCommitTask) ! {
+	if task.kind == 'remove-session' {
+		a.remove_cached_session(task.session)!
+		return
+	}
 	if task.kind == 'password-reset' {
 		a.config.on_password_reset(task.user)!
 		return
@@ -200,6 +204,20 @@ fn (mut a Auth) update_password(user_id string, password string) ! {
 	actual := decode_account(encoded)!
 	a.storage.update_account(actual)!
 	a.after_record('account', 'update', json.encode(actual))!
+}
+
+fn (mut a Auth) update_account_record(account Account, patch string) ! {
+	if _ := (a.intercept_internal('updateAccount', '[${json.encode(account.id)},${patch}]')!).value {
+		return
+	}
+	updated := decode_account(merge_record_json(json.encode(account), patch)!)!
+	prepared := Account{
+		...updated
+		updated_at: time.unix_milli(a.clock_millis()).format_rfc3339()
+	}
+	encoded := (a.before_record('account', 'update', json.encode(prepared))!).value or { return }
+	a.storage.update_account(decode_account(encoded)!)!
+	a.after_record('account', 'update', encoded)!
 }
 
 fn (mut a Auth) persist_verification(value Verification) ! {

@@ -549,20 +549,32 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 			})
 		}
 		'/change-password' {
-			current := a.require_session(ctx, true)!
+			current := a.require_session(ctx, false)!
 			a.check_password(p.new_password)!
+			a.check_password_max(p.current_password)!
 			account := (a.storage.account(current.user.id, 'credential')!).value or {
 				return fail(400, 'CREDENTIAL_ACCOUNT_NOT_FOUND', 'Credential account not found')
 			}
 
+			if account.password == '' {
+				return fail(400, 'CREDENTIAL_ACCOUNT_NOT_FOUND', 'Credential account not found')
+			}
+			hash := a.config.password_hasher.hash(p.new_password)!
 			if !a.config.password_hasher.verify(p.current_password, account.password)! {
 				return fail(400, 'INVALID_PASSWORD', 'Invalid password')
 			}
-			hash := a.config.password_hasher.hash(p.new_password)!
+			if p.revoke_other_sessions { a.remove_user_sessions(current.user.id, '')! }
+			a.update_account_record(account, '{"password":${json.encode(hash)}}')!
 			if p.revoke_other_sessions {
-				a.remove_user_sessions(current.user.id, current.session.id)!
+				session := a.make_session(current.user.id, ctx, true)!
+				return a.set_session_cookies(Response{
+					headers: [Header{'content-type', 'application/json'}]
+					body:    '{"token":${json.encode(session.token)},"user":${a.user_json(current.user)}}'
+				}, SessionResult{
+					session: session
+					user:    current.user
+				})
 			}
-			a.update_password(current.user.id, hash)!
 			return Response{
 				headers: [Header{'content-type', 'application/json'}]
 				body:    '{"token":null,"user":${a.user_json(current.user)}}'

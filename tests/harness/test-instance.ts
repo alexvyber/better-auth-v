@@ -335,7 +335,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
   instances.add(bridge);
   const callbacks: Record<string, (payload: any) => unknown> = {...endpointCallbacks};
   const internalAdapter = {} as FixtureInternalAdapter;
-  const internalNames = ['createSession', 'findSession', 'listSessions', 'updateSession', 'deleteSession', 'deleteUserSessions', 'createUser', 'updateUser', 'findUserById', 'findUserByEmail', 'createAccount', 'findCredentialAccount', 'deleteAccount', 'updatePassword'];
+  const internalNames = ['createSession', 'findSession', 'listSessions', 'updateSession', 'deleteSession', 'deleteUserSessions', 'createUser', 'updateUser', 'findUserById', 'findUserByEmail', 'createAccount', 'findCredentialAccount', 'deleteAccount', 'updateAccount', 'findAccounts', 'updatePassword'];
   for (const name of internalNames) {
     internalAdapter[name] = async (...args: any[]) => {
       const reply = await bridge.send('internal', {method: name, arguments_json: transportJSON(args)});
@@ -750,8 +750,12 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     return {...result, headers, runWithUser: <T>(callback: (headers: Headers) => T) => currentUserHeaders.run(headers, () => callback(headers))};
   }
   const db = {
-    async update(args: FixtureOptions) {
+    async update<T = Record<string, unknown>>(args: FixtureOptions): Promise<T | null> {
       assertKeys(args, ["model", "where", "update"], "db.update");
+      if (args.model === 'user' && args.where?.length === 1 && ['email', 'id'].includes(args.where[0].field) && (!args.where[0].operator || args.where[0].operator === 'eq')) {
+        const reply = await bridge.send('internal', {method: 'adapterUpdateUser', arguments_json: transportJSON([args.where[0].field, args.where[0].value, args.update])});
+        return hydrate(JSON.parse(reply.value_json));
+      }
       if (args.model !== "session" || args.where?.length !== 1 || args.where[0].field !== "id" || (args.where[0].operator && args.where[0].operator !== "eq"))
         throw new Error("V fixture db.update currently requires a session id equality filter");
       const reply = await bridge.send("internal", {method: "adapterUpdateSession", arguments_json: transportJSON([args.where[0].value, args.update])});
@@ -767,6 +771,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
   };
   return {
     auth,
+    customFetchImpl: clientOptions.fetchOptions.customFetchImpl,
     client,
     testUser,
     cookieSetter,

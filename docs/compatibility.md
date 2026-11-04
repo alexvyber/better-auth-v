@@ -21,7 +21,7 @@ The default base path is `/api/auth`.
 | POST   | `/revoke-other-sessions`   | Revoke all other devices                                  |
 | POST   | `/update-user`             | Update name/image; protected fields rejected              |
 | POST   | `/update-session`          | Update configured session fields; protect core fields    |
-| POST   | `/change-password`         | Verify current password; optional other-device revocation |
+| POST   | `/change-password`         | Verify current password; optional full revocation/replacement |
 | POST   | `/delete-user`             | Verify password where present; cascade accounts/sessions  |
 | POST   | `/request-password-reset`  | Send a single-use reset link                              |
 | GET    | `/reset-password/:token`   | Validate link and redirect to trusted callback            |
@@ -69,6 +69,11 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   session refresh. Email changes support old-address confirmation followed by
   target-address verification, enumeration-resistant responses, and canonical
   credential identity preservation.
+- Password changes use an authoritative session and validate both password length
+  limits before hashing. Optional revocation removes all old sessions and returns
+  a fresh session token and cookies. Database/account writes roll back together;
+  database-backed secondary revocation and replacement caching wait for commit.
+  Secondary-only stores cannot restore deleted sessions after later failures.
 - Magic links sign in existing users only. Registration through a magic link is
   not implemented.
 - OAuth currently has a GitHub provider. The provider interface supports other

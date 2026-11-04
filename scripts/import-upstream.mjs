@@ -16,6 +16,9 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+  {file: 'update-user', suites: new Set(['updateUser']),
+   imports: 'import { describe, expect, it, vi } from "vitest";\nimport { createAuthClient } from "better-auth/client";\nimport { inferAdditionalFields } from "better-auth/client/plugins";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport type { Account, Session } from "better-auth";\n',
+  },
   { file: "sign-in", suites: null },
   { file: "email-verification", suites: null },
   { file: "password", directory: "crypto", suites: null },

@@ -1,0 +1,355 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/api/routes/update-user.test.ts",
+  "sha256": "672be15b9def852b5c0f39222da716f1bfde9bd74c21181a1496a7c00564f502",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "updateUser",
+      "suites": [
+        "updateUser"
+      ],
+      "test": "should update the user's name",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateUser",
+      "suites": [
+        "updateUser"
+      ],
+      "test": "should unset image",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateUser",
+      "suites": [
+        "updateUser"
+      ],
+      "test": "should change email only after confirming both addresses",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateUser",
+      "suites": [
+        "updateUser"
+      ],
+      "test": "should update the user's password",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateUser",
+      "suites": [
+        "updateUser",
+        "with revokeOtherSessions, when a step fails"
+      ],
+      "test": "keeps the old password when revocation fails",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateUser",
+      "suites": [
+        "updateUser",
+        "with revokeOtherSessions, when a step fails"
+      ],
+      "test": "keeps existing sessions when the password write fails",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateUser",
+      "suites": [
+        "updateUser",
+        "with revokeOtherSessions, when a step fails"
+      ],
+      "test": "keeps the old password and sessions when the replacement session cannot be created",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateUser",
+      "suites": [
+        "updateUser",
+        "with revokeOtherSessions, when a step fails"
+      ],
+      "test": "keeps the old password when secondary storage cannot store the replacement session",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateUser",
+      "suites": [
+        "updateUser",
+        "with revokeOtherSessions, when a step fails"
+      ],
+      "test": "does not cache the replacement session when the transaction fails",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateUser",
+      "suites": [
+        "updateUser"
+      ],
+      "test": "should update account's updatedAt when changing password",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateUser",
+      "suites": [
+        "updateUser"
+      ],
+      "test": "should not update password if current password is wrong",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateUser",
+      "suites": [
+        "updateUser"
+      ],
+      "test": "should revoke other sessions",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateUser",
+      "suites": [
+        "updateUser"
+      ],
+      "test": "should preserve the replacement session in secondary storage",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateUser",
+      "suites": [
+        "updateUser"
+      ],
+      "test": "shouldn't pass defaults",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateUser",
+      "suites": [
+        "updateUser"
+      ],
+      "test": "should propagate updates across sessions when secondaryStorage is enabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateUser",
+      "suites": [
+        "updateUser"
+      ],
+      "test": "should not write to secondary storage multiple times for the same session token during updateUser",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateUser",
+      "suites": [
+        "updateUser"
+      ],
+      "test": "should not allow updating user with additional fields that are input: false",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "delete user",
+      "suites": [
+        "delete user"
+      ],
+      "test": "should not delete user if deleteUser is disabled",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "delete user",
+      "suites": [
+        "delete user"
+      ],
+      "test": "should delete the user with a fresh session",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "delete user",
+      "suites": [
+        "delete user"
+      ],
+      "test": "should require password when session is no longer fresh",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "delete user",
+      "suites": [
+        "delete user"
+      ],
+      "test": "should delete every session from deleted user",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "delete user",
+      "suites": [
+        "delete user"
+      ],
+      "test": "should delete with verification flow and password",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "delete user",
+      "suites": [
+        "delete user"
+      ],
+      "test": "should delete only once when the same token is used concurrently",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "delete user",
+      "suites": [
+        "delete user"
+      ],
+      "test": "should ignore cookie cache for sensitive operations like changePassword",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "delete user",
+      "suites": [
+        "delete user"
+      ],
+      "test": "rejects /delete-user/callback when the backing session was revoked",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "change-email enumeration protection",
+      "suites": [
+        "change-email enumeration protection"
+      ],
+      "test": "should return 200 when target email already exists",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "change-email enumeration protection",
+      "suites": [
+        "change-email enumeration protection"
+      ],
+      "test": "should not change the user's email",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "change-email without sendVerificationEmail",
+      "suites": [
+        "change-email without sendVerificationEmail"
+      ],
+      "test": "should return the same error for existing and non-existing emails",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "change-email callbackURL preservation",
+      "suites": [
+        "change-email callbackURL preservation"
+      ],
+      "test": "preserves a callbackURL that carries its own query string",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "change-email rejects confirmation-only config for verified users",
+      "suites": [
+        "change-email rejects confirmation-only config for verified users"
+      ],
+      "test": "returns 400 when sendVerificationEmail is not configured",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "credential identity across email changes",
+      "suites": [
+        "credential identity across email changes"
+      ],
+      "test": "keeps one credential account when the user changes their sign-in email",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "setPassword",
+      "suites": [
+        "setPassword"
+      ],
+      "test": "sets the password on the existing passwordless credential account",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "password length on verify-only fields",
+      "suites": [
+        "password length on verify-only fields"
+      ],
+      "test": "change-password should reject a currentPassword longer than maxPasswordLength before hashing",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    },
+    {
+      "suite": "password length on verify-only fields",
+      "suites": [
+        "password length on verify-only fields"
+      ],
+      "test": "delete-user should reject a password longer than maxPasswordLength before hashing",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+    }
+  ]
+}

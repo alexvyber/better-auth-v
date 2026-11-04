@@ -193,9 +193,18 @@ or corpus inventory contains unimplemented behavior.
   redirect tests now exercise the HTTP boundary; trusted server calls mirror the
   upstream origin-policy bypass.
 
+- Imported all 17 `updateUser` declarations from the user lifecycle file without
+  changing their assertions. Password changes validate current-password length
+  before hashing, use an authoritative session, and replace all revoked sessions
+  with a new session/token/cookie. Account writes and replacement creation share
+  the transaction. Database-backed secondary deletions and replacement writes wait
+  for commit; the source tests cover failures at every step. Trusted adapter user
+  updates preserve custom fields without reapplying defaults. The remaining 17
+  declarations in this source file are explicitly unported in its manifest.
+
 ## Next infrastructure work
 
-The latest `make check` passes 512 TypeScript cases across 24 files, all 52 native
+The latest `make check` passes 529 TypeScript cases across 25 files, all 52 native
 V test functions across 10 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and

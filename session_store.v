@@ -212,7 +212,13 @@ fn (mut a Auth) remove_session(token string) ! {
 
 fn (mut a Auth) remove_session_row(session Session) ! {
 	if (a.before_record('session', 'delete', encode_session(session))!).value == none { return }
-	if a.has_secondary() { a.remove_cached_session(session)! }
+	if a.has_secondary() {
+		if a.database_fallback() {
+			a.queue_task(AfterCommitTask{ kind: 'remove-session', session: session })!
+		} else {
+			a.remove_cached_session(session)!
+		}
+	}
 	if a.database_sessions() {
 		if a.has_secondary() && a.config.preserve_session_in_database {
 			if epoch(session.expires_at)! > a.config.clock() { a.storage.update_session(Session{

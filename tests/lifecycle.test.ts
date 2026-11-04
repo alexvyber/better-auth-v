@@ -168,9 +168,7 @@ describe("V account lifecycle", () => {
       body: { token: target.token },
     });
     expect(await auth.api.getSession({ headers: second.headers })).toBeNull();
-    expect(
-      await auth.api.getSession({ headers: first.headers }),
-    ).not.toBeNull();
+    expect(await auth.api.getSession({ headers: first.headers })).not.toBeNull();
   });
 
   it("cannot revoke another user's session", async () => {
@@ -203,21 +201,16 @@ describe("V account lifecycle", () => {
     const { headers } = await signInWithTestUser();
     vi.advanceTimersByTime(5000);
     await expect(
-      auth.api.changePassword({
-        headers,
-        body: {
-          currentPassword: testUser.password,
-          newPassword: "replacement123",
-        },
-      }),
+      auth.api.listSessions({ headers }),
     ).rejects.toMatchObject({ body: { code: "SESSION_NOT_FRESH" } });
   });
 
   it("changes a password and optionally revokes other sessions", async () => {
-    const { auth, testUser, signInWithTestUser } = await getTestInstance();
+    const { auth, testUser, signInWithTestUser, sessionSetter } = await getTestInstance();
     const first = await signInWithTestUser();
     const second = await signInWithTestUser();
-    await auth.api.changePassword({
+    const replacement = await auth.api.changePassword({
+      asResponse: true,
       headers: first.headers,
       body: {
         currentPassword: testUser.password,
@@ -226,9 +219,10 @@ describe("V account lifecycle", () => {
       },
     });
     expect(await auth.api.getSession({ headers: second.headers })).toBeNull();
-    expect(
-      await auth.api.getSession({ headers: first.headers }),
-    ).not.toBeNull();
+    expect(await auth.api.getSession({ headers: first.headers })).toBeNull();
+    const replacementHeaders = new Headers();
+    sessionSetter(replacementHeaders)({response: replacement});
+    expect(await auth.api.getSession({ headers: replacementHeaders })).not.toBeNull();
     await expect(auth.api.signInEmail({ body: testUser })).rejects.toThrow();
   });
 

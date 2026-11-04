@@ -182,9 +182,20 @@ or corpus inventory contains unimplemented behavior.
   semantics. Existing local reset tests now explicitly configure the policy they
   intended to exercise. Native account updates preserve canonical identity.
 
+- Imported the full email-verification file (25 declarations) unchanged. Added
+  upstream-compatible HS256 verification JWTs, idempotent repeated verification,
+  before/after callbacks, optional sign-in, current-session cookies, and the
+  unauthenticated 500 ms timing floor. Added email-change confirmation/verification
+  with session-owner checks, cached-user refresh, and canonical credential IDs.
+  Callback request snapshots survive consumed bodies and clone failures. Native
+  legacy links remain readable. Independent JOSE tests exchange tokens and check
+  algorithm/expiry rejection and cross-user email-change isolation. Local HTTP
+  redirect tests now exercise the HTTP boundary; trusted server calls mirror the
+  upstream origin-policy bypass.
+
 ## Next infrastructure work
 
-The latest `make check` passes 485 TypeScript cases across 22 files, all 52 native
+The latest `make check` passes 512 TypeScript cases across 24 files, all 52 native
 V test functions across 10 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
@@ -221,7 +232,7 @@ pushes to `alexvyber/better-auth-v`. The objective remains incomplete.
   contract coverage and/or a faithful TS facade; do not mark them passed merely
   because the existing TS implementation passes them.
 - Read-only deferred session GET must keep working with `PRAGMA query_only=ON`.
-- Preserve transaction rollback, one-time token consumption, protected fields,
+- Preserve transaction rollback, one-time reset/OAuth token consumption, protected fields,
   browser-bound OAuth state, and canonical credential-account selection.
 - Use `make check` for the complete current verification set. Real scrypt tests
   take substantially longer than fast fixture authentication tests.

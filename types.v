@@ -58,14 +58,17 @@ pub:
 
 pub struct EmailMessage {
 pub:
-	kind  string
-	user  User
-	token string
-	url   string
+	kind      string
+	user      User
+	token     string
+	url       string
+	new_email string   @[json: newEmail]
+	request   ?Request @[skip]
 }
 
 pub struct RequestContext {
 pub:
+	request ?Request
 	origin  string
 	headers map[string]string
 }
@@ -195,8 +198,15 @@ pub:
 	disable_session_refresh           bool
 	password_reset_expires_in         i64 = 3600
 	revoke_sessions_on_password_reset bool
-	on_password_reset                 fn (User) !         = discard_password_reset
-	database_transactions             bool                = true
+	on_password_reset                 fn (User) ! = discard_password_reset
+	database_transactions             bool        = true
+	verification_delivery_enabled     ?bool
+	auto_sign_in_after_verification   bool
+	before_email_verification         fn (User, RequestContext) ! = discard_verification_callback
+	after_email_verification          fn (User, RequestContext) ! = discard_verification_callback
+	change_email_enabled              bool
+	update_email_without_verification bool
+	send_change_email_confirmation    fn (EmailMessage) ! = discard_email
 	verification_expires_in           i64                 = 3600
 	rate_limit_max                    int                 = 100
 	rate_limit_window                 i64                 = 60
@@ -440,3 +450,5 @@ fn no_millisecond_clock() i64 {
 }
 
 fn discard_password_reset(_ User) ! {}
+
+fn discard_verification_callback(_ User, _ RequestContext) ! {}

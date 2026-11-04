@@ -17,6 +17,7 @@ if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
   { file: "sign-in", suites: null },
+  { file: "email-verification", suites: null },
   { file: "password", directory: "crypto", suites: null },
   {
     file: 'password-reset', source_file: 'password', suites: null,

@@ -19,6 +19,7 @@ struct Payload {
 	new_user_callback_url string @[json: 'newUserCallbackURL']
 	token                 string
 	current_password      string @[json: 'currentPassword']
+	new_email             string @[json: newEmail]
 	new_password          string @[json: 'newPassword']
 	revoke_other_sessions bool   @[json: 'revokeOtherSessions']
 }
@@ -36,6 +37,7 @@ fn core_routes() map[string][]string {
 		'/revoke-sessions':         ['POST']
 		'/revoke-other-sessions':   ['POST']
 		'/update-session':          ['POST']
+		'/change-email':            ['POST']
 		'/update-user':             ['POST']
 		'/verify-password':         ['POST']
 		'/change-password':         ['POST']
@@ -83,6 +85,9 @@ fn (a &Auth) set_cookie(r Response, token string, remember bool) Response {
 	}
 	if a.base_url().starts_with('https://') { value += '; Secure' }
 	mut result := with_header(r, 'set-cookie', value)
+	for plugin in a.config.plugins {
+		if plugin is BearerPlugin { result = with_header(result, 'set-auth-token', token) }
+	}
 	marker := a.cookie_name().all_before_last('.') + '.dont_remember'
 	if !remember {
 		result = with_header(result, 'set-cookie', a.cache_cookie_header(marker,
@@ -144,6 +149,7 @@ fn (mut a Auth) process(req Request, direct bool) Response {
 	a.request_context = RequestContext{
 		headers: headers
 		origin:  origin_url
+		request: if direct { none } else { ?Request(normalized) }
 	}
 	r := a.process_checked(normalized, direct) or { error_response(err) }
 	mut result := r
@@ -612,31 +618,13 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 			})
 		}
 		'/send-verification-email' {
-			email := normalize_email(p.email)!
-			if user := (a.storage.user_by_email(email)!).value {
-				if !user.email_verified { a.issue_email('verify-email', user, p.callback_url)! }
-			}
-			return json_response({
-				'status': true
-			})
+			return a.send_verification(p, ctx)
 		}
 		'/verify-email' {
-			user := a.consume_token((u.query().get('token') or { '' }), 'verify-email')!
-			updated := User{
-				...user
-				email_verified: true
-				updated_at:     stamp(a.config.clock())
-			}
-			a.update_user_record(updated)!
-			callback := (u.query().get('callbackURL') or { '' })
-			if callback != '' { return Response{
-					status:  302
-					headers: [Header{'location', callback}]
-				} }
-			return Response{
-				headers: [Header{'content-type', 'application/json'}]
-				body:    '{"status":true,"user":${a.user_json(updated)}}'
-			}
+			return a.verify_email_request(req, ctx)
+		}
+		'/change-email' {
+			return a.change_email_request(p, ctx)
 		}
 		else {
 			if path.starts_with('/callback/') {

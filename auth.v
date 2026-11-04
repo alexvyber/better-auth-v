@@ -424,6 +424,11 @@ fn (a &Auth) context_token(ctx RequestContext) ?string {
 }
 
 fn (mut a Auth) issue_email(kind string, user User, callback string) ! {
+	if kind == 'verify-email' {
+		if !a.can_send_verification() { return }
+		a.config.send_email(a.verification_message(user, callback, '', '')!)!
+		return
+	}
 	token := random_token()!
 	a.persist_verification(Verification{
 		id:         digest(token)
@@ -487,6 +492,8 @@ fn (a &Auth) check_redirect(value string, input_field string) ! {
 	if value.contains_any('\\\r\n\x00') || value.starts_with('//') {
 		return fail(403, 'INVALID_CALLBACK_URL', 'Invalid ${field}')
 	}
+	// Trusted server calls have no HTTP origin policy; keep structural header checks.
+	if a.request_context.request == none { return }
 	if value.starts_with('/') { return }
 	u := urllib.parse(value) or { return fail(403, 'INVALID_CALLBACK_URL', 'Invalid ${field}') }
 	if u.scheme !in ['http', 'https'] || value.all_after('://').all_before('/').contains('@')

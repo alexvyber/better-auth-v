@@ -24,7 +24,7 @@
     "core-api": {
       "files": 18,
       "declarations": 452,
-      "importedFiles": 4
+      "importedFiles": 5
     },
     "client": {
       "files": 10,
@@ -6001,7 +6001,7 @@
       "path": "packages/better-auth/src/api/routes/email-verification.test.ts",
       "sha256": "ca6f4fd2c94472bfa1e64a17f84e55d62dec3289b84cd6a98854b0837a61bdb5",
       "group": "core-api",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {

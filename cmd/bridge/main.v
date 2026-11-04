@@ -30,6 +30,10 @@ struct Options {
 	secrets_json                      string
 	secret                            string = 'better-auth-test-secret-at-least-32-bytes'
 	trusted_origins                   []string
+	verification_delivery_enabled     bool
+	auto_sign_in_after_verification   bool
+	change_email_enabled              bool
+	update_email_without_verification bool
 	require_email_verification        bool
 	send_verification_on_sign_up      ?bool
 	send_verification_on_sign_in      bool
@@ -495,6 +499,7 @@ fn main() {
 			return
 		}
 	}
+	defaults := better_auth.Config{}
 	mut auth := better_auth.new(better_auth.Config{
 		stateless_sessions:                opts.stateless_sessions
 		cookie_cache:                      better_auth.CookieCacheConfig{
@@ -530,6 +535,27 @@ fn main() {
 		secret:                            opts.secret
 		secrets:                           secrets
 		trusted_origins:                   opts.trusted_origins
+		verification_delivery_enabled:     opts.verification_delivery_enabled
+		auto_sign_in_after_verification:   opts.auto_sign_in_after_verification
+		change_email_enabled:              opts.change_email_enabled
+		update_email_without_verification: opts.update_email_without_verification
+		send_change_email_confirmation:    if 'email.change-confirmation' in opts.callback_methods {
+			fn (message better_auth.EmailMessage) ! {
+				callback_rpc('email.change-confirmation', better_auth.encode_email(message))!
+			}
+		} else {
+			defaults.send_change_email_confirmation
+		}
+		before_email_verification:         fn [opts] (user better_auth.User, _ better_auth.RequestContext) ! {
+			if 'email.verify.before' in opts.callback_methods {
+				callback_rpc('email.verify.before', better_auth.encode_user(user))!
+			}
+		}
+		after_email_verification:          fn [opts] (user better_auth.User, _ better_auth.RequestContext) ! {
+			if 'email.verify.after' in opts.callback_methods {
+				callback_rpc('email.verify.after', better_auth.encode_user(user))!
+			}
+		}
 		require_email_verification:        opts.require_email_verification
 		send_verification_on_sign_up:      opts.send_verification_on_sign_up
 		send_verification_on_sign_in:      opts.send_verification_on_sign_in

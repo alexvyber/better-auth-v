@@ -1,0 +1,260 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/api/routes/email-verification.test.ts",
+  "sha256": "ca6f4fd2c94472bfa1e64a17f84e55d62dec3289b84cd6a98854b0837a61bdb5",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "Email Verification - Request body consumption bug",
+      "suites": [
+        "Email Verification - Request body consumption bug"
+      ],
+      "test": "should not fail sign-up when callback request cloning throws",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification - Request body consumption bug",
+      "suites": [
+        "Email Verification - Request body consumption bug"
+      ],
+      "test": "should not throw 'body already consumed' error when sendVerificationEmail callback reads the request",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification - Request body consumption bug",
+      "suites": [
+        "Email Verification - Request body consumption bug"
+      ],
+      "test": "should not throw 'body already consumed' error when sendVerificationEmail is called during sign-up",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification - Request body consumption bug",
+      "suites": [
+        "Email Verification - Request body consumption bug"
+      ],
+      "test": "should not throw 'body already consumed' error when sendVerificationEmail is called during sign-in",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification",
+      "suites": [
+        "Email Verification"
+      ],
+      "test": "should send a verification email when enabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification",
+      "suites": [
+        "Email Verification"
+      ],
+      "test": "should return APIError status when sendVerificationEmail throws (e.g. rate limit)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification",
+      "suites": [
+        "Email Verification"
+      ],
+      "test": "should send a verification email if verification is required and user is not verified",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification",
+      "suites": [
+        "Email Verification"
+      ],
+      "test": "should verify email",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification",
+      "suites": [
+        "Email Verification"
+      ],
+      "test": "should redirect to callback",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification",
+      "suites": [
+        "Email Verification"
+      ],
+      "test": "should sign after verification",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification",
+      "suites": [
+        "Email Verification"
+      ],
+      "test": "should use custom expiresIn",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification",
+      "suites": [
+        "Email Verification"
+      ],
+      "test": "should call afterEmailVerification callback when email is verified",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification",
+      "suites": [
+        "Email Verification"
+      ],
+      "test": "should call beforeEmailVerification callback when email is verified",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification",
+      "suites": [
+        "Email Verification"
+      ],
+      "test": "should call afterEmailVerification callback when email is verified",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification",
+      "suites": [
+        "Email Verification"
+      ],
+      "test": "should preserve encoded characters in callback URL",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification",
+      "suites": [
+        "Email Verification"
+      ],
+      "test": "should properly encode callbackURL with query parameters when sending verification email",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification",
+      "suites": [
+        "Email Verification"
+      ],
+      "test": "should not send verification email when a third party requests for an already verified user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification - Timing-safe unauthenticated path",
+      "suites": [
+        "Email Verification - Timing-safe unauthenticated path"
+      ],
+      "test": "should enforce a constant-time floor for both existing and non-existing emails",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification - Timing-safe unauthenticated path",
+      "suites": [
+        "Email Verification - Timing-safe unauthenticated path"
+      ],
+      "test": "should still surface errors from sendVerificationEmail after the minimum delay",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification Secondary Storage",
+      "suites": [
+        "Email Verification Secondary Storage"
+      ],
+      "test": "should verify email",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification Secondary Storage",
+      "suites": [
+        "Email Verification Secondary Storage"
+      ],
+      "test": "should change email",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification Secondary Storage",
+      "suites": [
+        "Email Verification Secondary Storage"
+      ],
+      "test": "should set emailVerified on all sessions",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification Secondary Storage",
+      "suites": [
+        "Email Verification Secondary Storage"
+      ],
+      "test": "should set emailVerified on all sessions",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification Secondary Storage",
+      "suites": [
+        "Email Verification Secondary Storage"
+      ],
+      "test": "should call hooks when verifying email change (change-email-verification)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Email Verification Secondary Storage",
+      "suites": [
+        "Email Verification Secondary Storage"
+      ],
+      "test": "should handle email case insensitivity when sending verification email while signed in",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

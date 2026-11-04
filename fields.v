@@ -148,7 +148,7 @@ fn (a &Auth) session_response(result SessionResult) Response {
 }
 
 pub fn encode_email(message EmailMessage) string {
-	return '{"kind":${json.encode(message.kind)},"user":${encode_user(message.user)},"token":${json.encode(message.token)},"url":${json.encode(message.url)}}'
+	return '{"kind":${json.encode(message.kind)},"user":${encode_user(message.user)},"token":${json.encode(message.token)},"url":${json.encode(message.url)},"newEmail":${json.encode(message.new_email)}}'
 }
 
 pub fn encode_user_source(source UserInfoSource) string {

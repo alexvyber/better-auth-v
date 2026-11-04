@@ -56,14 +56,19 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
 - SQLite tables use typed indexed identity columns plus JSON record payloads;
   they do not match upstream's physical schema. Schema v4 is owned by this project;
   migrations preserve v1 rows. Account identity columns support actual SQL aliases.
-- Email verification/reset tokens are opaque, purpose-bound, expiring records,
-  not upstream's encoded token format. Reset has an independent TTL; session
-  revocation is opt-in. Token consumption, revocation, and password writes share
+- Email verification uses upstream-compatible HS256 JWTs; repeated verification
+  is idempotent. Old native opaque verification links remain readable until their
+  original expiry. Password-reset tokens remain opaque expiring records. Reset
+  has an independent TTL; session revocation is opt-in. Token consumption, revocation, and password writes share
   a transaction. Password-policy rejection leaves the link reusable, and a
   post-reset callback failure occurs after the successful reset has committed.
   Reset-email delivery failures retain enumeration-resistant success responses.
   Password verification requires an authoritative session and enforces length
-  limits before calling the verifier.
+  limits before calling the verifier. Verification supports before/after callbacks,
+  optional sign-in, a timing floor on unauthenticated email lookup, and current
+  session refresh. Email changes support old-address confirmation followed by
+  target-address verification, enumeration-resistant responses, and canonical
+  credential identity preservation.
 - Magic links sign in existing users only. Registration through a magic link is
   not implemented.
 - OAuth currently has a GitHub provider. The provider interface supports other
@@ -162,8 +167,8 @@ tests establishes only their covered behavior, not complete upstream parity.
 
 ## Test boundaries
 
-- Original upstream sign-in, crypto password, password-reset/verification, sign-up,
-  and session files run in full with
+- Original upstream sign-in, email-verification, crypto password, password-reset/
+  verification, sign-up, and session files run in full with
   replaced fixtures/imports and unchanged assertions. Their per-file manifests
   record the pinned source and declaration inventory. Passing these files
   does not establish coverage of the separate plugin/adapter/client suites.

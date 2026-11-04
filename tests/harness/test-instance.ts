@@ -15,6 +15,7 @@ import { schemaPluginOptions } from './plugins.js';
 // their objects; unsupported server configuration fails rather than being ignored.
 type FixtureOptions = Record<string, any>;
 interface FixtureUserOptions extends FixtureOptions {
+  changeEmail?: NonNullable<BetterAuthOptions['user']>['changeEmail'];
   additionalFields?: FixtureOptions;
   validateUserInfo?: (context: {
     user: Record<string, unknown>;
@@ -33,7 +34,7 @@ interface ServerOptions {
   secrets?: BetterAuthOptions['secrets'];
   trustedOrigins?: string[];
   emailAndPassword?: Partial<NonNullable<BetterAuthOptions['emailAndPassword']>> & FixtureOptions;
-  emailVerification?: FixtureOptions;
+  emailVerification?: NonNullable<BetterAuthOptions['emailVerification']> & FixtureOptions;
   session?: NonNullable<BetterAuthOptions["session"]> & FixtureOptions;
   advanced?: FixtureOptions;
   rateLimit?: FixtureOptions;
@@ -69,7 +70,7 @@ interface FixtureTransactionAdapter {
 const instances = new Set<Bridge>();
 const nativeTransactionScope = new AsyncLocalStorage<boolean>();
 const currentUserHeaders = new AsyncLocalStorage<Headers>();
-const currentOperation = new AsyncLocalStorage<{ transactionError?: unknown; storeFailure?: unknown }>();
+const currentOperation = new AsyncLocalStorage<{ transactionError?: unknown; storeFailure?: unknown; request?: Request }>();
 afterAll(async () => {
   await Promise.all([...instances].map((instance) => instance.close()));
   instances.clear();
@@ -87,6 +88,7 @@ const routes: Record<string, [string, string]> = {
   updateUser: ["POST", "/update-user"],
   updateSession: ["POST", "/update-session"],
   changePassword: ["POST", "/change-password"],
+  changeEmail: ["POST", "/change-email"],
   deleteUser: ["POST", "/delete-user"],
   requestPasswordReset: ["POST", "/request-password-reset"],
   resetPassword: ["POST", "/reset-password"],
@@ -272,7 +274,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
   );
   assertKeys(
     ev,
-    ["sendOnSignUp", "sendOnSignIn", "sendVerificationEmail", "expiresIn"],
+    ["sendOnSignUp", "sendOnSignIn", "sendVerificationEmail", "expiresIn", "autoSignInAfterVerification", "beforeEmailVerification", "afterEmailVerification"],
     "emailVerification",
   );
   assertKeys(
@@ -297,9 +299,10 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
   );
   assertKeys(
     options.user ?? {},
-    ["additionalFields", "validateUserInfo"],
+    ["additionalFields", "validateUserInfo", "changeEmail"],
     "user",
   );
+  assertKeys(options.user?.changeEmail ?? {}, ['enabled', 'sendChangeEmailConfirmation', 'updateEmailWithoutVerification'], 'user.changeEmail');
   assertKeys(options.logger ?? {}, ["level", "log", "disabled"], "logger");
   assertKeys(
     ep.password ?? {},
@@ -470,10 +473,14 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
   if (typeof ep.onPasswordReset === 'function') callbacks['password.reset'] = input => ep.onPasswordReset!(hydrate(input), undefined);
   if (typeof ep.sendResetPassword === "function")
     callbacks["email.reset-password"] = (payload) =>
-      ep.sendResetPassword!(hydrate(payload), undefined);
+      ep.sendResetPassword!({user: hydrate(payload.user), url: payload.url, token: payload.token}, callbackRequest());
+  if (typeof ev.beforeEmailVerification === 'function') callbacks['email.verify.before'] = user => ev.beforeEmailVerification!(hydrate(user), callbackRequest());
+  if (typeof ev.afterEmailVerification === 'function') callbacks['email.verify.after'] = user => ev.afterEmailVerification!(hydrate(user), callbackRequest());
+  const changeEmail = options.user?.changeEmail;
+  if (typeof changeEmail?.sendChangeEmailConfirmation === 'function') callbacks['email.change-confirmation'] = message => changeEmail.sendChangeEmailConfirmation!({user: hydrate(message.user), newEmail: message.newEmail, url: message.url, token: message.token}, callbackRequest());
   if (typeof ev.sendVerificationEmail === "function")
     callbacks["email.verify-email"] = (payload) =>
-      ev.sendVerificationEmail(hydrate(payload), undefined);
+      ev.sendVerificationEmail!({user: hydrate(payload.user), url: payload.url, token: payload.token}, callbackRequest());
   const validateUserInfo = options.user?.validateUserInfo;
   if (typeof validateUserInfo === "function")
     callbacks["user.validate"] = (payload) =>
@@ -537,6 +544,10 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
         (options.secrets ? '' : "better-auth-secret-that-is-long-enough-for-validation-test"),
       trusted_origins: options.trustedOrigins ?? [],
       email_and_password: ep.enabled ?? true,
+      verification_delivery_enabled: typeof ev.sendVerificationEmail === 'function',
+      auto_sign_in_after_verification: ev.autoSignInAfterVerification ?? false,
+      change_email_enabled: options.user?.changeEmail?.enabled ?? false,
+      update_email_without_verification: options.user?.changeEmail?.updateEmailWithoutVerification ?? false,
       require_email_verification: ep.requireEmailVerification ?? false,
       auto_sign_in: ep.autoSignIn ?? true,
       min_password_length: ep.minPasswordLength ?? 8,
@@ -582,11 +593,12 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       }
     }
   }
+  function callbackRequest() { return safeCloneRequest(currentOperation.getStore()?.request); }
   const emails: any[] = [];
   const cookieInfo = await bridge.send('internal', {method: 'cookieInfo'});
   context.authCookies = JSON.parse(cookieInfo.value_json);
   async function dispatch(request: Request, direct = false) {
-    return currentOperation.run({}, async () => {
+    return currentOperation.run({request: direct ? undefined : safeCloneRequest(request)}, async () => {
     const result = await bridge.request(request, direct);
     const transactionError = currentOperation.getStore()?.transactionError;
     if (direct && result.response.status === 500 && transactionError) throw transactionError;
@@ -688,9 +700,9 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
   const cookieSetter =
     (headers: Headers) =>
     ({ response }: { response: Response }) => {
-      const cookies = parseSetCookieHeader(
-        response.headers.get("set-cookie") ?? "",
-      );
+      const setCookie = response.headers.get('set-cookie');
+      if (!setCookie) return;
+      const cookies = parseSetCookieHeader(setCookie);
       const existing = new Map((headers.get("cookie") ?? "").split(";").filter(Boolean).map(item => {
         const separator = item.indexOf("=");
         return [item.slice(0, separator).trim(), item.slice(separator + 1)] as const;
@@ -712,7 +724,10 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
   };
   if (!config.disableTestUser) await api.signUpEmail({ body: testUser });
 
-  async function signInWithTestUser() {
+  async function signInWithTestUser(): Promise<{
+    user: FixtureOptions; session: FixtureSession; headers: Headers;
+    runWithUser<T>(callback: (headers: Headers) => T): T;
+  }> {
     const response = await api.signInEmail({
       body: testUser,
       asResponse: true,
@@ -726,6 +741,13 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       runWithUser: <T>(callback: (headers: Headers) => T) =>
         currentUserHeaders.run(headers, () => callback(headers)),
     };
+  }
+  async function signInWithUser(email: string, password: string) {
+    const response = await api.signInEmail({body: {email, password}, asResponse: true});
+    const headers = new Headers();
+    cookieSetter(headers)({response});
+    const result = await api.getSession({headers});
+    return {...result, headers, runWithUser: <T>(callback: (headers: Headers) => T) => currentUserHeaders.run(headers, () => callback(headers))};
   }
   const db = {
     async update(args: FixtureOptions) {
@@ -750,8 +772,19 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     cookieSetter,
     sessionSetter: cookieSetter,
     signInWithTestUser,
+    signInWithUser,
+    runWithUser: async <T>(email: string, password: string, callback: (headers: Headers) => T) => {
+      const {headers} = await signInWithUser(email, password);
+      return currentUserHeaders.run(headers, () => callback(headers));
+    },
     bridge,
     emails,
     db,
   };
+}
+
+function safeCloneRequest(request?: Request): Request | undefined {
+  if (!request) return undefined;
+  try { return request.clone(); }
+  catch { return new Request(request.url, {method: request.method, headers: request.headers}); }
 }

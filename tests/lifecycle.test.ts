@@ -12,7 +12,7 @@ describe("V account lifecycle", () => {
     expect(result.data?.token).toMatch(/^[a-f0-9]{64}$/);
   });
 
-  it("verifies email and prevents verification-token replay", async () => {
+  it("verifies email and treats repeated verification as an idempotent success", async () => {
     const sendVerificationEmail = vi.fn();
     const { auth, testUser, emails } = await getTestInstance({
       emailAndPassword: { requireEmailVerification: true },
@@ -24,10 +24,8 @@ describe("V account lifecycle", () => {
     expect(emails).toHaveLength(1);
     const token = emails[0].token;
     const result = await auth.api.verifyEmail({ query: { token } });
-    expect(result.user.emailVerified).toBe(true);
-    await expect(
-      auth.api.verifyEmail({ query: { token } }),
-    ).rejects.toMatchObject({ statusCode: 400 });
+    expect(result).toMatchObject({status: true, user: null});
+    expect(await auth.api.verifyEmail({query: {token}})).toMatchObject({status: true, user: null});
     expect((await auth.api.signInEmail({ body: testUser })).token).toBeTypeOf(
       "string",
     );
@@ -274,7 +272,7 @@ describe("V account lifecycle", () => {
 
   it("rolls registration back when email delivery fails", async () => {
     const { auth, testUser } = await getTestInstance(
-      { emailVerification: { sendOnSignUp: true } },
+      { emailVerification: { sendOnSignUp: true, sendVerificationEmail: vi.fn() } },
       { disableTestUser: true, failDelivery: true },
     );
     await expect(
@@ -333,9 +331,10 @@ describe("V HTTP boundary", () => {
       "javascript:alert(1)",
       "http://localhost:3000@evil.example",
     ]) {
-      await expect(
-        auth.api.signInEmail({ body: { ...testUser, callbackURL } }),
-      ).rejects.toMatchObject({ statusCode: 403 });
+      const response = await auth.handler(new Request('http://localhost:3000/api/auth/sign-in/email', {
+        method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({...testUser, callbackURL}),
+      }));
+      expect(response.status).toBe(403);
     }
   });
 

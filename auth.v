@@ -1,6 +1,7 @@
 module better_auth
 
 import json
+import os
 import net.urllib
 import sync
 import time
@@ -10,19 +11,20 @@ pub struct Auth {
 pub:
 	config Config
 mut:
-	storage              Storage
-	secret_config        SymmetricSecret
-	mutex                &sync.Mutex = sync.new_mutex()
-	limits               map[string]RateBucket
-	closed               bool
-	secondary            SecondaryStorage
-	transaction_active   bool
-	transactions_enabled bool
-	pending_tasks        []AfterCommitTask
-	secondary_created    []Session
-	intercepting         map[string]bool
-	request_context      RequestContext
-	user_defined_fields  []string
+	initial_trusted_origins []string
+	storage                 Storage
+	secret_config           SymmetricSecret
+	mutex                   &sync.Mutex = sync.new_mutex()
+	limits                  map[string]RateBucket
+	closed                  bool
+	secondary               SecondaryStorage
+	transaction_active      bool
+	transactions_enabled    bool
+	pending_tasks           []AfterCommitTask
+	secondary_created       []Session
+	intercepting            map[string]bool
+	request_context         RequestContext
+	user_defined_fields     []string
 }
 
 struct RateBucket {
@@ -32,6 +34,15 @@ struct RateBucket {
 
 pub fn new(input_config Config, storage Storage) !&Auth {
 	mut config := resolve_cache_defaults(resolve_plugin_fields(input_config))
+	if environment := os.getenv_opt('BETTER_AUTH_TRUSTED_ORIGINS') {
+		mut origins := config.trusted_origins.clone()
+		origins << environment.split(',').filter(it != '')
+		config = Config{
+			...config
+			trusted_origins: origins
+		}
+	}
+	initial_trusted_origins := config.trusted_origins_for(RequestContext{})!
 	mut secret_config := SymmetricSecret(config.secret)
 	if entries := config.secrets {
 		secret_config = SymmetricSecret(build_secret_config(entries, config.secret)!)
@@ -169,12 +180,13 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 		}
 	}
 	return &Auth{
-		user_defined_fields:  input_config.user_fields.keys()
-		config:               config
-		secret_config:        secret_config
-		transactions_enabled: config.database_transactions
-		storage:              storage
-		secondary:            config.secondary_storage
+		initial_trusted_origins: initial_trusted_origins
+		user_defined_fields:     input_config.user_fields.keys()
+		config:                  config
+		secret_config:           secret_config
+		transactions_enabled:    config.database_transactions
+		storage:                 storage
+		secondary:               config.secondary_storage
 	}
 }
 
@@ -482,9 +494,7 @@ fn (a &Auth) base_url() string {
 }
 
 fn (a &Auth) trusted(origin string) bool {
-	if origin == '' { return false }
-	if origin == a.base_url().trim_right('/') { return true }
-	return origin in a.config.trusted_origins
+	return origin != '' && a.is_trusted_origin(origin, false)
 }
 
 fn (a &Auth) check_redirect(value string, input_field string) ! {
@@ -495,10 +505,7 @@ fn (a &Auth) check_redirect(value string, input_field string) ! {
 	}
 	// Trusted server calls have no HTTP origin policy; keep structural header checks.
 	if a.request_context.request == none { return }
-	if value.starts_with('/') { return }
-	u := urllib.parse(value) or { return fail(403, 'INVALID_CALLBACK_URL', 'Invalid ${field}') }
-	if u.scheme !in ['http', 'https'] || value.all_after('://').all_before('/').contains('@')
-		|| !a.trusted(u.scheme + '://' + u.host) {
+	if !a.is_trusted_origin(value, true) {
 		return fail(403, 'INVALID_CALLBACK_URL', 'Invalid ${field}')
 	}
 }

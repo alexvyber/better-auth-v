@@ -29,6 +29,10 @@ fn (mut a Auth) intercept_internal(name string, arguments_json string) !Lookup[s
 pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json string) !string {
 	args := json2.decode[[]json2.Any](arguments_json)!
 	match name {
+		'isTrustedOrigin' {
+			if args.len != 2 { return error('isTrustedOrigin requires URL and relative-path flag') }
+			return json.encode(c.is_trusted_origin(args[0].str(), args[1].bool()))
+		}
 		'verifyCookieJWT' {
 			if args.len != 1 { return error('verifyCookieJWT requires a token') }
 			if !c.auth.jwks_cache_enabled() {

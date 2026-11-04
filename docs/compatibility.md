@@ -169,7 +169,14 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   Email callback failure rolls back database writes, but delivered email cannot be
   recalled on a subsequent commit failure.
 - An empty `base_url` resolves an origin from each HTTP request. Explicit trusted
-  origins remain exact strings; wildcard/dynamic allowlists remain unimplemented.
+  origin patterns support host/protocol wildcards and request-scoped callback
+  allowlists. `BETTER_AUTH_TRUSTED_ORIGINS` adds environment entries. Custom schemes
+  compare authorities exactly and normalize pinned paths; relative redirects reject
+  ambiguous slashes, controls, and encoded path separators. `Auth.is_trusted_origin`
+  and endpoint contexts share the matcher. A standalone native helper expands
+  dynamic allowed-host/protocol lists; live dynamic baseURL resolution remains
+  unimplemented. Plugin init supports origin contributions in the fixture, while
+  general init context overrides and request/response hooks remain unported.
   Cookie names/prefixes, explicit secure overrides, and cross-subdomain domains are
   configurable and consistent across issuance/expiry, including cache chunks,
   remember markers, and OAuth state. Cross-subdomain domains default to the

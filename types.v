@@ -69,9 +69,10 @@ pub:
 
 pub struct RequestContext {
 pub:
-	request ?Request
-	origin  string
-	headers map[string]string
+	request         ?Request
+	trusted_origins []string
+	origin          string
+	headers         map[string]string
 }
 
 pub struct SignUpInput {
@@ -186,6 +187,7 @@ pub:
 	secret                            string
 	secrets                           ?[]SecretEntry
 	trusted_origins                   []string
+	trusted_origins_for               fn (RequestContext) ![]string = no_trusted_origins
 	email_and_password                bool = true
 	require_email_verification        bool
 	send_verification_on_sign_up      ?bool

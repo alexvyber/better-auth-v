@@ -236,9 +236,22 @@ or corpus inventory contains unimplemented behavior.
   and rejection of header-injection configuration. Custom attributes are still
   rejected by the fixture rather than ignored.
 
+- Imported the full trusted-origins file (38 declarations). Native matching now
+  supports host/protocol wildcards, custom schemes, exact custom authorities, pinned
+  path boundaries with decoded traversal normalization, and safe relative URLs.
+  Native request-scoped callbacks and environment origins feed HTTP/CORS/redirect
+  decisions; trusted endpoint contexts expose the same matcher. Plugin init origin
+  contributions are transported without running TS auth logic. The standalone V
+  helper expands dynamic allowed-host/protocol/fallback lists, including loopback
+  exceptions; live dynamic baseURL host resolution remains unimplemented.
+  Three independent cases check concurrent request isolation, HTTP wildcard and
+  encoded-path rejection, and loopback/lookalike-host classification. Fixture query
+  schemas decode business callback inputs, and official TS clients retain their
+  plugin endpoint types. Zod is pinned explicitly to the already-installed 4.6.7.
+
 ## Next infrastructure work
 
-The latest `make check` passes 582 TypeScript cases across 31 files, all 52 native
+The latest `make check` passes 623 TypeScript cases across 33 files, all 52 native
 V test functions across 10 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and

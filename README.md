@@ -40,7 +40,8 @@ There is no dependency on a web framework.
 - Plugin user/session schemas, protected authority fields, creation defaults,
   synthetic-user callbacks, and native endpoint freshness checks.
 - HTTP method/body validation, origin and Fetch Metadata checks, exact trusted
-  origins, redirect validation, CORS responses, and a per-instance route limiter.
+  origin patterns and request-scoped allowlists, safe relative/custom-scheme redirects,
+  CORS responses, and a per-instance route limiter.
 - A plugin endpoint interface and an existing-user magic-link plugin.
 - OAuth authorization-code orchestration with PKCE and browser-bound state, a
   provider interface, and a GitHub provider using verified email addresses. Explicit

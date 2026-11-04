@@ -185,6 +185,10 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 	} else {
 		return fail(404, 'NOT_FOUND', 'Not found')
 	}
+	a.request_context = RequestContext{
+		...a.request_context
+		trusted_origins: a.config.trusted_origins_for(a.request_context)!
+	}
 	if req.method == 'OPTIONS' {
 		if !a.trusted(req.headers['origin']) { return fail(403, 'INVALID_ORIGIN', 'Invalid origin') }
 		return Response{

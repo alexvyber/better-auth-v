@@ -14,7 +14,7 @@
     "utilities-and-tooling": {
       "files": 275,
       "declarations": 4594,
-      "importedFiles": 3
+      "importedFiles": 4
     },
     "e2e": {
       "files": 71,
@@ -9107,7 +9107,7 @@
       "path": "packages/better-auth/src/auth/trusted-origins.test.ts",
       "sha256": "e1efc5fa768006b88dbaec4de255bd659f189adf400b85dd3df1445a9824c0c3",
       "group": "utilities-and-tooling",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {

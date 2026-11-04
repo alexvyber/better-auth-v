@@ -18,22 +18,19 @@ interface FixtureUserOptions extends FixtureOptions {
   deleteUser?: NonNullable<BetterAuthOptions['user']>['deleteUser'];
   changeEmail?: NonNullable<BetterAuthOptions['user']>['changeEmail'];
   additionalFields?: FixtureOptions;
-  validateUserInfo?: (context: {
-    user: Record<string, unknown>;
-    source: { action: string; method: string };
-  }) => unknown;
+  validateUserInfo?: NonNullable<BetterAuthOptions['user']>['validateUserInfo'];
 }
 interface FixtureLoggerOptions extends FixtureOptions {
-  log?: (level: string, message: string, ...args: unknown[]) => void;
+  log?: NonNullable<BetterAuthOptions['logger']>['log'];
 }
 interface ServerOptions {
   plugins?: BetterAuthOptions['plugins'];
   database?: BetterAuthOptions["database"];
-  baseURL?: string;
+  baseURL?: BetterAuthOptions['baseURL'];
   basePath?: string;
   secret?: string;
   secrets?: BetterAuthOptions['secrets'];
-  trustedOrigins?: string[];
+  trustedOrigins?: BetterAuthOptions['trustedOrigins'];
   emailAndPassword?: Partial<NonNullable<BetterAuthOptions['emailAndPassword']>> & FixtureOptions;
   emailVerification?: NonNullable<BetterAuthOptions['emailVerification']> & FixtureOptions;
   session?: NonNullable<BetterAuthOptions["session"]> & FixtureOptions;
@@ -137,9 +134,9 @@ function hydrate(value: any): any {
   return value;
 }
 
-export async function getTestInstance<const O extends ServerOptions = {}>(
+export async function getTestInstance<const O extends ServerOptions = {}, C extends FixtureOptions = {}>(
   options: O & ServerOptions = {} as O & ServerOptions,
-  config: FixtureOptions = {},
+  config: C = {} as C,
 ) {
   assertKeys(
     options,
@@ -190,6 +187,9 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
   let adminOptions: FixtureOptions | undefined;
   let organizationOptions: FixtureOptions | undefined;
   const logoutProviders: FixtureOptions[] = [];
+  const initializers: Array<(context: FixtureOptions) => unknown> = [];
+  const originSources: NonNullable<BetterAuthOptions['trustedOrigins']>[] = [];
+  if (options.trustedOrigins) originSources.push(options.trustedOrigins);
   const endpointPlugins: FixtureOptions[] = [];
   const endpointCallbacks: Record<string, (payload: any) => Promise<unknown>> = {};
   for (const plugin of options.plugins ?? []) {
@@ -217,12 +217,13 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       continue;
     }
     if (plugin.id !== 'jwt') {
-      assertKeys(plugin, ['id', 'endpoints'], `plugin.${plugin.id}`);
+      if (plugin.init) initializers.push(plugin.init.bind(plugin) as (context: FixtureOptions) => unknown);
+      assertKeys(plugin, ['id', 'endpoints', 'init'], `plugin.${plugin.id}`);
       const routes: FixtureOptions[] = [];
       for (const [name, endpoint] of Object.entries(plugin.endpoints ?? {})) {
         const descriptor = nativeEndpoint(endpoint);
         if (!descriptor) throw new Error(`Plugin endpoint ${plugin.id}.${name} needs a native fixture descriptor`);
-        assertKeys(descriptor.options, ['method', 'use'], `plugin.${plugin.id}.${name}`);
+        assertKeys(descriptor.options, ['method', 'use', 'query'], `plugin.${plugin.id}.${name}`);
         const use = descriptor.options.use ?? [];
         if (use.some(middleware => middleware !== freshSessionMiddleware)) throw new Error('Unsupported native middleware descriptor');
         const method = descriptor.options.method ?? 'GET';
@@ -232,9 +233,9 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
           const request = new Request(payload.request.url, {method: payload.request.method, headers: payload.request.headers, body: payload.request.method === 'POST' ? payload.request.body : undefined});
           const responseHeaders = new Headers();
           const result = await descriptor.handler({
-            request, headers: request.headers, query: Object.fromEntries(new URL(request.url).searchParams),
+            request, headers: request.headers, query: descriptor.options.query ? descriptor.options.query.parse(Object.fromEntries(new URL(request.url).searchParams)) : Object.fromEntries(new URL(request.url).searchParams),
             body: payload.request.body ? JSON.parse(payload.request.body) : undefined,
-            context: {session: hydrate(payload.session)},
+            context: {...context, session: hydrate(payload.session)},
             setHeader: (name: string, value: string) => responseHeaders.set(name, value),
             json: (body: unknown) => body,
           });
@@ -349,7 +350,8 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
 
   assertKeys(options.account ?? {}, ['fields'], 'account');
   assertKeys(options.account?.fields ?? {}, ['id', 'userId', 'providerId', 'accountId'], 'account.fields');
-  const baseURL = options.baseURL ?? `http://localhost:${config.port ?? 3000}`;
+  if (options.baseURL !== undefined && typeof options.baseURL !== 'string') throw new Error('Live dynamic baseURL configuration remains unported');
+  const baseURL = typeof options.baseURL === 'string' ? options.baseURL : `http://localhost:${config.port ?? 3000}`;
   const basePath = options.basePath ?? "/api/auth";
   const bridge = new Bridge();
   instances.add(bridge);
@@ -412,6 +414,10 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     secret: options.secrets?.[0]?.value ?? options.secret ?? 'better-auth-secret-that-is-long-enough-for-validation-test',
     session: null as unknown,
     authCookies: {} as {sessionToken: {name: string}; sessionData: {name: string}},
+    async isTrustedOrigin(url: string, settings?: {allowRelativePaths: boolean}) {
+      const reply = await bridge.send('internal', {method: 'isTrustedOrigin', arguments_json: transportJSON([url, settings?.allowRelativePaths ?? false])});
+      return JSON.parse(reply.value_json) as boolean;
+    },
     async nativeSignJWT(payload: unknown, signing: unknown) {
       const reply = await bridge.send('internal', {method: 'signJWTWith', arguments_json: transportJSON([payload, signing])});
       return JSON.parse(reply.value_json) as string;
@@ -432,6 +438,19 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       for (const {name, value} of response.headers) endpoint.responseHeaders.append(name, value);
       return hydrate(JSON.parse(response.body));
     },
+  };
+  for (const initialize of initializers) {
+    const result = await initialize(context) as FixtureOptions | undefined;
+    if (!result) continue;
+    assertKeys(result, ['options', 'context'], 'plugin.init');
+    assertKeys(result.context ?? {}, [], 'plugin.init.context');
+    assertKeys(result.options ?? {}, ['trustedOrigins'], 'plugin.init.options');
+    if (result.options?.trustedOrigins) originSources.push(result.options.trustedOrigins);
+  }
+  if (originSources.length) callbacks.trustedOrigins = async () => {
+    const result: unknown[] = [];
+    for (const source of originSources) result.push(...(typeof source === 'function' ? await source(callbackRequest()) : source));
+    return result;
   };
   callbacks['internal.adapter.findOne'] = async ([query]: FixtureOptions[]) => {
     try { return await adapter.findOne(query); }
@@ -508,7 +527,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
   const validateUserInfo = options.user?.validateUserInfo;
   if (typeof validateUserInfo === "function")
     callbacks["user.validate"] = (payload) =>
-      validateUserInfo(hydrate(payload));
+      validateUserInfo(hydrate(payload), {context, request: callbackRequest(), headers: callbackRequest()?.headers} as unknown as Parameters<NonNullable<typeof validateUserInfo>>[1]);
   if (typeof ep.onExistingUserSignUp === "function")
     callbacks["user.existing"] = (payload) =>
       ep.onExistingUserSignUp!(hydrate(payload), undefined);
@@ -572,7 +591,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       secret:
         options.secret ??
         (options.secrets ? '' : "better-auth-secret-that-is-long-enough-for-validation-test"),
-      trusted_origins: options.trustedOrigins ?? [],
+      trusted_origins: Array.isArray(options.trustedOrigins) ? options.trustedOrigins : [],
       email_and_password: ep.enabled ?? true,
       verification_delivery_enabled: typeof ev.sendVerificationEmail === 'function',
       auto_sign_in_after_verification: ev.autoSignInAfterVerification ?? false,
@@ -621,7 +640,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
           levels.indexOf(event.level) >=
           levels.indexOf(options.logger.level ?? "info")
         )
-          options.logger.log(event.level, event.message);
+          options.logger.log(event.level as 'debug' | 'info' | 'warn' | 'error', event.message);
       }
     }
   }
@@ -738,7 +757,8 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     },
   };
   Object.assign(clientOptions, { plugins: config.clientOptions?.plugins ?? [] });
-  const client = createAuthClient(clientOptions);
+  const clientPlugins = (config.clientOptions?.plugins ?? []) as C extends {clientOptions: {plugins: infer P extends NonNullable<BetterAuthClientOptions['plugins']>}} ? P : [];
+  const client = createAuthClient({...clientOptions, plugins: clientPlugins});
   const cookieSetter =
     (headers: Headers) =>
     ({ response }: { response: Response }) => {

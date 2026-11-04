@@ -1,0 +1,427 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/auth/trusted-origins.test.ts",
+  "sha256": "e1efc5fa768006b88dbaec4de255bd659f189adf400b85dd3df1445a9824c0c3",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "trusted origins list support"
+      ],
+      "test": "should always allow the app's origin",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "trusted origins list support"
+      ],
+      "test": "should always allow the app's origin (inferred from baseURL)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "trusted origins list support"
+      ],
+      "test": "should always allow the app's origin (even if context is updated)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "trusted origins list support"
+      ],
+      "test": "should reject origins that start with a trusted origin",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "trusted origins list support"
+      ],
+      "test": "should reject untrusted origin subdomains",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "trusted origins list support"
+      ],
+      "test": "should allow origins that directly match a trusted origin",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "relative paths support"
+      ],
+      "test": "should reject relative paths by default",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "relative paths support"
+      ],
+      "test": "should allow relative paths",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "relative paths support"
+      ],
+      "test": "should allow relative paths with query params",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "relative paths support"
+      ],
+      "test": "should allow relative paths with plus signs",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "relative paths support"
+      ],
+      "test": "should reject relative paths with tildes when relative paths are disabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "relative paths support"
+      ],
+      "test": "should allow relative paths with tildes",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "relative paths support"
+      ],
+      "test": "should allow standards-compliant relative URLs",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "relative paths support"
+      ],
+      "test": "should reject URLs with ambiguous path prefixes",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "relative paths support"
+      ],
+      "test": "should reject urls with encoded malicious content",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "wildcards support"
+      ],
+      "test": "should allow origins that match a wildcard trusted origin",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "wildcards support"
+      ],
+      "test": "should reject urls with malicious domain with wildcard trusted origins",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "wildcards support"
+      ],
+      "test": "should work with protocol specific wildcard trusted origins",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "wildcards support"
+      ],
+      "test": "should work with custom scheme wildcards (e.g. exp:// for Expo)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "custom-scheme origin matching"
+      ],
+      "test": "should reject URLs where the host extends the trusted pattern",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "custom-scheme origin matching"
+      ],
+      "test": "should allow exact custom-scheme origin match",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "custom-scheme origin matching"
+      ],
+      "test": "should reject control characters in custom-scheme URLs",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "custom-scheme origin matching"
+      ],
+      "test": "should match custom-scheme with empty host (myapp:/)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "custom-scheme origin matching"
+      ],
+      "test": "should reject different custom schemes",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "custom-scheme origin matching"
+      ],
+      "test": "should still support wildcard matching for custom schemes",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "custom-scheme origin matching"
+      ],
+      "test": "should trust any host for a host-less custom-scheme pattern",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "custom-scheme origin matching"
+      ],
+      "test": "should match custom-scheme host case-insensitively",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "custom-scheme origin matching"
+      ],
+      "test": "should pin the path when the pattern includes one",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "custom-scheme origin matching"
+      ],
+      "test": "should not let a path-pinned pattern be bypassed with traversal",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "dynamic trusted origins"
+      ],
+      "test": "should allow dynamically computed trusted origins",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "dynamic trusted origins"
+      ],
+      "test": "should not allow dynamically computed trusted origins",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "dynamic baseURL protocol option"
+      ],
+      "test": "should add http:// origins when protocol is 'http'",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "dynamic baseURL protocol option"
+      ],
+      "test": "should add only https:// origins when protocol is 'https'",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "dynamic baseURL protocol option"
+      ],
+      "test": "should add both http:// and https:// origins when protocol is 'auto'",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "dynamic baseURL protocol option"
+      ],
+      "test": "should default to https:// with http:// for loopback when protocol is undefined",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "dynamic baseURL protocol option"
+      ],
+      "test": "should still allow hosts with explicit protocol in the host string",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins",
+        "dynamic baseURL protocol option"
+      ],
+      "test": "should add http:// for loopback hosts even when protocol is 'https'",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins",
+      "suites": [
+        "trusted origins"
+      ],
+      "test": "should merge trustedOrigins from plugins using init() with user config",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

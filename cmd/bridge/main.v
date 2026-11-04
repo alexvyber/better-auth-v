@@ -375,6 +375,21 @@ fn main() {
 		}
 		return
 	}
+	if os.args.len == 2 && os.args[1] == '--trusted-origins' {
+		input := json2.decode[map[string]json2.Any](os.get_raw_line()) or {
+			eprintln(err.msg())
+			exit(1)
+		}
+		origins := better_auth.get_trusted_origins((input['options'] or {
+			json2.Any(map[string]json2.Any{})
+		}).json_str(), (input['request_url'] or { json2.Any('') }).str(),
+			os.getenv('BETTER_AUTH_TRUSTED_ORIGINS')) or {
+			eprintln(err.msg())
+			exit(1)
+		}
+		println(json.encode(origins))
+		return
+	}
 	first := os.get_raw_line()
 	if first == '' { return }
 	init := json.decode(Command, first) or {
@@ -555,6 +570,10 @@ fn main() {
 		cross_subdomain_cookies:           opts.cross_subdomain_cookies
 		cookie_domain:                     opts.cookie_domain
 		trusted_origins:                   opts.trusted_origins
+		trusted_origins_for:               fn [opts] (_ better_auth.RequestContext) ![]string {
+			if 'trustedOrigins' !in opts.callback_methods { return []string{} }
+			return better_auth.parse_trusted_origins(callback_rpc('trustedOrigins', '{}')!)
+		}
 		verification_delivery_enabled:     opts.verification_delivery_enabled
 		auto_sign_in_after_verification:   opts.auto_sign_in_after_verification
 		delete_user_enabled:               opts.delete_user_enabled

@@ -414,8 +414,21 @@ or corpus inventory contains unimplemented behavior.
   setup calls. Other ID-token provider configurations/callbacks, provider options,
   account linking, refresh and full email-verification/error handling remain open.
 
-The latest `make check` passes 892 TypeScript cases across 45 files, all 76 native
-V test functions across 21 files (including all 20,034 Unicode vectors), TypeScript
+- Added a native shared ID-token policy with disable/override/custom-verifier
+  precedence, explicit opaque-token gating, audience validation, key resolution,
+  and post-signature claim callbacks. Callback errors fail closed. Independent
+  ID-token verification profiles cover Apple, Cognito, Facebook, Google and
+  Microsoft; PayPal declares no direct-token capability. Native key selection
+  distinguishes Google's import-all/first-key behavior, exact-kid resolvers,
+  Facebook's unique matching key, and Microsoft's absent/null algorithm fallback.
+  Four native tests cover those policies, callback precedence, signed tokens,
+  nonce configuration, Apple audience fallback and Microsoft tenant binding.
+  These profiles do not implement the providers' code exchange, user-info or
+  account integration. The shared upstream verifier suite is the next import;
+  Facebook remote-key caching and broader provider options remain incomplete.
+
+The latest `make check` passes 892 TypeScript cases across 45 files, all 80 native
+V test functions across 22 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus

@@ -313,7 +313,11 @@ tests establishes only their covered behavior, not complete upstream parity.
   forgery/algorithm rejection, clock/age boundaries, nonce, audience arrays, disabled
   sign-in, JWK metadata, critical headers and direct-session issuance. Standalone
   verification iterates matching keys; the provider resolver selects the first,
-  matching their separate source contracts. Other provider and OAuth/account source
+  matching their separate source contracts. A shared native provider policy and
+  standalone ID-token verification profiles also support Apple, Cognito, Facebook
+  and Microsoft trust/key-selection rules, callback precedence and tenant binding.
+  These profiles do not supply the providers' complete OAuth/account flows;
+  Facebook remote-key caching remains incomplete. Other provider and OAuth/account source
   files remain unported; these cases do not establish full Google/OAuth parity.
   Four independent helper contracts compare V with the published TS implementation
   on malformed encodings, attribute metadata, ordered merging, and secure selection.

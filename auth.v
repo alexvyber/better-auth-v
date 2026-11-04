@@ -95,7 +95,16 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 	}
 	for plugin in config.plugins {
 		if plugin is JWTPlugin {
-			options := plugin.options
+			options := normalized_jwt_options(plugin.options)
+			if options.sign != local_jwt_sign && options.remote_url == '' {
+				return error('options.jwks.remoteUrl must be set when using options.jwt.sign')
+			}
+			if options.remote_url != '' && plugin.options.algorithm == '' {
+				return error('options.jwks.keyPairConfig.alg must be specified when options.jwks.remoteUrl is used for OpenID metadata')
+			}
+			if options.session_cookie_cache && options.sign != local_jwt_sign {
+				return error('JWT session cookie cache requires locally managed keys and does not support jwt.sign')
+			}
 			if options.algorithm !in jwt_algorithms
 				|| (options.curve != '' && options.curve != jwt_curve(options.algorithm)) {
 				return error('unsupported JWT algorithm or curve')

@@ -93,12 +93,19 @@ or corpus inventory contains unimplemented behavior.
 - Extended the importer to recognize top-level parameterized suites; the partial
   JWT plugin manifest records all selected/unported declarations. Added custom
   adapter/path and stored-algorithm authority suites. The JWT plugin source file
-  still has 23 unported declarations; this is not full JWT plugin parity.
+  now has 12 unported declarations; this is not full JWT plugin parity.
+
+- Added remote JWKS URL configuration and native custom signing callbacks. Remote
+  configuration disables local JWKS publication, while token issuance and session
+  headers remain available. Custom signing receives V-built claims and does not
+  mint local keys. Native configuration rejects missing remote algorithms, custom
+  signers without a remote URL, and custom signing for cookie-cache JWTs. All 11
+  declarations in the original remote-signing/URL suites now run unchanged.
 
 ## Next infrastructure work
 
-The completed `make check` passes 330 TypeScript runtime cases across 13 files,
-42 native V test functions across 7 files (including all 20,034 Unicode vectors),
+The completed `make check` passes 341 TypeScript runtime cases across 13 files,
+44 native V test functions across 7 files (including all 20,034 Unicode vectors),
 TypeScript checking, and real HTTP migration/authentication/CSRF/restart checks.
 This includes the final custom-store publication and encrypted-key regressions.
 The complete suite was rerun successfully before committing and publishing the
@@ -109,14 +116,14 @@ behavior, JWT verification, key persistence, and API boundaries. V formatting an
 `git diff --check` also pass. These counts do not imply that the full upstream
 corpus passes.
 
-The user requested concluding the current run. Work is paused at this checkpoint;
-the full-parity objective remains incomplete. Changes are left in the worktree.
+The user resumed the full-parity objective and authorized incremental commits and
+pushes to `alexvyber/better-auth-v`. The objective remains incomplete.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise
    cancellation results, full context, transaction-disabled behavior, and remaining
    adapter operations/observability. Cache effects are not distributed transactions;
    rollback cleanup is best effort and cannot reverse existing updates/deletes.
-2. Complete the remaining JWT plugin suites: remote signing, signing overrides, full option/callback
+2. Complete the remaining JWT plugin suites: signing overrides, full option/callback
    handling, and upstream encryption formats. Verify combinations with deferred
    read-only session GET and other hooks; JWT header issuance can rotate keys.
 3. Implement complete admin and organization plugins beyond their schema/creation

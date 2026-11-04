@@ -152,9 +152,9 @@
         "jwt - remote signing"
       ],
       "test": "should fail if sign is defined and remoteUrl is not",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "jwt - remote url",
@@ -162,9 +162,9 @@
         "jwt - remote url"
       ],
       "test": "should require specifying the alg when using remoteUrl",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "jwt - remote url",
@@ -172,9 +172,9 @@
         "jwt - remote url"
       ],
       "test": "should accept remoteUrl with alg specified",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "jwt - remote url",
@@ -182,9 +182,9 @@
         "jwt - remote url"
       ],
       "test": "should disable /jwks endpoint when remoteUrl is configured",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "jwt - remote url",
@@ -192,9 +192,9 @@
         "jwt - remote url"
       ],
       "test": "should work with different algorithms when remoteUrl is set",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "jwt - remote url",
@@ -202,9 +202,9 @@
         "jwt - remote url"
       ],
       "test": "should still allow token generation when remoteUrl is set",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "jwt - remote url",
@@ -212,9 +212,9 @@
         "jwt - remote url"
       ],
       "test": "should work with custom sign function and remoteUrl",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "jwt - remote url",
@@ -222,9 +222,9 @@
         "jwt - remote url"
       ],
       "test": "should validate that remoteUrl is a valid URL format",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "jwt - remote url",
@@ -232,9 +232,9 @@
         "jwt - remote url"
       ],
       "test": "should work with remoteUrl pointing to different paths",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "jwt - remote url",
@@ -242,9 +242,9 @@
         "jwt - remote url"
       ],
       "test": "should handle remoteUrl with query parameters",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "jwt - remote url",
@@ -252,9 +252,9 @@
         "jwt - remote url"
       ],
       "test": "should not interfere with other JWT endpoints when remoteUrl is set",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: requires session cache, secondary-storage/hooks, adapter introspection, or plugin integration"
+      "reason": null
     },
     {
       "suite": "jwt - custom adapter",

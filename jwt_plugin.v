@@ -10,7 +10,9 @@ import x.json2
 
 pub struct JWTOptions {
 pub:
-	algorithm                      string = 'EdDSA'
+	algorithm                      string
+	remote_url                     string
+	sign                           fn (string) !string = local_jwt_sign @[skip]
 	curve                          string
 	modulus_length                 int      = 2048
 	key_store                      JWKStore = NoJWKStore{} @[skip]
@@ -24,6 +26,19 @@ pub:
 	disable_private_key_encryption bool
 	disable_setting_jwt_header     bool
 	jwks_path                      string = '/jwks'
+}
+
+// A custom signer receives the complete JWT claims as JSON. Key management belongs
+// to the configured remote service; cookie-cache signing always stays local.
+fn local_jwt_sign(_ string) !string {
+	return error('custom JWT signer is not configured')
+}
+
+fn normalized_jwt_options(options JWTOptions) JWTOptions {
+	return JWTOptions{
+		...options
+		algorithm: if options.algorithm == '' { 'EdDSA' } else { options.algorithm }
+	}
 }
 
 pub interface JWKStore {
@@ -91,7 +106,7 @@ pub fn (p JWTPlugin) endpoints() []Endpoint {
 
 fn (a &Auth) jwt_options() !JWTOptions {
 	for plugin in a.config.plugins {
-		if plugin is JWTPlugin { return plugin.options }
+		if plugin is JWTPlugin { return normalized_jwt_options(plugin.options) }
 	}
 	return error('JWT plugin is not configured')
 }
@@ -143,7 +158,8 @@ fn (a &Auth) private_jwk(record Jwk) !ed25519.PrivateKey {
 	return private
 }
 
-fn generate_exported_keypair(options JWTOptions) !(string, string) {
+fn generate_exported_keypair(input JWTOptions) !(string, string) {
+	options := normalized_jwt_options(input)
 	mut public_json := ''
 	mut private_json := ''
 	if options.algorithm == 'EdDSA' {
@@ -259,10 +275,8 @@ fn (mut a Auth) public_jwks_json() !string {
 
 fn (mut a Auth) sign_jwks_payload(payload map[string]json2.Any, typ string, cookie bool) !string {
 	options := a.jwt_options()!
-	key := a.signing_key(options)!
 	mut header := {
-		'alg': json2.Any(key.alg)
-		'kid': json2.Any(key.id)
+		'alg': json2.Any(options.algorithm)
 	}
 	if typ != '' { header['typ'] = typ }
 	mut claims := payload.clone()
@@ -298,6 +312,12 @@ fn (mut a Auth) sign_jwks_payload(payload map[string]json2.Any, typ string, cook
 			}
 		}
 	}
+	if !cookie && options.sign != local_jwt_sign {
+		return options.sign(js_json(json2.Any(claims)))
+	}
+	key := a.signing_key(options)!
+	header['alg'] = key.alg
+	header['kid'] = key.id
 	input := base64url(json2.Any(header).json_str().bytes()) + '.' +
 		base64url(js_json(json2.Any(claims)).bytes())
 	signature := if key.alg == 'EdDSA' {
@@ -410,6 +430,7 @@ fn (mut a Auth) verify_jwks_payload(token string, cookie bool, issuer_override s
 }
 
 fn jwt_jwks_endpoint(mut context EndpointContext, _ Request) !Response {
+	if (context.auth.jwt_options()!).remote_url != '' { return fail(404, 'NOT_FOUND', 'Not found') }
 	return Response{
 		headers: [Header{'content-type', 'application/json'}]
 		body:    context.auth.public_jwks_json()!
@@ -443,6 +464,7 @@ pub fn (mut a Auth) sign_jwt(payload_json string) !string {
 }
 
 pub fn (mut a Auth) get_jwks() !string {
+	if (a.jwt_options()!).remote_url != '' { return fail(404, 'NOT_FOUND', 'Not found') }
 	return a.with_internal(fn (mut context EndpointContext) !string {
 		return context.auth.public_jwks_json()
 	})

@@ -233,9 +233,9 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       assertKeys(jwtOptions.adapter, ['getJwks', 'createJwk'], 'jwt.adapter');
       for (const method of ['getJwks', 'createJwk']) if (jwtOptions.adapter[method] !== undefined && typeof jwtOptions.adapter[method] !== 'function') throw new Error(`Invalid custom JWK callback: ${method}`);
     }
-    assertKeys(jwtOptions.jwks ?? {}, ['rotationInterval', 'gracePeriod', 'disablePrivateKeyEncryption', 'jwksPath', 'keyPairConfig'], 'jwt.jwks');
+    assertKeys(jwtOptions.jwks ?? {}, ['rotationInterval', 'gracePeriod', 'disablePrivateKeyEncryption', 'jwksPath', 'keyPairConfig', 'remoteUrl'], 'jwt.jwks');
     assertKeys(jwtOptions.jwks?.keyPairConfig ?? {}, ['alg', 'crv', 'modulusLength'], 'jwt.jwks.keyPairConfig');
-    assertKeys(jwtOptions.jwt ?? {}, ['issuer', 'audience'], 'jwt.jwt');
+    assertKeys(jwtOptions.jwt ?? {}, ['issuer', 'audience', 'sign'], 'jwt.jwt');
   }
   const stateless = Object.hasOwn(options, 'database') && options.database === undefined && !options.secondaryStorage;
   const cacheOptions = session.cookieCache ?? {};
@@ -355,6 +355,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     try { return await adapter.findOne(query); }
     catch (error) { const state = currentOperation.getStore(); if (state) state.storeFailure = error; throw error; }
   };
+  if (jwtOptions?.jwt?.sign) callbacks['jwt.sign'] = payload => jwtOptions!.jwt.sign(payload);
   if (jwtOptions?.adapter) {
     const store = jwtOptions.adapter;
     if (store.getJwks) callbacks['jwt.getJwks'] = () => store.getJwks({context});
@@ -432,7 +433,8 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       jwt_plugin: !!jwtOptions,
       custom_jwk_store: !!jwtOptions?.adapter,
       jwt_options: jwtOptions && {
-        algorithm: jwtOptions.jwks?.keyPairConfig?.alg ?? 'EdDSA',
+        algorithm: jwtOptions.jwks?.keyPairConfig?.alg ?? '',
+        remote_url: jwtOptions.jwks?.remoteUrl ?? '',
         curve: jwtOptions.jwks?.keyPairConfig?.crv ?? '',
         modulus_length: jwtOptions.jwks?.keyPairConfig?.modulusLength ?? 2048,
         session_cookie_cache: jwtOptions.sessionCookieCache ?? false,

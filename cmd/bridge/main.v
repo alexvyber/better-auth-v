@@ -368,9 +368,18 @@ fn main() {
 		if opts.custom_jwk_store { key_store = RemoteJWKStore{
 				methods: opts.callback_methods
 			} }
+		mut jwt_options := opts.jwt_options
+		if 'jwt.sign' in opts.callback_methods {
+			jwt_options = better_auth.JWTOptions{
+				...jwt_options
+				sign: fn (payload string) !string {
+					return json2.decode[string](callback_rpc('jwt.sign', payload)!)
+				}
+			}
+		}
 		plugins << better_auth.JWTPlugin{
 			options: better_auth.JWTOptions{
-				...opts.jwt_options
+				...jwt_options
 				key_store: key_store
 			}
 		}

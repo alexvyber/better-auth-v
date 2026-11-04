@@ -174,3 +174,66 @@ fn test_jwks_signatures_and_claims_fail_closed() ! {
 	}
 	assert rejected == 5
 }
+
+fn test_remote_jwt_signer_receives_native_claims_without_minting_local_keys() ! {
+	mut storage := open_memory()
+	mut auth := new(Config{
+		secret:   '12345678901234567890123456789012'
+		base_url: 'https://auth.example.com'
+		plugins:  [
+			Plugin(JWTPlugin{
+				options: JWTOptions{
+					algorithm:  'ES256'
+					remote_url: 'https://keys.example.com/jwks'
+					sign:       fn (claims string) !string {
+						parsed := json2.decode[map[string]json2.Any](claims)!
+						assert parsed['sub']!.str() == 'remote-user'
+						assert parsed['iss']!.str() == 'https://auth.example.com'
+						assert parsed['aud']!.str() == 'https://auth.example.com'
+						assert parsed['exp']!.i64() == 1900
+						return 'delegated-token'
+					}
+				}
+			}),
+		]
+	}, storage)!
+	defer { auth.close() or {} }
+	assert auth.sign_jwt('{"sub":"remote-user","iat":1000}')! == 'delegated-token'
+	assert storage.jwks()!.len == 0
+	auth.get_jwks() or {
+		assert err.msg().contains('Not found')
+		return
+	}
+	assert false, 'remote URL must disable local JWKS publication'
+}
+
+fn test_remote_jwt_configuration_requires_explicit_algorithm_and_local_cookie_keys() ! {
+	for options in [JWTOptions{ remote_url: 'https://keys.example.com' },
+		JWTOptions{
+			sign: fn (_ string) !string {
+				return 'external'
+			}
+		}, JWTOptions{
+			algorithm:            'EdDSA'
+			remote_url:           'https://keys.example.com'
+			session_cookie_cache: true
+			sign:                 fn (_ string) !string {
+				return 'external'
+			}
+		}] {
+		mut storage := open_memory()
+		new(Config{
+			secret:       '12345678901234567890123456789012'
+			cookie_cache: CookieCacheConfig{
+				strategy: 'jwt'
+			}
+			plugins:      [Plugin(JWTPlugin{
+				options: options
+			})]
+		}, storage) or {
+			storage.close()!
+			continue
+		}
+		assert false, 'invalid remote signing configuration was accepted'
+	}
+}

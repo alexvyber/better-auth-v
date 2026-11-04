@@ -32,7 +32,7 @@ describe('native user deletion boundaries', () => {
       expect(await db.findMany({model: 'verification', where: [{field: 'identifier', value: `delete-account-${token}`}]})).toHaveLength(0);
       expect((await callback(auth, token, headers)).status).toBe(404);
       await auth.api.deleteUser({headers});
-      vi.advanceTimersByTime(2000);
+      vi.advanceTimersByTime(2001);
       expect((await callback(auth, token, headers)).status).toBe(404);
       expect(beforeDelete).not.toHaveBeenCalled();
       expect(await auth.api.getSession({headers})).not.toBeNull();

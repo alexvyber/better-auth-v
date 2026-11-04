@@ -278,8 +278,8 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 			if args.len < 1 { return error('createUser requires user data') }
 			mut fields := args[0].as_map()
 			if 'id' !in fields { fields['id'] = random_token()! }
-			if 'createdAt' !in fields { fields['createdAt'] = stamp(c.auth.config.clock()) }
-			if 'updatedAt' !in fields { fields['updatedAt'] = stamp(c.auth.config.clock()) }
+			if 'createdAt' !in fields { fields['createdAt'] = stamp_millis(c.auth.clock_millis()) }
+			if 'updatedAt' !in fields { fields['updatedAt'] = stamp_millis(c.auth.clock_millis()) }
 			user := c.auth.persist_user(decode_user(json2.Any(fields).json_str())!)!
 			return encode_user(user)
 		}

@@ -48,7 +48,8 @@ fn (mut a Auth) delete_user_callback(p Payload, ctx RequestContext) !Response {
 	a.commit_transaction()!
 	a.begin_transaction(false)!
 	// A wrong-owner or expired token remains consumed after this response commits.
-	if verification.value != current.user.id || verification.expires_at <= a.config.clock() {
+	if verification.value != current.user.id
+		|| verification_expiry_millis(verification) < a.clock_millis() {
 		return error_response(fail(404, 'INVALID_TOKEN', 'Invalid token'))
 	}
 	result := a.finish_user_deletion(current, ctx)!
@@ -84,10 +85,11 @@ fn (mut a Auth) delete_user_request(p Payload, ctx RequestContext) !Response {
 			a.config.delete_token_expires_in
 		}
 		a.persist_verification(Verification{
-			id:         digest(token)
-			identifier: 'delete-account-' + token
-			value:      current.user.id
-			expires_at: a.config.clock() + ttl
+			id:                digest(token)
+			identifier:        'delete-account-' + token
+			value:             current.user.id
+			expires_at:        a.config.clock() + ttl
+			expires_at_millis: a.clock_millis() + ttl * 1000
 		})!
 		url := a.base_url().trim_right('/') + a.config.base_path + '/delete-user/callback?token=' +
 			token + '&callbackURL=' +
@@ -105,7 +107,7 @@ fn (mut a Auth) delete_user_request(p Payload, ctx RequestContext) !Response {
 		}
 	}
 	if p.password == '' && a.config.session_fresh_age != 0
-		&& a.clock_millis() - epoch(current.session.created_at)! * 1000 >= a.config.session_fresh_age * 1000 {
+		&& a.clock_millis() - epoch_millis(current.session.created_at)! >= a.config.session_fresh_age * 1000 {
 		return fail(400, 'SESSION_EXPIRED', 'Session expired')
 	}
 	return a.finish_user_deletion(current, ctx)

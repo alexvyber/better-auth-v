@@ -169,7 +169,7 @@ fn (mut a Auth) update_user_record(user User) !User {
 }
 
 fn (mut a Auth) persist_account(account Account) !Account {
-	now := stamp(a.config.clock())
+	now := stamp_millis(a.clock_millis())
 	prepared := Account{
 		...account
 		created_at: if account.created_at == '' { now } else { account.created_at }

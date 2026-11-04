@@ -59,14 +59,15 @@ fn (mut a Auth) start_oauth(p Payload) !Response {
 	url := provider.authorization_url(state, challenge, redirect_uri)!
 	callback := if p.callback_url == '' { a.base_url() } else { p.callback_url }
 	a.persist_verification(Verification{
-		id:         digest(state)
-		identifier: 'oauth-state'
-		value:      json.encode(OAuthState{
+		id:                digest(state)
+		identifier:        'oauth-state'
+		value:             json.encode(OAuthState{
 			provider:     provider.id()
 			verifier:     verifier
 			callback_url: callback
 		})
-		expires_at: a.config.clock() + 600
+		expires_at:        a.config.clock() + 600
+		expires_at_millis: a.clock_millis() + 600000
 	})!
 	response := Response{
 		headers: [Header{'content-type', 'application/json'}]
@@ -94,7 +95,7 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 		return fail(400, 'INVALID_STATE', 'Invalid OAuth state')
 	}
 
-	if record.identifier != 'oauth-state' || record.expires_at <= a.config.clock() {
+	if record.identifier != 'oauth-state' || verification_expiry_millis(record) < a.clock_millis() {
 		return fail(400, 'INVALID_STATE', 'Invalid OAuth state')
 	}
 	stored := json.decode(OAuthState, record.value)!
@@ -123,7 +124,7 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 			return fail(409, 'ACCOUNT_NOT_LINKED',
 				'Sign in to your existing account to link this provider')
 		}
-		now := stamp(a.config.clock())
+		now := stamp_millis(a.clock_millis())
 		user = User{
 			additional_fields: a.parse_user_fields(identity.additional_fields,
 				map[string]json2.Any{}, true)!

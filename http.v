@@ -376,11 +376,11 @@ fn (mut a Auth) check_csrf(req Request, path string) ! {
 
 fn (mut a Auth) rate_limit(path string) ! {
 	if a.config.rate_limit_max == 0 { return }
-	now := a.config.clock()
+	now := a.clock_millis()
 	// Bounded, per-instance limiter. Applications needing per-IP/distributed
 	// limits should enforce those at their trusted HTTP ingress as well.
 	for key, bucket in a.limits {
-		if now - bucket.start >= a.config.rate_limit_window { a.limits.delete(key) }
+		if now - bucket.start >= a.config.rate_limit_window * 1000 { a.limits.delete(key) }
 	}
 	key := if path.starts_with('/callback/') {
 		'/callback/:provider'
@@ -405,6 +405,7 @@ fn (mut a Auth) rate_limit(path string) ! {
 
 fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 	ctx := RequestContext{
+		...a.request_context
 		headers: req.headers
 	}
 	u := urllib.parse(req.url)!
@@ -479,7 +480,7 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 						false
 					}) && !a.config.disable_session_refresh && (u.query().get('disableRefresh') or {
 						''
-					}) !in ['true', '1'] && cached.expires_at - a.config.clock() * 1000 < (a.config.cookie_cache.update_age or {
+					}) !in ['true', '1'] && cached.expires_at - a.clock_millis() < (a.config.cookie_cache.update_age or {
 						0
 					}) * 1000 {
 						return a.set_session_cookies(a.session_response(cached.result),
@@ -502,17 +503,17 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 			if !result.session.persistent || (u.query().get('disableRefresh') or { '' }) != '' {
 				return a.set_cache_cookie(a.session_response(result), result)
 			}
-			due := epoch(result.session.expires_at)! - a.config.session_expires_in +
-				a.config.session_update_age
-			needs_refresh := a.config.clock() >= due && !a.config.disable_session_refresh
+			due := epoch_millis(result.session.expires_at)! - a.config.session_expires_in * 1000 +
+				a.config.session_update_age * 1000
+			needs_refresh := a.clock_millis() >= due && !a.config.disable_session_refresh
 			if a.config.defer_session_refresh && req.method == 'GET' {
 				return a.session_response(SessionResult{ ...result, needs_refresh: needs_refresh })
 			}
 			if needs_refresh {
 				updated := Session{
 					...result.session
-					updated_at: stamp(a.config.clock())
-					expires_at: stamp(a.config.clock() + a.config.session_expires_in)
+					updated_at: stamp_millis(a.clock_millis())
+					expires_at: stamp_millis(a.clock_millis() + a.config.session_expires_in * 1000)
 				}
 				a.update_session_record(updated)!
 				return a.set_session_cookies(a.session_response(SessionResult{
@@ -569,7 +570,7 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 			mut updated := Session{
 				...current.session
 				additional_fields: updated_fields
-				updated_at:        stamp(a.config.clock())
+				updated_at:        stamp_millis(a.clock_millis())
 			}
 			updated = a.update_session_record(updated)!
 			return a.set_session_cookies(Response{
@@ -597,7 +598,7 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 				additional_fields: additional
 				name:              if 'name' in fields { p.name } else { current.user.name }
 				image:             if 'image' in fields { p.image } else { current.user.image }
-				updated_at:        stamp(a.config.clock())
+				updated_at:        stamp_millis(a.clock_millis())
 			}
 			a.update_user_record(updated)!
 			return json_response({
@@ -715,7 +716,8 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 					return fail(400, 'INVALID_TOKEN', 'Invalid token')
 				}
 
-				if record.identifier != 'reset-password' || record.expires_at <= a.config.clock() {
+				if record.identifier != 'reset-password'
+					|| verification_expiry_millis(record) < a.clock_millis() {
 					return fail(400, 'INVALID_TOKEN', 'Invalid token')
 				}
 				callback := (u.query().get('callbackURL') or { '' })

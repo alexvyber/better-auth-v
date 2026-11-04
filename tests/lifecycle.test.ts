@@ -131,7 +131,7 @@ describe("V account lifecycle", () => {
       emailAndPassword: { sendResetPassword: vi.fn(), resetPasswordTokenExpiresIn: 10 },
     });
     await auth.api.requestPasswordReset({ body: { email: testUser.email } });
-    vi.advanceTimersByTime(10000);
+    vi.advanceTimersByTime(10001);
     await expect(
       auth.api.resetPassword({
         body: { token: emails[0].token, newPassword: "replacement123" },
@@ -139,7 +139,7 @@ describe("V account lifecycle", () => {
     ).rejects.toThrow();
   });
 
-  it("refreshes sessions and rejects them at their exact expiry", async () => {
+  it("refreshes sessions and matches the upstream exact-expiry boundary", async () => {
     vi.useFakeTimers();
     const { auth, signInWithTestUser } = await getTestInstance({
       session: { expiresIn: 30, updateAge: 10 },
@@ -152,6 +152,9 @@ describe("V account lifecycle", () => {
       refreshed!.session.expiresAt.getTime() - first!.session.expiresAt.getTime(),
     ).toBe(10000);
     vi.advanceTimersByTime(30000);
+    const exactExpiry = await auth.api.getSession({headers, query: {disableRefresh: true}});
+    expect(exactExpiry!.session.expiresAt.getTime()).toBe(refreshed!.session.expiresAt.getTime());
+    vi.advanceTimersByTime(1);
     expect(await auth.api.getSession({ headers })).toBeNull();
   });
 

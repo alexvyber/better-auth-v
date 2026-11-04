@@ -49,6 +49,14 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
 - Password hashing now matches upstream scrypt parameters and encoded format,
   including NFKC normalization. Unicode data is pinned to 17.0.0, matching the
   verified Node runtime. Length limits count JS UTF-16 units. Argon2id is opt-in.
+- Record dates and session/freshness/refresh/cache timing retain milliseconds.
+  `clock` supplies NumericDate seconds; optional `clock_millis` supplies exact time
+  (custom seconds-only clocks still work). New opaque-token records have optional
+  millisecond deadlines; legacy seconds-based rows remain readable. Database
+  sessions and opaque tokens accept equality at expiry and reject later times;
+  JWT expiry uses JOSE's separate NumericDate rule. Secondary TTLs are whole seconds
+  floored from the remaining millisecond duration. The native memory KV supports
+  `memory_secondary_storage_with_millis` for precise test/application clocks.
 - IDs and tokens are random 32-byte hex values. Database session lookup uses token
   digests; AES-GCM seals recoverable tokens with a purpose-derived key and binds
   them to the session/user identity. Listings return actual tokens for new rows.

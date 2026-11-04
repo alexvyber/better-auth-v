@@ -51,10 +51,11 @@ pub:
 
 pub struct Verification {
 pub:
-	id         string
-	identifier string
-	value      string
-	expires_at i64
+	id                string
+	identifier        string
+	value             string
+	expires_at        i64
+	expires_at_millis ?i64
 }
 
 pub struct EmailMessage {

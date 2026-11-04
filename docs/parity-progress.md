@@ -279,10 +279,25 @@ or corpus inventory contains unimplemented behavior.
   pre-resolved-key test proving no storage lookup/mint is needed. All 142 imported
   JWT runtime cases still pass. Schema/model mapping remains separate adapter work.
 
+- Preserved millisecond precision throughout user/account/session dates, refresh
+  scheduling, freshness, compact cache clocks, active-session references, opaque
+  token deadlines, and per-instance rate windows. JWT NumericDates remain seconds.
+  New verification records carry optional millisecond expiry while old SQLite JSON
+  rows keep their seconds interpretation. Database sessions/opaque tokens remain
+  usable exactly at expiry and expire after it; active-device lists still exclude
+  equality, matching their separate upstream rule. Secondary TTLs floor remaining
+  milliseconds into seconds and avoid creating immortal session entries with a
+  zero TTL. Native memory KV storage supports millisecond clocks and keeps counter
+  deadlines across increments. Native reset/magic-link messages and lifecycle
+  contexts preserve actual HTTP request metadata. Six runtime contracts and two
+  native tests cover exact timestamps, +1 ms boundaries, cache fallback, secondary
+  TTLs, rate windows, an actual old SQLite row, and delivery metadata. Older local
+  boundary assertions were corrected against the pinned source.
+
 ## Next infrastructure work
 
-The latest `make check` passes 670 TypeScript cases across 35 files, all 56 native
-V test functions across 12 files (including all 20,034 Unicode vectors), TypeScript
+The latest `make check` passes 676 TypeScript cases across 36 files, all 58 native
+V test functions across 13 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus

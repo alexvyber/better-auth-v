@@ -213,6 +213,18 @@ fn epoch(value string) !i64 {
 	return time.parse_rfc3339(value)!.unix()
 }
 
+fn stamp_millis(value i64) string {
+	return time.unix_milli(value).format_rfc3339()
+}
+
+fn epoch_millis(value string) !i64 {
+	return time.parse_rfc3339(value)!.unix_milli()
+}
+
+fn verification_expiry_millis(value Verification) i64 {
+	return value.expires_at_millis or { value.expires_at * 1000 }
+}
+
 fn normalize_email(value string) !string {
 	email := value.trim_space().to_lower()
 	parts := email.split('@')
@@ -251,7 +263,7 @@ fn (mut a Auth) make_session(user_id string, ctx RequestContext, remember bool) 
 		return decode_session(encoded)!
 	}
 
-	now := a.config.clock()
+	now := a.clock_millis()
 	token := random_token()!
 	lifetime := if remember { a.config.session_expires_in } else { i64(86400) }
 	session := Session{
@@ -261,9 +273,9 @@ fn (mut a Auth) make_session(user_id string, ctx RequestContext, remember bool) 
 		id:                random_token()!
 		user_id:           user_id
 		token:             token
-		expires_at:        stamp(now + lifetime)
-		created_at:        stamp(now)
-		updated_at:        stamp(now)
+		expires_at:        stamp_millis(now + lifetime * 1000)
+		created_at:        stamp_millis(now)
+		updated_at:        stamp_millis(now)
 		// Forwarded headers require explicit opt-in behind a trusted ingress.
 		ip_address: if a.config.trust_proxy_ip_headers {
 			ctx.headers['x-forwarded-for'].all_before(',').trim_space()
@@ -282,7 +294,7 @@ fn (mut a Auth) sign_up(input SignUpInput, ctx RequestContext) !AuthResult {
 	email := normalize_email(input.email)!
 	a.check_password(input.password)!
 	additional := a.parse_user_fields(input.additional_fields, map[string]json2.Any{}, true)!
-	now := stamp(a.config.clock())
+	now := stamp_millis(a.clock_millis())
 	mut user := User{
 		additional_fields: additional
 		id:                random_token()!
@@ -392,7 +404,7 @@ fn (mut a Auth) lookup_session(ctx RequestContext, delete_expired bool) !Lookup[
 		return fail(500, 'FAILED_TO_GET_SESSION', 'Failed to get session')
 	}
 	result := found.value or { return Lookup[SessionResult]{} }
-	if epoch(result.session.expires_at)! <= a.config.clock() {
+	if epoch_millis(result.session.expires_at)! < a.clock_millis() {
 		if delete_expired { a.remove_session(token)! }
 		return Lookup[SessionResult]{}
 	}
@@ -412,7 +424,7 @@ fn (mut a Auth) require_session(ctx RequestContext, fresh bool) !SessionResult {
 	result := found.value or { return fail(401, 'UNAUTHORIZED', 'Unauthorized') }
 
 	if fresh && a.config.session_fresh_age > 0
-		&& a.config.clock() - epoch(result.session.created_at)! >= a.config.session_fresh_age {
+		&& a.clock_millis() - epoch_millis(result.session.created_at)! >= a.config.session_fresh_age * 1000 {
 		return fail(403, 'SESSION_NOT_FRESH', 'Session is not fresh')
 	}
 	return result
@@ -445,11 +457,13 @@ fn (mut a Auth) issue_email(kind string, user User, callback string) ! {
 	}
 	token := random_token()!
 	a.persist_verification(Verification{
-		id:         digest(token)
-		identifier: kind
-		value:      user.id
-		expires_at: a.config.clock() +
+		id:                digest(token)
+		identifier:        kind
+		value:             user.id
+		expires_at:        a.config.clock() +
 			if kind == 'reset-password' { a.config.password_reset_expires_in } else { a.config.verification_expires_in }
+		expires_at_millis: a.clock_millis() +
+			1000 * if kind == 'reset-password' { a.config.password_reset_expires_in } else { a.config.verification_expires_in }
 	})!
 	path := if kind == 'reset-password' {
 		'/reset-password/' + token
@@ -462,7 +476,13 @@ fn (mut a Auth) issue_email(kind string, user User, callback string) ! {
 		url += if url.contains('?') { '&' } else { '?' }
 		url += 'callbackURL=' + urllib.query_escape(callback)
 	}
-	a.config.send_email(EmailMessage{ kind: kind, user: user, token: token, url: url })!
+	a.config.send_email(EmailMessage{
+		kind:    kind
+		user:    user
+		token:   token
+		url:     url
+		request: a.request_context.request
+	})!
 }
 
 fn (mut a Auth) token_user(token string, kind string) !User {
@@ -472,7 +492,7 @@ fn (mut a Auth) token_user(token string, kind string) !User {
 		return fail(400, 'INVALID_TOKEN', 'Invalid token')
 	}
 
-	if record.identifier != kind || record.expires_at <= a.config.clock() {
+	if record.identifier != kind || verification_expiry_millis(record) < a.clock_millis() {
 		return fail(400, 'INVALID_TOKEN', 'Invalid token')
 	}
 	user := (a.storage.user(record.value)!).value or {

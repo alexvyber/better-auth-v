@@ -80,7 +80,7 @@ fn (mut a Auth) encode_cookie_cache(result SessionResult) !string {
 	now := a.config.clock()
 	lifetime := if result.session.persistent { a.config.cookie_cache.max_age } else { i64(60) }
 	payload :=
-		js_json(json2.decode[json2.Any]('{"session":${a.session_json(result.session)},"user":${a.user_json(result.user)},"updatedAt":${now * 1000},"version":${json.encode(version)}}')!)
+		js_json(json2.decode[json2.Any]('{"session":${a.session_json(result.session)},"user":${a.user_json(result.user)},"updatedAt":${a.clock_millis()},"version":${json.encode(version)}}')!)
 	if a.config.cookie_cache.strategy == 'jwe' {
 		return symmetric_encode_jwt_rotating(payload, a.secret_config, 'better-auth-session',
 			a.config.cookie_cache.max_age, now)
@@ -96,7 +96,7 @@ fn (mut a Auth) encode_cookie_cache(result SessionResult) !string {
 		input := header + '.' + base64url(claims.bytes())
 		return input + '.' + a.cache_mac(input)
 	}
-	expires := (now + lifetime) * 1000
+	expires := a.clock_millis() + lifetime * 1000
 	signed := payload[..payload.len - 1] + ',"expiresAt":${expires}}'
 	return base64url('{"session":${payload},"expiresAt":${expires},"signature":${json.encode(a.cache_mac(signed))}}'.bytes())
 }
@@ -269,8 +269,8 @@ fn (mut a Auth) cached_session(ctx RequestContext) !Lookup[CachedSession] {
 			}
 		}
 	}
-	if cached.result.session.token != token || cached.expires_at < a.config.clock() * 1000
-		|| epoch(cached.result.session.expires_at)! < a.config.clock()
+	if cached.result.session.token != token || cached.expires_at < a.clock_millis()
+		|| epoch_millis(cached.result.session.expires_at)! < a.clock_millis()
 		|| cached.version != a.cache_version(cached.result)! {
 		return Lookup[CachedSession]{}
 	}

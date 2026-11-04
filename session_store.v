@@ -59,41 +59,41 @@ fn (mut a Auth) cache_references(user_id string) ![]SessionReference {
 }
 
 fn (mut a Auth) mirror_session(session Session) ! {
-	now := a.config.clock()
-	expires := epoch(session.expires_at)!
+	now := a.clock_millis()
+	expires := epoch_millis(session.expires_at)!
 	if expires <= now { return }
 	user := (a.storage.user(session.user_id)!).value or { return }
 	mut references := []SessionReference{}
 	for reference in a.cache_references(session.user_id)! {
-		if reference.expires_at > now * 1000 && reference.token != session.token {
-			references << reference
-		}
+		if reference.expires_at > now && reference.token != session.token { references << reference }
 	}
 	references << SessionReference{
 		token:      session.token
-		expires_at: expires * 1000
+		expires_at: expires
 	}
 	references.sort(a.expires_at < b.expires_at)
-	a.secondary.set('active-sessions-' + session.user_id, json.encode(references),
-		references.last().expires_at / 1000 - now)!
+	index_ttl := (references.last().expires_at - now) / 1000
+	if index_ttl > 0 {
+		a.secondary.set('active-sessions-' + session.user_id, json.encode(references), index_ttl)!
+	}
 	encoded := '{"session":${encode_session(session)},"user":${encode_user(user)},"persistent":${session.persistent}}'
-	a.secondary.set(session.token, encoded, expires - now)!
+	session_ttl := (expires - now) / 1000
+	if session_ttl > 0 { a.secondary.set(session.token, encoded, session_ttl)! }
 }
 
 fn (mut a Auth) remove_cached_session(session Session) ! {
 	if !a.has_secondary() { return }
+	now := a.clock_millis()
 	mut references := []SessionReference{}
 	for reference in a.cache_references(session.user_id)! {
-		if reference.token != session.token && reference.expires_at > a.config.clock() * 1000 {
-			references << reference
-		}
+		if reference.token != session.token && reference.expires_at > now { references << reference }
 	}
 	if references.len == 0 {
 		a.secondary.delete('active-sessions-' + session.user_id)!
 	} else {
 		references.sort(a.expires_at < b.expires_at)
 		a.secondary.set('active-sessions-' + session.user_id, json.encode(references),
-			references.last().expires_at / 1000 - a.config.clock())!
+			(references.last().expires_at - now) / 1000)!
 	}
 	a.secondary.delete(session.token)!
 }
@@ -174,7 +174,7 @@ fn (mut a Auth) user_sessions(user_id string) ![]Session {
 	mut sessions := []Session{}
 	if !a.has_secondary() || a.database_fallback() {
 		for stored in a.storage.sessions(user_id)! {
-			if epoch(stored.expires_at)! <= a.config.clock() { continue
+			if epoch_millis(stored.expires_at)! <= a.clock_millis() { continue
 			 }
 			token := if stored.encrypted_token != '' {
 				a.unseal_session_token(stored)!
@@ -190,12 +190,12 @@ fn (mut a Auth) user_sessions(user_id string) ![]Session {
 	}
 	mut seen := map[string]bool{}
 	for reference in a.cache_references(user_id)! {
-		if reference.expires_at <= a.config.clock() * 1000 || reference.token in seen { continue
+		if reference.expires_at <= a.clock_millis() || reference.token in seen { continue
 		 }
 		seen[reference.token] = true
 		if result := (a.find_session_record(reference.token)!).value {
 			if result.session.user_id == user_id
-				&& epoch(result.session.expires_at)! > a.config.clock() {
+				&& epoch_millis(result.session.expires_at)! > a.clock_millis() {
 				sessions << result.session
 			}
 		}
@@ -221,9 +221,9 @@ fn (mut a Auth) remove_session_row(session Session) ! {
 	}
 	if a.database_sessions() {
 		if a.has_secondary() && a.config.preserve_session_in_database {
-			if epoch(session.expires_at)! > a.config.clock() { a.storage.update_session(Session{
+			if epoch_millis(session.expires_at)! > a.clock_millis() { a.storage.update_session(Session{
 					...session
-					expires_at: stamp(a.config.clock())
+					expires_at: stamp_millis(a.clock_millis())
 				})! }
 		} else {
 			a.storage.delete_session(session.id)!
@@ -277,7 +277,7 @@ fn (mut a Auth) update_session_record(session Session) !Session {
 fn (mut a Auth) refresh_cached_user(user User) ! {
 	if !a.has_secondary() { return }
 	for reference in a.cache_references(user.id)! {
-		if reference.expires_at <= a.config.clock() * 1000 { continue
+		if reference.expires_at <= a.clock_millis() { continue
 		 }
 		if result := (a.find_session_record(reference.token)!).value {
 			a.mirror_session(result.session)!

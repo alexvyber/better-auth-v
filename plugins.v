@@ -45,14 +45,21 @@ fn magic_link_send(mut context EndpointContext, req Request) !Response {
 	if user := (a.storage.user_by_email(email)!).value {
 		token := random_token()!
 		a.persist_verification(Verification{
-			id:         digest(token)
-			identifier: 'magic-link'
-			value:      user.id
-			expires_at: a.config.clock() + a.config.verification_expires_in
+			id:                digest(token)
+			identifier:        'magic-link'
+			value:             user.id
+			expires_at:        a.config.clock() + a.config.verification_expires_in
+			expires_at_millis: a.clock_millis() + a.config.verification_expires_in * 1000
 		})!
 		url := a.base_url().trim_right('/') + a.config.base_path + '/magic-link/verify?token=' +
 			token + '&callbackURL=' + urllib.query_escape(p.callback_url)
-		a.config.send_email(EmailMessage{ kind: 'magic-link', user: user, token: token, url: url })!
+		a.config.send_email(EmailMessage{
+			kind:    'magic-link'
+			user:    user
+			token:   token
+			url:     url
+			request: a.request_context.request
+		})!
 	}
 	return json_response({
 		'status': true
@@ -68,7 +75,7 @@ fn magic_link_verify(mut context EndpointContext, req Request) !Response {
 	updated := User{
 		...user
 		email_verified: true
-		updated_at:     stamp(a.config.clock())
+		updated_at:     stamp_millis(a.clock_millis())
 	}
 	a.update_user_record(updated)!
 	session := a.make_session(user.id, RequestContext{ headers: req.headers }, true)!

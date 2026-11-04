@@ -177,7 +177,7 @@ fn (mut a Auth) verify_email_request(req Request, ctx RequestContext) !Response 
 			...user
 			email:          target
 			email_verified: true
-			updated_at:     stamp(a.config.clock())
+			updated_at:     stamp_millis(a.clock_millis())
 		})!
 		a.config.after_email_verification(updated, a.request_context)!
 		if active == none { active = SessionResult{
@@ -195,7 +195,7 @@ fn (mut a Auth) verify_email_request(req Request, ctx RequestContext) !Response 
 	updated := a.update_user_record(User{
 		...user
 		email_verified: true
-		updated_at:     stamp(a.config.clock())
+		updated_at:     stamp_millis(a.clock_millis())
 	})!
 	a.config.after_email_verification(updated, a.request_context)!
 	mut result := verification_success(callback, 'null')
@@ -237,7 +237,7 @@ fn (mut a Auth) change_email_request(p Payload, ctx RequestContext) !Response {
 		updated := a.update_user_record(User{
 			...current.user
 			email:      target
-			updated_at: stamp(a.config.clock())
+			updated_at: stamp_millis(a.clock_millis())
 		})!
 		if can_send {
 			a.config.send_email(a.verification_message(updated, p.callback_url, '', '')!)!

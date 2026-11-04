@@ -198,8 +198,9 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   matching nontransactional adapter semantics. Secondary-cache changes still
   cannot be rolled back as distributed transactions.
 - Rate limiting is per-instance/per-route and in memory, not distributed or per-IP.
-  Authentication work is serialized per instance/connection. The native HTTP
-  transport buffers request bodies before the library can enforce its body limit.
+  Authentication work is serialized per instance/connection. Body limits are opt-in
+  (`max_body_bytes > 0`); the default zero imposes no library cap, matching upstream.
+  The native HTTP transport buffers bodies before this optional limit is enforced.
 - There is no automatic expiration-record garbage collector or durable email outbox.
   Email callback failure rolls back database writes, but delivered email cannot be
   recalled on a subsequent commit failure.
@@ -269,8 +270,13 @@ tests establishes only their covered behavior, not complete upstream parity.
 - The complete upstream crypto secret-rotation and OAuth purpose-isolation files
   also run with native crypto helpers. Independent TS crypto exchanges ciphertext,
   JWEs, and encrypted private JWKs with V.
-- The cookies source is partially imported: 72 declarations run as 90 cases against
-  native helpers and auth flows, with 25 unported declarations recorded explicitly.
+- The cookies source is partially imported: 95 declarations run as 113 cases against
+  native helpers and auth flows, with two account-cookie/OAuth declarations still
+  unported. Field filtering, sensitive-session cache bypass, and all chunking tests
+  are included, including oversized-cache fallback and actual serialized-line budgets.
+  Native standalone readers report schema warnings through a supplied logger;
+  the fixture forwards native events to the active endpoint logger. Broader logger
+  context/metadata parity, including chunking debug metadata, remains incomplete.
   Four independent helper contracts compare V with the published TS implementation
   on malformed encodings, attribute metadata, ordered merging, and secure selection.
   Another 14 standalone reader cases use independent HMAC/JOSE/upstream ciphertext

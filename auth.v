@@ -84,7 +84,7 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 	if config.session_expires_in <= 0 || config.verification_expires_in <= 0
 		|| config.session_update_age < 0 || config.session_fresh_age < 0
 		|| config.password_reset_expires_in <= 0 || config.rate_limit_window <= 0
-		|| config.rate_limit_max < 0 || config.max_body_bytes <= 0 || config.min_password_length < 1
+		|| config.rate_limit_max < 0 || config.max_body_bytes < 0 || config.min_password_length < 1
 		|| config.max_password_length < config.min_password_length {
 		return error('invalid auth limits')
 	}

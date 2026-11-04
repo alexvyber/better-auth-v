@@ -228,7 +228,7 @@ pub fn (mut a Auth) handle_prepared(prepared PreparedRequest) Response {
 }
 
 fn (mut a Auth) process_checked(req Request, direct bool) !Response {
-	if req.body.len > a.config.max_body_bytes {
+	if a.config.max_body_bytes > 0 && req.body.len > a.config.max_body_bytes {
 		return fail(413, 'BODY_TOO_LARGE', 'Request body too large')
 	}
 	u := urllib.parse(req.url) or { return fail(400, 'INVALID_URL', 'Invalid URL') }

@@ -879,6 +879,12 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     return {...result, headers, runWithUser: <T>(callback: (headers: Headers) => T) => currentUserHeaders.run(headers, () => callback(headers))};
   }
   const db = {
+    async deleteMany(args: FixtureOptions): Promise<number> {
+      assertKeys(args, ['model', 'where'], 'db.deleteMany');
+      if (args.model !== 'session' || args.where?.length !== 1 || args.where[0].field !== 'userId' || (args.where[0].operator && args.where[0].operator !== 'eq')) throw new Error('V db.deleteMany requires a session userId equality filter');
+      const reply = await bridge.send('internal', {method: 'adapterDeleteSessions', arguments_json: transportJSON([args.where[0].value])});
+      return JSON.parse(reply.value_json);
+    },
     async delete(args: FixtureOptions) {
       assertKeys(args, ['model', 'where'], 'db.delete');
       if (args.model !== 'session' || args.where?.length !== 1 || args.where[0].field !== 'token' || (args.where[0].operator && args.where[0].operator !== 'eq')) throw new Error('V db.delete requires a session token equality filter');

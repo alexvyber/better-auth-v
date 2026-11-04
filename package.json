@@ -16,6 +16,7 @@
     "@noble/hashes": "2.4.0",
     "@types/node": "24.10.0",
     "better-auth": "1.7.15",
+    "better-call": "1.4.4",
     "jose": "6.2.15",
     "typescript": "5.9.3",
     "vitest": "5.0.0",

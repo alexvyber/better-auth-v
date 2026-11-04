@@ -45,15 +45,23 @@ fn cookie_command() ! {
 			}
 		}
 		'cache-open' {
-			config := json.decode(better_auth.CookieCacheReadConfig, (input['config'] or {
+			input_config := json.decode(better_auth.CookieCacheReadConfig, (input['config'] or {
 				json2.Any(map[string]json2.Any{})
 			}).json_str())!
+			mut state := &State{}
+			config := better_auth.CookieCacheReadConfig{
+				...input_config
+				log: fn [mut state] (level string, message string) {
+					state.logs << better_auth.LogEvent{level, message}
+				}
+			}
 			now := (input['now_millis'] or { json2.Any(i64(0)) }).i64()
 			opened := better_auth.open_cookie_cache(header, config, now)!
 			if snapshot := opened.value {
-				println(json.encode(snapshot))
+				println('{"snapshot":' + json.encode(snapshot) + ',"logs":' +
+					json.encode(state.logs) + '}')
 			} else {
-				println('null')
+				println('{"snapshot":null,"logs":' + json.encode(state.logs) + '}')
 			}
 		}
 		'cache-finish' {

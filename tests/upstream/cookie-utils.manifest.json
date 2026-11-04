@@ -485,9 +485,9 @@
         "sensitive session middleware cookie cache"
       ],
       "test": "should not let request query re-enable cookie cache on sensitive endpoints",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: cookie-cache middleware integration"
+      "reason": null
     },
     {
       "suite": "Cookie Cache Field Filtering",
@@ -495,9 +495,9 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should exclude user fields with returned: false from cookie cache",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: cookie-cache field filtering and account cache integration"
+      "reason": null
     },
     {
       "suite": "Cookie Cache Field Filtering",
@@ -505,9 +505,9 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should correctly filter multiple user fields based on returned config",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: cookie-cache field filtering and account cache integration"
+      "reason": null
     },
     {
       "suite": "Cookie Cache Field Filtering",
@@ -515,9 +515,9 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should reduce cookie size when large fields are excluded",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: cookie-cache field filtering and account cache integration"
+      "reason": null
     },
     {
       "suite": "Cookie Cache Field Filtering",
@@ -525,9 +525,9 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should maintain session field filtering (regression check)",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: cookie-cache field filtering and account cache integration"
+      "reason": null
     },
     {
       "suite": "Cookie Cache Field Filtering",
@@ -535,9 +535,9 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should include unknown user fields for backward compatibility",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: cookie-cache field filtering and account cache integration"
+      "reason": null
     },
     {
       "suite": "Cookie Cache Field Filtering",
@@ -545,9 +545,9 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should work with JWT strategy",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: cookie-cache field filtering and account cache integration"
+      "reason": null
     },
     {
       "suite": "Cookie Cache Field Filtering",
@@ -555,9 +555,9 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should work with JWT strategy backed by JWKS keys",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: cookie-cache field filtering and account cache integration"
+      "reason": null
     },
     {
       "suite": "Cookie Cache Field Filtering",
@@ -565,9 +565,9 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should work with compact strategy",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: cookie-cache field filtering and account cache integration"
+      "reason": null
     },
     {
       "suite": "Cookie Cache Field Filtering",
@@ -575,9 +575,9 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should use the configured logger for an invalid signed compact cookie",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: cookie-cache field filtering and account cache integration"
+      "reason": null
     },
     {
       "suite": "Cookie Cache Field Filtering",
@@ -585,9 +585,9 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should return null for invalid JWT token",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: cookie-cache field filtering and account cache integration"
+      "reason": null
     },
     {
       "suite": "Cookie Cache Field Filtering",
@@ -595,9 +595,9 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should require a secret when helper verification has no JWKS",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: cookie-cache field filtering and account cache integration"
+      "reason": null
     },
     {
       "suite": "Cookie Cache Field Filtering",
@@ -605,9 +605,9 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should reject JWT plugin tokens that are not cookie-cache JWTs",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: cookie-cache field filtering and account cache integration"
+      "reason": null
     },
     {
       "suite": "Cookie Cache Field Filtering",
@@ -615,9 +615,9 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should return null when JWKS verification uses the wrong key set",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: cookie-cache field filtering and account cache integration"
+      "reason": null
     },
     {
       "suite": "Cookie Cache Field Filtering",
@@ -625,9 +625,9 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should default to compact strategy when not specified",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: cookie-cache field filtering and account cache integration"
+      "reason": null
     },
     {
       "suite": "Cookie Chunking",
@@ -635,9 +635,9 @@
         "Cookie Chunking"
       ],
       "test": "should chunk cookies when they exceed 4KB",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: full cookie chunk lifecycle integration"
+      "reason": null
     },
     {
       "suite": "Cookie Chunking",
@@ -645,9 +645,9 @@
         "Cookie Chunking"
       ],
       "test": "should chunk JWKS-backed JWT cookies when they exceed 4KB",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: full cookie chunk lifecycle integration"
+      "reason": null
     },
     {
       "suite": "Cookie Chunking",
@@ -655,9 +655,9 @@
         "Cookie Chunking"
       ],
       "test": "should reconstruct chunked cookies correctly",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: full cookie chunk lifecycle integration"
+      "reason": null
     },
     {
       "suite": "Cookie Chunking",
@@ -665,9 +665,9 @@
         "Cookie Chunking"
       ],
       "test": "should clean up all chunks when deleting session",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: full cookie chunk lifecycle integration"
+      "reason": null
     },
     {
       "suite": "Cookie Chunking",
@@ -675,9 +675,9 @@
         "Cookie Chunking"
       ],
       "test": "should NOT chunk cookies when they are under 4KB",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: full cookie chunk lifecycle integration"
+      "reason": null
     },
     {
       "suite": "Cookie Chunking",
@@ -685,9 +685,9 @@
         "Cookie Chunking"
       ],
       "test": "should chunk session cache when attributes push the line over the limit",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: full cookie chunk lifecycle integration"
+      "reason": null
     },
     {
       "suite": "Cookie Chunking",
@@ -695,9 +695,9 @@
         "Cookie Chunking"
       ],
       "test": "skips the session cache and warns when it is too large to chunk",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: full cookie chunk lifecycle integration"
+      "reason": null
     },
     {
       "suite": "Cookie Chunking",
@@ -705,9 +705,9 @@
         "Cookie Chunking"
       ],
       "test": "skips the session cache and warns when the prefix alone overflows",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: full cookie chunk lifecycle integration"
+      "reason": null
     },
     {
       "suite": "parse cookies",

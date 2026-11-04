@@ -254,7 +254,8 @@ fn (mut a Auth) set_cache_cookie(response Response, current SessionResult) !Resp
 	chunk_size := 4050 - a.cache_cookie_header(base + '.99', '', age).len
 	mut result := a.clear_cache_cookie(response)
 	if chunk_size <= 0 || data.len > chunk_size * 100 {
-		a.config.log('warn', 'Session cookie is too large; cookie cache skipped')
+		a.config.log('warn',
+			'Session cookie is too large to store even after chunking, so the cookie cache was skipped. Reduce the cached data size or avoid storing this data in cookies.')
 		return result
 	}
 	if data.len <= chunk_size {

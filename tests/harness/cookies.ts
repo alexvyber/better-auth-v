@@ -2,6 +2,7 @@ import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import type {CookieCachePayload} from '@better-auth/core';
 import type {BetterAuthOptions} from 'better-auth';
+import {logger} from '@better-auth/core/env';
 
 export const SECURE_COOKIE_PREFIX = '__Secure-';
 export const HOST_COOKIE_PREFIX = '__Host-';
@@ -79,12 +80,14 @@ function hydrateCache(payload: string): CookieCachePayload {
 }
 export async function getCookieCache<S extends CookieCachePayload = CookieCachePayload>(request: Request | Headers, config: CacheOptions = {}): Promise<S | null> {
   const headers = request instanceof Headers || !('headers' in request) ? request : request.headers;
-  const snapshot = native<{payload_json: string; compact_expires_at: number | null} | null>({
+  const opened = native<{snapshot: {payload_json: string; compact_expires_at: number | null} | null; logs: {level: 'warn' | 'error'; message: string}[]}>({
     op: 'cache-open', header: headers.get('cookie') ?? '', now_millis: Date.now(),
     config: {cookie_prefix: config.cookiePrefix, cookie_name: config.cookieName, is_secure: config.isSecure,
       secret: config.secret, strategy: config.strategy, jwt_jwks_json: config.jwt?.jwks === undefined ? undefined : JSON.stringify(config.jwt.jwks),
       jwt_issuer: config.jwt?.issuer, jwt_audience: config.jwt?.audience},
   });
+  for (const event of opened.logs) logger[event.level](event.message);
+  const snapshot = opened.snapshot;
   if (snapshot === null) return null;
   let expected = typeof config.version === 'string' && config.version ? config.version : undefined;
   if (typeof config.version === 'function') {

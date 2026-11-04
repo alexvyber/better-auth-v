@@ -62,7 +62,7 @@ struct Options {
 	verification_expires_in           i64 = 3600
 	rate_limit_max                    int
 	rate_limit_window                 i64 = 60
-	max_body_bytes                    int = 65536
+	max_body_bytes                    int
 	password_reset_expires_in         i64 = 3600
 	revoke_sessions_on_password_reset bool
 	real_passwords                    bool

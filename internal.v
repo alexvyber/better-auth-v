@@ -215,6 +215,20 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 			}
 			return 'null'
 		}
+		'adapterDeleteSessions' {
+			if args.len != 1 || args[0] !is string {
+				return error('adapterDeleteSessions requires userId')
+			}
+			user_id := args[0].str()
+			mut deleted := 0
+			for session in c.auth.storage.sessions(user_id)! {
+				if session.user_id == user_id {
+					c.auth.storage.delete_session(session.id)!
+					deleted++
+				}
+			}
+			return deleted.str()
+		}
 		'updateAccount' {
 			if args.len != 2 { return error('updateAccount requires id and patch') }
 			account := (c.auth.storage.account_by_id(args[0].str())!).value or { return 'null' }

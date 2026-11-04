@@ -1,7 +1,45 @@
 module better_auth
 
 import json
+import encoding.base64
 import x.json2
+
+struct CookieReaderAudit {
+mut:
+	logs []LogEvent
+}
+
+fn test_cookie_reader_schema_warning_is_native_and_bad_signatures_are_silent() ! {
+	now := i64(1893456000123)
+	header := standalone_cache_fixture(now, now)
+	mut outer :=
+		json2.decode[map[string]json2.Any](base64.url_decode(header.all_after('=')).bytestr())!
+	mut payload := (outer['session'] or { panic('missing payload') }).as_map().clone()
+	mut user := (payload['user'] or { panic('missing user') }).as_map().clone()
+	user['emailVerified'] = json2.Null{}
+	payload['user'] = user
+	outer['session'] = payload
+	mut signed := payload.clone()
+	signed['expiresAt'] = now
+	outer['signature'] = base64url(cookie_reader_hmac('HS256', 'secret'.bytes(),
+		js_json(json2.Any(signed)).bytes())!)
+	mut audit := &CookieReaderAudit{}
+	config := CookieCacheReadConfig{
+		secret: 'secret'
+		log:    fn [mut audit] (level string, message string) {
+			audit.logs << LogEvent{level, message}
+		}
+	}
+	invalid := 'better-auth.session_data=' + base64url(json2.Any(outer).json_str().bytes())
+	assert open_cookie_cache(invalid, config, now)!.value == none
+	assert audit.logs.len == 1
+	assert audit.logs[0].level == 'warn'
+	assert audit.logs[0].message == 'Cookie cache payload failed schema validation'
+	outer['signature'] = 'tampered'
+	assert open_cookie_cache('better-auth.session_data=' +
+		base64url(json2.Any(outer).json_str().bytes()), config, now)!.value == none
+	assert audit.logs.len == 1
+}
 
 fn standalone_cache_fixture(now i64, expires i64) string {
 	payload := '{"session":{"id":"","token":"","expiresAt":${json.encode(stamp_millis(now + 60000))}},"user":{"id":"different","name":"Name","email":"CACHE@EXAMPLE.COM"},"updatedAt":${now}}'

@@ -22,6 +22,7 @@ pub:
 	version       ?string
 	version_for   fn (string) !string = no_cookie_reader_version @[skip]
 	clock_millis  fn () i64           = cookie_reader_clock           @[skip]
+	log           fn (string, string) = discard_log @[skip]
 }
 
 fn no_cookie_reader_version(_ string) !string {
@@ -318,7 +319,10 @@ fn decode_cookie_reader(value string, secret string, config CookieCacheReadConfi
 		}
 		expiry = expires
 	}
-	payload := parse_cookie_reader_payload(raw, now_millis)!
+	payload := parse_cookie_reader_payload(raw, now_millis) or {
+		config.log('warn', 'Cookie cache payload failed schema validation')
+		return err
+	}
 	if config.strategy == 'jwt' && config.jwt_jwks_json != none {
 		user := (payload['user'] or { json2.Any(map[string]json2.Any{}) }).as_map()
 		session := (payload['session'] or { json2.Any(map[string]json2.Any{}) }).as_map()

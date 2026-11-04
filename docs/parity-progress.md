@@ -324,6 +324,22 @@ or corpus inventory contains unimplemented behavior.
 
 ## Next infrastructure work
 
+- Imported all cookie field-filtering, sensitive middleware and chunking suites
+  without changing assertions: the cookies file now runs 95 declarations as 113
+  cases, with only two Google/account-cookie cases unported. Native standalone
+  readers emit schema-validation warnings through an application logger; the test
+  facade forwards these native events to the active endpoint logger. Invalid MACs
+  remain silent misses. Oversized-cache diagnostics match upstream, and ordinary
+  authentication still succeeds after a cache is skipped. Added native raw-session
+  bulk deletion by user ID with counts, exposed through an explicitly limited
+  fixture adapter operation, to verify revoked database sessions cannot regain
+  sensitive access through cached cookies/query overrides. Removed the divergent
+  default 64 KiB library body cap; positive `max_body_bytes` still enforces an
+  explicit byte limit, while zero matches the upstream default. Three native tests
+  cover per-user deletion/counts, optional body-limit boundaries, and native warning
+  callbacks. Chunking debug metadata, fractional duration precision, account-cookie
+  synchronization and broader adapter/logger operations remain unfinished.
+
 - Added the native `CookieFactory`, standalone descriptor/getter counterparts,
   default/per-cookie attribute configuration, shared HTTP serialization and cache
   lifetime selection. Native auth now captures the production security fallback
@@ -341,8 +357,8 @@ or corpus inventory contains unimplemented behavior.
   Fractional issuance durations, exact malformed-option/error timing, account
   cookies and remaining integration suites still need work.
 
-The latest `make check` passes 806 TypeScript cases across 40 files, all 65 native
-V test functions across 16 files (including all 20,034 Unicode vectors), TypeScript
+The latest `make check` passes 829 TypeScript cases across 40 files, all 68 native
+V test functions across 17 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus

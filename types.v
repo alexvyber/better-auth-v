@@ -223,7 +223,7 @@ pub:
 	verification_expires_in           i64                 = 3600
 	rate_limit_max                    int                 = 100
 	rate_limit_window                 i64                 = 60
-	max_body_bytes                    int                 = 65536
+	max_body_bytes                    int
 	password_hasher                   PasswordHasher      = ScryptHasher{}
 	clock                             fn () i64           = time.unix_now
 	clock_millis                      fn () i64           = no_millisecond_clock

@@ -12,6 +12,36 @@ fn cookie_command() ! {
 	name := (input['name'] or { json2.Any('') }).str()
 	value := (input['value'] or { json2.Any('') }).str()
 	match op {
+		'cache-open' {
+			config := json.decode(better_auth.CookieCacheReadConfig, (input['config'] or {
+				json2.Any(map[string]json2.Any{})
+			}).json_str())!
+			now := (input['now_millis'] or { json2.Any(i64(0)) }).i64()
+			opened := better_auth.open_cookie_cache(header, config, now)!
+			if snapshot := opened.value {
+				println(json.encode(snapshot))
+			} else {
+				println('null')
+			}
+		}
+		'cache-finish' {
+			snapshot := json.decode(better_auth.CookieCacheSnapshot, (input['snapshot'] or {
+				return error('missing snapshot')
+			}).json_str())!
+			expected := if raw := input['expected_version'] {
+				if raw is string { ?string(raw) } else { none }
+			} else {
+				none
+			}
+			finished := better_auth.finish_cookie_cache(snapshot, expected, (input['now_millis'] or {
+				json2.Any(i64(0))
+			}).i64())!
+			if payload := finished.value {
+				println(json.encode(payload))
+			} else {
+				println('null')
+			}
+		}
 		'parse' {
 			mut entries := []json2.Any{}
 			for key, val in better_auth.parse_cookies(header) {

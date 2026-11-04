@@ -107,10 +107,12 @@ pub fn symmetric_decode_jwt(token string, secret string, salt string, now i64) !
 		plaintext = gcm.decrypt(sealed, iv, parts[0].bytes())!
 	}
 	claims := json2.decode[map[string]json2.Any](plaintext.bytestr())!
-	if 'exp' in claims && numeric_field(claims, 'exp')! <= now - 15 { return error('expired JWE') }
-	if 'nbf' in claims && numeric_field(claims, 'nbf')! > now + 15 {
+	if 'exp' in claims && numeric_date_field(claims, 'exp')! <= f64(now - 15) {
+		return error('expired JWE')
+	}
+	if 'nbf' in claims && numeric_date_field(claims, 'nbf')! > f64(now + 15) {
 		return error('JWE not yet valid')
 	}
-	if 'iat' in claims { numeric_field(claims, 'iat')! }
+	if 'iat' in claims { numeric_date_field(claims, 'iat')! }
 	return plaintext.bytestr()
 }

@@ -1,7 +1,9 @@
 // Generated from pinned upstream source; do not edit assertions here.
 import { describe, expect, it, vi } from "vitest";
 import { getTestInstance } from "../harness/test-instance.js";
-import { applySetCookies, HOST_COOKIE_PREFIX, SECURE_COOKIE_PREFIX, parseSetCookieHeader, stripSecureCookiePrefix, toCookieOptions, setRequestCookie, parseCookies, getSessionCookie, getChunkedCookie, expireCookie } from "../harness/cookies.js";
+import { base64Url } from "@better-auth/utils/base64";
+import { createHMAC } from "@better-auth/utils/hmac";
+import { applySetCookies, HOST_COOKIE_PREFIX, SECURE_COOKIE_PREFIX, parseSetCookieHeader, stripSecureCookiePrefix, toCookieOptions, setRequestCookie, parseCookies, getSessionCookie, getChunkedCookie, getCookieCache, expireCookie } from "../harness/cookies.js";
 
 describe("cookie-utils parseSetCookieHeader", () => {
 	it("handles Expires with commas and multiple cookies", () => {
@@ -400,7 +402,41 @@ describe("getSessionCookie", async () => {
 			cookiePrefix: "test",
 		});
 		expect(cookies).not.toBeNull();
-	});;
+	});
+
+	it("should return cookie cache", async () => {
+		const { client, testUser, cookieSetter } = await getTestInstance({
+			secret: "better-auth.secret",
+			session: {
+				cookieCache: {
+					enabled: true,
+				},
+			},
+		});
+
+		const headers = new Headers();
+
+		await client.signIn.email(
+			{
+				email: testUser.email,
+				password: testUser.password,
+			},
+			{
+				onSuccess: cookieSetter(headers),
+			},
+		);
+
+		const request = new Request("https://example.com/api/auth/session", {
+			headers,
+		});
+
+		const cache = await getCookieCache(request, {
+			secret: "better-auth.secret",
+		});
+		expect(cache).not.toBeNull();
+		expect(cache?.user?.email).toEqual(testUser.email);
+		expect(cache?.session?.token).toEqual(expect.any(String));
+	});
 
 	it("should respect dontRememberMe when storing session in cookie cache", async () => {
 		const { client, testUser } = await getTestInstance({
@@ -436,7 +472,53 @@ describe("getSessionCookie", async () => {
 				},
 			},
 		);
-	});;;
+	});
+
+	it("should return null if the cookie is invalid", async () => {
+		const { client, testUser } = await getTestInstance({
+			session: {
+				cookieCache: {
+					enabled: true,
+				},
+			},
+		});
+		const headers = new Headers();
+		await client.signIn.email({
+			email: testUser.email,
+			password: testUser.password,
+		});
+		const request = new Request("https://example.com/api/auth/session", {
+			headers,
+		});
+		const cache = await getCookieCache(request, {
+			secret: "wrong-secret",
+		});
+		expect(cache).toBeNull();
+	});
+
+	it("should throw an error if the secret is not provided", async () => {
+		const { client, testUser, cookieSetter } = await getTestInstance({
+			session: {
+				cookieCache: {
+					enabled: true,
+				},
+			},
+		});
+		const headers = new Headers();
+		await client.signIn.email(
+			{
+				email: testUser.email,
+				password: testUser.password,
+			},
+			{
+				onSuccess: cookieSetter(headers),
+			},
+		);
+		const request = new Request("https://example.com/api/auth/session", {
+			headers,
+		});
+		await expect(getCookieCache(request)).rejects.toThrow();
+	});
 
 	it("should chunk large cookies instead of logging error", async () => {
 		const { client } = await getTestInstance({
@@ -754,5 +836,82 @@ describe("expireCookie", () => {
 		expect(setCookieHeader).not.toContain("target=valid");
 		expect(setCookieHeader).not.toContain("target.0=chunk");
 		expect(setCookieHeader).toContain("target=; Path=/; Max-Age=0");
+	});
+});
+
+describe("getCookieCache expiry (compact strategy)", () => {
+	const SECRET = "better-auth.secret";
+
+	// Build a validly-signed compact session_data cookie, mirroring the encoding
+	// in setCookieCache, so the only variable under test is freshness.
+	async function buildCompactCookie(
+		embeddedExpiresAt: Date,
+		outerExpiresAt: number | undefined,
+	) {
+		const sessionData = {
+			session: {
+				id: "s1",
+				token: "session-token",
+				userId: "u1",
+				createdAt: new Date(),
+				updatedAt: new Date(),
+				expiresAt: embeddedExpiresAt,
+			},
+			user: {
+				id: "u1",
+				email: "cache@test.com",
+				emailVerified: true,
+				name: "Cache User",
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			},
+			updatedAt: Date.now(),
+			version: "1",
+		};
+		const signature = await createHMAC("SHA-256", "base64urlnopad").sign(
+			SECRET,
+			JSON.stringify({ ...sessionData, expiresAt: outerExpiresAt }),
+		);
+		return base64Url.encode(
+			JSON.stringify({
+				session: sessionData,
+				expiresAt: outerExpiresAt,
+				signature,
+			}),
+			{ padding: false },
+		);
+	}
+
+	function requestWith(cookieValue: string) {
+		const headers = new Headers();
+		headers.set("cookie", `better-auth.session_data=${cookieValue}`);
+		return new Request("https://example.com/api/auth/session", { headers });
+	}
+
+	it("returns the session for a fresh snapshot", async () => {
+		const cookie = await buildCompactCookie(
+			new Date(Date.now() + 60 * 60 * 1000),
+			Date.now() + 5 * 60 * 1000,
+		);
+		const cache = await getCookieCache(requestWith(cookie), { secret: SECRET });
+		expect(cache?.user?.email).toBe("cache@test.com");
+	});
+
+	it("returns null when the embedded session has expired", async () => {
+		const cookie = await buildCompactCookie(
+			new Date(Date.now() - 60 * 1000),
+			Date.now() + 5 * 60 * 1000,
+		);
+		const cache = await getCookieCache(requestWith(cookie), { secret: SECRET });
+		expect(cache).toBeNull();
+	});
+
+	it("returns null when the cache window has elapsed", async () => {
+		const cookie = await buildCompactCookie(
+			new Date(Date.now() + 60 * 60 * 1000),
+			Date.now() - 60 * 1000,
+		);
+		const cache = await getCookieCache(requestWith(cookie), { secret: SECRET });
+		expect(cache).toBeNull();
 	});
 });

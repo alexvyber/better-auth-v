@@ -435,9 +435,9 @@
         "getSessionCookie"
       ],
       "test": "should return cookie cache",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: standalone cookie-cache reader and associated session helper integrations"
+      "reason": null
     },
     {
       "suite": "getSessionCookie",
@@ -455,9 +455,9 @@
         "getSessionCookie"
       ],
       "test": "should return null if the cookie is invalid",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: standalone cookie-cache reader and associated session helper integrations"
+      "reason": null
     },
     {
       "suite": "getSessionCookie",
@@ -465,9 +465,9 @@
         "getSessionCookie"
       ],
       "test": "should throw an error if the secret is not provided",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: standalone cookie-cache reader and associated session helper integrations"
+      "reason": null
     },
     {
       "suite": "getSessionCookie",
@@ -955,9 +955,9 @@
         "getCookieCache expiry (compact strategy)"
       ],
       "test": "returns the session for a fresh snapshot",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: standalone cookie-cache reader"
+      "reason": null
     },
     {
       "suite": "getCookieCache expiry (compact strategy)",
@@ -965,9 +965,9 @@
         "getCookieCache expiry (compact strategy)"
       ],
       "test": "returns null when the embedded session has expired",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: standalone cookie-cache reader"
+      "reason": null
     },
     {
       "suite": "getCookieCache expiry (compact strategy)",
@@ -975,9 +975,9 @@
         "getCookieCache expiry (compact strategy)"
       ],
       "test": "returns null when the cache window has elapsed",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported: standalone cookie-cache reader"
+      "reason": null
     }
   ]
 }

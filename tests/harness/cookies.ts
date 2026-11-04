@@ -1,5 +1,6 @@
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
+import type {CookieCachePayload} from '@better-auth/core';
 
 export const SECURE_COOKIE_PREFIX = '__Secure-';
 export const HOST_COOKIE_PREFIX = '__Host-';
@@ -54,4 +55,38 @@ export function expireCookie(ctx: {responseHeaders?: Headers; context?: {respons
     for (const entry of kept) headers.append('set-cookie', entry);
   }
   ctx.setCookie(cookie.name, '', native({op: 'expire-options', attributes: cookie.attributes}));
+}
+
+type CacheOptions = {
+  cookiePrefix?: string; cookieName?: string; isSecure?: boolean; secret?: string;
+  strategy?: 'compact' | 'jwt' | 'jwe';
+  jwt?: {jwks?: {keys: Record<string, unknown>[]}; issuer?: string; audience?: string};
+  version?: string | ((session: CookieCachePayload['session'], user: CookieCachePayload['user']) => string | Promise<string>);
+};
+function hydrateCache(payload: string): CookieCachePayload {
+  return JSON.parse(payload, (_key, value) => {
+    // Reconstruct platform Date objects from native-validated JSON dates.
+    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/.test(value)) {
+      const date = new Date(value);
+      if (!Number.isNaN(+date)) return date;
+    }
+    return value;
+  });
+}
+export async function getCookieCache<S extends CookieCachePayload = CookieCachePayload>(request: Request | Headers, config: CacheOptions = {}): Promise<S | null> {
+  const headers = request instanceof Headers || !('headers' in request) ? request : request.headers;
+  const snapshot = native<{payload_json: string; compact_expires_at: number | null} | null>({
+    op: 'cache-open', header: headers.get('cookie') ?? '', now_millis: Date.now(),
+    config: {cookie_prefix: config.cookiePrefix, cookie_name: config.cookieName, is_secure: config.isSecure,
+      secret: config.secret, strategy: config.strategy, jwt_jwks_json: config.jwt?.jwks === undefined ? undefined : JSON.stringify(config.jwt.jwks),
+      jwt_issuer: config.jwt?.issuer, jwt_audience: config.jwt?.audience},
+  });
+  if (snapshot === null) return null;
+  let expected = typeof config.version === 'string' && config.version ? config.version : undefined;
+  if (typeof config.version === 'function') {
+    const payload = hydrateCache(snapshot.payload_json);
+    expected = await config.version(payload.session, payload.user);
+  }
+  const result = native<string | null>({op: 'cache-finish', snapshot, expected_version: expected, now_millis: Date.now()});
+  return result === null ? null : hydrateCache(result) as S;
 }

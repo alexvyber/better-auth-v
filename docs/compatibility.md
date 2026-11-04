@@ -133,8 +133,17 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   from absence. Canonical chunk reconstruction and pending-cookie cleanup are
   available separately. Response attribute parsing supports HTTP dates; full
   JavaScript Date-string coercion (including nonstandard numeric strings and exact
-  local-time/two-digit-year rules) remains incomplete. Standalone cache-reader,
-  account-cookie synchronization, and general cookie attributes remain outstanding.
+  local-time/two-digit-year rules) remains incomplete. Account-cookie synchronization
+  and general cookie attributes remain outstanding.
+- `get_cookie_cache` reads standalone snapshots without database access or a
+  separate session-token cookie. It verifies compact HMAC, HS256/384/512 JWT,
+  native/upstream JWE, and supported asymmetric or symmetric public JWKS profiles.
+  Public-JWKS reads enforce profile type, issuer/audience and subject/token binding;
+  the first matching key wins. Schema defaults and unknown fields are retained.
+  Literal/callback versions run before final cache/session expiry checks. Missing
+  secrets throw only when a snapshot exists; invalid snapshots miss the cache.
+  ISO dates are validated natively and reconstructed as Dates by the TS facade.
+  Full exotic JavaScript coercion and Date normalization remain separate work.
 - The JWT plugin supports Ed25519, RSA (RS/PS 256/384/512), and ECDSA
   (P-256/P-384/P-521) signing/verification, authenticated token issuance,
   automatic `set-auth-jwt` headers, configurable JWKS paths, persisted keys,
@@ -250,10 +259,13 @@ tests establishes only their covered behavior, not complete upstream parity.
 - The complete upstream crypto secret-rotation and OAuth purpose-isolation files
   also run with native crypto helpers. Independent TS crypto exchanges ciphertext,
   JWEs, and encrypted private JWKs with V.
-- The cookies source is partially imported: 58 declarations run as 76 cases against
-  native helpers and auth flows, with 39 unported declarations recorded explicitly.
+- The cookies source is partially imported: 64 declarations run as 82 cases against
+  native helpers and auth flows, with 33 unported declarations recorded explicitly.
   Four independent helper contracts compare V with the published TS implementation
   on malformed encodings, attribute metadata, ordered merging, and secure selection.
+  Another 14 standalone reader cases use independent HMAC/JOSE/upstream ciphertext
+  and compare schema/defaults, expiry, async versions, key selection and profile
+  binding with the published reader.
 - Differential tests compare the published TS server and V on supported scenarios,
   ignoring inherently random IDs/tokens/timestamps and documented record-format
   differences.

@@ -294,8 +294,6 @@ or corpus inventory contains unimplemented behavior.
   TTLs, rate windows, an actual old SQLite row, and delivery metadata. Older local
   boundary assertions were corrected against the pinned source.
 
-## Next infrastructure work
-
 - Added native request/response cookie utilities, attribute conversion, secure
   prefix removal, request mutation/merging, session-token selection, canonical
   chunk reconstruction, and pending-cookie expiry cleanup. Imported 58 original
@@ -309,8 +307,25 @@ or corpus inventory contains unimplemented behavior.
   standalone cache reading, account-cookie synchronization and broader cookie
   configuration still require work.
 
-The latest `make check` passes 756 TypeScript cases across 38 files, all 61 native
-V test functions across 14 files (including all 20,034 Unicode vectors), TypeScript
+- Added the standalone native cookie-cache reader with compact HMAC, HS256/384/512
+  JWT, JWE and public-JWKS profile validation. It preserves the source's independent
+  reader semantics, including permissive chunk reconstruction, schema defaults,
+  unknown fields, environment secrets, first-matching-JWK selection, dedicated
+  profile/claim binding, and version callbacks before final expiry checks. Two-phase
+  fixture calls keep authentication and final policy in V while allowing asynchronous
+  JS business callbacks. All getSessionCookie declarations and compact reader expiry
+  declarations are now imported: the cookies source has 64 selected declarations
+  (82 runtime cases), with 33 still unported. Fourteen independent runtime cases and
+  two native tests cover these behaviors. Fixed fractional JWE NumericDates at the
+  15-second tolerance boundary; truncation previously rejected a still-valid expiry
+  or accepted a not-yet-valid token. Exotic JS coercion/Date normalization, cookie
+  attribute configuration, account-cookie synchronization and remaining integration
+  suites still require work.
+
+## Next infrastructure work
+
+The latest `make check` passes 776 TypeScript cases across 39 files, all 63 native
+V test functions across 15 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus

@@ -365,3 +365,13 @@ pub fn (mut s SQLiteStorage) account_by_id(id string) !Lookup[Account] {
 pub fn (mut s SQLiteStorage) delete_account(id string) ! {
 	s.db.exec_param('DELETE FROM auth_account WHERE ${s.account_column('id')}=?', id)!
 }
+
+pub fn (mut s SQLiteStorage) update_account(updated Account) ! {
+	old := (s.account_by_id(updated.id)!).value or { return error('account not found') }
+	if old.user_id != updated.user_id || old.provider_id != updated.provider_id
+		|| old.account_id != updated.account_id {
+		return error('account update cannot change identity')
+	}
+	s.db.exec_param2('UPDATE auth_account SET data=? WHERE ${s.account_column('id')}=?',
+		json.encode(updated), updated.id)!
+}

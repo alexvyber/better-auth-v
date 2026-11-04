@@ -40,6 +40,9 @@ interface Reply {
 export class Bridge {
   private child: ChildProcessWithoutNullStreams;
   private sequence = 0;
+  private transactionsProvider: () => boolean = () => true;
+  get inCallback() { return this.callbackContext.getStore() !== undefined; }
+  setTransactionsProvider(provider: () => boolean) { this.transactionsProvider = provider; }
   private pending = new Map<
     number,
     {
@@ -133,6 +136,8 @@ export class Bridge {
           op: "callback-result",
           callback_id: callbackId,
           error: error instanceof Error ? error.message : String(error),
+          error_status: Number((error as {statusCode?: number})?.statusCode ?? 0),
+          error_code: (error as {body?: {code?: string}})?.body?.code ?? 'CALLBACK_ERROR',
         }) + "\n",
       );
     }
@@ -182,6 +187,7 @@ export class Bridge {
           op,
           now: Math.floor(commandTime / 1000),
           now_millis: commandTime,
+          transactions: this.transactionsProvider(),
           ...data,
         }) + "\n",
       );

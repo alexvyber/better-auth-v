@@ -164,7 +164,8 @@ pnpm test
 ```
 
 The archive checksum is pinned in `upstream.lock.json`. The importer changes
-imports and the test fixture. Sign-in, password, sign-up, session, JWT rotation,
+imports and the test fixture. Sign-in, crypto password, core password reset/verification,
+sign-up, session, JWT rotation,
 JWT signing-override/multi-algorithm, crypto secret-rotation, and encryption-purpose
 files are included in full, including the main JWT file. Its two pure TS client
 type checks are identified separately and backed by native HTTP client integration

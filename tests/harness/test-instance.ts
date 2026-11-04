@@ -90,6 +90,7 @@ const routes: Record<string, [string, string]> = {
   deleteUser: ["POST", "/delete-user"],
   requestPasswordReset: ["POST", "/request-password-reset"],
   resetPassword: ["POST", "/reset-password"],
+  verifyPassword: ["POST", "/verify-password"],
   sendVerificationEmail: ["POST", "/send-verification-email"],
   verifyEmail: ["GET", "/verify-email"],
 };
@@ -260,6 +261,9 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       "minPasswordLength",
       "maxPasswordLength",
       "sendResetPassword",
+      "onPasswordReset",
+      "resetPasswordTokenExpiresIn",
+      "revokeSessionsOnPasswordReset",
       "password",
       "onExistingUserSignUp",
       "customSyntheticUser",
@@ -328,7 +332,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
   instances.add(bridge);
   const callbacks: Record<string, (payload: any) => unknown> = {...endpointCallbacks};
   const internalAdapter = {} as FixtureInternalAdapter;
-  const internalNames = ['createSession', 'findSession', 'listSessions', 'updateSession', 'deleteSession', 'deleteUserSessions', 'createUser', 'updateUser', 'findUserById', 'findUserByEmail', 'createAccount', 'findCredentialAccount', 'deleteAccount'];
+  const internalNames = ['createSession', 'findSession', 'listSessions', 'updateSession', 'deleteSession', 'deleteUserSessions', 'createUser', 'updateUser', 'findUserById', 'findUserByEmail', 'createAccount', 'findCredentialAccount', 'deleteAccount', 'updatePassword'];
   for (const name of internalNames) {
     internalAdapter[name] = async (...args: any[]) => {
       const reply = await bridge.send('internal', {method: name, arguments_json: transportJSON(args)});
@@ -369,8 +373,19 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     options: {adapterConfig: {transaction: true}},
     async transaction(callback): Promise<unknown> { return callback(adapter); },
   };
+  bridge.setTransactionsProvider(() => adapter.options.adapterConfig.transaction !== false);
+  const password = {
+    hash: ep.password?.hash ?? (async (value: string) => {
+      if (bridge.inCallback) return undefined;
+      return JSON.parse((await bridge.send('configured-password-hash', {password: value})).value_json) as string;
+    }),
+    verify: ep.password?.verify ?? (async (input: {password: string; hash: string}) => {
+      if (bridge.inCallback) return undefined;
+      return JSON.parse((await bridge.send('configured-password-verify', input)).value_json) as boolean;
+    }),
+  };
   const context = {
-    adapter, internalAdapter, options,
+    adapter, internalAdapter, options, password,
     secret: options.secrets?.[0]?.value ?? options.secret ?? 'better-auth-secret-that-is-long-enough-for-validation-test',
     session: null as unknown,
     authCookies: {} as {sessionToken: {name: string}; sessionData: {name: string}},
@@ -448,9 +463,11 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       throw new Error(
         "Custom password configuration requires hash and verify callbacks",
       );
-    callbacks["password.hash"] = ep.password.hash;
-    callbacks["password.verify"] = ep.password.verify;
+
   }
+  callbacks['password.hash'] = value => context.password.hash(value);
+  callbacks['password.verify'] = input => context.password.verify(input);
+  if (typeof ep.onPasswordReset === 'function') callbacks['password.reset'] = input => ep.onPasswordReset!(hydrate(input), undefined);
   if (typeof ep.sendResetPassword === "function")
     callbacks["email.reset-password"] = (payload) =>
       ep.sendResetPassword!(hydrate(payload), undefined);
@@ -540,7 +557,9 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       real_passwords: config.realPasswords ?? false,
       fail_delivery: config.failDelivery ?? false,
       magic_link: config.magicLink ?? false,
-      remote_passwords: !!ep.password,
+      remote_passwords: true,
+      password_reset_expires_in: ep.resetPasswordTokenExpiresIn ?? 3600,
+      revoke_sessions_on_password_reset: ep.revokeSessionsOnPasswordReset ?? false,
       callback_methods: Object.keys(callbacks),
       account_fields_json: JSON.stringify(options.account?.fields ?? {}),
       user_fields_json: JSON.stringify(options.user?.additionalFields ?? {}),
@@ -719,8 +738,8 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
     async findMany<T = Record<string, unknown>>(
       args: FixtureOptions,
     ): Promise<T[]> {
-      assertKeys(args, ["model"], "db.findMany");
-      const reply = await bridge.send("inspect", { model: args.model });
+      assertKeys(args, ["model", "where"], "db.findMany");
+      const reply = await bridge.send("inspect", { model: args.model, where_json: transportJSON(args.where ?? []) });
       return hydrate(JSON.parse(reply.records_json)) as T[];
     },
   };

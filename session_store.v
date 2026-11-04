@@ -42,7 +42,7 @@ fn (mut a Auth) persist_session(session Session) !Session {
 		if a.database_fallback() {
 			a.queue_task(AfterCommitTask{ kind: 'mirror-session', session: actual })!
 		} else {
-			if a.transaction_active { a.secondary_created << actual }
+			if a.transaction_active && a.transactions_enabled { a.secondary_created << actual }
 			a.mirror_session(actual)!
 		}
 	}

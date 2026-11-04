@@ -25,7 +25,8 @@ The default base path is `/api/auth`.
 | POST   | `/delete-user`             | Verify password where present; cascade accounts/sessions  |
 | POST   | `/request-password-reset`  | Send a single-use reset link                              |
 | GET    | `/reset-password/:token`   | Validate link and redirect to trusted callback            |
-| POST   | `/reset-password`          | Consume reset token, change password, revoke sessions     |
+| POST   | `/reset-password`          | Consume reset token, change password, optional revocation |
+| POST   | `/verify-password`         | Verify the current session user's password                |
 | POST   | `/send-verification-email` | Send a single-use verification link                       |
 | GET    | `/verify-email`            | Consume token and verify email                            |
 | POST   | `/sign-in/social`          | Start configured OAuth provider flow                      |
@@ -56,7 +57,13 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   they do not match upstream's physical schema. Schema v4 is owned by this project;
   migrations preserve v1 rows. Account identity columns support actual SQL aliases.
 - Email verification/reset tokens are opaque, purpose-bound, expiring records,
-  not upstream's encoded token format. Reset always revokes existing sessions.
+  not upstream's encoded token format. Reset has an independent TTL; session
+  revocation is opt-in. Token consumption, revocation, and password writes share
+  a transaction. Password-policy rejection leaves the link reusable, and a
+  post-reset callback failure occurs after the successful reset has committed.
+  Reset-email delivery failures retain enumeration-resistant success responses.
+  Password verification requires an authoritative session and enforces length
+  limits before calling the verifier.
 - Magic links sign in existing users only. Registration through a magic link is
   not implemented.
 - OAuth currently has a GitHub provider. The provider interface supports other
@@ -124,6 +131,10 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   transaction snapshots, foreign/unique-key checks, and cascades. This establishes
   coverage of the current native contract, not all upstream adapter operations,
   query filters, joins, schema options, or concurrency semantics.
+- Adapters can explicitly disable native transactions. Operations then retain
+  already-written records on failure and after-write hooks run immediately,
+  matching nontransactional adapter semantics. Secondary-cache changes still
+  cannot be rolled back as distributed transactions.
 - Rate limiting is per-instance/per-route and in memory, not distributed or per-IP.
   Authentication work is serialized per instance/connection. The native HTTP
   transport buffers request bodies before the library can enforce its body limit.
@@ -151,9 +162,10 @@ tests establishes only their covered behavior, not complete upstream parity.
 
 ## Test boundaries
 
-- Original upstream sign-in, password, sign-up, and session files run in full with
+- Original upstream sign-in, crypto password, password-reset/verification, sign-up,
+  and session files run in full with
   replaced fixtures/imports and unchanged assertions. Their per-file manifests
-  record the pinned source and declaration inventory. Passing these four files
+  record the pinned source and declaration inventory. Passing these files
   does not establish coverage of the separate plugin/adapter/client suites.
 - All four original JWT plugin source files run in full, including the native SQLite
   transaction/migration regression and key-generation helpers. The two pure TS

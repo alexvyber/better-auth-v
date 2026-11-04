@@ -172,21 +172,30 @@ or corpus inventory contains unimplemented behavior.
   All four JWT source files now run in full. These checks establish the supported
   official TS client pairing, not TS-style compile-time generics in the V API.
 
+- Imported the complete core password reset/verification file (25 declarations)
+  without assertion changes. Added independent reset TTL, opt-in session
+  revocation, post-commit reset callbacks, enumeration-resistant delivery failure,
+  authoritative password verification, millisecond account update timestamps, and
+  adapter transaction-disabled behavior. Password hashing is observable through
+  native callbacks and preserves policy API errors. Rejected passwords do not
+  spend reset tokens; token races and failed writes retain native transaction
+  semantics. Existing local reset tests now explicitly configure the policy they
+  intended to exercise. Native account updates preserve canonical identity.
+
 ## Next infrastructure work
 
-The latest full TypeScript run passes 460 cases across 21 files. The preceding
-`make check` passed all 52 native V test functions across 10 files (including all
-20,034 Unicode vectors), TypeScript checking, and real HTTP migration/auth/CSRF/
-restart checks. The subsequent changes add only client tests/import metadata;
-all TypeScript checks pass. The complete session file contains 80 cases and the
-complete sign-up file contains 37. V formatting and `git diff --check` pass.
-These counts do not imply that the full upstream corpus passes.
+The latest `make check` passes 485 TypeScript cases across 22 files, all 52 native
+V test functions across 10 files (including all 20,034 Unicode vectors), TypeScript
+checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
+file contains 80 cases and the complete sign-up file contains 37. V formatting and
+`git diff --check` pass. These counts do not imply that the full upstream corpus
+passes.
 
 The user resumed the full-parity objective and authorized incremental commits and
 pushes to `alexvyber/better-auth-v`. The objective remains incomplete.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise
-   cancellation results, full context, transaction-disabled behavior, and remaining
+   cancellation results, full context, remaining transaction combinations, and remaining
    adapter operations/observability. Cache effects are not distributed transactions;
    rollback cleanup is best effort and cannot reverse existing updates/deletes.
 2. Complete the remaining JWT plugin suites: full option/callback

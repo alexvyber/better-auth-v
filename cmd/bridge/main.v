@@ -12,52 +12,54 @@ import time
 import x.json2
 
 struct Options {
-	custom_jwk_store             bool
-	admin_schema                 bool
-	admin_default_role           string = 'user'
-	organization_schema          bool
-	organization_teams           bool
-	endpoint_plugins             []RemoteEndpointPlugin
-	jwt_plugin                   bool
-	jwt_expiration_json          string
-	jwt_options                  better_auth.JWTOptions
-	defer_migrations             bool
-	storage                      string = 'sqlite'
-	stateless_sessions           bool
-	cookie_cache                 better_auth.CookieCacheConfig
-	base_url                     string = 'http://localhost:3000'
-	base_path                    string = '/api/auth'
-	secrets_json                 string
-	secret                       string = 'better-auth-test-secret-at-least-32-bytes'
-	trusted_origins              []string
-	require_email_verification   bool
-	send_verification_on_sign_up ?bool
-	send_verification_on_sign_in bool
-	auto_sign_in                 bool = true
-	email_and_password           bool = true
-	min_password_length          int  = 8
-	max_password_length          int  = 128
-	session_expires_in           i64  = 604800
-	session_update_age           i64  = 86400
-	session_fresh_age            i64  = 86400
-	defer_session_refresh        bool
-	disable_session_refresh      bool
-	verification_expires_in      i64 = 3600
-	rate_limit_max               int
-	rate_limit_window            i64 = 60
-	max_body_bytes               int = 65536
-	real_passwords               bool
-	fail_delivery                bool
-	magic_link                   bool
-	trust_proxy_origin_headers   bool
-	user_fields_json             string = '{}'
-	session_fields_json          string = '{}'
-	callback_methods             []string
-	account_fields_json          string = '{}'
-	remote_passwords             bool
-	secondary_storage            bool
-	store_session_in_database    bool
-	preserve_session_in_database bool
+	custom_jwk_store                  bool
+	admin_schema                      bool
+	admin_default_role                string = 'user'
+	organization_schema               bool
+	organization_teams                bool
+	endpoint_plugins                  []RemoteEndpointPlugin
+	jwt_plugin                        bool
+	jwt_expiration_json               string
+	jwt_options                       better_auth.JWTOptions
+	defer_migrations                  bool
+	storage                           string = 'sqlite'
+	stateless_sessions                bool
+	cookie_cache                      better_auth.CookieCacheConfig
+	base_url                          string = 'http://localhost:3000'
+	base_path                         string = '/api/auth'
+	secrets_json                      string
+	secret                            string = 'better-auth-test-secret-at-least-32-bytes'
+	trusted_origins                   []string
+	require_email_verification        bool
+	send_verification_on_sign_up      ?bool
+	send_verification_on_sign_in      bool
+	auto_sign_in                      bool = true
+	email_and_password                bool = true
+	min_password_length               int  = 8
+	max_password_length               int  = 128
+	session_expires_in                i64  = 604800
+	session_update_age                i64  = 86400
+	session_fresh_age                 i64  = 86400
+	defer_session_refresh             bool
+	disable_session_refresh           bool
+	verification_expires_in           i64 = 3600
+	rate_limit_max                    int
+	rate_limit_window                 i64 = 60
+	max_body_bytes                    int = 65536
+	password_reset_expires_in         i64 = 3600
+	revoke_sessions_on_password_reset bool
+	real_passwords                    bool
+	fail_delivery                     bool
+	magic_link                        bool
+	trust_proxy_origin_headers        bool
+	user_fields_json                  string = '{}'
+	session_fields_json               string = '{}'
+	callback_methods                  []string
+	account_fields_json               string = '{}'
+	remote_passwords                  bool
+	secondary_storage                 bool
+	store_session_in_database         bool
+	preserve_session_in_database      bool
 }
 
 struct RemoteJWKStore {
@@ -128,7 +130,9 @@ struct Command {
 	now            i64
 	options        Options
 	request        better_auth.Request
+	transactions   bool = true
 	direct         bool
+	where_json     string = '[]'
 	model          string
 	password       string
 	hash           string
@@ -176,10 +180,22 @@ fn emit(reply Reply) {
 }
 
 struct CallbackReply {
-	op          string
-	value_json  string
-	error       ?string
-	callback_id string
+	op           string
+	value_json   string
+	error        ?string
+	callback_id  string
+	error_status int
+	error_code   string
+}
+
+fn callback_error(reply CallbackReply) IError {
+	message := reply.error or { 'callback failed' }
+	if reply.error_status >= 400 && reply.error_status < 500 { return better_auth.APIError{
+			status:  reply.error_status
+			code:    reply.error_code
+			message: message
+		} }
+	return error(message)
 }
 
 // Synchronous inside V; the TS peer awaits the supplied callback before replying.
@@ -194,7 +210,7 @@ fn callback_rpc(method string, payload string) !string {
 	reply := json.decode(CallbackReply, line)!
 	if reply.op != 'callback-result' { return error('unexpected callback protocol frame') }
 	if reply.callback_id != callback_id { return error('callback correlation mismatch') }
-	if message := reply.error { return error(message) }
+	if reply.error != none { return callback_error(reply) }
 	return reply.value_json
 }
 
@@ -208,7 +224,7 @@ fn callback_with_context(method string, payload string, mut context better_auth.
 		frame := json.decode(CallbackReply, line)!
 		if frame.op == 'callback-result' {
 			if frame.callback_id != callback_id { return error('callback correlation mismatch') }
-			if message := frame.error { return error(message) }
+			if frame.error != none { return callback_error(frame) }
 			return frame.value_json
 		}
 		command := json.decode(Command, line)!
@@ -296,18 +312,22 @@ fn (h RemoteDatabaseHook) run(mut context better_auth.EndpointContext, event bet
 	return better_auth.HookResult{}
 }
 
-struct RemoteHasher {}
+struct RemoteHasher {
+	fallback better_auth.PasswordHasher
+}
 
-fn (_ RemoteHasher) hash(password string) !string {
+fn (h RemoteHasher) hash(password string) !string {
 	encoded := callback_rpc('password.hash', json.encode(password))!
+	if encoded == 'null' { return h.fallback.hash(password) }
 	return json2.decode[string](encoded)
 }
 
-fn (_ RemoteHasher) verify(password string, hash string) !bool {
+fn (h RemoteHasher) verify(password string, hash string) !bool {
 	encoded := callback_rpc('password.verify', json.encode({
 		'password': password
 		'hash':     hash
 	}))!
+	if encoded == 'null' { return h.fallback.verify(password, hash) }
 	return json2.decode[bool](encoded)
 }
 
@@ -359,7 +379,10 @@ fn main() {
 	opts := init.options
 	mut hasher := better_auth.PasswordHasher(TestHasher{})
 	if opts.real_passwords { hasher = better_auth.ScryptHasher{} }
-	if opts.remote_passwords { hasher = RemoteHasher{} }
+	fallback_hasher := hasher
+	if opts.remote_passwords { hasher = RemoteHasher{
+			fallback: fallback_hasher
+		} }
 	user_fields := json2.decode[map[string]better_auth.AdditionalField](opts.user_fields_json) or {
 		emit(Reply{ id: init.id, error: err.msg() })
 		return
@@ -473,8 +496,8 @@ fn main() {
 		}
 	}
 	mut auth := better_auth.new(better_auth.Config{
-		stateless_sessions:           opts.stateless_sessions
-		cookie_cache:                 better_auth.CookieCacheConfig{
+		stateless_sessions:                opts.stateless_sessions
+		cookie_cache:                      better_auth.CookieCacheConfig{
 			...opts.cookie_cache
 			version_for: fn [opts] (session better_auth.Session, user better_auth.User) !string {
 				if 'cache.version' !in opts.callback_methods { return opts.cookie_cache.version }
@@ -483,15 +506,15 @@ fn main() {
 				return json2.decode[json2.Any](encoded)!.str()
 			}
 		}
-		secondary_storage:            secondary
-		store_session_in_database:    opts.store_session_in_database
-		preserve_session_in_database: opts.preserve_session_in_database
-		database_hooks:               [
+		secondary_storage:                 secondary
+		store_session_in_database:         opts.store_session_in_database
+		preserve_session_in_database:      opts.preserve_session_in_database
+		database_hooks:                    [
 			better_auth.DatabaseHook(RemoteDatabaseHook{
 				methods: opts.callback_methods
 			}),
 		]
-		internal_interceptor:         fn (mut context better_auth.EndpointContext, operation better_auth.InternalOperation) !better_auth.Interception {
+		internal_interceptor:              fn (mut context better_auth.EndpointContext, operation better_auth.InternalOperation) !better_auth.Interception {
 			value := callback_with_context('internal.' + operation.name, operation.arguments_json, mut
 				context)!
 			return better_auth.Interception{
@@ -499,47 +522,54 @@ fn main() {
 				value_json: value
 			}
 		}
-		before_commit:                fn (mut context better_auth.EndpointContext) ! {
+		before_commit:                     fn (mut context better_auth.EndpointContext) ! {
 			callback_with_context('transaction.beforeCommit', '{}', mut context)!
 		}
-		base_url:                     opts.base_url
-		base_path:                    opts.base_path
-		secret:                       opts.secret
-		secrets:                      secrets
-		trusted_origins:              opts.trusted_origins
-		require_email_verification:   opts.require_email_verification
-		send_verification_on_sign_up: opts.send_verification_on_sign_up
-		send_verification_on_sign_in: opts.send_verification_on_sign_in
-		auto_sign_in:                 opts.auto_sign_in
-		email_and_password:           opts.email_and_password
-		min_password_length:          opts.min_password_length
-		max_password_length:          opts.max_password_length
-		session_expires_in:           opts.session_expires_in
-		session_update_age:           opts.session_update_age
-		session_fresh_age:            opts.session_fresh_age
-		defer_session_refresh:        opts.defer_session_refresh
-		disable_session_refresh:      opts.disable_session_refresh
-		verification_expires_in:      opts.verification_expires_in
-		rate_limit_max:               opts.rate_limit_max
-		rate_limit_window:            opts.rate_limit_window
-		max_body_bytes:               opts.max_body_bytes
-		password_hasher:              hasher
-		trust_proxy_ip_headers:       true
-		trust_proxy_origin_headers:   opts.trust_proxy_origin_headers
-		plugins:                      plugins
-		validate_user_info:           fn [opts] (user better_auth.User, source better_auth.UserInfoSource) !better_auth.ValidationDecision {
+		base_url:                          opts.base_url
+		base_path:                         opts.base_path
+		secret:                            opts.secret
+		secrets:                           secrets
+		trusted_origins:                   opts.trusted_origins
+		require_email_verification:        opts.require_email_verification
+		send_verification_on_sign_up:      opts.send_verification_on_sign_up
+		send_verification_on_sign_in:      opts.send_verification_on_sign_in
+		auto_sign_in:                      opts.auto_sign_in
+		email_and_password:                opts.email_and_password
+		min_password_length:               opts.min_password_length
+		max_password_length:               opts.max_password_length
+		session_expires_in:                opts.session_expires_in
+		session_update_age:                opts.session_update_age
+		session_fresh_age:                 opts.session_fresh_age
+		defer_session_refresh:             opts.defer_session_refresh
+		disable_session_refresh:           opts.disable_session_refresh
+		verification_expires_in:           opts.verification_expires_in
+		rate_limit_max:                    opts.rate_limit_max
+		rate_limit_window:                 opts.rate_limit_window
+		max_body_bytes:                    opts.max_body_bytes
+		password_hasher:                   hasher
+		password_reset_expires_in:         opts.password_reset_expires_in
+		revoke_sessions_on_password_reset: opts.revoke_sessions_on_password_reset
+		on_password_reset:                 fn [opts] (user better_auth.User) ! {
+			if 'password.reset' in opts.callback_methods {
+				callback_rpc('password.reset', '{"user":' + better_auth.encode_user(user) + '}')!
+			}
+		}
+		trust_proxy_ip_headers:            true
+		trust_proxy_origin_headers:        opts.trust_proxy_origin_headers
+		plugins:                           plugins
+		validate_user_info:                fn [opts] (user better_auth.User, source better_auth.UserInfoSource) !better_auth.ValidationDecision {
 			if 'user.validate' !in opts.callback_methods { return better_auth.ValidationDecision{} }
 			encoded := callback_rpc('user.validate', '{"user":' + better_auth.encode_user(user) +
 				',"source":' + better_auth.encode_user_source(source) + '}')!
 			if encoded == 'null' { return better_auth.ValidationDecision{} }
 			return json.decode(better_auth.ValidationDecision, encoded)
 		}
-		on_existing_user_sign_up:     fn [opts] (user better_auth.User) ! {
+		on_existing_user_sign_up:          fn [opts] (user better_auth.User) ! {
 			if 'user.existing' in opts.callback_methods {
 				callback_rpc('user.existing', '{"user":' + better_auth.encode_user(user) + '}')!
 			}
 		}
-		custom_synthetic_user:        fn [opts] (input better_auth.SyntheticUserInput) !better_auth.User {
+		custom_synthetic_user:             fn [opts] (input better_auth.SyntheticUserInput) !better_auth.User {
 			if 'user.synthetic' !in opts.callback_methods {
 				return better_auth.User{
 					...input.core_fields
@@ -551,21 +581,21 @@ fn main() {
 				'{"coreFields":${better_auth.encode_user(input.core_fields)},"additionalFields":${json2.Any(input.additional_fields).json_str()},"id":${json.encode(input.id)}}')!
 			return better_auth.decode_user(encoded)
 		}
-		user_fields:                  user_fields
-		session_fields:               session_fields
-		log:                          fn [mut state] (level string, message string) {
+		user_fields:                       user_fields
+		session_fields:                    session_fields
+		log:                               fn [mut state] (level string, message string) {
 			state.logs << better_auth.LogEvent{
 				level:   level
 				message: message
 			}
 		}
-		clock_millis:                 fn [state] () i64 {
+		clock_millis:                      fn [state] () i64 {
 			return state.now_millis
 		}
-		clock:                        fn [state] () i64 {
+		clock:                             fn [state] () i64 {
 			return state.now
 		}
-		send_email:                   fn [mut state, opts] (message better_auth.EmailMessage) ! {
+		send_email:                        fn [mut state, opts] (message better_auth.EmailMessage) ! {
 			if state.fail_delivery { return error('delivery failed') }
 			method := 'email.' + message.kind
 			if method in opts.callback_methods {
@@ -585,6 +615,10 @@ fn main() {
 		 }
 		command := json.decode(Command, line) or {
 			emit(Reply{ error: 'invalid command' })
+			continue
+		}
+		auth.set_adapter_transactions(command.transactions) or {
+			emit(Reply{ id: command.id, error: err.msg() })
 			continue
 		}
 		state.now = command.now
@@ -621,6 +655,20 @@ fn main() {
 				}
 				emit(Reply{ id: command.id, value_json: value, logs: state.logs[log_start..].clone() })
 			}
+			'configured-password-hash' {
+				value := fallback_hasher.hash(command.password) or {
+					emit(Reply{ id: command.id, error: err.msg() })
+					continue
+				}
+				emit(Reply{ id: command.id, value_json: json.encode(value) })
+			}
+			'configured-password-verify' {
+				value := fallback_hasher.verify(command.password, command.hash) or {
+					emit(Reply{ id: command.id, error: err.msg() })
+					continue
+				}
+				emit(Reply{ id: command.id, value_json: json.encode(value) })
+			}
 			'password-hash' {
 				value := better_auth.ScryptHasher{}.hash(command.password) or {
 					emit(Reply{ id: command.id, error: err.msg() })
@@ -656,7 +704,11 @@ fn main() {
 						emit(Reply{ id: command.id, error: err.msg() })
 						continue
 					}
-					emit(Reply{ id: command.id, records_json: json.encode(records) })
+					encoded := filter_inspection(json.encode(records), command.where_json) or {
+						emit(Reply{ id: command.id, error: err.msg() })
+						continue
+					}
+					emit(Reply{ id: command.id, records_json: encoded })
 					continue
 				} else if command.model != 'user' {
 					emit(Reply{ id: command.id, error: 'unsupported inspection model' })
@@ -666,10 +718,12 @@ fn main() {
 					emit(Reply{ id: command.id, error: err.msg() })
 					continue
 				}
-				emit(Reply{
-					id:           command.id
-					records_json: '[' + records.map(better_auth.encode_user(it)).join(',') + ']'
-				})
+				encoded := filter_inspection('[' +
+					records.map(better_auth.encode_user(it)).join(',') + ']', command.where_json) or {
+					emit(Reply{ id: command.id, error: err.msg() })
+					continue
+				}
+				emit(Reply{ id: command.id, records_json: encoded })
 			}
 			'close' {
 				emit(Reply{ id: command.id })
@@ -680,4 +734,33 @@ fn main() {
 			}
 		}
 	}
+}
+
+fn filter_inspection(encoded string, where string) !string {
+	conditions := json2.decode[[]json2.Any](where)!
+	records := json2.decode[[]json2.Any](encoded)!
+	mut selected := []json2.Any{}
+	for record in records {
+		mut matches := true
+		for condition in conditions {
+			filter := condition.as_map()
+			for key, _ in filter {
+				if key !in ['field', 'value', 'operator'] {
+					return error('unsupported inspection predicate')
+				}
+			}
+			if (filter['operator'] or { json2.Any('eq') }).str() != 'eq' {
+				return error('only equality inspection predicates are implemented')
+			}
+			field := (filter['field'] or { return error('missing predicate field') }).str()
+			actual := record.as_map()[field] or { json2.Any(json2.Null{}) }
+			expected := filter['value'] or { return error('missing predicate value') }
+			if actual.json_str() != expected.json_str() {
+				matches = false
+				break
+			}
+		}
+		if matches { selected << record }
+	}
+	return json2.Any(selected).json_str()
 }

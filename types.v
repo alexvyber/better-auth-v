@@ -147,6 +147,7 @@ mut:
 	delete_account(string) !
 	create_account(Account) !
 	set_password(string, string) !
+	update_account(Account) !
 	create_session(Session, string) !
 	session(string) !Lookup[Session]
 	session_by_id(string) !Lookup[Session]
@@ -173,49 +174,53 @@ pub:
 
 pub struct Config {
 pub:
-	cookie_cache                 CookieCacheConfig
-	stateless_sessions           bool
-	base_url                     string = 'http://localhost:3000'
-	base_path                    string = '/api/auth'
-	secret                       string
-	secrets                      ?[]SecretEntry
-	trusted_origins              []string
-	email_and_password           bool = true
-	require_email_verification   bool
-	send_verification_on_sign_up ?bool
-	send_verification_on_sign_in bool
-	auto_sign_in                 bool = true
-	min_password_length          int  = 8
-	max_password_length          int  = 128
-	session_expires_in           i64  = 604800
-	session_update_age           i64  = 86400
-	session_fresh_age            i64  = 86400
-	defer_session_refresh        bool
-	disable_session_refresh      bool
-	verification_expires_in      i64                 = 3600
-	rate_limit_max               int                 = 100
-	rate_limit_window            i64                 = 60
-	max_body_bytes               int                 = 65536
-	password_hasher              PasswordHasher      = ScryptHasher{}
-	clock                        fn () i64           = time.unix_now
-	clock_millis                 fn () i64           = no_millisecond_clock
-	send_email                   fn (EmailMessage) ! = discard_email
-	trust_proxy_origin_headers   bool
-	trust_proxy_ip_headers       bool
-	plugins                      []Plugin
-	social_providers             []OAuthProvider
-	user_fields                  map[string]AdditionalField
-	session_fields               map[string]AdditionalField
-	log                          fn (string, string) = discard_log
-	validate_user_info           fn (User, UserInfoSource) !ValidationDecision = accept_user_info
-	on_existing_user_sign_up     fn (User) !                   = discard_existing_user
-	custom_synthetic_user        fn (SyntheticUserInput) !User = default_synthetic_user
-	secondary_storage            SecondaryStorage              = NoSecondaryStorage{}
-	store_session_in_database    bool
-	preserve_session_in_database bool
-	database_hooks               []DatabaseHook
-	before_commit                fn (mut EndpointContext) ! = allow_commit
-	internal_interceptor         fn (mut EndpointContext, InternalOperation) !Interception = pass_internal_operation
+	cookie_cache                      CookieCacheConfig
+	stateless_sessions                bool
+	base_url                          string = 'http://localhost:3000'
+	base_path                         string = '/api/auth'
+	secret                            string
+	secrets                           ?[]SecretEntry
+	trusted_origins                   []string
+	email_and_password                bool = true
+	require_email_verification        bool
+	send_verification_on_sign_up      ?bool
+	send_verification_on_sign_in      bool
+	auto_sign_in                      bool = true
+	min_password_length               int  = 8
+	max_password_length               int  = 128
+	session_expires_in                i64  = 604800
+	session_update_age                i64  = 86400
+	session_fresh_age                 i64  = 86400
+	defer_session_refresh             bool
+	disable_session_refresh           bool
+	password_reset_expires_in         i64 = 3600
+	revoke_sessions_on_password_reset bool
+	on_password_reset                 fn (User) !         = discard_password_reset
+	database_transactions             bool                = true
+	verification_expires_in           i64                 = 3600
+	rate_limit_max                    int                 = 100
+	rate_limit_window                 i64                 = 60
+	max_body_bytes                    int                 = 65536
+	password_hasher                   PasswordHasher      = ScryptHasher{}
+	clock                             fn () i64           = time.unix_now
+	clock_millis                      fn () i64           = no_millisecond_clock
+	send_email                        fn (EmailMessage) ! = discard_email
+	trust_proxy_origin_headers        bool
+	trust_proxy_ip_headers            bool
+	plugins                           []Plugin
+	social_providers                  []OAuthProvider
+	user_fields                       map[string]AdditionalField
+	session_fields                    map[string]AdditionalField
+	log                               fn (string, string) = discard_log
+	validate_user_info                fn (User, UserInfoSource) !ValidationDecision = accept_user_info
+	on_existing_user_sign_up          fn (User) !                   = discard_existing_user
+	custom_synthetic_user             fn (SyntheticUserInput) !User = default_synthetic_user
+	secondary_storage                 SecondaryStorage              = NoSecondaryStorage{}
+	store_session_in_database         bool
+	preserve_session_in_database      bool
+	database_hooks                    []DatabaseHook
+	before_commit                     fn (mut EndpointContext) ! = allow_commit
+	internal_interceptor              fn (mut EndpointContext, InternalOperation) !Interception = pass_internal_operation
 }
 
 pub struct SyntheticUserInput {
@@ -433,3 +438,5 @@ pub:
 fn no_millisecond_clock() i64 {
 	return 0
 }
+
+fn discard_password_reset(_ User) ! {}

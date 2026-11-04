@@ -37,6 +37,7 @@ fn core_routes() map[string][]string {
 		'/revoke-other-sessions':   ['POST']
 		'/update-session':          ['POST']
 		'/update-user':             ['POST']
+		'/verify-password':         ['POST']
 		'/change-password':         ['POST']
 		'/delete-user':             ['POST']
 		'/request-password-reset':  ['POST']
@@ -527,6 +528,20 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 				'status': true
 			})
 		}
+		'/verify-password' {
+			current := a.require_session(ctx, false)!
+			a.check_password_max(p.password)!
+			account := (a.storage.account(current.user.id, 'credential')!).value or {
+				return fail(400, 'INVALID_PASSWORD', 'Invalid password')
+			}
+
+			if !a.config.password_hasher.verify(p.password, account.password)! {
+				return fail(400, 'INVALID_PASSWORD', 'Invalid password')
+			}
+			return json_response({
+				'status': true
+			})
+		}
 		'/change-password' {
 			current := a.require_session(ctx, true)!
 			a.check_password(p.new_password)!
@@ -562,7 +577,9 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 		'/request-password-reset' {
 			email := normalize_email(p.email)!
 			if user := (a.storage.user_by_email(email)!).value {
-				a.issue_email('reset-password', user, p.redirect_to)!
+				a.issue_email('reset-password', user, p.redirect_to) or {
+					a.config.log('error', 'Failed to send reset password email')
+				}
 			} else {
 				a.config.log('warn', 'Reset Password: User not found')
 			}
@@ -574,10 +591,22 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 		'/reset-password' {
 			a.check_password(p.new_password)!
 			token := if p.token != '' { p.token } else { (u.query().get('token') or { '' }) }
-			user := a.consume_token(token, 'reset-password')!
+			user := a.token_user(token, 'reset-password')!
 			hash := a.config.password_hasher.hash(p.new_password)!
-			a.remove_user_sessions(user.id, '')!
-			a.update_password(user.id, hash)!
+			a.consume_token(token, 'reset-password')!
+			if a.config.revoke_sessions_on_password_reset { a.remove_user_sessions(user.id, '')! }
+			if (a.storage.account(user.id, 'credential')!).value == none {
+				a.persist_account(Account{
+					user_id:     user.id
+					provider_id: 'credential'
+					account_id:  user.id
+					id:          random_token()!
+					password:    hash
+				})!
+			} else {
+				a.update_password(user.id, hash)!
+			}
+			a.queue_task(AfterCommitTask{ kind: 'password-reset', user: user })!
 			return json_response({
 				'status': true
 			})

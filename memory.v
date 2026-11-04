@@ -274,3 +274,13 @@ pub fn (mut s MemoryStorage) delete_verification(id string) ! {
 	s.check_write()!
 	s.records.verifications.delete(id)
 }
+
+pub fn (mut s MemoryStorage) update_account(updated Account) ! {
+	old := (s.account_by_id(updated.id)!).value or { return error('account not found') }
+	if old.user_id != updated.user_id || old.provider_id != updated.provider_id
+		|| old.account_id != updated.account_id {
+		return error('account update cannot change identity')
+	}
+	s.check_write()!
+	s.records.accounts[updated.id] = updated
+}

@@ -49,7 +49,7 @@ describe("V account lifecycle", () => {
   it("resets a password once, revokes sessions, and rejects the old password", async () => {
     const { auth, testUser, emails, signInWithTestUser } =
       await getTestInstance({
-        emailAndPassword: { sendResetPassword: vi.fn() },
+        emailAndPassword: { sendResetPassword: vi.fn(), revokeSessionsOnPasswordReset: true },
       });
     const { headers } = await signInWithTestUser();
     await auth.api.requestPasswordReset({
@@ -130,8 +130,7 @@ describe("V account lifecycle", () => {
   it("expires reset tokens using the V clock", async () => {
     vi.useFakeTimers();
     const { auth, testUser, emails } = await getTestInstance({
-      emailVerification: { expiresIn: 10 },
-      emailAndPassword: { sendResetPassword: vi.fn() },
+      emailAndPassword: { sendResetPassword: vi.fn(), resetPasswordTokenExpiresIn: 10 },
     });
     await auth.api.requestPasswordReset({ body: { email: testUser.email } });
     vi.advanceTimersByTime(10000);

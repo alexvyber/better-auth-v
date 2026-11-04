@@ -1,12 +1,14 @@
 module better_auth
 
 import json
+import time
 import x.json2
 
 struct AfterCommitTask {
 	kind    string
 	event   DatabaseEvent
 	session Session
+	user    User
 }
 
 fn merge_record_json(base string, patch string) !string {
@@ -52,7 +54,7 @@ fn (mut a Auth) after_record(model string, operation string, data string) ! {
 }
 
 fn (mut a Auth) queue_task(task AfterCommitTask) ! {
-	if a.transaction_active {
+	if a.transaction_active && a.transactions_enabled {
 		a.pending_tasks << task
 	} else {
 		a.run_task(task)!
@@ -60,6 +62,10 @@ fn (mut a Auth) queue_task(task AfterCommitTask) ! {
 }
 
 fn (mut a Auth) run_task(task AfterCommitTask) ! {
+	if task.kind == 'password-reset' {
+		a.config.on_password_reset(task.user)!
+		return
+	}
 	if task.kind == 'mirror-session' {
 		a.mirror_session(task.session) or {
 			a.config.log('error', 'Failed to mirror committed session to secondary storage')
@@ -76,10 +82,12 @@ fn (mut a Auth) run_task(task AfterCommitTask) ! {
 
 fn (mut a Auth) begin_transaction(read_only bool) ! {
 	if a.transaction_active { return error('transaction is already active') }
-	if read_only {
-		a.storage.begin_read()!
-	} else {
-		a.storage.begin()!
+	if a.transactions_enabled {
+		if read_only {
+			a.storage.begin_read()!
+		} else {
+			a.storage.begin()!
+		}
 	}
 	a.transaction_active = true
 	a.pending_tasks = []AfterCommitTask{}
@@ -91,7 +99,7 @@ fn (mut a Auth) commit_transaction() ! {
 		auth: a
 	}
 	a.config.before_commit(mut context)!
-	a.storage.commit()!
+	if a.transactions_enabled { a.storage.commit()! }
 	a.transaction_active = false
 	a.secondary_created = []Session{}
 	tasks := a.pending_tasks.clone()
@@ -103,7 +111,8 @@ fn (mut a Auth) commit_transaction() ! {
 
 fn (mut a Auth) rollback_transaction() {
 	if !a.transaction_active { return }
-	a.storage.rollback() or { a.config.log('error', 'Database rollback failed') }
+	if a.transactions_enabled { a.storage.rollback() or {
+			a.config.log('error', 'Database rollback failed')} }
 	a.transaction_active = false
 	a.pending_tasks = []AfterCommitTask{}
 	for session in a.secondary_created {
@@ -173,17 +182,23 @@ fn (mut a Auth) persist_account(account Account) !Account {
 }
 
 fn (mut a Auth) update_password(user_id string, password string) ! {
+	if _ := (a.intercept_internal('updatePassword',
+		'[${json.encode(user_id)},${json.encode(password)}]')!).value
+	{
+		return
+	}
 	account := (a.storage.account(user_id, 'credential')!).value or {
 		return fail(400, 'CREDENTIAL_ACCOUNT_NOT_FOUND', 'Credential account not found')
 	}
 
 	updated := Account{
 		...account
-		password: password
+		password:   password
+		updated_at: time.unix_milli(a.clock_millis()).format_rfc3339()
 	}
 	encoded := (a.before_record('account', 'update', json.encode(updated))!).value or { return }
 	actual := decode_account(encoded)!
-	a.storage.set_password(user_id, actual.password)!
+	a.storage.update_account(actual)!
 	a.after_record('account', 'update', json.encode(actual))!
 }
 

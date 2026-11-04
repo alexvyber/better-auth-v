@@ -196,6 +196,11 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 			c.auth.remove_session(args[0].str())!
 			return 'null'
 		}
+		'updatePassword' {
+			if args.len != 2 { return error('updatePassword requires user id and password hash') }
+			c.auth.update_password(args[0].str(), args[1].str())!
+			return 'null'
+		}
 		'deleteUserSessions' {
 			if args.len < 1 { return error('deleteUserSessions requires a user id') }
 			c.auth.remove_user_sessions(args[0].str(), '')!

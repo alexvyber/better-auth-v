@@ -10,18 +10,19 @@ pub struct Auth {
 pub:
 	config Config
 mut:
-	storage             Storage
-	secret_config       SymmetricSecret
-	mutex               &sync.Mutex = sync.new_mutex()
-	limits              map[string]RateBucket
-	closed              bool
-	secondary           SecondaryStorage
-	transaction_active  bool
-	pending_tasks       []AfterCommitTask
-	secondary_created   []Session
-	intercepting        map[string]bool
-	request_context     RequestContext
-	user_defined_fields []string
+	storage              Storage
+	secret_config        SymmetricSecret
+	mutex                &sync.Mutex = sync.new_mutex()
+	limits               map[string]RateBucket
+	closed               bool
+	secondary            SecondaryStorage
+	transaction_active   bool
+	transactions_enabled bool
+	pending_tasks        []AfterCommitTask
+	secondary_created    []Session
+	intercepting         map[string]bool
+	request_context      RequestContext
+	user_defined_fields  []string
 }
 
 struct RateBucket {
@@ -42,6 +43,10 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 			secret: entries[0].value
 		}
 	}
+	if config.password_reset_expires_in == 0 { config = Config{
+			...config
+			password_reset_expires_in: 3600
+		} }
 	url := urllib.parse(config.base_url)!
 	if config.base_url != ''
 		&& (url.scheme !in ['http', 'https'] || url.host == '' || config.base_url.contains('@')
@@ -64,8 +69,9 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 	}
 	if config.session_expires_in <= 0 || config.verification_expires_in <= 0
 		|| config.session_update_age < 0 || config.session_fresh_age < 0
-		|| config.rate_limit_window <= 0 || config.rate_limit_max < 0 || config.max_body_bytes <= 0
-		|| config.min_password_length < 1 || config.max_password_length < config.min_password_length {
+		|| config.password_reset_expires_in <= 0 || config.rate_limit_window <= 0
+		|| config.rate_limit_max < 0 || config.max_body_bytes <= 0 || config.min_password_length < 1
+		|| config.max_password_length < config.min_password_length {
 		return error('invalid auth limits')
 	}
 	for name, field in config.user_fields {
@@ -162,11 +168,12 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 		}
 	}
 	return &Auth{
-		user_defined_fields: input_config.user_fields.keys()
-		config:              config
-		secret_config:       secret_config
-		storage:             storage
-		secondary:           config.secondary_storage
+		user_defined_fields:  input_config.user_fields.keys()
+		config:               config
+		secret_config:        secret_config
+		transactions_enabled: config.database_transactions
+		storage:              storage
+		secondary:            config.secondary_storage
 	}
 }
 
@@ -422,7 +429,8 @@ fn (mut a Auth) issue_email(kind string, user User, callback string) ! {
 		id:         digest(token)
 		identifier: kind
 		value:      user.id
-		expires_at: a.config.clock() + a.config.verification_expires_in
+		expires_at: a.config.clock() +
+			if kind == 'reset-password' { a.config.password_reset_expires_in } else { a.config.verification_expires_in }
 	})!
 	path := if kind == 'reset-password' {
 		'/reset-password/' + token
@@ -438,7 +446,7 @@ fn (mut a Auth) issue_email(kind string, user User, callback string) ! {
 	a.config.send_email(EmailMessage{ kind: kind, user: user, token: token, url: url })!
 }
 
-fn (mut a Auth) consume_token(token string, kind string) !User {
+fn (mut a Auth) token_user(token string, kind string) !User {
 	if token.len != 64 { return fail(400, 'INVALID_TOKEN', 'Invalid token') }
 	id := digest(token)
 	record := (a.storage.verification(id)!).value or {
@@ -452,7 +460,12 @@ fn (mut a Auth) consume_token(token string, kind string) !User {
 		return fail(400, 'INVALID_TOKEN', 'Invalid token')
 	}
 
-	a.remove_verification(id)!
+	return user
+}
+
+fn (mut a Auth) consume_token(token string, kind string) !User {
+	user := a.token_user(token, kind)!
+	a.remove_verification(digest(token))!
 	return user
 }
 
@@ -468,7 +481,8 @@ fn (a &Auth) trusted(origin string) bool {
 	return origin in a.config.trusted_origins
 }
 
-fn (a &Auth) check_redirect(value string, field string) ! {
+fn (a &Auth) check_redirect(value string, input_field string) ! {
+	field := if input_field == 'redirectTo' { 'redirectURL' } else { input_field }
 	if value == '' { return }
 	if value.contains_any('\\\r\n\x00') || value.starts_with('//') {
 		return fail(403, 'INVALID_CALLBACK_URL', 'Invalid ${field}')
@@ -493,4 +507,14 @@ fn (a &Auth) secret_candidates() []string {
 		}
 	}
 	return candidates
+}
+
+// Adapter capabilities are application-owned, never request-controlled HTTP data.
+pub fn (mut a Auth) set_adapter_transactions(enabled bool) ! {
+	a.mutex.@lock()
+	defer { a.mutex.unlock() }
+	if a.transaction_active {
+		return error('cannot change adapter transactions during an operation')
+	}
+	a.transactions_enabled = enabled
 }

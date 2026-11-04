@@ -100,3 +100,10 @@ pub fn (mut a Auth) reset_password(token string, new_password string) ! {
 		'newPassword': new_password
 	}), RequestContext{})!
 }
+
+pub fn (mut a Auth) verify_password(password string, ctx RequestContext) !bool {
+	a.invoke('POST', '/verify-password', json.encode({
+		'password': password
+	}), ctx)!
+	return true
+}

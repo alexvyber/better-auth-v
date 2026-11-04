@@ -19,6 +19,10 @@ const plans = [
   { file: "sign-in", suites: null },
   { file: "password", directory: "crypto", suites: null },
   {
+    file: 'password-reset', source_file: 'password', suites: null,
+    imports: 'import { APIError } from "@better-auth/core/error";\nimport { afterEach, describe, expect, it, vi } from "vitest";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport type { Account, BetterAuthOptions } from "better-auth";\n',
+  },
+  {
     file: 'secret-rotation', directory: 'crypto', suites: null,
     imports: 'import type { SecretConfig } from "@better-auth/core";\nimport { describe, expect, it } from "vitest";\nimport { buildSecretConfig, parseSecretsEnv, validateSecretsArray, formatEnvelope, parseEnvelope, symmetricDecrypt, symmetricEncrypt, symmetricDecodeJWT, symmetricEncodeJWT } from "../harness/crypto.js";\n',
   },

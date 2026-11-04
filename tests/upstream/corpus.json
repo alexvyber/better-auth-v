@@ -24,7 +24,7 @@
     "core-api": {
       "files": 18,
       "declarations": 452,
-      "importedFiles": 3
+      "importedFiles": 4
     },
     "client": {
       "files": 10,
@@ -6262,7 +6262,7 @@
       "path": "packages/better-auth/src/api/routes/password.test.ts",
       "sha256": "4462acbbdf6b2542d4745c3aafad8e1ffb2a03cceaba6cb60bf0d400e48daa8c",
       "group": "core-api",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {

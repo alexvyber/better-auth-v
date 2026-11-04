@@ -97,20 +97,7 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 		}
 		'signJWTWith' {
 			if args.len != 2 { return error('signJWTWith requires payload and signing config') }
-			fields := args[1].as_map()
-			config := JWTSigningConfig{
-				signing_key_id:    if value := fields['signingKeyId'] {
-					?string(value.str())
-				} else {
-					none
-				}
-				signing_algorithm: if value := fields['signingAlgorithm'] {
-					?string(value.str())
-				} else {
-					none
-				}
-				header_json:       (fields['header'] or { json2.Any(map[string]json2.Any{}) }).json_str()
-			}
+			config := jwt_signing_config_from_json(args[1].json_str())!
 			return json.encode(c.sign_jwt_with(args[0].json_str(), config)!)
 		}
 		'signJWT' {

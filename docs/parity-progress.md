@@ -264,10 +264,25 @@ or corpus inventory contains unimplemented behavior.
   deprecation messages currently deduplicate per Auth instance, rather than across
   all instances in a JS module.
 
+- Added native per-call JWT option sets for signing, verification, and key lookup,
+  plus trusted pre-resolved signing material. Per-call custom stores/signers use
+  scoped callback registrations and never replace plugin configuration. The
+  server-only `signJWT` facade shallowly replaces top-level `overrideOptions`, as
+  upstream does; helper calls without options use helper defaults. Empty issuer
+  and empty audience-array settings retain their meaning, nullable claims default
+  correctly, JOSE setter types are enforced, and fractional NumericDates survive
+  default-expiry calculation and verification. Per-call Date expiration is floored
+  natively. Key encryption settings now control private-key interpretation. Fixed
+  explicit key pinning exactly at expiry: it is usable at equality and rejected
+  one millisecond later, while automatic selection excludes equality. Nine
+  independent JOSE/runtime cases cover these behaviors, alongside a native
+  pre-resolved-key test proving no storage lookup/mint is needed. All 142 imported
+  JWT runtime cases still pass. Schema/model mapping remains separate adapter work.
+
 ## Next infrastructure work
 
-The latest `make check` passes 661 TypeScript cases across 34 files, all 55 native
-V test functions across 11 files (including all 20,034 Unicode vectors), TypeScript
+The latest `make check` passes 670 TypeScript cases across 35 files, all 56 native
+V test functions across 12 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus
@@ -280,8 +295,8 @@ pushes to `alexvyber/better-auth-v`. The objective remains incomplete.
    cancellation results, full context, remaining transaction combinations, and remaining
    adapter operations/observability. Cache effects are not distributed transactions;
    rollback cleanup is best effort and cannot reverse existing updates/deletes.
-2. Complete the remaining JWT plugin suites: full option/callback
-   handling and client type contracts. Verify combinations with deferred
+2. Complete remaining JWT/plugin integration details: schema/column mappings,
+   remaining callback/type counterparts, and broader provider use. Verify combinations with deferred
    read-only session GET and other hooks; JWT header issuance can rotate keys.
 3. Implement complete admin and organization plugins beyond their schema/creation
    foundations, plus account-cookie behavior and remaining rotation combinations. The complete

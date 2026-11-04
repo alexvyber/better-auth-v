@@ -8,10 +8,14 @@ import time
 pub type JWTExpiration = f64 | string | time.Time
 
 pub fn jwt_expiration(value JWTExpiration, issued_at i64) !f64 {
+	return jwt_expiration_at(value, f64(issued_at))
+}
+
+pub fn jwt_expiration_at(value JWTExpiration, issued_at f64) !f64 {
 	match value {
 		f64 { return value }
 		time.Time { return f64(value.unix()) + math.floor(f64(value.nanosecond) / 1000000000.0) }
-		string { return f64(issued_at + duration_seconds(value)!) }
+		string { return issued_at + f64(duration_seconds(value)!) }
 	}
 }
 

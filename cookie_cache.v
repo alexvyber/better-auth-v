@@ -101,6 +101,12 @@ fn (mut a Auth) encode_cookie_cache(result SessionResult) !string {
 	return base64url('{"session":${payload},"expiresAt":${expires},"signature":${json.encode(a.cache_mac(signed))}}'.bytes())
 }
 
+fn numeric_date_field(fields map[string]json2.Any, name string) !f64 {
+	value := fields[name] or { return error('missing numeric claim') }
+	if value !is i64 && value !is int && value !is f64 { return error('invalid numeric claim') }
+	return value.f64()
+}
+
 fn numeric_field(fields map[string]json2.Any, name string) !i64 {
 	value := fields[name] or { return error('missing numeric claim') }
 	if value !is i64 && value !is int && value !is f64 { return error('invalid numeric claim') }

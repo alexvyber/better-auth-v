@@ -33,7 +33,8 @@ There is no dependency on a web framework.
   stateless cache refresh, and a native map-based storage adapter.
 - A JWT/JWKS plugin supporting Ed25519, RSA/PSS, and ECDSA, persisted keys,
   rotation, signing pins, remote signing, session-cache signing, payload/subject
-  callbacks, authenticated token issuance, and trusted signing/verification APIs.
+  callbacks, authenticated token issuance, per-call options/stores, pre-resolved
+  signing material, and trusted signing/verification APIs.
 - Upstream-compatible symmetric encryption, ordered versioned secrets, retained
   encryption-key reads, and isolated OAuth-purpose keys. Cookie signatures use
   the current secret.

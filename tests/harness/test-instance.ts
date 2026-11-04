@@ -9,6 +9,7 @@ import { afterAll } from "vitest";
 import { Bridge, recordMetadata, transportJSON } from "./bridge.js";
 import { isNativeMemoryAdapter } from "./memory-adapter.js";
 import { nativeEndpoint, freshSessionMiddleware, nativeOriginSelector } from './endpoint.js';
+import { encodeJWTOptions } from './jwt-options.js';
 import { schemaPluginOptions } from './plugins.js';
 
 // Upstream fixtures are intentionally dynamically shaped. This boundary accepts
@@ -364,6 +365,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   const basePath = options.basePath ?? "/api/auth";
   const bridge = new Bridge();
   instances.add(bridge);
+  let jwtCallSequence = 0;
   const callbacks: Record<string, (payload: any) => unknown> = {...endpointCallbacks};
   const internalAdapter = {} as FixtureInternalAdapter;
   const internalNames = ['createSession', 'findSession', 'listSessions', 'updateSession', 'deleteSession', 'deleteUserSessions', 'createUser', 'updateUser', 'findUserById', 'findUserByEmail', 'createAccount', 'findCredentialAccount', 'deleteAccount', 'updateAccount', 'findAccounts', 'updatePassword'];
@@ -434,12 +436,18 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       const reply = await bridge.send('internal', {method: 'isTrustedOrigin', arguments_json: transportJSON([url, settings?.allowRelativePaths ?? false])});
       return JSON.parse(reply.value_json) as boolean;
     },
-    async nativeSignJWT(payload: unknown, signing: unknown) {
-      const reply = await bridge.send('internal', {method: 'signJWTWith', arguments_json: transportJSON([payload, signing])});
+    async nativeSignJWT(payload: unknown, signing: unknown, replacement?: {options?: FixtureOptions}) {
+      const reply = replacement ? await nativeJWTCall('signJWTWith', [payload, signing], replacement.options) : await bridge.send('internal', {method: 'signJWTWith', arguments_json: transportJSON([payload, signing])});
+      recordLogs(reply.logs ?? []);
       return JSON.parse(reply.value_json) as string;
     },
-    async nativeJwkLookup(method: string, value: string, algorithm: string) {
-      const reply = await bridge.send('internal', {method: 'jwkLookup', arguments_json: transportJSON([method, value, algorithm])});
+    async nativeVerifyJWT(token: string, options?: FixtureOptions) {
+      const reply = await nativeJWTCall('verifyJWTWithOptions', [token], options);
+      recordLogs(reply.logs ?? []);
+      return JSON.parse(reply.value_json);
+    },
+    async nativeJwkLookup(method: string, value: string, algorithm: string, replacement?: {options?: FixtureOptions}) {
+      const reply = replacement ? await nativeJWTCall('jwkLookupWithOptions', [method, value], replacement.options) : await bridge.send('internal', {method: 'jwkLookup', arguments_json: transportJSON([method, value, algorithm])});
       const result = hydrate(JSON.parse(reply.value_json));
       return result === null ? undefined : result;
     },
@@ -455,6 +463,21 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       return hydrate(JSON.parse(response.body));
     },
   };
+  async function nativeJWTCall(method: string, args: unknown[], options?: FixtureOptions) {
+    const encoded = encodeJWTOptions(options);
+    const prefix = `jwt.call.${++jwtCallSequence}`;
+    const methods: string[] = [];
+    const install = (suffix: string, callback: (input: any) => unknown) => {
+      methods.push(prefix + '.' + suffix);
+      bridge.setCallback(prefix + '.' + suffix, callback);
+    };
+    if (options?.jwt?.sign) install('sign', ({payload, header, config}) => options.jwt.sign(payload, Object.keys(header).length ? header : undefined, {signingKeyId: config.signingKeyId ?? undefined, signingAlgorithm: config.signingAlgorithm ?? undefined}));
+    if (options?.adapter?.getJwks) install('getJwks', () => options.adapter.getJwks({context}));
+    if (options?.adapter?.createJwk) install('createJwk', data => options.adapter.createJwk(hydrate(data), {context}));
+    try {
+      return await bridge.send('internal', {method, arguments_json: transportJSON(args), jwt_options_json: encoded.options_json, jwt_expiration_json: encoded.expiration_json, jwt_callback_prefix: prefix, jwt_callback_methods: methods});
+    } finally { for (const method of methods) bridge.removeCallback(method); }
+  }
   for (const initialize of initializers) {
     const result = await initialize(context) as FixtureOptions | undefined;
     if (!result) continue;
@@ -583,9 +606,9 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
         disable_private_key_encryption: jwtOptions.jwks?.disablePrivateKeyEncryption ?? false,
         jwks_path: jwtOptions.jwks?.jwksPath ?? '/jwks',
         disable_setting_jwt_header: jwtOptions.disableSettingJwtHeader ?? false,
-        issuer: jwtOptions.jwt?.issuer ?? '',
-        audience: typeof jwtOptions.jwt?.audience === 'string' ? jwtOptions.jwt.audience : '',
-        audiences: Array.isArray(jwtOptions.jwt?.audience) ? jwtOptions.jwt.audience : [],
+        issuer: jwtOptions.jwt?.issuer ?? null,
+        audience: typeof jwtOptions.jwt?.audience === 'string' ? jwtOptions.jwt.audience : null,
+        audiences: Array.isArray(jwtOptions.jwt?.audience) ? jwtOptions.jwt.audience : null,
       },
       storage: stateless || isNativeMemoryAdapter(options.database) ? 'memory' : 'sqlite',
       stateless_sessions: stateless,
@@ -749,12 +772,13 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   }
   if (jwtOptions) for (const name of ['signJWT', 'verifyJWT']) {
     api[name] = async (args = {}) => {
-      assertKeys(args.body ?? {}, name === 'signJWT' ? ['payload'] : ['token', 'issuer'], name);
+      assertKeys(args.body ?? {}, name === 'signJWT' ? ['payload', 'overrideOptions'] : ['token', 'issuer'], name);
       const values = name === 'signJWT' ? [args.body?.payload] : [args.body?.token, args.body?.issuer ?? ''];
-      const reply = await bridge.send('internal', {method: name, arguments_json: transportJSON(values)});
+      const overridden = name === 'signJWT' && args.body?.overrideOptions !== undefined;
+      const reply = overridden ? await nativeJWTCall('signJWTWith', [args.body.payload, {}], {...jwtOptions, ...args.body.overrideOptions}) : await bridge.send('internal', {method: name, arguments_json: transportJSON(values)});
       recordLogs(reply.logs ?? []);
-      const value = JSON.parse(reply.value_json);
-      if (args.asResponse) return new Response(reply.value_json, {headers: {'content-type': 'application/json'}});
+      const value = overridden ? {token: JSON.parse(reply.value_json)} : JSON.parse(reply.value_json);
+      if (args.asResponse) return new Response(JSON.stringify(value), {headers: {'content-type': 'application/json'}});
       return args.returnHeaders ? {response: hydrate(value), headers: new Headers()} : hydrate(value);
     };
   }

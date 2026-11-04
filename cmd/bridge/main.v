@@ -78,21 +78,23 @@ struct Options {
 }
 
 struct RemoteJWKStore {
+	prefix  string = 'jwt'
 	methods []string
 }
 
 fn (mut store RemoteJWKStore) get_keys(mut context better_auth.EndpointContext) ![]better_auth.Jwk {
-	if 'jwt.getJwks' !in store.methods { return context.stored_jwks() }
-	encoded := callback_with_context('jwt.getJwks', '{}', mut context)!
+	if store.prefix + '.getJwks' !in store.methods { return context.stored_jwks() }
+	encoded := callback_with_context(store.prefix + '.getJwks', '{}', mut context)!
 	if encoded == 'null' { return []better_auth.Jwk{} }
 	return json.decode([]better_auth.Jwk, encoded)
 }
 
 fn (mut store RemoteJWKStore) create_key(key better_auth.Jwk, mut context better_auth.EndpointContext) !better_auth.Jwk {
-	if 'jwt.createJwk' !in store.methods { return context.store_jwk(key) }
+	if store.prefix + '.createJwk' !in store.methods { return context.store_jwk(key) }
 	mut fields := json2.decode[map[string]json2.Any](json.encode(key))!
 	fields.delete('id')
-	encoded := callback_with_context('jwt.createJwk', json2.Any(fields).json_str(), mut context)!
+	encoded := callback_with_context(store.prefix + '.createJwk', json2.Any(fields).json_str(), mut
+		context)!
 	return json.decode(better_auth.Jwk, encoded)
 }
 
@@ -139,23 +141,27 @@ fn (p RemoteEndpointPlugin) endpoints() []better_auth.Endpoint {
 }
 
 struct Command {
-	id             int
-	op             string
-	now_millis     i64
-	now            i64
-	options        Options
-	prepared_json  string
-	hook_request   ?better_auth.Request
-	hook_response  ?better_auth.Response
-	request        better_auth.Request
-	transactions   bool = true
-	direct         bool
-	where_json     string = '[]'
-	model          string
-	password       string
-	hash           string
-	method         string
-	arguments_json string = '[]'
+	id                   int
+	op                   string
+	now_millis           i64
+	now                  i64
+	options              Options
+	jwt_options_json     string
+	jwt_expiration_json  string
+	jwt_callback_prefix  string
+	jwt_callback_methods []string
+	prepared_json        string
+	hook_request         ?better_auth.Request
+	hook_response        ?better_auth.Response
+	request              better_auth.Request
+	transactions         bool = true
+	direct               bool
+	where_json           string = '[]'
+	model                string
+	password             string
+	hash                 string
+	method               string
+	arguments_json       string = '[]'
 }
 
 struct Reply {
@@ -234,6 +240,70 @@ fn callback_rpc(method string, payload string) !string {
 	return reply.value_json
 }
 
+fn invoke_bridge_internal(mut context better_auth.EndpointContext, command Command) !string {
+	if command.jwt_options_json == ''
+		|| command.method !in ['signJWTWith', 'verifyJWTWithOptions', 'jwkLookupWithOptions'] {
+		return context.invoke_internal(command.method, command.arguments_json)
+	}
+	mut options := json.decode(better_auth.JWTOptions, command.jwt_options_json)!
+	if command.jwt_expiration_json != '' {
+		value := json2.decode[json2.Any](command.jwt_expiration_json)!
+		expiration := if value is string {
+			better_auth.JWTExpiration(value)
+		} else if value is map[string]json2.Any {
+			millis := value['$jwtDateMillis'] or { return error('invalid JWT expiration Date') }
+			if millis !is i64 && millis !is int && millis !is f64 {
+				return error('invalid JWT expiration Date')
+			}
+			better_auth.JWTExpiration(time.unix_milli(millis.i64()))
+		} else {
+			if value !is i64 && value !is int && value !is f64 {
+				return error('invalid JWT expiration')
+			}
+			better_auth.JWTExpiration(value.f64())
+		}
+		options = better_auth.JWTOptions{
+			...options
+			expiration_time: expiration
+		}
+	}
+	if command.jwt_callback_prefix + '.getJwks' in command.jwt_callback_methods
+		|| command.jwt_callback_prefix + '.createJwk' in command.jwt_callback_methods {
+		options = better_auth.JWTOptions{
+			...options
+			key_store: RemoteJWKStore{
+				prefix:  command.jwt_callback_prefix
+				methods: command.jwt_callback_methods
+			}
+		}
+	}
+	method := command.jwt_callback_prefix + '.sign'
+	if method in command.jwt_callback_methods {
+		options = better_auth.JWTOptions{
+			...options
+			sign_with: fn [method] (payload string, header string, config better_auth.JWTSigningConfig) !string {
+				return json2.decode[string](callback_rpc(method, '{"payload":' + payload +
+					',"header":' + header + ',"config":' + json.encode(config) + '}')!)
+			}
+		}
+	}
+	args := json2.decode[[]json2.Any](command.arguments_json)!
+	if command.method == 'jwkLookupWithOptions' {
+		if args.len != 2 { return error('jwkLookupWithOptions requires method and value') }
+		return context.jwk_lookup_with_options(args[0].str(), args[1].str(), options)
+	}
+	if command.method == 'verifyJWTWithOptions' {
+		if args.len != 1 { return error('verifyJWTWithOptions requires a token') }
+		return (context.verify_jwt_with_options(args[0].str(), options)!).value or { 'null' }
+	}
+	if args.len != 2 { return error('signJWTWith requires payload and signing config') }
+	config := better_auth.jwt_signing_config_from_json(args[1].json_str())!
+	return json.encode(context.sign_jwt_with(args[0].json_str(), better_auth.JWTSigningConfig{
+		...config
+		options: options
+	})!)
+}
+
 fn callback_with_context(method string, payload string, mut context better_auth.EndpointContext) !string {
 	callback_id := hex.encode(rand.bytes(8)!)
 	println('{"callback":${json.encode(method)},"callback_id":${json.encode(callback_id)},"context":true,"payload":${payload}}')
@@ -249,7 +319,7 @@ fn callback_with_context(method string, payload string, mut context better_auth.
 		}
 		command := json.decode(Command, line)!
 		if command.op == 'internal' {
-			value := context.invoke_internal(command.method, command.arguments_json) or {
+			value := invoke_bridge_internal(mut context, command) or {
 				emit(Reply{
 					id:           command.id
 					error:        err.msg()
@@ -364,7 +434,7 @@ fn expiration_command() ! {
 	fields := json2.decode[map[string]json2.Any](os.get_raw_line())!
 	value := fields['value'] or { return error('missing expiration') }
 	kind := fields['kind'] or { return error('missing expiration type') }
-	iat := (fields['iat'] or { return error('missing issue time') }).i64()
+	iat := (fields['iat'] or { return error('missing issue time') }).f64()
 	expiration := if kind.str() == 'date' {
 		better_auth.JWTExpiration(time.unix_milli(value.i64()))
 	} else if value is string {
@@ -372,7 +442,7 @@ fn expiration_command() ! {
 	} else {
 		better_auth.JWTExpiration(value.f64())
 	}
-	println(json.encode(better_auth.jwt_expiration(expiration, iat)!))
+	println(json.encode(better_auth.jwt_expiration_at(expiration, iat)!))
 }
 
 fn main() {
@@ -750,7 +820,7 @@ fn main() {
 			'internal' {
 				log_start := state.logs.len
 				value := auth.with_internal(fn [command] (mut context better_auth.EndpointContext) !string {
-					return context.invoke_internal(command.method, command.arguments_json)
+					return invoke_bridge_internal(mut context, command)
 				}) or {
 					emit(Reply{
 						id:           command.id

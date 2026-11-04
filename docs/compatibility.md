@@ -139,7 +139,16 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   callback arguments. Session JWTs support payload and subject callbacks, including
   null-subject fallback to the user ID. An empty configured base URL resolves from
   the current request; direct calls remain unresolved and emit upstream warnings.
-  Per-call signing-option replacement remains unimplemented.
+  Trusted `JWTSigningConfig.options` replaces the option set for one operation;
+  per-call verification/key lookup can use independent stores too. The TS server
+  facade mirrors shallow top-level `overrideOptions` replacement. Helper defaults
+  remain independent of configured plugin options. Empty issuer/audience settings,
+  fractional NumericDates, nullable claim defaults, and Date expirations are
+  preserved. Key encryption settings govern interpretation of selected records.
+  Explicit pins accept a key exactly at expiry and reject it one millisecond later;
+  automatic lookup excludes expired/equal timestamps. `resolved_key` accepts trusted
+  pre-resolved native key material without another storage lookup or expiry check.
+  Schema/model aliases and complete provider/client integration remain unimplemented.
 - Symmetric crypto supports upstream XChaCha20-Poly1305, versioned key envelopes,
   retired-key lookup, explicit legacy keys, JWE key rotation, and isolated OAuth
   purpose derivation. Secret environment/configuration helpers execute in V.

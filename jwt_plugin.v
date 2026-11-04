@@ -26,9 +26,9 @@ pub:
 	grace_period                   i64 = 2592000
 	expiration_time                ?JWTExpiration @[skip]
 	expires_in                     i64 = 900
-	issuer                         string
-	audience                       string
-	audiences                      []string
+	issuer                         ?string
+	audience                       ?string
+	audiences                      ?[]string
 	disable_private_key_encryption bool
 	disable_setting_jwt_header     bool
 	jwks_path                      string = '/jwks'
@@ -54,6 +54,25 @@ pub:
 	signing_key_id    ?string @[json: signingKeyId]
 	signing_algorithm ?string @[json: signingAlgorithm]
 	header_json       string = '{}'
+	options           ?JWTOptions @[skip]
+	resolved_key      ?Jwk        @[skip]
+}
+
+pub fn jwt_signing_config_from_json(encoded string) !JWTSigningConfig {
+	fields := json2.decode[map[string]json2.Any](encoded)!
+	return JWTSigningConfig{
+		signing_key_id:    if value := fields['signingKeyId'] {
+			if value is json2.Null { none } else { ?string(value.str()) }
+		} else {
+			none
+		}
+		signing_algorithm: if value := fields['signingAlgorithm'] {
+			if value is json2.Null { none } else { ?string(value.str()) }
+		} else {
+			none
+		}
+		header_json:       (fields['header'] or { json2.Any(map[string]json2.Any{}) }).json_str()
+	}
 }
 
 fn local_jwt_sign_with(_ string, _ string, _ JWTSigningConfig) !string {
@@ -203,6 +222,10 @@ fn (a &Auth) private_jwk(record Jwk) !ed25519.PrivateKey {
 
 fn generate_exported_keypair(input JWTOptions) !(string, string) {
 	options := normalized_jwt_options(input)
+	if options.algorithm !in jwt_algorithms
+		|| (options.curve != '' && options.curve != jwt_curve(options.algorithm)) {
+		return error('unsupported JWT algorithm or curve')
+	}
 	mut public_json := ''
 	mut private_json := ''
 	if options.algorithm == 'EdDSA' {
@@ -300,7 +323,7 @@ fn (mut a Auth) signing_key_with(options JWTOptions, config JWTSigningConfig) !J
 			}
 		}
 		if expires := key.expires_at {
-			if time.parse_rfc3339(expires)!.unix_milli() <= a.clock_millis() {
+			if time.parse_rfc3339(expires)!.unix_milli() < a.clock_millis() {
 				return error('signJWT: requested signing key is expired and an explicit kid/alg was provided; not auto-minting a replacement. Rotate the key explicitly.')
 			}
 		}
@@ -383,7 +406,7 @@ fn (mut a Auth) sign_jwks_payload(payload map[string]json2.Any, typ string, cook
 }
 
 fn (mut a Auth) sign_jwks_payload_with(payload map[string]json2.Any, typ string, cookie bool, config JWTSigningConfig) !string {
-	options := a.jwt_options()!
+	options := normalized_jwt_options(config.options or { a.jwt_options()! })
 	mut header := json2.decode[map[string]json2.Any](config.header_json)!
 	if typ != '' { header['typ'] = typ }
 	mut claims := payload.clone()
@@ -396,31 +419,36 @@ fn (mut a Auth) sign_jwks_payload_with(payload map[string]json2.Any, typ string,
 		claims['sub'] = data.user.id
 		claims['sid'] = data.session.token
 	} else {
-		if 'exp' !in claims {
-			issued := if 'iat' in claims { numeric_field(claims, 'iat')! } else { a.config.clock() }
-			claims['exp'] = if expiration := options.expiration_time {
-				jwt_expiration(expiration, issued)!
+		issued := if value := claims['iat'] {
+			if value is json2.Null {
+				f64(a.config.clock())
 			} else {
-				f64(issued + options.expires_in)
+				numeric_date_field(claims, 'iat')!
 			}
+		} else {
+			f64(a.config.clock())
 		}
-		if 'iss' !in claims { claims['iss'] = if options.issuer != '' {
-				options.issuer
-			} else {
-				a.base_url()
-			}
-		 }
-		if 'aud' !in claims {
-			default_audience := if options.audience != '' {
-				options.audience
-			} else {
-				a.base_url()
-			}
-			claims['aud'] = if options.audiences.len > 0 {
-				json2.Any(options.audiences.map(json2.Any(it)))
-			} else {
-				json2.Any(default_audience)
-			}
+		default_exp := if expiration := options.expiration_time {
+			jwt_expiration_at(expiration, issued)!
+		} else {
+			issued + f64(options.expires_in)
+		}
+		if value := claims['exp'] {
+			if value is json2.Null { claims['exp'] = default_exp }
+		} else {
+			claims['exp'] = default_exp
+		}
+		if value := claims['iss'] {
+			if value is json2.Null { claims['iss'] = options.issuer or { a.base_url() } }
+		} else {
+			claims['iss'] = options.issuer or { a.base_url() }
+		}
+		default_audience := if audiences := options.audiences { json2.Any(audiences.map(json2.Any(it))) } else { json2.Any(options.audience or {
+				a.base_url()}) }
+		if value := claims['aud'] {
+			if value is json2.Null { claims['aud'] = default_audience }
+		} else {
+			claims['aud'] = default_audience
 		}
 	}
 	if !cookie && ((claims['iss'] or { json2.Any('') }).str() == '' || (claims['aud'] or {
@@ -435,7 +463,48 @@ fn (mut a Auth) sign_jwks_payload_with(payload map[string]json2.Any, typ string,
 	if !cookie && options.sign != local_jwt_sign {
 		return options.sign(js_json(json2.Any(claims)))
 	}
-	key := a.signing_key_with(options, config)!
+	if !cookie {
+		if (claims['iss'] or { json2.Any(json2.Null{}) }) !is string {
+			return error('"iss" claim must be a string')
+		}
+		audience := claims['aud'] or { json2.Any(json2.Null{}) }
+		if audience !is string && audience !is []json2.Any {
+			return error('"aud" claim must be a string or array of strings')
+		}
+		if audience is []json2.Any {
+			for value in audience {
+				if value !is string {
+					return error('"aud" claim must be a string or array of strings')
+				}
+			}
+		}
+		numeric_date_field(claims, 'exp')!
+		for field in ['sub', 'jti'] {
+			if value := claims[field] {
+				if js_truthy(value) && value !is string {
+					return error('"${field}" claim must be a string')
+				}
+			}
+		}
+		if value := claims['nbf'] {
+			if js_truthy(value) { numeric_date_field(claims, 'nbf')! }
+		}
+	}
+	key := if resolved := config.resolved_key {
+		normalize_jwk(resolved, options)
+	} else {
+		a.signing_key_with(options, config)!
+	}
+	if config.resolved_key == none {
+		encrypted_format := key.encrypted || key.private_key.starts_with('"')
+			|| key.private_key.starts_with('v2.')
+		if options.disable_private_key_encryption && encrypted_format {
+			return error('JWK must be an object')
+		}
+		if !options.disable_private_key_encryption && !encrypted_format {
+			return error('Failed to decrypt private key. Make sure the secret currently in use is the same as the one used to encrypt the private key. If you are using a different secret, either clean up your JWKS or disable private key encryption.')
+		}
+	}
 	header['alg'] = key.alg
 	header['kid'] = key.id
 	input := base64url(json2.Any(header).json_str().bytes()) + '.' +
@@ -473,7 +542,11 @@ fn audience_matches(claim json2.Any, expected []string) bool {
 }
 
 fn (mut a Auth) verify_jwks_payload(token string, cookie bool, issuer_override string) !map[string]json2.Any {
-	options := a.jwt_options()!
+	return a.verify_jwks_payload_with_options(token, cookie, issuer_override, a.jwt_options()!)
+}
+
+fn (mut a Auth) verify_jwks_payload_with_options(token string, cookie bool, issuer_override string, input JWTOptions) !map[string]json2.Any {
+	options := normalized_jwt_options(input)
 	parts := token.split('.')
 	if parts.len != 3 { return error('invalid JWT') }
 	header := json2.decode[map[string]json2.Any](decode_base64url(parts[0])!.bytestr())!
@@ -508,38 +581,33 @@ fn (mut a Auth) verify_jwks_payload(token string, cookie bool, issuer_override s
 
 	claims := json2.decode[map[string]json2.Any](decode_base64url(parts[1])!.bytestr())!
 	tolerance := if cookie { i64(15) } else { i64(0) }
-	if 'exp' in claims && numeric_field(claims, 'exp')! <= a.config.clock() - tolerance {
+	if 'exp' in claims && numeric_date_field(claims, 'exp')! <= f64(a.config.clock() - tolerance) {
 		return error('expired JWT')
 	}
-	if 'nbf' in claims && numeric_field(claims, 'nbf')! > a.config.clock() + tolerance {
+	if 'nbf' in claims && numeric_date_field(claims, 'nbf')! > f64(a.config.clock() + tolerance) {
 		return error('JWT not yet valid')
 	}
-	if 'iat' in claims { numeric_field(claims, 'iat')! }
+	if 'iat' in claims { numeric_date_field(claims, 'iat')! }
 	issuer := if cookie {
 		a.base_url()
 	} else if issuer_override != '' {
 		issuer_override
-	} else if options.issuer != '' {
-		options.issuer
 	} else {
-		a.base_url()
+		options.issuer or { a.base_url() }
 	}
-	if (cookie || issuer != '') && (claims['iss'] or { json2.Any('') }).str() != issuer {
-		return error('JWT issuer mismatch')
+	check_issuer := cookie || issuer_override != '' || options.issuer != none || a.base_url() != ''
+	if check_issuer {
+		value := claims['iss'] or { return error('missing JWT issuer') }
+		if value !is string || value.str() != issuer { return error('JWT issuer mismatch') }
 	}
-	default_audience := if options.audience != '' { options.audience } else { a.base_url() }
-	expected_audiences := if cookie {
-		['better-auth:session-cache']
-	} else if options.audiences.len > 0 {
-		options.audiences
-	} else {
-		[default_audience]
-	}
+	default_audience := options.audience or { a.base_url() }
+	expected_audiences := if cookie { ['better-auth:session-cache'] } else { options.audiences or {
+			[default_audience]} }
 	if !cookie && (issuer == '' || expected_audiences == ['']) {
 		a.config.log('warn',
 			'[better-auth] The JWT plugin is verifying a JWT without checking its issuer or audience because no base URL was resolved for this call. Set baseURL, or jwt.issuer and jwt.audience in the JWT plugin options.')
 	}
-	if (cookie || expected_audiences != ['']) && !audience_matches(claims['aud'] or {
+	if (cookie || options.audience != none || options.audiences != none || a.base_url() != '') && !audience_matches(claims['aud'] or {
 		json2.Any(json2.Null{})
 	}, expected_audiences) {
 		return error('JWT audience mismatch')
@@ -551,9 +619,9 @@ fn (mut a Auth) verify_jwks_payload(token string, cookie bool, issuer_override s
 		}).str() != data.session.token {
 			return error('cache JWT identity mismatch')
 		}
-	} else if (claims['sub'] or { json2.Any('') }).str() == '' || (claims['aud'] or {
-		json2.Any('')
-	}).str() == '' {
+	} else if !js_truthy(claims['sub'] or { json2.Any(json2.Null{}) }) || !js_truthy(claims['aud'] or {
+		json2.Any(json2.Null{})
+	}) {
 		return error('missing JWT subject or audience')
 	}
 	return claims
@@ -657,4 +725,41 @@ pub fn (mut a Auth) sign_jwt_with(payload_json string, config JWTSigningConfig) 
 pub fn (mut context EndpointContext) get_token(request RequestContext) !string {
 	current := context.auth.require_session(request, false)!
 	return context.auth.session_jwt(current)
+}
+
+// A caller-supplied option set is local to this trusted operation.
+pub fn (mut context EndpointContext) verify_jwt_with_options(token string, options JWTOptions) !Lookup[string] {
+	payload := context.auth.verify_jwks_payload_with_options(token, false, '', options) or {
+		return Lookup[string]{}
+	}
+	return Lookup[string]{
+		value: js_json(json2.Any(payload))
+	}
+}
+
+pub fn (mut a Auth) verify_jwt_with_options(token string, options JWTOptions) !Lookup[string] {
+	encoded := a.with_internal(fn [token, options] (mut context EndpointContext) !string {
+		return (context.verify_jwt_with_options(token, options)!).value or { 'null' }
+	})!
+	return if encoded == 'null' {
+		Lookup[string]{}
+	} else {
+		Lookup[string]{
+			value: encoded
+		}
+	}
+}
+
+pub fn (mut context EndpointContext) jwk_lookup_with_options(method string, value string, input JWTOptions) !string {
+	options := normalized_jwt_options(input)
+	if method == 'getAllKeys' { return json.encode(context.auth.jwk_records(options)!) }
+	if method !in ['getKeyById', 'getLatestKey', 'getLatestKeyByAlg'] {
+		return error('unsupported JWK lookup')
+	}
+	key := context.auth.lookup_jwk(options, if method == 'getKeyById' {
+		?string(value)
+	} else {
+		none
+	}, if method == 'getLatestKeyByAlg' { ?string(value) } else { none })!
+	return if found := key.value { json.encode(found) } else { 'null' }
 }

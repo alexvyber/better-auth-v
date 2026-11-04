@@ -1,4 +1,4 @@
-import { isDeepStrictEqual } from 'node:util';
+import { getCurrentAuthEndpointContext } from '@better-auth/core/context';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import type { JwtOptions } from 'better-auth/plugins/jwt';
@@ -40,8 +40,9 @@ export function toExpJWT(value: number | Date | string, iat: number): number {
 
 interface NativeJWTContext {
   options: {plugins?: {id: string; options?: unknown}[]};
-  nativeSignJWT(payload: unknown, signing: unknown): Promise<string>;
-  nativeJwkLookup(method: string, value: string, algorithm: string): Promise<any>;
+  nativeSignJWT(payload: unknown, signing: unknown, replacement?: {options?: JwtOptions}): Promise<string>;
+  nativeVerifyJWT(token: string, options?: JwtOptions): Promise<any>;
+  nativeJwkLookup(method: string, value: string, algorithm: string, replacement?: {options?: JwtOptions}): Promise<any>;
 }
 
 export async function signJWT(endpoint: GenericEndpointContext, config: {
@@ -49,15 +50,15 @@ export async function signJWT(endpoint: GenericEndpointContext, config: {
   signingKeyId?: string; signingAlgorithm?: string;
 }) {
   const context = endpoint.context as unknown as NativeJWTContext;
-  const configured = context.options.plugins?.find(plugin => plugin.id === 'jwt')?.options;
-  // Helpers operate on the configured native plugin. Per-call option replacement
-  // remains separate work; fail rather than silently ignore a different config.
-  if (config.options !== configured && !isDeepStrictEqual(config.options ?? {}, configured ?? {})) throw new Error('Unimplemented native JWT option replacement');
-  return context.nativeSignJWT(config.payload, {header: config.header, signingKeyId: config.signingKeyId, signingAlgorithm: config.signingAlgorithm});
+  return context.nativeSignJWT(config.payload, {header: config.header, signingKeyId: config.signingKeyId, signingAlgorithm: config.signingAlgorithm}, {options: config.options});
 }
 
 export function getJwksAdapter(_adapter: unknown, options?: JwtOptions) {
   return Object.fromEntries(['getAllKeys', 'getKeyById', 'getLatestKey', 'getLatestKeyByAlg'].map(method => [method,
-    (endpoint: GenericEndpointContext, value = '') => (endpoint.context as unknown as NativeJWTContext).nativeJwkLookup(method, value, options?.jwks?.keyPairConfig?.alg ?? 'EdDSA'),
+    (endpoint: GenericEndpointContext, value = '') => (endpoint.context as unknown as NativeJWTContext).nativeJwkLookup(method, value, options?.jwks?.keyPairConfig?.alg ?? 'EdDSA', {options}),
   ])) as Record<'getAllKeys' | 'getKeyById' | 'getLatestKey' | 'getLatestKeyByAlg', (endpoint: GenericEndpointContext, value?: string) => Promise<any>>;
+}
+
+export async function verifyJWT(token: string, options?: JwtOptions) {
+  return (getCurrentAuthEndpointContext().context as unknown as NativeJWTContext).nativeVerifyJWT(token, options);
 }

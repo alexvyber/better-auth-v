@@ -21,6 +21,8 @@ struct Options {
 	generic_callbacks                 map[string][]string
 	account_linking_enabled           bool
 	update_user_info_on_link          bool
+	require_local_email_verified      bool = true
+	disable_implicit_linking          bool
 	trusted_linking_providers         []string
 	disable_email_sign_up             bool
 	app_name                          string = 'Better Auth'
@@ -897,9 +899,9 @@ fn main() {
 		generic << settings
 	}
 	mut auth := better_auth.new(better_auth.Config{
-		app_name:                  opts.app_name
-		id_strategy:               opts.id_strategy
-		generate_id:               if opts.custom_id_generator {
+		app_name:                     opts.app_name
+		id_strategy:                  opts.id_strategy
+		generate_id:                  if opts.custom_id_generator {
 			fn (model string) !string {
 				return json2.decode[string](callback_rpc('id.generate', json.encode({
 					'model': model
@@ -908,11 +910,13 @@ fn main() {
 		} else {
 			defaults.generate_id
 		}
-		generic_oauth:             generic
-		account_linking_enabled:   opts.account_linking_enabled
-		update_user_info_on_link:  opts.update_user_info_on_link
-		trusted_linking_providers: opts.trusted_linking_providers
-		disable_email_sign_up:     opts.disable_email_sign_up
+		generic_oauth:                generic
+		account_linking_enabled:      opts.account_linking_enabled
+		update_user_info_on_link:     opts.update_user_info_on_link
+		require_local_email_verified: opts.require_local_email_verified
+		disable_implicit_linking:     opts.disable_implicit_linking
+		trusted_linking_providers:    opts.trusted_linking_providers
+		disable_email_sign_up:        opts.disable_email_sign_up
 
 		verification:                      better_auth.VerificationOptions{
 			...opts.verification_options

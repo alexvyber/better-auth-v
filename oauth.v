@@ -245,6 +245,13 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 
 		provider !is GoogleProvider && provider !is GenericOAuthProvider, allowed_signup) or {
 		if provider is GenericOAuthProvider { return a.generic_oauth_error(stored, record.id, err) }
+		if provider is GoogleProvider {
+			if err is APIError {
+				if err.code == 'ACCOUNT_NOT_LINKED' {
+					return a.generic_oauth_error(stored, record.id, err)
+				}
+			}
+		}
 		return err
 	}
 	session := a.make_session(account.user.id, RequestContext{ headers: req.headers }, true)!
@@ -296,6 +303,7 @@ fn (mut a Auth) oauth_identity_account_with_signup(identity OAuthIdentity, provi
 	mut selected_account := Account{}
 	mut new_user := false
 	mut linked_existing_user := false
+	mut promote_email := false
 	if account := (a.storage.account_by_provider(provider_id, identity.id)!).value {
 		user = (a.storage.user(account.user_id)!).value or {
 			return fail(400, 'USER_NOT_FOUND', 'User not found')
@@ -308,12 +316,16 @@ fn (mut a Auth) oauth_identity_account_with_signup(identity OAuthIdentity, provi
 		}
 	} else {
 		if existing := (a.storage.user_by_email(email)!).value {
-			if !a.config.account_linking_enabled
-				|| provider_id !in a.config.trusted_linking_providers {
+			if !a.config.account_linking_enabled || a.config.disable_implicit_linking
+				|| (a.config.require_local_email_verified && !existing.email_verified)
+				|| (!identity.email_verified && provider_id !in a.config.trusted_linking_providers) {
 				return fail(409, 'ACCOUNT_NOT_LINKED',
 					'Sign in to your existing account to link this provider')
 			}
 			user = existing
+			promote_email = !a.config.require_local_email_verified && identity.email_verified
+				&& !existing.email_verified
+
 			linked_existing_user = true
 		} else {
 			if !allow_signup { return fail(403, 'SIGNUP_DISABLED', 'Sign up is disabled') }
@@ -354,15 +366,23 @@ fn (mut a Auth) oauth_identity_account_with_signup(identity OAuthIdentity, provi
 		selected_account = a.persist_account(decode_account(merge_record_json(json.encode(base_account),
 			json2.Any(patch).json_str())!)!)!
 	}
-	if linked_existing_user && a.config.update_user_info_on_link {
-		user = a.try_sync_oauth_profile(user, identity)!
-	}
 
 	if selected_account.account_id != identity.id || selected_account.provider_id != provider_id
 		|| selected_account.user_id != user.id {
 		return fail(409, 'account_hook_binding_conflict',
 			'Account hook changed the selected authentication binding')
 	}
+	if promote_email {
+		user = a.update_user_record(User{
+			...user
+			email_verified: true
+			updated_at:     stamp_millis(a.clock_millis())
+		})!
+	}
+	if linked_existing_user && a.config.update_user_info_on_link {
+		user = a.try_sync_oauth_profile(user, identity)!
+	}
+
 	return OAuthAccountIdentity{
 		new_user: new_user
 		user:     user

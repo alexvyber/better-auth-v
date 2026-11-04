@@ -582,3 +582,34 @@ transform precedence, async rejection, map/SQLite uniqueness, concurrent Postgre
 uniqueness/aliases and failed profile-sync recovery. Output transformations,
 functional defaults, complete schema/query support and exhaustive index/type/error
 mapping remain open. These tests do not establish full linking or provider parity.
+
+
+## Implicit account-linking policy
+
+With account linking enabled, an existing unbound local account must have verified
+email by default, including when the identity provider is trusted. Linking is
+permitted when the local policy passes and either the provider is trusted or the
+provider reports verified email. `disable_implicit_linking` blocks these automatic
+bindings while leaving new-user registration controlled separately. Existing bound
+provider accounts continue to use their canonical provider subject.
+
+The pinned upstream `requireLocalEmailVerified: false` legacy opt-out has an explicit
+native counterpart, `require_local_email_verified: false`; verified provider email
+then promotes the local flag after the new account binding passes validation.
+Google callback rejections use the account-not-linked redirect, as generic OIDC
+callbacks already did. Explicit linkSocial endpoints remain unimplemented.
+
+Ten original upstream linking-policy cases run unchanged on SQLite and PostgreSQL
+text-ID schemas (those cases deliberately supply non-UUID IDs). Existing UUID
+PostgreSQL profile and two-factor matrices remain separate. Four new Nabu contracts
+cover rejection of an unverified provisioned local account, the explicit opt-out,
+the implicit-link switch and an application callback verifying the row in PostgreSQL
+before native linking. MongoDB storage/index/TTL
+integration remains required for Nabu deployment.
+
+
+OTP resends replace the earlier purpose/email or challenge proof before persisting
+the new value, including when both requests share exactly the same millisecond.
+Frozen-clock SQLite and PostgreSQL contracts retain the latest delivered hashed
+code and reject its predecessor. Proof deletion hook timing therefore occurs on
+replacement; exhaustive source hook-sequencing parity remains open.

@@ -212,6 +212,8 @@ pub:
 	trusted_linking_providers         []string
 	account_linking_enabled           bool
 	update_user_info_on_link          bool
+	require_local_email_verified      bool = true
+	disable_implicit_linking          bool
 	require_email_verification        bool
 	send_verification_on_sign_up      ?bool
 	send_verification_on_sign_in      bool

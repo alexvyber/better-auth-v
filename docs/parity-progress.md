@@ -693,8 +693,26 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   PostgreSQL races/aliases and rejected-sync recovery. Broader linking, output
   transforms, functional defaults and complete query/schema support remain open.
 
-The latest verification passes 1728 TypeScript cases across 93 files, all 98 native
-V test functions across 32 files (including all 20,034 Unicode vectors), TypeScript
+- Added implicit-link local-email verification gates (default required), verified
+  provider/local trust handling and disableImplicitLinking. The explicit pinned
+  legacy local-verification opt-out promotes verified provider email only after
+  account binding validation. Google callback rejections use the source redirect.
+  Ten unchanged upstream policy cases repeat on SQLite/PostgreSQL text-ID schemas;
+  the text matrix preserves deliberate non-UUID fixture IDs. Four Nabu contracts
+  cover the local default rejection, opt-out, trusted-provider linking switch and
+  the application provisioning callback verifying the row before the native gate.
+  A native matrix checks gate combinations and promotion. Explicit linkSocial and
+  remaining binding/provider integration remain unported.
+
+- Fixed an OTP resend race found by the full regression run: email and two-factor
+  OTP replacement no longer leaves older proofs selectable when createdAt values
+  share a millisecond. The existing hashed/five-attempt contract now freezes time;
+  an additional PostgreSQL contract verifies the same timestamp collision. Source
+  email-OTP and two-factor assertions remain unchanged. This changes proof-delete
+  hook timing on replacement; exhaustive callback sequencing remains open.
+
+The latest verification passes 1753 TypeScript cases across 95 files, all 99 native
+V test functions across 33 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus

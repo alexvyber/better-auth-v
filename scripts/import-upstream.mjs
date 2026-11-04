@@ -16,6 +16,13 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+ {file:'oauth-link-policy',path:'packages/better-auth/src/oauth2/link-account.test.ts',
+ suites:new Set(['oauth2 - email verification on link','oauth2 - account linking without trustedProviders','oauth2 - disableImplicitLinking','oauth2 - accountLinking.requireLocalEmailVerified: false opt-out']),
+ includeHelpers:true,setupCalls:new Set(['beforeAll','afterEach','afterAll']),
+ skippedTests:new Set(['should allow explicit linkSocial when disableImplicitLinking is true']),
+ imports:'import type { GoogleProfile } from "@better-auth/core/social-providers";\nimport type { User } from "better-auth";\nimport { HttpResponse, http } from "msw";\nimport { setupServer } from "msw/node";\nimport { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";\nimport { signJWT } from "../harness/crypto.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { DEFAULT_SECRET } from "../harness/constants.js";\n',
+ unportedReason:'Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected',
+ },
  {file:'oauth-profile-input',path:'packages/better-auth/src/oauth2/link-account.test.ts',
  suites:new Set(['oauth2 - updateUserInfoOnLink on implicit sign-in link','oauth2 - first sign-in provisioning applies user input rules']),
  includeHelpers:true,setupCalls:new Set(['beforeAll','afterEach','afterAll']),
@@ -197,6 +204,8 @@ const plans = [
     ]),
   },
 ];
+const policy = plans.find(plan => plan.file === 'oauth-link-policy');
+plans.push({...policy,file:'postgres-oauth-link-policy',imports:policy.imports.replace('../harness/test-instance.js','../harness/postgres-text-fixture.js'),executionSurface:'native-postgres-text-id-mapped-physical-schema'});
 const attemptPlan = plans.find(plan => plan.file === 'two-factor-attempt-cap');
 plans.push({...attemptPlan, file: 'two-factor-attempt-server-error',
  suites: new Set(['two-factor security: TOTP enforces a per-challenge attempt cap']),

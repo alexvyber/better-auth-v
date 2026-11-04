@@ -256,6 +256,10 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 				}
 				return 'null'
 			}
+			if model == 'user' && field == 'id' {
+				if user := (c.auth.storage.user(value)!).value { return encode_user(user) }
+				return 'null'
+			}
 			if model == 'user' && field == 'email' {
 				if user := (c.auth.find_user_by_email(value)!).value { return encode_user(user) }
 				return 'null'

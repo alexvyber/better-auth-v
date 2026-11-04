@@ -4,6 +4,7 @@ import {OAuth2Server} from 'oauth2-mock-server';
 import {afterAll, beforeAll, describe, expect, it} from 'vitest';
 import {genericOAuth} from './harness/plugins.js';
 import {getTestInstance} from './harness/test-instance.js';
+import {getTestInstance as postgresInstance,postgresOptions,postgresSQL} from './harness/postgres-fixture.js';
 
 const provider = new OAuth2Server();
 let issuer = '';
@@ -20,7 +21,7 @@ beforeAll(async () => {
 });
 afterAll(async () => {await provider.stop();});
 
-async function instance(overrides: Record<string, any> = {}) {
+async function instance(overrides: Record<string, any> = {}, dependencies: {factory?:typeof getTestInstance;config?:Record<string,any>;provision?:(email:string)=>Promise<void>} = {}) {
  const configuration = genericOAuth({config: [{
   providerId: 'tinyauth', name: 'Code & Money', discoveryUrl: `${issuer}/.well-known/openid-configuration`,
   clientId: 'nabu-client', clientSecret: 'nabu-secret', requireIdTokenVerification: true,
@@ -30,14 +31,15 @@ async function instance(overrides: Record<string, any> = {}) {
    if (profile.email_verified !== true || typeof profile.email !== 'string' || !profile.email.trim()) throw new APIError('FORBIDDEN', {message: 'A verified SSO email is required'});
    const normalized = profile.email.trim().toLowerCase();
    if (normalized !== 'provisioned@example.com') throw new APIError('FORBIDDEN', {message: 'This SSO identity is not provisioned for Nabu'});
+   await dependencies.provision?.(normalized);
    return {email: normalized, emailVerified: true};
   },
  }]});
- const ready = await getTestInstance({
+ const ready = await (dependencies.factory ?? getTestInstance)({
   plugins: [configuration], account: {accountLinking: {enabled: true, trustedProviders: ['tinyauth'], allowDifferentEmails: false}},
   emailAndPassword: {enabled: false, disableSignUp: true, minPasswordLength: 12},
   ...overrides,
- }, {disableTestUser: true});
+ }, {disableTestUser: true,...dependencies.config});
  const adapter = (await ready.auth.$context).internalAdapter;
  const user = await adapter.createUser({email: 'provisioned@example.com', name: 'Provisioned', emailVerified: true}, {method: 'test'});
  return {...ready, user};
@@ -55,6 +57,49 @@ async function authorize(ready: Awaited<ReturnType<typeof instance>>) {
 }
 
 describe('Nabu provisioned OIDC configuration', () => {
+ it('allows the Nabu provisioning callback to verify the local row before implicit linking', async () => {
+  email = 'provisioned@example.com'; verified = true;
+  const configuration = await postgresOptions();
+  const ready = await instance({}, {factory:postgresInstance,config:{nativePostgres:configuration},provision:async()=>{
+   const changed = await postgresSQL(configuration,`UPDATE "${configuration.schema}".auth_user SET email_verified=true WHERE email='provisioned@example.com' RETURNING id`);
+   expect(changed).toBeTruthy();
+  }});
+  const adapter = (await ready.auth.$context).internalAdapter;
+  await adapter.updateUser(ready.user.id,{emailVerified:false});
+  const {result,headers} = await authorize(ready);
+  expect(result.headers.get('location')).toBe('http://localhost:3000/nabu');
+  ready.cookieSetter(headers)({response:result});
+  expect((await ready.auth.api.getSession({headers}))?.user.emailVerified).toBe(true);
+  expect(await adapter.findAccounts(ready.user.id)).toHaveLength(1);
+ });
+
+ it('rejects an authorized signed identity when the local account is still unverified', async () => {
+  email = 'provisioned@example.com'; verified = true;
+  const ready = await instance();
+  const adapter = (await ready.auth.$context).internalAdapter;
+  await adapter.updateUser(ready.user.id,{emailVerified:false});
+  const {result,headers} = await authorize(ready);
+  expect(result.headers.get('location')).toContain('error=account_not_linked');
+  expect(await adapter.findAccounts(ready.user.id)).toEqual([]);
+  expect(await ready.auth.api.getSession({headers})).toBeNull();
+ });
+ it('honors the explicit legacy local-verification opt-out for a preprovisioned account', async () => {
+  email = 'provisioned@example.com'; verified = true;
+  const ready = await instance({account:{accountLinking:{enabled:true,trustedProviders:['tinyauth'],requireLocalEmailVerified:false}}});
+  const adapter = (await ready.auth.$context).internalAdapter;
+  await adapter.updateUser(ready.user.id,{emailVerified:false});
+  const {result} = await authorize(ready);
+  expect(result.headers.get('location')).toBe('http://localhost:3000/nabu');
+  expect((await adapter.findUserById(ready.user.id)).emailVerified).toBe(true);
+  expect(await adapter.findAccounts(ready.user.id)).toHaveLength(1);
+ });
+ it('honors the implicit-linking switch even for an authorized trusted identity', async () => {
+  email = 'provisioned@example.com'; verified = true;
+  const ready = await instance({account:{accountLinking:{enabled:true,trustedProviders:['tinyauth'],disableImplicitLinking:true}}});
+  expect((await authorize(ready)).result.headers.get('location')).toContain('error=account_not_linked');
+  expect(await (await ready.auth.$context).internalAdapter.findAccounts(ready.user.id)).toEqual([]);
+ });
+
  it('verifies signed identity, uses Basic and PKCE, and links only the provisioned user', async () => {
   email = 'Provisioned@Example.com'; verified = true;
   const ready = await instance();

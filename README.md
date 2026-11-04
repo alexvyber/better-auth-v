@@ -56,7 +56,8 @@ There is no dependency on a web framework.
   trusted-device rotation, per-challenge attempt caps and account lockout; native
   memory/SQLite/PostgreSQL factor storage and mapped PostgreSQL columns.
 - Generic OIDC discovery, signature/nonce verification, profile policy callbacks,
-  trusted same-email linking and provisioned-user signup controls.
+  verified-local-email linking gates, implicit-link switches and provisioned-user
+  signup controls.
 - Native Redis secondary storage with GETDEL/Lua atomics, fixed counter TTLs,
   prefix-safe scans and an authenticated RESP2 TCP client.
 - OAuth authorization-code orchestration with PKCE and browser-bound state, a

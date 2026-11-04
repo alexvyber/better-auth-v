@@ -68,6 +68,7 @@ interface FixtureInternalAdapter extends Record<string, (...args: any[]) => Prom
 }
 interface FixtureTransactionAdapter {
   findOne<T = any>(query: FixtureOptions): Promise<T | null>;
+ update<T = any>(query: FixtureOptions): Promise<T | null>;
   create<I, O>(query: {model: string; data: I}): Promise<O>;
   findMany<T>(query: {model: string;where?:FixtureOptions[]}): Promise<T[]>;
   nativeRunWithTransaction<T>(callback: () => Promise<T>): Promise<T>;
@@ -452,7 +453,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
 
   assertKeys(options.account ?? {}, ['fields', 'storeAccountCookie', 'encryptOAuthTokens', 'accountLinking'], 'account');
   if (options.account?.accountLinking) {
-    assertKeys(options.account.accountLinking, ['enabled', 'trustedProviders', 'allowDifferentEmails', 'updateUserInfoOnLink'], 'account.accountLinking');
+    assertKeys(options.account.accountLinking, ['enabled', 'trustedProviders', 'allowDifferentEmails', 'updateUserInfoOnLink', 'requireLocalEmailVerified', 'disableImplicitLinking'], 'account.accountLinking');
     if (options.account.accountLinking.allowDifferentEmails) throw new Error('Different-email account linking remains unported');
     if (options.account.accountLinking.trustedProviders && !Array.isArray(options.account.accountLinking.trustedProviders)) throw new Error('Dynamic trusted providers remain unported');
   }
@@ -513,6 +514,12 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       if (query.model !== 'jwks') throw new Error('Unsupported adapter findMany model');
       const reply = await bridge.send('internal', {method: 'jwkLookup', arguments_json: transportJSON(['getAllKeys', '', ''])});
       return hydrate(JSON.parse(reply.value_json));
+    },
+    async update(query) {
+     assertKeys(query, ['model','where','update'], 'adapter.update');
+     if (query.model !== 'user' || query.where?.length !== 1 || !['id','email'].includes(query.where[0].field) || (query.where[0].operator && query.where[0].operator !== 'eq')) throw new Error('Native adapter.update requires user id/email equality');
+     const reply = await bridge.send('internal',{method:'adapterUpdateUser',arguments_json:transportJSON([query.where[0].field,query.where[0].value,query.update])});
+     return hydrate(JSON.parse(reply.value_json));
     },
     async findOne(query) {
       const reply = await bridge.send('internal', {method: 'adapterFindOne', arguments_json: transportJSON([query])});
@@ -783,6 +790,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       generic_callbacks: genericCallbacks,
       account_linking_enabled: options.account?.accountLinking?.enabled ?? false,
       update_user_info_on_link: options.account?.accountLinking?.updateUserInfoOnLink ?? false,
+      require_local_email_verified: options.account?.accountLinking?.requireLocalEmailVerified ?? true,
+      disable_implicit_linking: options.account?.accountLinking?.disableImplicitLinking ?? false,
       trusted_linking_providers: options.account?.accountLinking?.trustedProviders ?? [],
       disable_email_sign_up: ep.disableSignUp ?? false,
       app_name: options.appName,

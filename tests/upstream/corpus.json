@@ -24,7 +24,7 @@
     "core-api": {
       "files": 18,
       "declarations": 452,
-      "importedFiles": 6
+      "importedFiles": 8
     },
     "client": {
       "files": 10,
@@ -6235,7 +6235,7 @@
       "path": "packages/better-auth/src/api/routes/error.test.ts",
       "sha256": "ee5c02cf86a152c40bdf57824ed96ecfd6ccd91f31bd59bcf64386b4543bef02",
       "group": "core-api",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {
@@ -7439,7 +7439,7 @@
       "path": "packages/better-auth/src/api/routes/sign-out.test.ts",
       "sha256": "57191fc7868eaf4f06e16e90dc6983049d021e045ae2819d31c01ef97e0d6fea",
       "group": "core-api",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {

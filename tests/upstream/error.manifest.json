@@ -1,0 +1,30 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/api/routes/error.test.ts",
+  "sha256": "ee5c02cf86a152c40bdf57824ed96ecfd6ccd91f31bd59bcf64386b4543bef02",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "error page security",
+      "suites": [
+        "error page security"
+      ],
+      "test": "should sanitize error description to prevent XSS",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "error page security",
+      "suites": [
+        "error page security"
+      ],
+      "test": "should sanitize code parameter",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

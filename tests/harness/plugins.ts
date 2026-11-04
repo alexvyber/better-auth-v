@@ -1,4 +1,4 @@
-import { admin as upstreamAdmin, organization as upstreamOrganization } from 'better-auth/plugins';
+import { genericOAuth as upstreamGenericOAuth, admin as upstreamAdmin, organization as upstreamOrganization } from 'better-auth/plugins';
 export { jwt } from 'better-auth/plugins';
 
 // Preserve constructor inputs so the fixture can reject unimplemented options.
@@ -15,3 +15,9 @@ export const organization = ((options?: Record<string, any>) => {
   return plugin;
 }) as typeof upstreamOrganization;
 export function schemaPluginOptions(plugin: object) { return inputs.get(plugin); }
+
+export const genericOAuth = ((options: Parameters<typeof upstreamGenericOAuth>[0]) => {
+  const plugin = upstreamGenericOAuth(options);
+  inputs.set(plugin, options);
+  return plugin;
+}) as typeof upstreamGenericOAuth;

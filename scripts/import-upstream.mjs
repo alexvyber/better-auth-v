@@ -16,6 +16,10 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+  {file: 'error', suites: null},
+  {file: 'sign-out', suites: null,
+   imports: 'import { describe, expect, it, vi } from "vitest";\nimport { parseSetCookieHeader } from "better-auth/cookies";\nimport type { GenericOAuthConfig } from "better-auth/plugins/generic-oauth";\nimport { genericOAuth } from "../harness/plugins.js";\nimport { getTestInstance } from "../harness/test-instance.js";\n',
+  },
   {file: 'update-user', suites: null,
    imports: 'import { describe, expect, it, vi } from "vitest";\nimport { createAuthClient } from "better-auth/client";\nimport { inferAdditionalFields } from "better-auth/client/plugins";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport type { Account, Session } from "better-auth";\n',
   },

@@ -17,6 +17,7 @@ struct Options {
 	admin_default_role                string = 'user'
 	organization_schema               bool
 	organization_teams                bool
+	logout_providers                  []better_auth.GenericOAuthLogoutProvider
 	endpoint_plugins                  []RemoteEndpointPlugin
 	jwt_plugin                        bool
 	jwt_expiration_json               string
@@ -503,6 +504,10 @@ fn main() {
 			return
 		}
 	}
+	mut logout_providers := []better_auth.OAuthLogoutProvider{}
+	for provider in opts.logout_providers {
+		logout_providers << better_auth.OAuthLogoutProvider(provider)
+	}
 	defaults := better_auth.Config{}
 	mut auth := better_auth.new(better_auth.Config{
 		stateless_sessions:                opts.stateless_sessions
@@ -534,6 +539,7 @@ fn main() {
 		before_commit:                     fn (mut context better_auth.EndpointContext) ! {
 			callback_with_context('transaction.beforeCommit', '{}', mut context)!
 		}
+		logout_providers:                  logout_providers
 		base_url:                          opts.base_url
 		base_path:                         opts.base_path
 		secret:                            opts.secret

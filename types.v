@@ -22,6 +22,7 @@ pub:
 	provider_id string @[json: 'providerId']
 	account_id  string @[json: 'accountId']
 	password    string @[omitempty]
+	id_token    string @[json: idToken; omitempty]
 	created_at  string @[json: 'createdAt']
 	updated_at  string @[json: 'updatedAt']
 }
@@ -225,6 +226,7 @@ pub:
 	trust_proxy_ip_headers            bool
 	plugins                           []Plugin
 	social_providers                  []OAuthProvider
+	logout_providers                  []OAuthLogoutProvider
 	user_fields                       map[string]AdditionalField
 	session_fields                    map[string]AdditionalField
 	log                               fn (string, string) = discard_log

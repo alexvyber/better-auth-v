@@ -189,9 +189,20 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
   let jwtOptions: FixtureOptions | undefined;
   let adminOptions: FixtureOptions | undefined;
   let organizationOptions: FixtureOptions | undefined;
+  const logoutProviders: FixtureOptions[] = [];
   const endpointPlugins: FixtureOptions[] = [];
   const endpointCallbacks: Record<string, (payload: any) => Promise<unknown>> = {};
   for (const plugin of options.plugins ?? []) {
+    if (plugin.id === 'generic-oauth') {
+      const input = schemaPluginOptions(plugin);
+      if (!input) throw new Error('Generic OAuth needs its native fixture descriptor');
+      assertKeys(input, ['config'], 'genericOAuth');
+      for (const provider of input.config) {
+        assertKeys(provider, ['providerId', 'clientId', 'clientSecret', 'authorizationUrl', 'tokenUrl', 'userInfoUrl', 'endSessionEndpoint', 'disableProviderLogout', 'postLogoutRedirectURI'], 'genericOAuth.config');
+        logoutProviders.push({providerId: provider.providerId, clientId: provider.clientId, endSessionEndpoint: provider.endSessionEndpoint ?? '', disableProviderLogout: provider.disableProviderLogout ?? false, postLogoutRedirectURI: provider.postLogoutRedirectURI ?? ''});
+      }
+      continue;
+    }
     if (plugin.id === 'admin' || plugin.id === 'organization') {
       const input = schemaPluginOptions(plugin);
       if (!input) throw new Error(`Native schema plugin ${plugin.id} requires its fixture descriptor`);
@@ -509,6 +520,7 @@ export async function getTestInstance<const O extends ServerOptions = {}>(
       admin_default_role: adminOptions?.defaultRole ?? 'user',
       organization_schema: !!organizationOptions,
       organization_teams: organizationOptions?.teams?.enabled ?? false,
+      logout_providers: logoutProviders,
       endpoint_plugins: endpointPlugins,
       jwt_expiration_json: jwtOptions?.jwt?.expirationTime === undefined ? '' : JSON.stringify(jwtOptions.jwt.expirationTime instanceof Date ? Math.floor(jwtOptions.jwt.expirationTime.getTime() / 1000) : jwtOptions.jwt.expirationTime),
       defer_migrations: config.deferMigrations ?? false,

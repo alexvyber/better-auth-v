@@ -10,11 +10,12 @@ The default base path is `/api/auth`.
 
 | Method | Path                       | Behavior                                                  |
 | ------ | -------------------------- | --------------------------------------------------------- |
+| GET    | `/error`                   | Escaped HTML error details with validated codes            |
 | GET    | `/ok`                      | Health response                                           |
 | POST   | `/sign-up/email`           | User, credential account, optional initial session        |
 | POST   | `/sign-in/email`           | Password verification and cookie session                  |
 | GET/POST | `/get-session`           | Current user/session; optional deferred refresh on POST   |
-| POST   | `/sign-out`                | Revoke current session and expire cookie                  |
+| POST   | `/sign-out`                | Best-effort revocation, cookie expiry, optional provider logout                  |
 | GET    | `/list-sessions`           | Active devices and their session tokens                   |
 | POST   | `/revoke-session`          | Revoke one owned session                                  |
 | POST   | `/revoke-sessions`         | Revoke all owned sessions                                 |
@@ -86,7 +87,15 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   not implemented.
 - OAuth currently has a GitHub provider. The provider interface supports other
   implementations, but Google/OIDC validation is not supplied. Account linking,
-  provider-token persistence/refresh, and upstream OAuth error redirects are absent.
+  access/refresh-token persistence and refresh, and upstream OAuth error redirects
+  are absent. Explicit logout providers can construct end-session URLs from stored
+  account ID tokens; generic logout config supports callback/client/state parameters,
+  latest-account ordering, and provider fallback. Local sign-out succeeds and clears
+  cookies even if session persistence or provider URL creation fails. Generic OAuth
+  discovery and sign-in are not supplied by this logout support.
+- The HTML error endpoint validates error codes and escapes descriptions. Default
+  page styling, custom themes, production redirects, and `onAPIError.errorURL`
+  behavior remain unimplemented.
 - Plugin extension covers endpoint registration, session/freshness requirements,
   user/session schema contributions, and user-creation defaults. V database hooks support mutation
   cancellation/patches and after-commit callbacks with trusted internal operations.

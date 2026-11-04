@@ -42,7 +42,9 @@ There is no dependency on a web framework.
   origins, redirect validation, CORS responses, and a per-instance route limiter.
 - A plugin endpoint interface and an existing-user magic-link plugin.
 - OAuth authorization-code orchestration with PKCE and browser-bound state, a
-  provider interface, and a GitHub provider using verified email addresses.
+  provider interface, and a GitHub provider using verified email addresses. Explicit
+  provider logout supports linked ID tokens, redirects, state, and provider fallback.
+- A public HTML error endpoint with escaped descriptions and validated error codes.
 - A JSON-lines test process and TypeScript facade that execute selected original
   Better Auth tests against V.
 

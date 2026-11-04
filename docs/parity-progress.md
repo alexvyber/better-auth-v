@@ -214,9 +214,20 @@ or corpus inventory contains unimplemented behavior.
   burning, retained stale cache cookies, hook failure durability, and server-only
   policy errors. Trusted verification inspection reads actual native records.
 
+- Imported the complete sign-out file (9 declarations) and error-page security
+  file (2 declarations), preserving their bodies/assertions. Local sign-out clears
+  cookies despite lookup, delete, commit, or secondary-revocation errors. Added
+  an explicit logout-provider interface and generic end-session URL configuration,
+  linked account ID-token storage, timestamp ordering, provider fallback, callback
+  redirects, client IDs, state, and optional redirect suppression. Four independent
+  cases verify failure isolation and invalid-provider fallback with existing URL
+  parameters. The error endpoint escapes descriptions and rejects invalid codes;
+  custom styling and production/error-URL routing remain separate work.
+  Generic OAuth discovery, sign-in, and token exchange are still unimplemented.
+
 ## Next infrastructure work
 
-The latest `make check` passes 552 TypeScript cases across 26 files, all 52 native
+The latest `make check` passes 567 TypeScript cases across 29 files, all 52 native
 V test functions across 10 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and

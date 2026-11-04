@@ -6,6 +6,7 @@ import net.urllib
 import net.http
 
 struct Payload {
+	state                 string
 	provider              string
 	disable_redirect      bool @[json: 'disableRedirect']
 	email                 string
@@ -26,6 +27,7 @@ struct Payload {
 
 fn core_routes() map[string][]string {
 	return {
+		'/error':                   ['GET']
 		'/ok':                      ['GET']
 		'/sign-up/email':           ['POST']
 		'/sign-in/email':           ['POST']
@@ -452,12 +454,10 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 			return a.set_cache_cookie(a.session_response(result), result)
 		}
 		'/sign-out' {
-			if current := (a.current_session(ctx)!).value {
-				a.remove_session(current.session.token)!
-			}
-			return a.clear_cookie(json_response({
-				'success': true
-			}))
+			return a.sign_out_request(p, ctx)!
+		}
+		'/error' {
+			return error_page(req.url)!
 		}
 		'/list-sessions' {
 			current := a.require_session(ctx, true)!

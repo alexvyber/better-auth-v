@@ -1,0 +1,100 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/api/routes/sign-out.test.ts",
+  "sha256": "57191fc7868eaf4f06e16e90dc6983049d021e045ae2819d31c01ef97e0d6fea",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "sign-out",
+      "suites": [
+        "sign-out"
+      ],
+      "test": "should sign out",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-out",
+      "suites": [
+        "sign-out"
+      ],
+      "test": "should clear local session cookie when reading the session fails",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-out",
+      "suites": [
+        "sign-out"
+      ],
+      "test": "should return provider logout url with id_token_hint",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-out",
+      "suites": [
+        "sign-out"
+      ],
+      "test": "should keep local-only sign out when provider has no logout endpoint",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-out",
+      "suites": [
+        "sign-out"
+      ],
+      "test": "should keep local-only sign out when provider logout is disabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-out",
+      "suites": [
+        "sign-out"
+      ],
+      "test": "should include callbackURL as post_logout_redirect_uri with state",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-out",
+      "suites": [
+        "sign-out"
+      ],
+      "test": "should reject untrusted callbackURL",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-out",
+      "suites": [
+        "sign-out"
+      ],
+      "test": "should return provider logout url without redirect when disabled",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-out",
+      "suites": [
+        "sign-out"
+      ],
+      "test": "should use the most recently updated provider when multiple linked accounts exist",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

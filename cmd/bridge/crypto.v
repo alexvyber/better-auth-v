@@ -25,6 +25,10 @@ fn crypto_command() ! {
 			encoded = json.encode(better_auth.decrypt_oauth_token(args[0].str(),
 				better_auth.decode_symmetric_secret(args[1])!, args[2].bool())!)
 		}
+		'splitOTP' {
+			left, right := better_auth.split_otp_value(args[0].str())
+			encoded = json.encode([left, right])
+		}
 		'oneTimeTokenHash' {
 			encoded = json.encode(better_auth.default_one_time_token_hasher(args[0].str())!)
 		}

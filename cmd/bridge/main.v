@@ -12,6 +12,8 @@ import time
 import x.json2
 
 struct Options {
+	email_otp                         ?better_auth.EmailOTPOptions
+	email_otp_callbacks               []string
 	verification_options              better_auth.VerificationOptions
 	one_time_token                    ?better_auth.OneTimeTokenOptions
 	ott_generate_callback             bool
@@ -653,6 +655,44 @@ fn main() {
 			}
 		}
 	}
+	if given := opts.email_otp {
+		mut settings := given
+		if 'generate' in opts.email_otp_callbacks {
+			settings = better_auth.EmailOTPOptions{
+				...settings
+				generate_otp: fn (mut context better_auth.EndpointContext, data better_auth.EmailOTPMessage) !string {
+					encoded := otp_callback('otp.generate',
+						'{"email":${json.encode(data.email)},"type":${json.encode(data.kind)}}', mut
+						context)!
+					result := json2.decode[json2.Any](encoded)!
+					return if result is json2.Null { '' } else { result.str() }
+				}
+			}
+		}
+		if 'send' in opts.email_otp_callbacks { settings = better_auth.EmailOTPOptions{
+				...settings
+				send_otp: fn (mut context better_auth.EndpointContext, data better_auth.EmailOTPMessage) ! {
+					otp_callback('otp.send', json.encode(data), mut context)!}
+			} }
+		if 'hash' in opts.email_otp_callbacks { settings = better_auth.EmailOTPOptions{
+				...settings
+				hash_otp: fn (mut context better_auth.EndpointContext, value string) !string {
+					return json2.decode[string](otp_callback('otp.hash', json.encode(value), mut context)!)}
+			} }
+		if 'encrypt' in opts.email_otp_callbacks { settings = better_auth.EmailOTPOptions{
+				...settings
+				encrypt_otp: fn (mut context better_auth.EndpointContext, value string) !string {
+					return json2.decode[string](otp_callback('otp.encrypt', json.encode(value), mut context)!)}
+			} }
+		if 'decrypt' in opts.email_otp_callbacks { settings = better_auth.EmailOTPOptions{
+				...settings
+				decrypt_otp: fn (mut context better_auth.EndpointContext, value string) !string {
+					return json2.decode[string](otp_callback('otp.decrypt', json.encode(value), mut context)!)}
+			} }
+		plugins << better_auth.EmailOTPPlugin{
+			options: settings
+		}
+	}
 	if given := opts.one_time_token {
 		mut settings := given
 		if opts.ott_generate_callback {
@@ -1082,4 +1122,17 @@ fn filter_inspection(encoded string, where string) !string {
 		if matches { selected << record }
 	}
 	return json2.Any(selected).json_str()
+}
+
+fn otp_callback(method string, data string, mut context better_auth.EndpointContext) !string {
+	request := context.request_context()
+	encoded_request := if value := request.request { json.encode(value) } else { 'null' }
+	session := if value := context.session {
+		'{"session":${better_auth.encode_session(value.session)},"user":${better_auth.encode_user(value.user)}}'
+	} else {
+		'null'
+	}
+	return callback_with_context(method,
+		'{"data":${data},"request":${encoded_request},"headers":${json.encode(request.headers)},"session":${session}}', mut
+		context)
 }

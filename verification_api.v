@@ -167,7 +167,18 @@ pub fn (mut context EndpointContext) consume_verification_value(identifier strin
 }
 
 fn (mut context EndpointContext) verification_internal(name string, args []json2.Any) !string {
+	if name == 'updateVerificationByIdentifier' {
+		if args.len != 2 {
+			return error('updateVerificationByIdentifier requires an identifier and patch')
+		}
+		result := context.update_verification_by_identifier(args[0].str(), args[1].json_str())!
+		return if value := result.value { encode_verification(value) } else { 'null' }
+	}
 	if args.len != 1 { return error('${name} requires one argument') }
+	if name == 'deleteVerificationByIdentifier' {
+		context.delete_verification_by_identifier(args[0].str())!
+		return 'null'
+	}
 	if name == 'createVerificationValue' {
 		value := context.create_verification_value(decode_verification_record(args[0].json_str())!)!
 		return encode_verification(value)
@@ -178,4 +189,53 @@ fn (mut context EndpointContext) verification_internal(name string, args []json2
 		context.find_verification_value(args[0].str())!
 	}
 	return if value := result.value { encode_verification(value) } else { 'null' }
+}
+
+pub fn (mut context EndpointContext) delete_verification_by_identifier(identifier string) ! {
+	identifiers := context.auth.verification_identifiers(identifier)!
+	if context.auth.has_secondary() {
+		context.auth.secondary.delete('verification:' + identifiers[0])!
+	}
+	if !context.auth.has_secondary() || context.auth.config.verification.store_in_database {
+		if record := (context.latest_verification([identifiers[0]])!).value {
+			if (context.auth.before_record('verification', 'delete', encode_verification(record))!).value == none {
+				return
+			}
+			for stale in context.auth.storage.verifications()! {
+				if stale.identifier == record.identifier {
+					context.auth.storage.delete_verification(stale.id)!
+				}
+			}
+			context.auth.after_record('verification', 'delete', encode_verification(record))!
+		}
+	}
+}
+
+pub fn (mut context EndpointContext) update_verification_by_identifier(identifier string, patch_json string) !Lookup[Verification] {
+	original := (context.find_verification_value(identifier)!).value or {
+		return Lookup[Verification]{}
+	}
+
+	patch := (context.auth.before_record('verification', 'update', patch_json)!).value or {
+		return Lookup[Verification]{}
+	}
+
+	merged := merge_record_json(encode_verification(original), patch)!
+	updated := decode_verification_record(merged)!
+	if !context.auth.has_secondary() || context.auth.config.verification.store_in_database {
+		context.auth.storage.delete_verification(original.id)!
+		context.auth.storage.create_verification(updated)!
+	}
+	if context.auth.has_secondary() {
+		identifiers := context.auth.verification_identifiers(identifier)!
+		ttl := (verification_expiry_millis(updated) - context.auth.clock_millis()) / 1000
+		if ttl > 0 {
+			context.auth.secondary.set('verification:' + identifiers[0],
+				encode_verification(updated), ttl)!
+		}
+	}
+	context.auth.after_record('verification', 'update', encode_verification(updated))!
+	return Lookup[Verification]{
+		value: updated
+	}
 }

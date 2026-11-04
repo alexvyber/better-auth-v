@@ -31,8 +31,9 @@ mut:
 }
 
 struct RateBucket {
-	start i64
-	count int
+	window_millis i64
+	start         i64
+	count         int
 }
 
 pub fn new(input_config Config, storage Storage) !&Auth {
@@ -340,7 +341,7 @@ fn (mut a Auth) sign_up(input SignUpInput, ctx RequestContext) !AuthResult {
 		password:    hash
 	})!
 	if (a.config.send_verification_on_sign_up or { a.config.require_email_verification })
-		&& a.config.send_email != discard_email {
+		&& a.can_send_verification() {
 		a.issue_email('verify-email', user, '')!
 	}
 	if !a.config.auto_sign_in || a.config.require_email_verification { return AuthResult{
@@ -383,7 +384,7 @@ fn (mut a Auth) sign_in(input SignInInput, ctx RequestContext) !AuthResult {
 		return fail(401, 'INVALID_EMAIL_OR_PASSWORD', 'Invalid email or password')
 	}
 	if a.config.require_email_verification && !user.email_verified {
-		if a.config.send_verification_on_sign_in && a.config.send_email != discard_email {
+		if a.config.send_verification_on_sign_in && a.can_send_verification() {
 			a.issue_email('verify-email', user, '')!
 		}
 		return fail(403, 'EMAIL_NOT_VERIFIED', 'Email not verified')
@@ -454,6 +455,10 @@ fn (a &Auth) context_token(ctx RequestContext) ?string {
 
 fn (mut a Auth) issue_email(kind string, user User, callback string) ! {
 	if kind == 'verify-email' {
+		if a.email_otp_verification_override() {
+			a.send_email_otp_verification(user)!
+			return
+		}
 		if !a.can_send_verification() { return }
 		a.config.send_email(a.verification_message(user, callback, '', '')!)!
 		return

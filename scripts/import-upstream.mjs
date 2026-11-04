@@ -16,6 +16,9 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+  {file: 'email-otp', path: 'packages/better-auth/src/plugins/email-otp/email-otp.test.ts', suites: null,
+   imports: 'import { afterEach, describe, expect, it, vi } from "vitest";\nimport { createAuthClient } from "better-auth/client";\nimport { getCookieCache, parseSetCookieHeader } from "../harness/cookies.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { bearer, emailOTP } from "../harness/plugins.js";\nimport { emailOTPClient } from "better-auth/client/plugins";\nimport { splitAtLastColon } from "../harness/crypto.js";\n',
+  },
   {file: 'internal-adapter', path: 'packages/better-auth/src/db/internal-adapter.test.ts', suites: new Set(), extractSuite: 'consumeVerificationValue', includeHelpers: true,
    imports: 'import { describe, expect, it, vi } from "vitest";\nimport type { SecondaryStorage } from "@better-auth/core/db";\nimport { DatabaseSync, init, getMigrations } from "../harness/verification-fixture.js";\nimport type { BetterAuthOptions } from "../harness/verification-fixture.js";\n',
    unportedReason: 'Unported adapter/session/schema/reservation and other internal operations; only the complete consumeVerificationValue suite is selected',

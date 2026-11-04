@@ -521,7 +521,7 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   invalidation of older duplicates, expiry cleanup, delete veto/after hooks, and
   atomic secondary-store getAndDelete with optional database copies. Read cleanup
   preserves upstream's captured expired row for the first read. Custom identifier
-  hash callbacks, reservation/update/delete APIs and complete integration of legacy
+  hash callbacks, reservation APIs and complete integration of legacy
   token helpers remain open. These are distinct from OTT's supported custom hasher.
 - Imported all fourteen one-time-token source cases unchanged and all twelve cases
   from the internal-adapter consumeVerificationValue suite unchanged. The other
@@ -532,8 +532,22 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   importer can extract an intact nested suite while retaining the complete original
   source and inventory; fixture callbacks still execute native operations.
 
-The latest `make check` passes 1081 TypeScript cases across 58 files, all 84 native
-V test functions across 24 files (including all 20,034 Unicode vectors), TypeScript
+- Added the native email-OTP plugin with all nine HTTP endpoints and trusted
+  create/read APIs. Configurable codecs, rotate/reuse behavior, attempt budgets,
+  plugin rate limits, email-verification overrides, auto sign-in, password resets
+  and authenticated email changes run in V. OTP consumption commits separately
+  from downstream sign-in errors; password reset keeps successful consumption in
+  the credential transaction so failures preserve the code. Verification update/
+  delete-by-identifier APIs support resend and attempt accounting.
+- Imported the entire email-OTP source file with all 91 upstream cases unchanged.
+  Three independent Brand Map configuration cases cover hashed rotating codes,
+  five attempts, core verification overrides and both email-change proofs; one
+  native test verifies hashing, sign-in and single use. Distributed reservation
+  locks for unverified account promotion remain open, along with complete public
+  callback contexts and PostgreSQL/Redis integration.
+
+The latest verification passes 1175 TypeScript cases across 60 files, all 85 native
+V test functions across 25 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus
@@ -541,8 +555,8 @@ passes.
 
 The user resumed work and authorized incremental commits and pushes to
 `alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.
-The objective remains incomplete. The corpus currently records 28 completely
-imported files, two partial imports and 406 unported files; imported status describes source
+The objective remains incomplete. The corpus currently records 29 completely
+imported files, two partial imports and 405 unported files; imported status describes source
 preservation, not broad feature completion.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise

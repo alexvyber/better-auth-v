@@ -29,7 +29,12 @@ fn (mut a Auth) intercept_internal(name string, arguments_json string) !Lookup[s
 pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json string) !string {
 	args := json2.decode[[]json2.Any](arguments_json)!
 	match name {
-		'createVerificationValue', 'findVerificationValue', 'consumeVerificationValue' {
+		'createVerificationOTP', 'getVerificationOTP' {
+			if args.len != 1 { return error('OTP operation requires one argument') }
+			return c.email_otp_internal(name, args[0].json_str())
+		}
+		'createVerificationValue', 'findVerificationValue', 'consumeVerificationValue',
+		'deleteVerificationByIdentifier', 'updateVerificationByIdentifier' {
 			return c.verification_internal(name, args)
 		}
 		'validateRedirect' {

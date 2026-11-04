@@ -48,6 +48,7 @@ pub fn verify_hmac_jwt_with_algorithms(token string, secret string, now i64, alg
 }
 
 fn (a &Auth) can_send_verification() bool {
+	if a.email_otp_verification_override() { return true }
 	return a.config.verification_delivery_enabled or { a.config.send_email != discard_email }
 }
 
@@ -93,7 +94,11 @@ fn (mut a Auth) send_verification(p Payload, ctx RequestContext) !Response {
 		if session.user.email_verified {
 			return fail(400, 'EMAIL_ALREADY_VERIFIED', 'Email already verified')
 		}
-		a.config.send_email(a.verification_message(session.user, p.callback_url, '', '')!)!
+		if a.email_otp_verification_override() {
+			a.send_email_otp_verification(session.user)!
+		} else {
+			a.config.send_email(a.verification_message(session.user, p.callback_url, '', '')!)!
+		}
 	} else {
 		start := time.sys_mono_now()
 		defer {
@@ -103,7 +108,11 @@ fn (mut a Auth) send_verification(p Payload, ctx RequestContext) !Response {
 		}
 		if user := (a.find_user_by_email(email)!).value {
 			if !user.email_verified {
-				a.config.send_email(a.verification_message(user, p.callback_url, '', '')!)!
+				if a.email_otp_verification_override() {
+					a.send_email_otp_verification(user)!
+				} else {
+					a.config.send_email(a.verification_message(user, p.callback_url, '', '')!)!
+				}
 			}
 		} else {
 			a.verification_token(email, '', '')!

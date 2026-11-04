@@ -504,3 +504,7 @@ fn no_millisecond_clock() i64 {
 fn discard_password_reset(_ User) ! {}
 
 fn discard_verification_callback(_ User, _ RequestContext) ! {}
+
+pub fn (c &EndpointContext) request_context() RequestContext {
+	return c.auth.request_context
+}

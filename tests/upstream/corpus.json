@@ -34,7 +34,7 @@
     "plugins": {
       "files": 45,
       "declarations": 1315,
-      "importedFiles": 5
+      "importedFiles": 6
     },
     "adapters": {
       "files": 16,
@@ -18833,7 +18833,7 @@
       "path": "packages/better-auth/src/plugins/email-otp/email-otp.test.ts",
       "sha256": "a6e69a7e68dd46ae7c32e738c00aa4b92674a6634d3912072b3abdab822874b9",
       "group": "plugins",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {

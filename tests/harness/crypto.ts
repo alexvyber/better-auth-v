@@ -53,3 +53,5 @@ export function buildSecretConfig(entries: {version: number; value: string}[], l
 }
 
 export async function defaultKeyHasher(token: string): Promise<string> { return native('oneTimeTokenHash', [token]); }
+
+export function splitAtLastColon(value: string): [string, string] { return native('splitOTP', [value]); }

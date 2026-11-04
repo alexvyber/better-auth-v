@@ -37,6 +37,14 @@ The default base path is `/api/auth`.
 | GET    | `/magic-link/verify`       | Plugin: consume link and create session                   |
 | GET    | `/one-time-token/generate` | Plugin: issue a token bound to the authenticated session |
 | POST   | `/one-time-token/verify` | Plugin: consume once and return the existing session |
+| POST   | `/email-otp/send-verification-otp` | Plugin: send a rotating or reusable email code |
+| POST   | `/email-otp/check-verification-otp` | Plugin: check a code without consuming it |
+| POST   | `/email-otp/verify-email` | Plugin: consume a code and verify email |
+| POST   | `/sign-in/email-otp` | Plugin: consume a code and sign in or register |
+| POST   | `/email-otp/request-password-reset` | Plugin: send a password-reset code |
+| POST   | `/email-otp/reset-password` | Plugin: consume a code and reset the password |
+| POST   | `/email-otp/request-email-change` | Plugin: request an authenticated email change |
+| POST   | `/email-otp/change-email` | Plugin: consume the email-change proof |
 | GET    | `/jwks`                   | JWT plugin: publish public signing keys                   |
 | GET    | `/token`                  | JWT plugin: issue a JWT for an authenticated session       |
 
@@ -138,9 +146,17 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   operations are available. Verification APIs support ordered plain/hashed prefix
   policies, metadata, hook patches/vetoes, latest-record selection/stale cleanup,
   atomic secondary consumption and optional DB copies. Custom identifier hashing,
-  reservation/update/delete APIs and legacy reset/OAuth storage unification remain
+  reservation APIs and legacy reset/OAuth storage unification remain
   incomplete; the verification settings currently govern these trusted APIs and
-  the OTT plugin. Redis/application-wrapper integration is still separate work.
+  the OTT and email-OTP plugins. Update/delete-by-identifier APIs are also available.
+  Redis/application-wrapper integration is still separate work.
+- The native email-OTP plugin implements code creation/read APIs, delivery, checking,
+  verification, sign-in/signup, password reset and authenticated email changes.
+  Plain, SHA256, encrypted and application-provided codecs, resend rotation/reuse,
+  attempt budgets, plugin rate limits and default-verification overrides are covered
+  by the complete upstream email-OTP source file. Brand Map's hashed/rotating/five-
+  attempt configuration has independent coverage. Cross-instance account-promotion
+  reservation locking and complete callback contexts remain open.
 - The HTML error endpoint validates error codes and escapes descriptions. Default
   page styling, custom themes, production redirects, and `onAPIError.errorURL`
   behavior remain unimplemented.
@@ -299,7 +315,7 @@ PostgreSQL/MySQL/MongoDB adapters, schema generation/introspection, full seconda
 storage parity, full stateless/account-cookie behavior, complete JWT/JWKS plugin parity,
 custom-field validators/transforms,
 general database-column mapping, richer hooks,
-username/email OTP/phone authentication, TOTP/recovery codes, passkeys, admin,
+username/phone authentication, TOTP/recovery codes, passkeys, admin,
 organizations/teams/RBAC, API keys, OAuth/OIDC server functionality,
 SSO/SAML/SCIM, and payment/integration plugins remain unimplemented.
 

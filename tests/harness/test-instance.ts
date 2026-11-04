@@ -79,6 +79,15 @@ afterAll(async () => {
 });
 
 const routes: Record<string, [string, string]> = {
+ sendVerificationOTP: ['POST', '/email-otp/send-verification-otp'],
+ checkVerificationOTP: ['POST', '/email-otp/check-verification-otp'],
+ verifyEmailOTP: ['POST', '/email-otp/verify-email'],
+ signInEmailOTP: ['POST', '/sign-in/email-otp'],
+ requestPasswordResetEmailOTP: ['POST', '/email-otp/request-password-reset'],
+ forgetPasswordEmailOTP: ['POST', '/forget-password/email-otp'],
+ resetPasswordEmailOTP: ['POST', '/email-otp/reset-password'],
+ requestEmailChangeEmailOTP: ['POST', '/email-otp/request-email-change'],
+ changeEmailEmailOTP: ['POST', '/email-otp/change-email'],
  generateOneTimeToken: ['GET', '/one-time-token/generate'],
  verifyOneTimeToken: ['POST', '/one-time-token/verify'],
   signInSocial: ["POST", "/sign-in/social"],
@@ -197,6 +206,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   const ep = options.emailAndPassword ?? {};
   const ev = options.emailVerification ?? {};
   const session = options.session ?? {};
+  let otpOptions: FixtureOptions | undefined;
   let ottOptions: FixtureOptions | undefined;
   let jwtOptions: FixtureOptions | undefined;
   let adminOptions: FixtureOptions | undefined;
@@ -210,6 +220,13 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   const endpointPlugins: FixtureOptions[] = [];
   const endpointCallbacks: Record<string, (payload: any) => Promise<unknown>> = {};
   for (const plugin of options.plugins ?? []) {
+    if (plugin.id === 'bearer') { continue; }
+    if (plugin.id === 'email-otp') {
+      otpOptions = schemaPluginOptions(plugin);
+      if (!otpOptions) throw new Error('Email OTP requires a native fixture descriptor');
+      assertKeys(otpOptions, ['sendVerificationOTP', 'generateOTP', 'otpLength', 'expiresIn', 'allowedAttempts', 'storeOTP', 'sendVerificationOnSignUp', 'disableSignUp', 'resendStrategy', 'changeEmail', 'overrideDefaultEmailVerification', 'rateLimit'], 'emailOTP');
+      continue;
+    }
     if (plugin.id === 'one-time-token') {
       ottOptions = schemaPluginOptions(plugin);
       if (!ottOptions) throw new Error('One-time-token requires a native fixture descriptor');
@@ -396,7 +413,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   let jwtCallSequence = 0;
   const callbacks: Record<string, (payload: any) => unknown> = {...endpointCallbacks};
   const internalAdapter = {} as FixtureInternalAdapter;
-  const internalNames = ['createVerificationValue', 'findVerificationValue', 'consumeVerificationValue', 'createSession', 'findSession', 'listSessions', 'updateSession', 'deleteSession', 'deleteUserSessions', 'createUser', 'updateUser', 'findUserById', 'findUserByEmail', 'createAccount', 'findCredentialAccount', 'deleteAccount', 'updateAccount', 'findAccounts', 'updatePassword'];
+  const internalNames = ['createVerificationValue', 'findVerificationValue', 'consumeVerificationValue', 'deleteVerificationByIdentifier', 'updateVerificationByIdentifier', 'createSession', 'findSession', 'listSessions', 'updateSession', 'deleteSession', 'deleteUserSessions', 'createUser', 'updateUser', 'findUserById', 'findUserByEmail', 'createAccount', 'findCredentialAccount', 'deleteAccount', 'updateAccount', 'findAccounts', 'updatePassword'];
   for (const name of internalNames) {
     internalAdapter[name] = async (...args: any[]) => {
       const reply = await bridge.send('internal', {method: name, arguments_json: transportJSON(args)});
@@ -585,7 +602,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   }
   callbacks['password.hash'] = value => context.password.hash(value);
   callbacks['password.verify'] = input => context.password.verify(input);
-  if (typeof ep.onPasswordReset === 'function') callbacks['password.reset'] = input => ep.onPasswordReset!(hydrate(input), undefined);
+  if (typeof ep.onPasswordReset === 'function') callbacks['password.reset'] = input => ep.onPasswordReset!(hydrate(input), callbackRequest());
   if (typeof ep.sendResetPassword === "function")
     callbacks["email.reset-password"] = (payload) =>
       ep.sendResetPassword!({user: hydrate(payload.user), url: payload.url, token: payload.token}, callbackRequest());
@@ -613,12 +630,24 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       return ep.customSyntheticUser!({coreFields, additionalFields: hydrate(payload.additionalFields), id: payload.id});
     };
   }
+  const otpCallbackNames: string[] = [];
+  const otpContext = (payload: FixtureOptions) => {
+    const request = payload.request ? new Request(payload.request.url, {method: payload.request.method, headers: payload.request.headers, body: payload.request.method === 'POST' ? payload.request.body : undefined}) : undefined;
+    return {context: {...context, session: hydrate(payload.session)}, headers: new Headers(payload.headers), request};
+  };
+  for (const [key, callback] of Object.entries({generate: otpOptions?.generateOTP, send: otpOptions?.sendVerificationOTP, hash: typeof otpOptions?.storeOTP === 'object' ? otpOptions.storeOTP.hash : undefined, encrypt: typeof otpOptions?.storeOTP === 'object' ? otpOptions.storeOTP.encrypt : undefined, decrypt: typeof otpOptions?.storeOTP === 'object' ? otpOptions.storeOTP.decrypt : undefined})) {
+    if (typeof callback !== 'function') continue;
+    otpCallbackNames.push(key);
+    callbacks['otp.' + key] = payload => callback(payload.data, otpContext(payload));
+  }
   if (ottOptions?.generateToken) callbacks['ott.generate'] = payload => ottOptions.generateToken(hydrate(payload), {context, headers: currentOperation.getStore()?.request?.headers, request: currentOperation.getStore()?.request});
   if (typeof ottOptions?.storeToken === 'object') callbacks['ott.hash'] = token => ottOptions.storeToken.hash(token);
   for (const [method, callback] of Object.entries(callbacks))
     bridge.setCallback(method, callback);
   await bridge.send("init", {
     options: {
+      email_otp: otpOptions ? {...otpOptions, storeOTP: typeof otpOptions.storeOTP === 'object' ? (otpOptions.storeOTP.hash ? 'custom-hash' : 'custom-encryption') : otpOptions.storeOTP} : null,
+      email_otp_callbacks: otpCallbackNames,
       verification_options: options.verification ? {
        ...options.verification,
        storeIdentifier: typeof options.verification.storeIdentifier === 'object' && 'default' in options.verification.storeIdentifier ? options.verification.storeIdentifier.default : options.verification.storeIdentifier,
@@ -833,6 +862,15 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       return args.returnHeaders ? {response: hydrate(value), headers: new Headers()} : hydrate(value);
     };
   }
+  if (otpOptions) for (const name of ['createVerificationOTP', 'getVerificationOTP']) api[name] = async (args: FixtureOptions = {}) => {
+    try {
+      const reply = await bridge.send('internal', {method: name, arguments_json: transportJSON([args.body ?? args.query ?? {}])});
+      return hydrate(JSON.parse(reply.value_json));
+    } catch (error) {
+      const native = error as Error & {statusCode: number; body: {code: string; message: string}};
+      throw APIError.fromStatus((statuses[native.statusCode] ?? 'INTERNAL_SERVER_ERROR') as any, native.body);
+    }
+  };
   api.setPassword = async (args = {}) => {
     const headers = new Headers(args.headers ?? currentUserHeaders.getStore());
     try {

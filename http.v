@@ -351,7 +351,8 @@ fn (mut a Auth) check_csrf(req Request, path string) ! {
 		return
 	}
 	origin := req.headers['origin']
-	if req.headers['cookie'] == '' && path in ['/sign-in/email', '/sign-up/email']
+	if req.headers['cookie'] == ''
+		&& path in ['/sign-in/email', '/sign-up/email', '/email-otp/send-verification-otp', '/sign-in/email-otp']
 		&& req.headers['sec-fetch-site'] == 'cross-site'
 		&& req.headers['sec-fetch-mode'] == 'navigate' {
 		return fail(403, 'CROSS_SITE_NAVIGATION_LOGIN_BLOCKED',
@@ -390,10 +391,25 @@ fn (mut a Auth) check_csrf(req Request, path string) ! {
 fn (mut a Auth) rate_limit(path string) ! {
 	if a.config.rate_limit_max == 0 { return }
 	now := a.clock_millis()
+	mut maximum := a.config.rate_limit_max
+	mut window := a.config.rate_limit_window
+	if options := a.email_otp_options() {
+		if path.starts_with('/email-otp/')
+			|| path in ['/sign-in/email-otp', '/forget-password/email-otp'] {
+			maximum = if options.rate_limit.max != 0 { options.rate_limit.max } else { 3 }
+			window = if options.rate_limit.window != 0 { options.rate_limit.window } else { 60 }
+		}
+	}
 	// Bounded, per-instance limiter. Applications needing per-IP/distributed
 	// limits should enforce those at their trusted HTTP ingress as well.
 	for key, bucket in a.limits {
-		if now - bucket.start >= a.config.rate_limit_window * 1000 { a.limits.delete(key) }
+		if now - bucket.start >= if bucket.window_millis > 0 {
+			bucket.window_millis
+		} else {
+			a.config.rate_limit_window * 1000
+		} {
+			a.limits.delete(key)
+		}
 	}
 	key := if path.starts_with('/callback/') {
 		'/callback/:provider'
@@ -407,12 +423,13 @@ fn (mut a Auth) rate_limit(path string) ! {
 			start: now
 		}
 	}
-	if previous.count >= a.config.rate_limit_max {
+	if previous.count >= maximum {
 		return fail(429, 'TOO_MANY_REQUESTS', 'Too many requests')
 	}
 	a.limits[key] = RateBucket{
-		start: previous.start
-		count: previous.count + 1
+		start:         previous.start
+		window_millis: window * 1000
+		count:         previous.count + 1
 	}
 }
 
@@ -445,6 +462,7 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 				name:              p.name
 				image:             p.image
 			}, ctx)!
+			a.email_otp_after_signup(result.user)!
 			token_json := if token := result.token { json.encode(token) } else { 'null' }
 			r := Response{
 				headers: [Header{'content-type', 'application/json'}]

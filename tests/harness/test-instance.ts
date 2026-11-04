@@ -8,7 +8,7 @@ import { parseSetCookieHeader } from "better-auth/cookies";
 import { afterAll } from "vitest";
 import { Bridge, recordMetadata, transportJSON } from "./bridge.js";
 import { isNativeMemoryAdapter } from "./memory-adapter.js";
-import { nativeEndpoint, freshSessionMiddleware } from './endpoint.js';
+import { nativeEndpoint, freshSessionMiddleware, nativeOriginSelector } from './endpoint.js';
 import { schemaPluginOptions } from './plugins.js';
 
 // Upstream fixtures are intentionally dynamically shaped. This boundary accepts
@@ -187,6 +187,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   let adminOptions: FixtureOptions | undefined;
   let organizationOptions: FixtureOptions | undefined;
   const logoutProviders: FixtureOptions[] = [];
+  const requestHooks: Array<(request: Request, context: FixtureOptions) => unknown> = [];
+  const skippedOriginPaths: string[] = [];
   const initializers: Array<(context: FixtureOptions) => unknown> = [];
   const originSources: NonNullable<BetterAuthOptions['trustedOrigins']>[] = [];
   if (options.trustedOrigins) originSources.push(options.trustedOrigins);
@@ -217,28 +219,37 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       continue;
     }
     if (plugin.id !== 'jwt') {
+      if (plugin.onRequest) requestHooks.push(plugin.onRequest.bind(plugin) as (request: Request, context: FixtureOptions) => unknown);
       if (plugin.init) initializers.push(plugin.init.bind(plugin) as (context: FixtureOptions) => unknown);
-      assertKeys(plugin, ['id', 'endpoints', 'init'], `plugin.${plugin.id}`);
+      assertKeys(plugin, ['id', 'endpoints', 'init', 'onRequest'], `plugin.${plugin.id}`);
       const routes: FixtureOptions[] = [];
       for (const [name, endpoint] of Object.entries(plugin.endpoints ?? {})) {
         const descriptor = nativeEndpoint(endpoint);
         if (!descriptor) throw new Error(`Plugin endpoint ${plugin.id}.${name} needs a native fixture descriptor`);
         assertKeys(descriptor.options, ['method', 'use', 'query'], `plugin.${plugin.id}.${name}`);
         const use = descriptor.options.use ?? [];
-        if (use.some(middleware => middleware !== freshSessionMiddleware)) throw new Error('Unsupported native middleware descriptor');
+        if (use.some(middleware => middleware !== freshSessionMiddleware && !nativeOriginSelector(middleware))) throw new Error('Unsupported native middleware descriptor');
         const method = descriptor.options.method ?? 'GET';
         if (typeof method !== 'string') throw new Error('Endpoint method arrays are not bridged yet');
         routes.push({name, path: descriptor.path, method, fresh_session: use.includes(freshSessionMiddleware)});
         endpointCallbacks[`plugin.${plugin.id}.${name}`] = async payload => {
           const request = new Request(payload.request.url, {method: payload.request.method, headers: payload.request.headers, body: payload.request.method === 'POST' ? payload.request.body : undefined});
           const responseHeaders = new Headers();
-          const result = await descriptor.handler({
+          const endpointContext = {
             request, headers: request.headers, query: descriptor.options.query ? descriptor.options.query.parse(Object.fromEntries(new URL(request.url).searchParams)) : Object.fromEntries(new URL(request.url).searchParams),
             body: payload.request.body ? JSON.parse(payload.request.body) : undefined,
             context: {...context, session: hydrate(payload.session)},
             setHeader: (name: string, value: string) => responseHeaders.set(name, value),
             json: (body: unknown) => body,
-          });
+          };
+          for (const middleware of use) {
+            const select = nativeOriginSelector(middleware);
+            if (select) {
+              const selected = await select(endpointContext);
+              await context.nativeValidateRedirect(Array.isArray(selected) ? selected : [selected ?? null]);
+            }
+          }
+          const result = await descriptor.handler(endpointContext);
           if (result instanceof Response) {
             result.headers.forEach((value, name) => { if (name !== 'set-cookie') responseHeaders.set(name, value); });
             for (const cookie of result.headers.getSetCookie()) responseHeaders.append('set-cookie', cookie);
@@ -345,8 +356,6 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
         throw new Error("Functional field defaults are not bridged yet");
     }
   }
-  if (advanced.disableCSRFCheck || advanced.disableOriginCheck)
-    throw new Error("Disabling security checks is unsupported");
 
   assertKeys(options.account ?? {}, ['fields'], 'account');
   assertKeys(options.account?.fields ?? {}, ['id', 'userId', 'providerId', 'accountId'], 'account.fields');
@@ -414,6 +423,13 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     secret: options.secrets?.[0]?.value ?? options.secret ?? 'better-auth-secret-that-is-long-enough-for-validation-test',
     session: null as unknown,
     authCookies: {} as {sessionToken: {name: string}; sessionData: {name: string}},
+    async nativeValidateRedirect(values: unknown[]) {
+      try { await bridge.send('internal', {method: 'validateRedirect', arguments_json: transportJSON([values])}); }
+      catch (error) {
+        const native = error as Error & {statusCode: number; body: {code: string; message: string}};
+        throw APIError.fromStatus((statuses[native.statusCode] ?? 'INTERNAL_SERVER_ERROR') as any, native.body);
+      }
+    },
     async isTrustedOrigin(url: string, settings?: {allowRelativePaths: boolean}) {
       const reply = await bridge.send('internal', {method: 'isTrustedOrigin', arguments_json: transportJSON([url, settings?.allowRelativePaths ?? false])});
       return JSON.parse(reply.value_json) as boolean;
@@ -443,7 +459,11 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     const result = await initialize(context) as FixtureOptions | undefined;
     if (!result) continue;
     assertKeys(result, ['options', 'context'], 'plugin.init');
-    assertKeys(result.context ?? {}, [], 'plugin.init.context');
+    assertKeys(result.context ?? {}, ['skipOriginCheck'], 'plugin.init.context');
+    if (result.context?.skipOriginCheck !== undefined) {
+      if (!Array.isArray(result.context.skipOriginCheck) || result.context.skipOriginCheck.some((path: unknown) => typeof path !== 'string')) throw new Error('Only native skipOriginCheck path arrays are supported in plugin init');
+      skippedOriginPaths.push(...result.context.skipOriginCheck);
+    }
     assertKeys(result.options ?? {}, ['trustedOrigins'], 'plugin.init.options');
     if (result.options?.trustedOrigins) originSources.push(result.options.trustedOrigins);
   }
@@ -580,6 +600,9 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       },
       store_session_in_database: session.storeSessionInDatabase ?? false,
       preserve_session_in_database: session.preserveSessionInDatabase ?? false,
+      disable_csrf_check: advanced.disableCSRFCheck ?? null,
+      disable_origin_check: advanced.disableOriginCheck === true,
+      skip_origin_check_paths: [...skippedOriginPaths, ...(Array.isArray(advanced.disableOriginCheck) ? advanced.disableOriginCheck : [])],
       cookie_names: cookieNames,
       cookie_prefix: advanced.cookiePrefix ?? 'better-auth',
       secure_cookies: advanced.useSecureCookies ?? null,
@@ -631,6 +654,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
 
   function recordLogs(events: {level: string; message: string}[]) {
     const levels = ["debug", "info", "warn", "error"];
+    for (const event of events) if (event.level === 'warn' && event.message.startsWith('[Deprecation]')) console.warn(event.message);
     if (
       !options.logger?.disabled &&
       typeof options.logger?.log === "function"
@@ -650,7 +674,22 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   context.authCookies = JSON.parse(cookieInfo.value_json);
   async function dispatch(request: Request, direct = false) {
     return currentOperation.run({request: direct ? undefined : safeCloneRequest(request)}, async () => {
-    const result = await bridge.request(request, direct);
+    let result;
+    if (!direct && requestHooks.length) {
+      const prepared = await bridge.prepareRequest(request);
+      let effective = request;
+      let response: Response | undefined;
+      for (const hook of requestHooks) {
+        const returned = await hook(effective, context) as {request?: Request; response?: Response} | undefined;
+        if (!returned) continue;
+        assertKeys(returned, ['request', 'response'], 'plugin.onRequest');
+        if (returned.request) effective = returned.request;
+        if (returned.response) { response = returned.response; break; }
+      }
+      const state = currentOperation.getStore();
+      if (state) state.request = safeCloneRequest(effective);
+      result = await bridge.completeRequest(prepared, effective === request ? undefined : effective, response);
+    } else result = await bridge.request(request, direct);
     const transactionError = currentOperation.getStore()?.transactionError;
     if (direct && result.response.status === 500 && transactionError) throw transactionError;
     const storeFailure = currentOperation.getStore()?.storeFailure;

@@ -187,6 +187,9 @@ pub:
 	secret                            string
 	secrets                           ?[]SecretEntry
 	trusted_origins                   []string
+	disable_csrf_check                ?bool
+	disable_origin_check              bool
+	skip_origin_check_paths           []string
 	trusted_origins_for               fn (RequestContext) ![]string = no_trusted_origins
 	email_and_password                bool = true
 	require_email_verification        bool
@@ -385,6 +388,26 @@ fn discard_email(_ EmailMessage) ! {
 
 // Plugin endpoints use the same HTTP security checks and serialized dispatch as
 // core endpoints. Schema migrations remain explicit, owned by the plugin.
+// Request hooks run after trust resolution and before serialized storage work.
+pub interface RequestHookPlugin {
+	on_request(Request) !RequestHookResult
+}
+
+pub struct RequestHookResult {
+pub:
+	request  ?Request
+	response ?Response
+}
+
+// Trusted server transport state. Never accept prepared contexts from HTTP clients.
+pub struct PreparedRequest {
+pub:
+	request  Request
+	context  RequestContext
+	direct   bool
+	response ?Response
+}
+
 pub interface Plugin {
 	id() string
 	endpoints() []Endpoint

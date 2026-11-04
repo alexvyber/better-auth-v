@@ -118,12 +118,75 @@ pub fn (mut a Auth) call(req Request) Response {
 	return a.process(req, true)
 }
 
+pub fn (a &Auth) prepare_request(req Request, direct bool) !PreparedRequest {
+	a.mutex.@lock()
+	closed := a.closed
+	a.mutex.unlock()
+	if closed { return fail(503, 'SERVICE_UNAVAILABLE', 'Auth instance is closed') }
+	mut headers := map[string]string{}
+	for name, value in req.headers {
+		headers[name.to_lower()] = value
+	}
+	normalized := Request{
+		...req
+		method:  req.method.to_upper()
+		headers: headers
+	}
+	parsed_origin := urllib.parse(normalized.url) or { urllib.URL{} }
+	origin_url := if parsed_origin.scheme in ['http', 'https'] && parsed_origin.host != ''
+		&& !normalized.url.all_after('://').all_before('/').all_before('?').all_before('#').contains('@') {
+		parsed_origin.scheme + '://' + parsed_origin.host
+	} else {
+		''
+	}
+	context := RequestContext{
+		headers: headers
+		origin:  origin_url
+		request: if direct { none } else { ?Request(normalized) }
+	}
+	return PreparedRequest{
+		request: normalized
+		direct:  direct
+		context: RequestContext{
+			...context
+			trusted_origins: a.config.trusted_origins_for(context)!
+		}
+	}
+}
+
 fn (mut a Auth) process(req Request, direct bool) Response {
+	mut prepared := a.prepare_request(req, direct) or { return error_response(err) }
+	if !direct {
+		for plugin in a.config.plugins {
+			if plugin is RequestHookPlugin {
+				result := plugin.on_request(prepared.request) or { return error_response(err) }
+				if request := result.request { prepared = PreparedRequest{
+						...prepared
+						request: request
+					} }
+				if response := result.response {
+					prepared = PreparedRequest{
+						...prepared
+						response: response
+					}
+					break
+				}
+			}
+		}
+	}
+	return a.handle_prepared(prepared)
+}
+
+// Complete only a context obtained from this server's prepare_request().
+// Preparation permits application hooks to await work without locking storage.
+pub fn (mut a Auth) handle_prepared(prepared PreparedRequest) Response {
 	a.mutex.@lock()
 	defer { a.mutex.unlock() }
 	if a.closed {
 		return error_response(fail(503, 'SERVICE_UNAVAILABLE', 'Auth instance is closed'))
 	}
+	req := prepared.request
+	direct := prepared.direct
 	mut headers := map[string]string{}
 	for name, value in req.headers {
 		headers[name.to_lower()] = value
@@ -135,19 +198,13 @@ fn (mut a Auth) process(req Request, direct bool) Response {
 	}
 	previous_context := a.request_context
 	defer { a.request_context = previous_context }
-	parsed_origin := urllib.parse(normalized.url) or { urllib.URL{} }
-	origin_url := if parsed_origin.scheme in ['http', 'https'] && parsed_origin.host != ''
-		&& !normalized.url.all_after('://').all_before('/').all_before('?').all_before('#').contains('@') {
-		parsed_origin.scheme + '://' + parsed_origin.host
-	} else {
-		''
-	}
 	a.request_context = RequestContext{
+		...prepared.context
 		headers: headers
-		origin:  origin_url
 		request: if direct { none } else { ?Request(normalized) }
 	}
-	r := a.process_checked(normalized, direct) or { error_response(err) }
+	r := if response := prepared.response { response } else { a.process_checked(normalized, direct) or {
+			error_response(err)} }
 	mut result := r
 	parsed_url := urllib.parse(normalized.url) or { urllib.URL{} }
 	mut plugin_endpoint := false
@@ -184,10 +241,6 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 		u.path[a.config.base_path.len..]
 	} else {
 		return fail(404, 'NOT_FOUND', 'Not found')
-	}
-	a.request_context = RequestContext{
-		...a.request_context
-		trusted_origins: a.config.trusted_origins_for(a.request_context)!
 	}
 	if req.method == 'OPTIONS' {
 		if !a.trusted(req.headers['origin']) { return fail(403, 'INVALID_ORIGIN', 'Invalid origin') }
@@ -229,8 +282,15 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 			return fail(415, 'UNSUPPORTED_MEDIA_TYPE', 'Content-Type must be application/json')
 		}
 		if body == '' { body = '{}' }
-		json2.decode[map[string]json2.Any](body) or {
+		fields := json2.decode[map[string]json2.Any](body) or {
 			return fail(400, 'BODY_MUST_BE_AN_OBJECT', 'Body must be an object')
+		}
+		for field in ['callbackURL', 'redirectTo', 'errorCallbackURL', 'newUserCallbackURL'] {
+			if value := fields[field] {
+				if value !is string && value !is json2.Null {
+					return fail(400, 'VALIDATION_ERROR', 'Redirect parameter must be a string')
+				}
+			}
 		}
 	}
 	payload := if req.method == 'POST' { json.decode(Payload, body) or {
@@ -244,6 +304,9 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 		a.check_redirect(value, field)!
 	}
 	for field in ['callbackURL', 'redirectTo'] {
+		if !a.skip_origin_check() && (u.query().to_map()[field] or { []string{} }).len > 1 {
+			return fail(400, 'VALIDATION_ERROR', 'Redirect parameter must be a string')
+		}
 		a.check_redirect((u.query().get(field) or { '' }), field)!
 	}
 	a.begin_transaction(path == '/get-session' && req.method == 'GET'
@@ -263,8 +326,17 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 	return result
 }
 
-fn (a &Auth) check_csrf(req Request, path string) ! {
+fn (mut a Auth) check_csrf(req Request, path string) ! {
 	if req.method in ['GET', 'HEAD'] { return }
+	if (a.config.disable_csrf_check or { false }) || a.skip_origin_check() {
+		if a.config.disable_origin_check && a.config.disable_csrf_check == none
+			&& !a.warned_origin_csrf {
+			a.warned_origin_csrf = true
+			a.config.log('warn',
+				'[Deprecation] disableOriginCheck: true currently also disables CSRF checks. To keep CSRF disabled, add disableCSRFCheck: true to your config.')
+		}
+		return
+	}
 	origin := req.headers['origin']
 	if req.headers['cookie'] == '' && path in ['/sign-in/email', '/sign-up/email']
 		&& req.headers['sec-fetch-site'] == 'cross-site'

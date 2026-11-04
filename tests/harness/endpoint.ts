@@ -1,3 +1,4 @@
+import type { originCheck as upstreamOriginCheck } from 'better-auth/api';
 import type { createAuthEndpoint as upstreamCreateAuthEndpoint } from '@better-auth/core/api';
 
 type Descriptor = { path: string; options: {method?: string; use?: unknown[]; query?: {parse(input: unknown): unknown}}; handler: (context: any) => unknown };
@@ -12,4 +13,14 @@ export const createAuthEndpoint = ((path: string, options: Descriptor['options']
 
 export function nativeEndpoint(value: unknown): Descriptor | undefined {
   return typeof value === 'function' ? descriptors.get(value) : undefined;
+}
+
+const originSelectors = new WeakMap<object, (context: any) => unknown>();
+export const originCheck = ((select: (context: any) => unknown) => {
+  const descriptor = Object.freeze({nativeMiddleware: 'origin-check'});
+  originSelectors.set(descriptor, select);
+  return descriptor;
+}) as unknown as typeof upstreamOriginCheck;
+export function nativeOriginSelector(value: unknown) {
+  return value && (typeof value === 'object' || typeof value === 'function') ? originSelectors.get(value) : undefined;
 }

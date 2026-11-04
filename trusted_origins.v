@@ -256,3 +256,21 @@ pub fn get_trusted_origins(options_json string, request_url string, environment 
 fn no_trusted_origins(_ RequestContext) ![]string {
 	return []string{}
 }
+
+fn (a &Auth) skip_origin_check() bool {
+	if a.config.disable_origin_check { return true }
+	request := a.request_context.request or { return false }
+	url := urllib.parse(request.url) or { return false }
+	path := normalized_origin_path(url.path)
+	base := a.config.base_path
+	current := if path.starts_with(base + '/') { path[base.len..] } else { path }
+	for configured in a.config.skip_origin_check_paths {
+		pattern := configured.trim_right('/')
+		if current == pattern || current.starts_with(pattern + '/') { return true }
+	}
+	return false
+}
+
+pub fn (c &EndpointContext) validate_redirect(value string) ! {
+	c.auth.check_redirect(value, 'callbackURL')!
+}

@@ -30,6 +30,9 @@ struct Options {
 	base_path                         string = '/api/auth'
 	secrets_json                      string
 	secret                            string = 'better-auth-test-secret-at-least-32-bytes'
+	disable_csrf_check                ?bool
+	disable_origin_check              bool
+	skip_origin_check_paths           []string
 	cookie_names                      map[string]string
 	cookie_prefix                     string = 'better-auth'
 	secure_cookies                    ?bool
@@ -141,6 +144,9 @@ struct Command {
 	now_millis     i64
 	now            i64
 	options        Options
+	prepared_json  string
+	hook_request   ?better_auth.Request
+	hook_response  ?better_auth.Response
 	request        better_auth.Request
 	transactions   bool = true
 	direct         bool
@@ -244,7 +250,16 @@ fn callback_with_context(method string, payload string, mut context better_auth.
 		command := json.decode(Command, line)!
 		if command.op == 'internal' {
 			value := context.invoke_internal(command.method, command.arguments_json) or {
-				emit(Reply{ id: command.id, error: err.msg() })
+				emit(Reply{
+					id:           command.id
+					error:        err.msg()
+					error_status: if err is better_auth.APIError { err.status } else { 500 }
+					error_code:   if err is better_auth.APIError {
+						err.code
+					} else {
+						'INTERNAL_SERVER_ERROR'
+					}
+				})
 				continue
 			}
 			emit(Reply{ id: command.id, value_json: value })
@@ -564,6 +579,9 @@ fn main() {
 		base_path:                         opts.base_path
 		secret:                            opts.secret
 		secrets:                           secrets
+		disable_csrf_check:                opts.disable_csrf_check
+		disable_origin_check:              opts.disable_origin_check
+		skip_origin_check_paths:           opts.skip_origin_check_paths
 		cookie_names:                      opts.cookie_names
 		cookie_prefix:                     opts.cookie_prefix
 		secure_cookies:                    opts.secure_cookies
@@ -775,6 +793,33 @@ fn main() {
 					continue
 				}
 				emit(Reply{ id: command.id, value_json: json.encode(value) })
+			}
+			'prepare-request' {
+				prepared := auth.prepare_request(command.request, command.direct) or {
+					emit(Reply{ id: command.id, error: err.msg() })
+					continue
+				}
+				emit(Reply{ id: command.id, value_json: json.encode(prepared) })
+			}
+			'complete-request' {
+				prepared := json.decode(better_auth.PreparedRequest, command.prepared_json) or {
+					emit(Reply{ id: command.id, error: err.msg() })
+					continue
+				}
+				actual := better_auth.PreparedRequest{
+					...prepared
+					request:  command.hook_request or { prepared.request }
+					response: command.hook_response
+				}
+				email_start := state.emails.len
+				log_start := state.logs.len
+				response := auth.handle_prepared(actual)
+				emit(Reply{
+					id:       command.id
+					response: response
+					emails:   state.emails[email_start..].clone()
+					logs:     state.logs[log_start..].clone()
+				})
 			}
 			'request' {
 				start := state.emails.len

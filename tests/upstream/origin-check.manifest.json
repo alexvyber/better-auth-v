@@ -1,0 +1,390 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/api/middlewares/origin-check.test.ts",
+  "sha256": "fdaa7a06461b3588f1a6189622ae258ecdbda0160406444916e3fea15d5417bc",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "Origin Check",
+      "suites": [
+        "Origin Check"
+      ],
+      "test": "should allow trusted origins",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Origin Check",
+      "suites": [
+        "Origin Check"
+      ],
+      "test": "should not allow untrusted origins",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Origin Check",
+      "suites": [
+        "Origin Check"
+      ],
+      "test": "should reject untrusted origin headers",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Origin Check",
+      "suites": [
+        "Origin Check"
+      ],
+      "test": "should reject untrusted origin even without cookies",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Origin Check",
+      "suites": [
+        "Origin Check"
+      ],
+      "test": "should reject untrusted redirectTo",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Origin Check",
+      "suites": [
+        "Origin Check"
+      ],
+      "test": "should work with list of trusted origins",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Origin Check",
+      "suites": [
+        "Origin Check"
+      ],
+      "test": "should work with wildcard trusted origins",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Origin Check",
+      "suites": [
+        "Origin Check"
+      ],
+      "test": "should work with GET requests",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Origin Check",
+      "suites": [
+        "Origin Check"
+      ],
+      "test": "should handle POST requests with proper origin validation",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Origin Check",
+      "suites": [
+        "Origin Check"
+      ],
+      "test": "should filter out null values from trustedOrigins callback",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Fetch Metadata CSRF Protection",
+      "suites": [
+        "Fetch Metadata CSRF Protection"
+      ],
+      "test": "should block cross-site navigation on first-login (no session cookie)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Fetch Metadata CSRF Protection",
+      "suites": [
+        "Fetch Metadata CSRF Protection"
+      ],
+      "test": "should allow same-origin navigation on first-login (no session cookie)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Fetch Metadata CSRF Protection",
+      "suites": [
+        "Fetch Metadata CSRF Protection"
+      ],
+      "test": "should allow same-site navigation on first-login (no session cookie)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Fetch Metadata CSRF Protection",
+      "suites": [
+        "Fetch Metadata CSRF Protection"
+      ],
+      "test": "should fallback to origin validation when Fetch Metadata is missing",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Fetch Metadata CSRF Protection",
+      "suites": [
+        "Fetch Metadata CSRF Protection"
+      ],
+      "test": "should reject an untrusted origin on first-login when Fetch Metadata is missing",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Fetch Metadata CSRF Protection",
+      "suites": [
+        "Fetch Metadata CSRF Protection"
+      ],
+      "test": "should reject an untrusted Referer on first-login when Fetch Metadata is missing",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Fetch Metadata CSRF Protection",
+      "suites": [
+        "Fetch Metadata CSRF Protection"
+      ],
+      "test": "should allow a first-login request that sends no cookies, Fetch Metadata, or origin",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Fetch Metadata CSRF Protection",
+      "suites": [
+        "Fetch Metadata CSRF Protection"
+      ],
+      "test": "should use existing origin validation when session cookie exists",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Fetch Metadata CSRF Protection",
+      "suites": [
+        "Fetch Metadata CSRF Protection"
+      ],
+      "test": "should block cross-site navigation for sign-up endpoint",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Fetch Metadata CSRF Protection",
+      "suites": [
+        "Fetch Metadata CSRF Protection"
+      ],
+      "test": "should allow cors mode requests (fetch/XHR)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Fetch Metadata CSRF Protection",
+      "suites": [
+        "Fetch Metadata CSRF Protection"
+      ],
+      "test": "should allow requests with expired session cookie (cookie presence check)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "origin check middleware",
+      "suites": [
+        "origin check middleware"
+      ],
+      "test": "should return invalid origin",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "origin check middleware",
+      "suites": [
+        "origin check middleware"
+      ],
+      "test": "should skip origin check for matched paths when skipOriginCheck is set to an array",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "origin check middleware",
+      "suites": [
+        "origin check middleware"
+      ],
+      "test": "should not skip origin check for a path that only shares a prefix with a skip path",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "origin check middleware",
+      "suites": [
+        "origin check middleware"
+      ],
+      "test": "should reject a non-string redirect parameter with 400, not 500",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins with baseURL inferred from request",
+      "suites": [
+        "trusted origins with baseURL inferred from request"
+      ],
+      "test": "should respect trustedOrigins array when baseURL is NOT in config",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins with baseURL inferred from request",
+      "suites": [
+        "trusted origins with baseURL inferred from request"
+      ],
+      "test": "should reject untrusted origins even when baseURL is inferred",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins with baseURL inferred from request",
+      "suites": [
+        "trusted origins with baseURL inferred from request"
+      ],
+      "test": "should respect BETTER_AUTH_TRUSTED_ORIGINS env when baseURL is NOT in config",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins with baseURL inferred from request",
+      "suites": [
+        "trusted origins with baseURL inferred from request"
+      ],
+      "test": "should allow requests from inferred baseURL origin",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "trusted origins with baseURL inferred from request",
+      "suites": [
+        "trusted origins with baseURL inferred from request"
+      ],
+      "test": "should support both config array and env var together when baseURL is inferred",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "disableCSRFCheck and disableOriginCheck separation",
+      "suites": [
+        "disableCSRFCheck and disableOriginCheck separation"
+      ],
+      "test": "disableCSRFCheck should allow untrusted origins with cookies (CSRF bypass)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "disableCSRFCheck and disableOriginCheck separation",
+      "suites": [
+        "disableCSRFCheck and disableOriginCheck separation"
+      ],
+      "test": "disableCSRFCheck should still validate callbackURL (origin check still active)",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "disableCSRFCheck and disableOriginCheck separation",
+      "suites": [
+        "disableCSRFCheck and disableOriginCheck separation"
+      ],
+      "test": "disableOriginCheck should allow untrusted callbackURL",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "disableCSRFCheck and disableOriginCheck separation",
+      "suites": [
+        "disableCSRFCheck and disableOriginCheck separation"
+      ],
+      "test": "disableOriginCheck also disables CSRF for backward compatibility",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "disableCSRFCheck and disableOriginCheck separation",
+      "suites": [
+        "disableCSRFCheck and disableOriginCheck separation"
+      ],
+      "test": "disableCSRFCheck should bypass Fetch Metadata CSRF protection",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "disableCSRFCheck and disableOriginCheck separation",
+      "suites": [
+        "disableCSRFCheck and disableOriginCheck separation"
+      ],
+      "test": "both flags disabled should bypass all checks",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "request-scoped trusted origin isolation",
+      "suites": [
+        "request-scoped trusted origin isolation"
+      ],
+      "test": "does not let one request's trusted origins bleed into a concurrent request",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "inferred baseURL is not persisted across requests",
+      "suites": [
+        "inferred baseURL is not persisted across requests"
+      ],
+      "test": "does not reuse one request's host for a later request's token links",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

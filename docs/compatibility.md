@@ -176,7 +176,16 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   and endpoint contexts share the matcher. A standalone native helper expands
   dynamic allowed-host/protocol lists; live dynamic baseURL resolution remains
   unimplemented. Plugin init supports origin contributions in the fixture, while
-  general init context overrides and request/response hooks remain unported.
+  general init context overrides and full response-hook parity remain unported.
+  Native `RequestHookPlugin` can replace or short-circuit an HTTP request after
+  trust resolution and before serialized storage execution. `prepare_request` /
+  `handle_prepared` allow a trusted server transport to await application callbacks
+  while preserving the trust snapshot; never accept prepared contexts from clients.
+  CSRF and redirect-policy bypasses are explicit config options, and path exemptions
+  match exact paths or slash-boundary children. Origin bypass also bypasses CSRF
+  for upstream compatibility; when CSRF was not explicitly configured, its
+  deprecation warning deduplicates per Auth instance. Structural redirect CR/LF/NUL
+  rejection stays active even when origin policy is bypassed.
   Cookie names/prefixes, explicit secure overrides, and cross-subdomain domains are
   configurable and consistent across issuance/expiry, including cache chunks,
   remember markers, and OAuth state. Cross-subdomain domains default to the

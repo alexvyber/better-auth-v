@@ -29,6 +29,18 @@ fn (mut a Auth) intercept_internal(name string, arguments_json string) !Lookup[s
 pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json string) !string {
 	args := json2.decode[[]json2.Any](arguments_json)!
 	match name {
+		'validateRedirect' {
+			if args.len != 1 { return error('validateRedirect requires a callback value') }
+			for value in args[0].as_array() {
+				if value is json2.Null { continue
+				 }
+				if value !is string {
+					return fail(400, 'VALIDATION_ERROR', 'Redirect parameter must be a string')
+				}
+				c.validate_redirect(value.str())!
+			}
+			return 'null'
+		}
 		'isTrustedOrigin' {
 			if args.len != 2 { return error('isTrustedOrigin requires URL and relative-path flag') }
 			return json.encode(c.is_trusted_origin(args[0].str(), args[1].bool()))

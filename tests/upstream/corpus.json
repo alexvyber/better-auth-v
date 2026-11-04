@@ -24,7 +24,7 @@
     "core-api": {
       "files": 18,
       "declarations": 452,
-      "importedFiles": 9
+      "importedFiles": 10
     },
     "client": {
       "files": 10,
@@ -4828,7 +4828,7 @@
       "path": "packages/better-auth/src/api/middlewares/origin-check.test.ts",
       "sha256": "fdaa7a06461b3588f1a6189622ae258ecdbda0160406444916e3fea15d5417bc",
       "group": "core-api",
-      "status": "unported",
+      "status": "imported-complete-file",
       "kind": "runtime",
       "declarations": [
         {

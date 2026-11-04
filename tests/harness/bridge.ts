@@ -207,6 +207,22 @@ export class Bridge {
     }
   }
 
+  async prepareRequest(request: Request, direct = false): Promise<string> {
+    const reply = await this.send('prepare-request', {direct, request: {
+      method: request.method, url: request.url, headers: Object.fromEntries(request.headers), body: await request.clone().text(),
+    }});
+    return reply.value_json;
+  }
+
+  async completeRequest(prepared: string, request?: Request, response?: Response) {
+    const reply = await this.send('complete-request', {
+      prepared_json: prepared,
+      hook_request: request ? {method: request.method, url: request.url, headers: Object.fromEntries(request.headers), body: await request.clone().text()} : null,
+      hook_response: response ? {status: response.status, status_text: response.statusText, body: await response.text(), headers: [...response.headers].map(([name, value]) => ({name, value}))} : null,
+    });
+    return this.parseResponse(reply);
+  }
+
   async request(request: Request, direct = false) {
     const reply = await this.send("request", {
       direct,
@@ -217,6 +233,10 @@ export class Bridge {
         body: await request.text(),
       },
     });
+    return this.parseResponse(reply);
+  }
+
+  private parseResponse(reply: Reply) {
     if (!reply.response) throw new Error("Bridge returned no response");
     const headers = new Headers();
     for (const header of reply.response.headers)

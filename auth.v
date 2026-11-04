@@ -11,6 +11,7 @@ pub struct Auth {
 pub:
 	config Config
 mut:
+	warned_origin_csrf      bool
 	initial_trusted_origins []string
 	storage                 Storage
 	secret_config           SymmetricSecret
@@ -500,7 +501,11 @@ fn (a &Auth) trusted(origin string) bool {
 fn (a &Auth) check_redirect(value string, input_field string) ! {
 	field := if input_field == 'redirectTo' { 'redirectURL' } else { input_field }
 	if value == '' { return }
-	if value.contains_any('\\\r\n\x00') || value.starts_with('//') {
+	if value.contains_any('\r\n\x00') {
+		return fail(403, 'INVALID_CALLBACK_URL', 'Invalid ${field}')
+	}
+	if a.skip_origin_check() { return }
+	if value.contains('\\') || value.starts_with('//') {
 		return fail(403, 'INVALID_CALLBACK_URL', 'Invalid ${field}')
 	}
 	// Trusted server calls have no HTTP origin policy; keep structural header checks.

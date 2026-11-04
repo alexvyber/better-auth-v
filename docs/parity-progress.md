@@ -249,10 +249,25 @@ or corpus inventory contains unimplemented behavior.
   schemas decode business callback inputs, and official TS clients retain their
   plugin endpoint types. Zod is pinned explicitly to the already-installed 4.6.7.
 
+- Imported the full HTTP origin-check middleware file (38 declarations), including
+  Fetch Metadata CSRF, separate bypass options, exact/slash-boundary path exemptions,
+  request-inferred hosts, environment origins, non-string/duplicate-query errors,
+  and the paused-hook concurrent-request regression. Added native request-hook
+  plugins and prepare/complete APIs: trust is resolved before hooks, hooks can wait
+  without locking storage, and completion uses the original snapshot. Native hooks
+  can replace requests or short-circuit responses. Trusted transports must keep
+  prepared contexts private; no HTTP endpoint accepts them. The TS fixture runs
+  original application callbacks between native preparation/completion and forwards
+  selector values back to native redirect checks. Structural CR/LF/NUL checks stay
+  active even with an explicitly disabled origin policy. Three native tests cover
+  hook behavior, snapshot isolation, and redirect header injection. Compatibility
+  deprecation messages currently deduplicate per Auth instance, rather than across
+  all instances in a JS module.
+
 ## Next infrastructure work
 
-The latest `make check` passes 623 TypeScript cases across 33 files, all 52 native
-V test functions across 10 files (including all 20,034 Unicode vectors), TypeScript
+The latest `make check` passes 661 TypeScript cases across 34 files, all 55 native
+V test functions across 11 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus

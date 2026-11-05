@@ -188,6 +188,38 @@ fn (auth &Auth) openapi_core_operation(path string, method string) !map[string]j
 		'/delete-user' {
 			names = ['password', 'token', 'callbackURL']
 		}
+		'/email-otp/send-verification-otp' {
+			names = ['email', 'type']
+			mandatory = ['email', 'type']
+		}
+		'/email-otp/check-verification-otp' {
+			names = ['email', 'type', 'otp']
+			mandatory = ['email', 'type', 'otp']
+		}
+		'/email-otp/verify-email' {
+			names = ['email', 'otp']
+			mandatory = ['email', 'otp']
+		}
+		'/sign-in/email-otp' {
+			names = ['email', 'otp', 'name', 'image']
+			mandatory = ['email', 'otp']
+		}
+		'/email-otp/request-password-reset', '/forget-password/email-otp' {
+			names = ['email']
+			mandatory = ['email']
+		}
+		'/email-otp/reset-password' {
+			names = ['email', 'otp', 'password']
+			mandatory = ['email', 'otp', 'password']
+		}
+		'/email-otp/request-email-change' {
+			names = ['newEmail', 'otp']
+			mandatory = ['newEmail']
+		}
+		'/email-otp/change-email' {
+			names = ['newEmail', 'otp']
+			mandatory = ['newEmail', 'otp']
+		}
 		else {}
 	}
 
@@ -207,6 +239,11 @@ fn (auth &Auth) openapi_core_operation(path string, method string) !map[string]j
 		if kind == 'array' { schema['items'] = json2.Any({
 				'type': json2.Any('string')
 			}) }
+		if name == 'type' && path.starts_with('/email-otp/') { schema['enum'] = json2.Any([
+				json2.Any('email-verification'),
+				json2.Any('sign-in'),
+				json2.Any('forget-password'),
+			]) }
 		if name == 'idToken' {
 			mut token_fields := map[string]json2.Any{}
 			for token_field in ['token', 'nonce', 'accessToken', 'refreshToken'] {
@@ -288,6 +325,23 @@ fn (auth &Auth) openapi_core_operation(path string, method string) !map[string]j
 	if method == 'POST' && properties.len > 0 {
 		operation['requestBody'] = openapi_body(properties, required)
 	}
+	if path == '/sign-in/email-otp' && method == 'POST' {
+		mut body :=
+			(operation['requestBody'] or { return error('missing email OTP request body') }).as_map().clone()
+		mut content :=
+			(body['content'] or { return error('missing request content') }).as_map().clone()
+		mut media := (content['application/json'] or {
+			return error('missing JSON request content')
+		}).as_map().clone()
+		mut body_schema :=
+			(media['schema'] or { return error('missing request schema') }).as_map().clone()
+		body_schema['additionalProperties'] = json2.Any(map[string]json2.Any{})
+		media['schema'] = json2.Any(body_schema)
+		content['application/json'] = json2.Any(media)
+		body['content'] = json2.Any(content)
+		operation['requestBody'] = json2.Any(body)
+	}
+	if path == '/forget-password/email-otp' { operation['deprecated'] = true }
 	if method == 'GET' && path == '/get-session' {
 		operation['parameters'] = json2.Any(['disableCookieCache', 'disableRefresh'].map(json2.Any({
 			'name':     json2.Any(it)

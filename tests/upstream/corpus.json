@@ -23982,8 +23982,8 @@
       "sha256": "09359c742cd3dd86dff4c1b503f45f29834b5910534f409383658226244be0d2",
       "group": "plugins",
       "status": "imported-partial-file",
-      "importedDeclarations": 16,
-      "unportedDeclarations": 16,
+      "importedDeclarations": 19,
+      "unportedDeclarations": 13,
       "kind": "runtime",
       "declarations": [
         {

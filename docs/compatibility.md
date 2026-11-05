@@ -828,13 +828,18 @@ Native endpoints can provide JSON OpenAPI metadata and hide themselves from docs
 operation IDs remain unique. Internal endpoints and the reference page are omitted.
 Embedded schema/settings and nonce attributes are escaped without changing values.
 
-16 unchanged upstream cases verify model/request fields, nested social token input,
-optional/default types, nullable sessions, operation IDs and serialization. Three
+19 unchanged upstream cases verify model/request fields, nested social token input,
+optional/default types, nullable sessions, operation IDs and serialization. Four
 owned contracts verify explicit metadata, hidden paths, ID collisions, safe reference
-embedding, custom path and disabled reference. The import manifest identifies nine
+embedding, custom path and disabled reference. The import manifest identifies eight
 standalone fixture bindings omitted because their tests remain unselected. Original
 selected test bodies/assertions are preserved. Those omitted fixtures require phone
 or arbitrary endpoint/Zod-schema composition; they are not reported as implemented.
+
+Email-OTP documentation includes all nine public POST request bodies, required
+fields, purpose enums, extensible signup fields and the deprecated reset alias.
+Trusted OTP creation/read APIs remain absent from HTTP documentation. A native
+integration contract also exercises the documented OTP signup flow.
 
 This is not full OpenAPI parity. The full upstream endpoint snapshot, automatic
 plugin request/response schemas, arbitrary Zod composition, schema constraints,
@@ -903,6 +908,6 @@ The source inventory unions complementary imports by original AST position under
 matching source checksums. Backend repeats count once, duplicate titles retain
 separate identities and malformed source metadata fails the audit. Every manifest
 records original positions/lines. Six audit tests run through `make check`. The
-current 33 complete/16 partial/387 unported source-file counts and 1,165 preserved
+current 33 complete/16 partial/387 unported source-file counts and 1,168 preserved
 static declarations describe source coverage, including separately labelled SDK
 probes; they are not equivalent to native runtime or feature parity.

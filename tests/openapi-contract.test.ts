@@ -35,3 +35,19 @@ it('disables only the reference endpoint when configured',async()=>{
  expect((await ready.auth.handler(new Request('http://localhost:3000/api/auth/reference'))).status).toBe(404);
  expect((await ready.auth.handler(new Request('http://localhost:3000/api/auth/open-api/generate-schema'))).status).toBe(200);
 });
+
+
+import {emailOTP} from './harness/plugins.js';
+it('documents native email OTP requests and accepts the documented sign-in fields',async()=>{
+ const delivered:any[]=[];
+ const ready=await getTestInstance({plugins:[openAPI(),emailOTP({sendVerificationOTP:async data=>{delivered.push(data)}})],user:{additionalFields:{tag:{type:'string',required:false}}}},{disableTestUser:true});
+ const schema=await ready.auth.api.generateOpenAPISchema();expect(delivered).toEqual([]);
+ const bodyFor=(path:string)=>schema.paths[path].post.requestBody.content['application/json'].schema;
+ expect(bodyFor('/email-otp/send-verification-otp').required).toEqual(['email','type']);expect(bodyFor('/email-otp/send-verification-otp').properties.type.enum).toEqual(['email-verification','sign-in','forget-password']);
+ expect(bodyFor('/email-otp/request-email-change').required).toEqual(['newEmail']);expect(bodyFor('/email-otp/change-email').required).toEqual(['newEmail','otp']);
+ expect(bodyFor('/email-otp/check-verification-otp').required).toEqual(['email','type','otp']);expect(schema.paths['/forget-password/email-otp'].post.deprecated).toBe(true);
+ expect(schema.paths['/email-otp/create-verification-otp']).toBeUndefined();expect(schema.paths['/email-otp/get-verification-otp']).toBeUndefined();
+ const email='documented@example.com';await ready.auth.api.sendVerificationOTP({body:{email,type:'sign-in'}});expect(delivered).toHaveLength(1);
+ const result=await ready.auth.api.signInEmailOTP({body:{email,otp:delivered[0].otp,name:'Documented',tag:'native-data'}});expect(result.user).toMatchObject({email,emailVerified:true,tag:'native-data'});
+ const session=await ready.auth.api.getSession({headers:{authorization:`Bearer ${result.token}`}});expect(session?.user.id).toBe(result.user.id);
+});

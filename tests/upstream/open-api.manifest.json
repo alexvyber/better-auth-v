@@ -6,7 +6,6 @@
   "sha256": "09359c742cd3dd86dff4c1b503f45f29834b5910534f409383658226244be0d2",
   "changes": "Imports, native fixture and omission of unselected standalone fixture bindings; selected test bodies and assertions unchanged",
   "omittedUnselectedFixtureBindings": [
-    "authWithEmailOTP",
     "authWithPhoneNumber",
     "authWithNullableIntersection",
     "authWithDefaultBody",
@@ -286,10 +285,10 @@
       "test": "should include request bodies for all email OTP POST endpoints",
       "sourceStart": 24930,
       "sourceLine": 857,
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+      "reason": null
     },
     {
       "suite": "open-api",
@@ -299,10 +298,10 @@
       "test": "should merge object and record intersections for email OTP sign-in request bodies",
       "sourceStart": 25588,
       "sourceLine": 877,
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+      "reason": null
     },
     {
       "suite": "open-api",
@@ -338,10 +337,10 @@
       "test": "should keep plain email OTP request bodies as object schemas",
       "sourceStart": 27782,
       "sourceLine": 937,
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+      "reason": null
     },
     {
       "suite": "open-api",

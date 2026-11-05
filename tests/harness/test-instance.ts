@@ -1,184 +1,27 @@
+import {parseFixturePlugins} from './fixture-plugins.js';
+import type {FixtureOptions,ServerOptions,FixtureSession,FixtureResponseAPI,FixtureEnableTwoFactorAPI,OrganizationAPI,SignUpAPI,SessionAPI} from './fixture-types.js';
+import {routes,statuses} from './fixture-routes.js';
+import {assertKeys} from './fixture-validation.js';
+import {currentOperation,currentUserHeaders,nativeTransactionScope,safeCloneRequest} from './fixture-scopes.js';
+import {createFixtureAdapters} from './fixture-adapters.js';
+import {hydrateFixture,registerFieldCallbacks,encodeFields} from './fixture-fields.js';
 import type {UserWithRole} from 'better-auth/plugins/admin';
-import type {DBFieldAttribute} from "@better-auth/core/db";
 import {nativeRedisConfiguration} from './redis-storage.js';
 import { APIError } from "@better-auth/core/error";
-import type { BetterAuthClientOptions, BetterAuthOptions } from "@better-auth/core";
-import type { Account, Auth } from "better-auth";
+import type { BetterAuthClientOptions } from "@better-auth/core";
 import type { JSONWebKeySet } from 'jose';
-import { AsyncLocalStorage } from "node:async_hooks";
 import { createAuthClient } from "better-auth/client";
 import { parseSetCookieHeader } from "better-auth/cookies";
 import { afterAll } from "vitest";
-import { Bridge, recordMetadata, transportJSON } from "./bridge.js";
+import { Bridge, transportJSON } from "./bridge.js";
 import { isNativeMemoryAdapter } from "./memory-adapter.js";
-import {endpointSchema} from './endpoint-schema.js';
-import { nativeEndpoint, freshSessionMiddleware, nativeOriginSelector } from './endpoint.js';
 import { encodeJWTOptions } from './jwt-options.js';
-import { schemaPluginOptions } from './plugins.js';
 
-// Upstream fixtures are intentionally dynamically shaped. This boundary accepts
-// their objects; unsupported server configuration fails rather than being ignored.
-type FixtureOptions = Record<string, any>;
-interface FixtureUserOptions extends FixtureOptions {
-  fields?: NonNullable<BetterAuthOptions['user']>['fields'];
-  modelName?: string;
-  deleteUser?: NonNullable<BetterAuthOptions['user']>['deleteUser'];
-  changeEmail?: NonNullable<BetterAuthOptions['user']>['changeEmail'];
-  additionalFields?: Record<string,DBFieldAttribute>;
-  validateUserInfo?: NonNullable<BetterAuthOptions['user']>['validateUserInfo'];
-}
-interface FixtureLoggerOptions extends FixtureOptions {
-  log?: NonNullable<BetterAuthOptions['logger']>['log'];
-}
-interface ServerOptions {
- verification?: BetterAuthOptions["verification"];
-	socialProviders?: BetterAuthOptions['socialProviders'];
-  plugins?: BetterAuthOptions['plugins'];
-  database?: BetterAuthOptions["database"];
-  baseURL?: BetterAuthOptions['baseURL'];
-  basePath?: string;
-  appName?: string;
-  secret?: string;
-  secrets?: BetterAuthOptions['secrets'];
-  trustedOrigins?: BetterAuthOptions['trustedOrigins'];
-  emailAndPassword?: Partial<NonNullable<BetterAuthOptions['emailAndPassword']>> & FixtureOptions;
-  emailVerification?: NonNullable<BetterAuthOptions['emailVerification']> & FixtureOptions;
-  session?: NonNullable<BetterAuthOptions["session"]> & FixtureOptions;
-  advanced?: FixtureOptions;
-  rateLimit?: FixtureOptions;
-  logger?: FixtureLoggerOptions;
-  secondaryStorage?: NonNullable<BetterAuthOptions["secondaryStorage"]> & Record<string, any>;
-  account?: FixtureOptions;
-  user?: FixtureUserOptions;
-  databaseHooks?: BetterAuthOptions["databaseHooks"];
-}
-type FixtureResponseAPI = <const A extends FixtureOptions = FixtureOptions>(args?: A) => Promise<A extends {asResponse: true} ? Response : any>;
-type FixtureEnableTwoFactorAPI = <const A extends FixtureOptions = FixtureOptions>(args?: A) => Promise<A extends {asResponse: true} ? Response : {method: 'totp' | 'otp'; backupCodes: string[]; totpURI: string}>;
-type OrganizationAPI<O,K extends string> = O extends BetterAuthOptions ? K extends keyof Auth<O>['api'] ? Auth<O>['api'][K] : (args?:FixtureOptions)=>Promise<any> : (args?:FixtureOptions)=>Promise<any>;
-type SignUpAPI<O> = O extends BetterAuthOptions ? (Auth<O>["api"] extends {signUpEmail: infer F} ? F : Auth<{}>["api"]["signUpEmail"]) : Auth<{}>["api"]["signUpEmail"];
-type SessionAPI<O> = O extends BetterAuthOptions ? (Auth<O>["api"] extends {getSession: infer F} ? F : Auth<{}>["api"]["getSession"]) : Auth<{}>["api"]["getSession"];
-interface FixtureSession extends FixtureOptions {
-  id: string;
-  userId: string;
-  token: string;
-  expiresAt: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
-interface FixtureInternalAdapter extends Record<string, (...args: any[]) => Promise<any>> {
-  findAccounts(userId: string): Promise<Account[]>;
-  listSessions(userId: string): Promise<FixtureSession[]>;
-  createSession(userId: string, dontRememberMe?: boolean): Promise<FixtureSession>;
-  findSession(token: string): Promise<{session: FixtureSession; user: FixtureOptions} | null>;
-}
-interface FixtureTransactionAdapter {
-  findOne<T = any>(query: FixtureOptions): Promise<T | null>;
- update<T = any>(query: FixtureOptions): Promise<T | null>;
-  create<I=Record<string,unknown>, O=I & {id:string}>(query: {model: string; data: I;forceAllowId?:boolean}): Promise<O>;
-  findMany<T>(query: FixtureOptions): Promise<T[]>;
-  updateMany(query: FixtureOptions): Promise<number>;
-  delete(query: FixtureOptions): Promise<void>;
-  deleteMany(query: FixtureOptions): Promise<number>;
-  count(query: FixtureOptions): Promise<number>;
-  incrementOne<T=any>(query: FixtureOptions): Promise<T|null>;
-  nativeRunWithTransaction<T>(callback: () => Promise<T>): Promise<T>;
-  options: {adapterConfig: {transaction: boolean;adapterName?:string}};
-  transaction(callback: (transaction: FixtureTransactionAdapter) => Promise<unknown>): Promise<unknown>;
-}
 const instances = new Set<Bridge>();
-const nativeTransactionScope = new AsyncLocalStorage<boolean>();
-const currentUserHeaders = new AsyncLocalStorage<Headers>();
-const currentOperation = new AsyncLocalStorage<{ transactionError?: unknown; storeFailure?: unknown; request?: Request }>();
 afterAll(async () => {
   await Promise.all([...instances].map((instance) => instance.close()));
   instances.clear();
 });
-
-const routes: Record<string, [string, string]> = {
- generateOpenAPISchema:['GET','/open-api/generate-schema'],openAPIReference:['GET','/reference'],
- createOrganization:['POST','/organization/create'],updateOrganization:['POST','/organization/update'],deleteOrganization:['POST','/organization/delete'],
- checkOrganizationSlug:['POST','/organization/check-slug'],setActiveOrganization:['POST','/organization/set-active'],
- listOrganizations:['GET','/organization/list'],getFullOrganization:['GET','/organization/get-full-organization'],getOrganization:['GET','/organization/get-organization'],
- getActiveMember:['GET','/organization/get-active-member'],listMembers:['GET','/organization/list-members'],addMember:['POST','/internal/organization/add-member'],
- createInvitation:['POST','/organization/invite-member'],acceptInvitation:['POST','/organization/accept-invitation'],rejectInvitation:['POST','/organization/reject-invitation'],cancelInvitation:['POST','/organization/cancel-invitation'],getInvitation:['GET','/organization/get-invitation'],listInvitations:['GET','/organization/list-invitations'],listUserInvitations:['GET','/organization/list-user-invitations'],
- hasPermission:['POST','/organization/has-permission'],updateMemberRole:['POST','/organization/update-member-role'],createOrgRole:['POST','/organization/create-role'],updateOrgRole:['POST','/organization/update-role'],deleteOrgRole:['POST','/organization/delete-role'],getOrgRole:['GET','/organization/get-role'],listOrgRoles:['GET','/organization/list-roles'],
- removeMember:['POST','/organization/remove-member'],leaveOrganization:['POST','/organization/leave'],getActiveMemberRole:['GET','/organization/get-active-member-role'],
-
- impersonateUser:['POST','/admin/impersonate-user'],stopImpersonating:['POST','/admin/stop-impersonating'],
- getUser:['GET','/admin/get-user'],createUser:['POST','/admin/create-user'],
- listUsers:['GET','/admin/list-users'],setRole:['POST','/admin/set-role'],
- banUser:['POST','/admin/ban-user'],unbanUser:['POST','/admin/unban-user'],
- adminUpdateUser:['POST','/admin/update-user'],setUserPassword:['POST','/admin/set-user-password'],
- removeUser:['POST','/admin/remove-user'],listUserSessions:['POST','/admin/list-user-sessions'],
- revokeUserSession:['POST','/admin/revoke-user-session'],revokeUserSessions:['POST','/admin/revoke-user-sessions'],
- userHasPermission:['POST','/admin/has-permission'],
-
- signInMagicLink: ['POST', '/sign-in/magic-link'],
- magicLinkVerify: ['GET', '/magic-link/verify'],
- sendTwoFactorOTP: ['POST', '/two-factor/send-otp'],
- verifyTwoFactorOTP: ['POST', '/two-factor/verify-otp'],
- enableTwoFactor: ['POST', '/two-factor/enable'],
- disableTwoFactor: ['POST', '/two-factor/disable'],
- getTOTPURI: ['POST', '/two-factor/get-totp-uri'],
- verifyTOTP: ['POST', '/two-factor/verify-totp'],
- generateTOTP: ['POST', '/internal/two-factor/generate-totp'],
- generateBackupCodes: ['POST', '/two-factor/generate-backup-codes'],
- verifyBackupCode: ['POST', '/two-factor/verify-backup-code'],
- viewBackupCodes: ['POST', '/internal/two-factor/view-backup-codes'],
- signInAnonymous: ['POST', '/sign-in/anonymous'],
- deleteAnonymousUser: ['POST', '/delete-anonymous-user'],
- sendVerificationOTP: ['POST', '/email-otp/send-verification-otp'],
- checkVerificationOTP: ['POST', '/email-otp/check-verification-otp'],
- verifyEmailOTP: ['POST', '/email-otp/verify-email'],
- signInEmailOTP: ['POST', '/sign-in/email-otp'],
- requestPasswordResetEmailOTP: ['POST', '/email-otp/request-password-reset'],
- forgetPasswordEmailOTP: ['POST', '/forget-password/email-otp'],
- resetPasswordEmailOTP: ['POST', '/email-otp/reset-password'],
- requestEmailChangeEmailOTP: ['POST', '/email-otp/request-email-change'],
- changeEmailEmailOTP: ['POST', '/email-otp/change-email'],
- generateOneTimeToken: ['GET', '/one-time-token/generate'],
- verifyOneTimeToken: ['POST', '/one-time-token/verify'],
-  signInSocial: ["POST", "/sign-in/social"],
-  signUpEmail: ["POST", "/sign-up/email"],
-  signInEmail: ["POST", "/sign-in/email"],
-  getSession: ["GET", "/get-session"],
-  signOut: ["POST", "/sign-out"],
-  listSessions: ["GET", "/list-sessions"],
-  revokeSession: ["POST", "/revoke-session"],
-  revokeSessions: ["POST", "/revoke-sessions"],
-  revokeOtherSessions: ["POST", "/revoke-other-sessions"],
-  updateUser: ["POST", "/update-user"],
-  updateSession: ["POST", "/update-session"],
-  changePassword: ["POST", "/change-password"],
-  changeEmail: ["POST", "/change-email"],
-  deleteUser: ["POST", "/delete-user"],
-  requestPasswordReset: ["POST", "/request-password-reset"],
-  resetPassword: ["POST", "/reset-password"],
-  verifyPassword: ["POST", "/verify-password"],
-  sendVerificationEmail: ["POST", "/send-verification-email"],
-  verifyEmail: ["GET", "/verify-email"],
-};
-
-const statuses: Record<number, string> = {
-  400: "BAD_REQUEST",
-  401: "UNAUTHORIZED",
-  403: "FORBIDDEN",
-  404: "NOT_FOUND",
-  405: "METHOD_NOT_ALLOWED",
-  413: "PAYLOAD_TOO_LARGE",
-  415: "UNSUPPORTED_MEDIA_TYPE",
-  422: "UNPROCESSABLE_ENTITY",
-  429: "TOO_MANY_REQUESTS",
-  500: "INTERNAL_SERVER_ERROR",
-};
-
-function assertKeys(value: FixtureOptions, allowed: string[], label: string) {
-  for (const key of Object.keys(value)) {
-    if (!allowed.includes(key))
-      throw new Error(`Unsupported V fixture option: ${label}.${key}`);
-  }
-}
-
 
 export async function getTestInstance<const O extends ServerOptions = {}, C extends FixtureOptions = {}>(
   options: O & ServerOptions = {} as O & ServerOptions,
@@ -243,174 +86,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   const ep = options.emailAndPassword ?? {};
   const ev = options.emailVerification ?? {};
   const session = options.session ?? {};
-  let magicLinkOptions: FixtureOptions | undefined;
-  let twoFactorOptions: FixtureOptions | undefined;
-  let anonymousOptions: FixtureOptions | undefined;
-  let otpOptions: FixtureOptions | undefined;
-  let ottOptions: FixtureOptions | undefined;
-  let jwtOptions: FixtureOptions | undefined;
-  let adminOptions: FixtureOptions | undefined;
-  let organizationOptions: FixtureOptions | undefined;
-  let openAPIOptions:FixtureOptions|undefined;
-  const genericProviders: FixtureOptions[] = [];
-  const logoutProviders: FixtureOptions[] = [];
-  const requestHooks: Array<(request: Request, context: FixtureOptions) => unknown> = [];
-  const skippedOriginPaths: string[] = [];
-  const initializers: Array<(context: FixtureOptions) => unknown> = [];
-  const originSources: NonNullable<BetterAuthOptions['trustedOrigins']>[] = [];
-  if (options.trustedOrigins) originSources.push(options.trustedOrigins);
-  const endpointPlugins: FixtureOptions[] = [];
-  const endpointCallbacks: Record<string, (payload: any) => Promise<unknown>> = {};
-  const adapterModels:Record<string,{modelName?:string;fields:Record<string,FixtureOptions>}>={};
-  for (const plugin of options.plugins ?? []) {
-    // Shared DB suites consume schemas independently of plugin HTTP behavior.
-    if(config.adapterSchemaOnly&&plugin.schema){
-     for(const [model,definition] of Object.entries(plugin.schema) as [string,any][]){
-      if(['user','session','account','verification','jwks','rateLimit','twoFactor','organization','member','invitation','organizationRole'].includes(model))continue;
-      if(adapterModels[model])throw new Error('Duplicate adapter model: '+model);
-      adapterModels[model]={modelName:definition.modelName,fields:definition.fields??{}};
-     }
-     continue;
-    }
-    if (plugin.id === 'magic-link') {
-      magicLinkOptions = schemaPluginOptions(plugin);
-      if (!magicLinkOptions) throw new Error('Magic link requires a native fixture descriptor');
-      assertKeys(magicLinkOptions, ['sendMagicLink'], 'magicLink');
-      continue;
-    }
-    if (plugin.id === 'two-factor') {
-      twoFactorOptions = schemaPluginOptions(plugin);
-      if (!twoFactorOptions) throw new Error('Two factor requires a native fixture descriptor');
-      assertKeys(twoFactorOptions, ['twoFactorTable', 'issuer', 'totpOptions', 'otpOptions', 'backupCodeOptions', 'skipVerificationOnEnable', 'allowPasswordless', 'twoFactorCookieMaxAge', 'trustDeviceMaxAge', 'accountLockout', 'schema'], 'twoFactor');
-      continue;
-    }
-    if (plugin.id === 'anonymous') {
-      anonymousOptions = schemaPluginOptions(plugin);
-      if (!anonymousOptions) throw new Error('Anonymous requires a native fixture descriptor');
-      assertKeys(anonymousOptions, ['emailDomainName', 'disableDeleteAnonymousUser', 'generateName', 'generateRandomEmail', 'onLinkAccount', 'schema'], 'anonymous');
-      continue;
-    }
-    if(plugin.id==='open-api'){openAPIOptions=plugin.options??{};assertKeys(openAPIOptions,['path','disableDefaultReference','theme','nonce'],'openAPI');continue;}
-    if (plugin.id === 'bearer') { continue; }
-    if (plugin.id === 'email-otp') {
-      otpOptions = schemaPluginOptions(plugin);
-      if (!otpOptions) throw new Error('Email OTP requires a native fixture descriptor');
-      assertKeys(otpOptions, ['sendVerificationOTP', 'generateOTP', 'otpLength', 'expiresIn', 'allowedAttempts', 'storeOTP', 'sendVerificationOnSignUp', 'disableSignUp', 'resendStrategy', 'changeEmail', 'overrideDefaultEmailVerification', 'rateLimit'], 'emailOTP');
-      continue;
-    }
-    if (plugin.id === 'one-time-token') {
-      ottOptions = schemaPluginOptions(plugin);
-      if (!ottOptions) throw new Error('One-time-token requires a native fixture descriptor');
-      assertKeys(ottOptions, ['expiresIn', 'disableClientRequest', 'disableSetSessionCookie', 'setOttHeaderOnNewSession', 'storeToken', 'generateToken'], 'oneTimeToken');
-      continue;
-    }
-    if (plugin.id === 'generic-oauth') {
-      const input = schemaPluginOptions(plugin);
-      if (!input) throw new Error('Generic OAuth needs its native fixture descriptor');
-      assertKeys(input, ['config'], 'genericOAuth');
-      for (const provider of input.config) {
-        assertKeys(provider, ['providerId', 'name', 'clientId', 'clientSecret', 'discoveryUrl', 'discoveryHeaders', 'authorizationUrl', 'tokenUrl', 'userInfoUrl', 'endSessionEndpoint', 'disableProviderLogout', 'postLogoutRedirectURI', 'redirectURI', 'pkce', 'requireIdTokenVerification', 'disableIdTokenNonceBinding', 'disableSignUp', 'disableImplicitSignUp', 'authentication', 'tokenEndpointAuth', 'authorizationUrlParams', 'tokenUrlParams', 'authorizationHeaders', 'scopes', 'prompt', 'accessType', 'responseType', 'responseMode', 'mapProfileToUser', 'getToken'], 'genericOAuth.config');
-        if (provider.discoveryUrl || provider.authorizationUrl) genericProviders.push(provider);
-        logoutProviders.push({providerId: provider.providerId, clientId: provider.clientId, endSessionEndpoint: provider.endSessionEndpoint ?? '', disableProviderLogout: provider.disableProviderLogout ?? false, postLogoutRedirectURI: provider.postLogoutRedirectURI ?? ''});
-      }
-      continue;
-    }
-    if (plugin.id === 'admin' || plugin.id === 'organization') {
-      const input = schemaPluginOptions(plugin);
-      if (!input) throw new Error(`Native schema plugin ${plugin.id} requires its fixture descriptor`);
-      if (plugin.id === 'admin') {
-        assertKeys(input, ['defaultRole','adminRoles','adminUserIds','roles','ac','defaultBanReason','defaultBanExpiresIn','bannedUserMessage','schema','allowImpersonatingAdmins','impersonationSessionDuration'], 'admin');
-        assertKeys(input.dynamicAccessControl??{},['enabled','maximumRolesPerOrganization'],'organization.dynamicAccessControl');
-        if(typeof input.dynamicAccessControl?.maximumRolesPerOrganization==='function')throw new Error('Dynamic role limit callbacks remain unported');
-        assertKeys(input.schema??{},['user','session'],'admin.schema');
-        for(const value of Object.values(input.schema??{}) as any[]){assertKeys(value,['fields','modelName'],'admin.schema.model');for(const name of Object.values(value.fields??{})){if(typeof name!=='string')throw new Error('Admin schema field aliases must be strings');}}
-        for(const role of Object.values(input.roles ?? {}) as any[]) {if(!role?.statements)throw new Error('Native admin roles require explicit permission statements');}
-        adminOptions = input;
-      } else {
-        assertKeys(input, ['teams','allowUserToCreateOrganization','organizationLimit','membershipLimit','creatorRole','disableOrganizationDeletion','roles','ac','schema','organizationHooks','sendInvitationEmail','invitationExpiresIn','invitationLimit','cancelPendingInvitationsOnReInvite','requireEmailVerificationOnInvitation','dynamicAccessControl'], 'organization');
-        if(typeof input.organizationLimit==='function'||typeof input.membershipLimit==='function')throw new Error('Dynamic organization limits remain unported');
-        assertKeys(input.dynamicAccessControl??{},['enabled','maximumRolesPerOrganization'],'organization.dynamicAccessControl');
-        if(typeof input.dynamicAccessControl?.maximumRolesPerOrganization==='function')throw new Error('Dynamic role limit callbacks remain unported');
-        assertKeys(input.schema??{},['organization','member','invitation','session','organizationRole'],'organization.schema');
-        for(const model of Object.values(input.schema??{}) as any[]){assertKeys(model,['modelName','fields','additionalFields'],'organization.schema.model');}
-        assertKeys(input.organizationHooks??{},['beforeCreateOrganization','afterCreateOrganization','beforeAddMember','afterAddMember','beforeUpdateOrganization','afterUpdateOrganization','beforeDeleteOrganization','afterDeleteOrganization','beforeCreateInvitation','afterCreateInvitation','beforeAcceptInvitation','afterAcceptInvitation','beforeRejectInvitation','afterRejectInvitation','beforeCancelInvitation','afterCancelInvitation','beforeUpdateMemberRole','afterUpdateMemberRole','beforeRemoveMember','afterRemoveMember'],'organization.hooks');
-        for(const role of Object.values(input.roles??{}) as any[]){if(!role?.statements)throw new Error('Native organization roles require explicit permission statements');}
-        if(input.teams?.enabled&&Object.keys(input).some(key=>key!=='teams'))throw new Error('Organization teams currently supply schema only');
-        assertKeys(input.teams ?? {}, ['enabled'], 'organization.teams');
-        organizationOptions = input;
-      }
-      continue;
-    }
-    if (plugin.id !== 'jwt') {
-      if (plugin.onRequest) requestHooks.push(plugin.onRequest.bind(plugin) as (request: Request, context: FixtureOptions) => unknown);
-      if (plugin.init) initializers.push(plugin.init.bind(plugin) as (context: FixtureOptions) => unknown);
-      assertKeys(plugin, ['id', 'endpoints', 'init', 'onRequest','schema'], `plugin.${plugin.id}`);
-      for(const [model,definition] of Object.entries(plugin.schema??{}) as [string,any][]){
-       assertKeys(definition,['modelName','fields'],`plugin.${plugin.id}.schema.${model}`);
-       if(['user','session','account','verification','jwks','rateLimit','twoFactor','organization','member','invitation','organizationRole'].includes(model))throw new Error('Generic plugin core-model extensions require their native plugin');
-       if(adapterModels[model])throw new Error('Duplicate adapter model: '+model);
-       for(const field of Object.values(definition.fields??{}) as FixtureOptions[]){
-        assertKeys(field,['type','required','input','returned','defaultValue','fieldName','unique','references','validator','transform'],'adapter field');
-        assertKeys(field.references??{},['field','model'],'adapter reference');
-       }
-       adapterModels[model]={modelName:definition.modelName,fields:definition.fields??{}};
-      }
-      const routes: FixtureOptions[] = [];
-      for (const [name, endpoint] of Object.entries(plugin.endpoints ?? {})) {
-        const descriptor = nativeEndpoint(endpoint);
-        if (!descriptor) throw new Error(`Plugin endpoint ${plugin.id}.${name} needs a native fixture descriptor`);
-        assertKeys(descriptor.options, ['method', 'use', 'query','body','metadata'], `plugin.${plugin.id}.${name}`);
-        assertKeys(descriptor.options.metadata??{},['openapi','scope'],'endpoint.metadata');
-        const use = descriptor.options.use ?? [];
-        if (use.some(middleware => middleware !== freshSessionMiddleware && !nativeOriginSelector(middleware))) throw new Error('Unsupported native middleware descriptor');
-        const method = descriptor.options.method ?? 'GET';
-        if (typeof method !== 'string') throw new Error('Endpoint method arrays are not bridged yet');
-        routes.push({name,body_schema:descriptor.options.metadata?.openapi?.requestBody?undefined:endpointSchema(descriptor.options.body),query_schema:descriptor.options.metadata?.openapi?.parameters?undefined:endpointSchema(descriptor.options.query),openapi_metadata:descriptor.options.metadata?.openapi?transportJSON(descriptor.options.metadata.openapi):undefined,hide_from_docs:descriptor.options.metadata?.scope==='server', path: descriptor.path, method, fresh_session: use.includes(freshSessionMiddleware)});
-        endpointCallbacks[`plugin.${plugin.id}.${name}`] = async payload => {
-          const request = new Request(payload.request.url, {method: payload.request.method, headers: payload.request.headers, body: payload.request.method === 'POST' ? payload.request.body : undefined});
-          const responseHeaders = new Headers();
-          const endpointContext = {
-            request, headers: request.headers, query: descriptor.options.query ? descriptor.options.query.parse(Object.fromEntries(new URL(request.url).searchParams)) : Object.fromEntries(new URL(request.url).searchParams),
-            body: payload.request.body ? JSON.parse(payload.request.body) : undefined,
-            context: {...context, session: hydrate(payload.session)},
-            setHeader: (name: string, value: string) => responseHeaders.set(name, value),
-            json: (body: unknown) => body,
-          };
-          for (const middleware of use) {
-            const select = nativeOriginSelector(middleware);
-            if (select) {
-              const selected = await select(endpointContext);
-              await context.nativeValidateRedirect(Array.isArray(selected) ? selected : [selected ?? null]);
-            }
-          }
-          const result = await descriptor.handler(endpointContext);
-          if (result instanceof Response) {
-            result.headers.forEach((value, name) => { if (name !== 'set-cookie') responseHeaders.set(name, value); });
-            for (const cookie of result.headers.getSetCookie()) responseHeaders.append('set-cookie', cookie);
-          } else responseHeaders.set('content-type', 'application/json');
-          return {
-            status: result instanceof Response ? result.status : 200,
-            body: result instanceof Response ? await result.text() : JSON.stringify(result ?? null),
-            headers: [...responseHeaders].map(([name, value]) => ({name, value})),
-          };
-        };
-      }
-      endpointPlugins.push({name: plugin.id, routes});
-      continue;
-    }
-    if (jwtOptions) throw new Error('Duplicate JWT plugin');
-    jwtOptions = (plugin as {options?: FixtureOptions}).options ?? {};
-    assertKeys(jwtOptions, ['sessionCookieCache', 'jwks', 'jwt', 'disableSettingJwtHeader', 'adapter', 'schema'], 'jwt');
-    assertKeys(jwtOptions.schema??{}, ['jwks'], 'jwt.schema');
-    if(jwtOptions.schema?.jwks)assertKeys(jwtOptions.schema.jwks,['fields','modelName'],'jwt.schema.jwks');
-    if (jwtOptions.adapter) {
-      assertKeys(jwtOptions.adapter, ['getJwks', 'createJwk'], 'jwt.adapter');
-      for (const method of ['getJwks', 'createJwk']) if (jwtOptions.adapter[method] !== undefined && typeof jwtOptions.adapter[method] !== 'function') throw new Error(`Invalid custom JWK callback: ${method}`);
-    }
-    assertKeys(jwtOptions.jwks ?? {}, ['rotationInterval', 'gracePeriod', 'disablePrivateKeyEncryption', 'jwksPath', 'keyPairConfig', 'remoteUrl', 'keyPairConfigs'], 'jwt.jwks');
-    assertKeys(jwtOptions.jwks?.keyPairConfig ?? {}, ['alg', 'crv', 'modulusLength'], 'jwt.jwks.keyPairConfig');
-    assertKeys(jwtOptions.jwt ?? {}, ['issuer', 'audience', 'sign', 'expirationTime', 'definePayload', 'getSubject'], 'jwt.jwt');
-  }
+  const {magicLinkOptions,twoFactorOptions,anonymousOptions,otpOptions,ottOptions,jwtOptions,adminOptions,organizationOptions,openAPIOptions,genericProviders,logoutProviders,requestHooks,skippedOriginPaths,initializers,originSources,endpointPlugins,endpointCallbacks,adapterModels}=parseFixturePlugins(options,config,()=>context,hydrate);
   const stateless = Object.hasOwn(options, 'database') && options.database === undefined && !options.secondaryStorage;
   const cacheOptions = session.cookieCache ?? {};
   assertKeys(cacheOptions, ['enabled', 'strategy', 'maxAge', 'refreshCache', 'version'], 'session.cookieCache');
@@ -524,71 +200,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   instances.add(bridge);
   let jwtCallSequence = 0;
   const callbacks: Record<string, (payload: any) => unknown> = {...endpointCallbacks};
-  const internalAdapter = {} as FixtureInternalAdapter;
-  const internalNames = ['createVerificationValue', 'findVerificationValue', 'consumeVerificationValue', 'reserveVerificationValue', 'deleteVerificationByIdentifier', 'updateVerificationByIdentifier', 'createSession', 'findSession', 'listSessions', 'updateSession', 'deleteSession', 'deleteUserSessions', 'createUser', 'updateUser', 'findUserById', 'findUserByEmail', 'createAccount', 'findCredentialAccount', 'deleteAccount', 'updateAccount', 'findAccounts', 'updatePassword'];
-  for (const name of internalNames) {
-    internalAdapter[name] = async (...args: any[]) => {
-      const reply = await bridge.send('internal', {method: name, arguments_json: transportJSON(args)});
-      return hydrate(JSON.parse(reply.value_json));
-    };
-    callbacks['internal.' + name] = (args: any[]) => internalAdapter[name](...args);
-  }
-  const adapter: FixtureTransactionAdapter = {
-    async nativeRunWithTransaction<T>(callback: () => Promise<T>): Promise<T> {
-      if (bridge.inCallback ? bridge.inNativeTransaction : nativeTransactionScope.getStore()) return callback();
-      const method = 'transaction.' + crypto.randomUUID();
-      let result: T;
-      let cause: unknown;
-      let failed = false;
-      bridge.setCallback(method, () => nativeTransactionScope.run(true, async () => {
-        failed=false;cause=undefined;
-        try { result = await callback(); return null; }
-        catch (error) { failed = true; cause = error; throw error; }
-      }));
-      try { await bridge.send('transaction', {method}); }
-      catch (error) { throw failed ? cause : error; }
-      finally { bridge.removeCallback(method); }
-      return result!;
-    },
-    async create<I,O>(query:{model:string;data:I;forceAllowId?:boolean}):Promise<O>{
-      if(query.model==='jwks'){
-       const reply=await bridge.send('internal',{method:'adapterCreateJWK',arguments_json:transportJSON([query.data])});return hydrate(JSON.parse(reply.value_json));
-      }
-      return adapterQuery('create',query);
-    },
-    async findMany<T>(query:FixtureOptions):Promise<T[]>{
-      if(query.model==='jwks'){
-       const reply=await bridge.send('internal',{method:'jwkLookup',arguments_json:transportJSON(['getAllKeys','',''])});return hydrate(JSON.parse(reply.value_json));
-      }
-      return adapterQuery('findMany',query);
-    },
-    async findOne<T>(query:FixtureOptions):Promise<T|null>{
-      if(!query.join&&['organization','member','invitation','organizationRole'].includes(query.model)){
-       const reply=await bridge.send('internal',{method:'adapterFindOne',arguments_json:transportJSON([query])});return hydrate(JSON.parse(reply.value_json));
-      }
-      return adapterQuery('findOne',query);
-    },
-    async update<T>(query:FixtureOptions):Promise<T|null>{
-      if(['organization','member','invitation','organizationRole'].includes(query.model)&&query.where?.length===1&&query.where[0].field==='id'&&(!query.where[0].operator||query.where[0].operator==='eq')){
-       const reply=await bridge.send('internal',{method:'adapterUpdateOrganizationModel',arguments_json:transportJSON([query.model,query.where[0].value,query.update])});return hydrate(JSON.parse(reply.value_json));
-      }
-      return adapterQuery('update',query);
-    },
-    async updateMany(query){return adapterQuery('updateMany',query)},
-    async delete(query){await adapterQuery('delete',query)},
-    async deleteMany(query){return adapterQuery('deleteMany',query)},
-    async count(query){return adapterQuery('count',query)},
-    async incrementOne<T>(query:FixtureOptions):Promise<T|null>{
-     return adapter.nativeRunWithTransaction(()=>adapterQuery<T>('incrementOne',query));
-    },
-    options: {adapterConfig: {transaction: true}},
-    async transaction(callback): Promise<unknown> { return adapter.nativeRunWithTransaction(()=>callback(adapter)); },
-  };
-  async function adapterQuery<T=any>(operation:string,query:FixtureOptions):Promise<T>{
-    const reply=await bridge.send('internal',{method:'adapterQuery',arguments_json:transportJSON([operation,query])});
-    return hydrate(JSON.parse(reply.value_json),query.model);
-  }
-  bridge.setTransactionsProvider(() => adapter.options.adapterConfig.transaction !== false);
+  const {adapter,internalAdapter}=createFixtureAdapters(bridge,callbacks,hydrate);
   const password = {
     hash: ep.password?.hash ?? (async (value: string) => {
       if (bridge.inCallback) return undefined;
@@ -791,45 +403,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   }
   const fieldSchemas:Record<string,Record<string,FixtureOptions>>={user:{...options.user?.additionalFields},session:{...session.additionalFields},...Object.fromEntries(Object.entries(organizationOptions?.schema??{}).filter(([model])=>model!=='session').map(([model,schema])=>[model,{...(schema as any).additionalFields}]))};
   for(const plugin of options.plugins??[]){for(const [model,definition] of Object.entries(plugin.schema??{}) as [string,any][]){const fields=fieldSchemas[model]??={};for(const [name,field] of Object.entries(definition.fields??{})){fields[name]??=field as FixtureOptions}}}
-  function hydrate(value:any,modelHint=''):any {
-   if(value instanceof Date)return value;
-   if(Array.isArray(value))return value.map(item=>hydrate(item,modelHint));
-   if(!value||typeof value!=='object')return value;
-   const model=modelHint||('email' in value&&'name' in value&&'emailVerified' in value?'user':'userId' in value&&'token' in value&&'expiresAt' in value?'session':'organizationId' in value?('inviterId' in value?'invitation':'userId' in value?'member':'permission' in value?'organizationRole':''):'slug' in value&&'name' in value?'organization':'');
-   const schema=fieldSchemas[model]??{};
-   const result=Object.fromEntries(Object.entries(value).filter(([name])=>name!=='$vSession').map(([name,item])=>{
-    if(schema[name]?.type==='json'||model==='organization'&&name==='metadata')return [name,item];
-    if(typeof item==='string'&&(schema[name]?.type==='date'||['createdAt','updatedAt','expiresAt','accessTokenExpiresAt','refreshTokenExpiresAt'].includes(name)))return [name,new Date(item)];
-    return [name,hydrate(item,adapterModels[name]?name:'')];
-   }));
-   if(value.$vSession)Object.defineProperty(result,recordMetadata,{value:value.$vSession});
-   return result;
-  }
-  const fieldCallbackNames: string[] = [];
-  const fieldValue = (value: unknown) => ({value: value ?? null, undefinedValue: value === undefined});
-  for (const [model, fields] of Object.entries({user:options.user?.additionalFields ?? {},session:session.additionalFields ?? {},...Object.fromEntries(Object.entries(adapterModels).map(([model,schema])=>[model,schema.fields])),...Object.fromEntries(Object.entries(organizationOptions?.schema??{}).filter(([model])=>model!=='session').map(([model,schema])=>[model,(schema as any).additionalFields??{}]))})) {
-   for (const [name, field] of Object.entries(fields) as Array<[string,FixtureOptions]>) {
-    if(typeof field.defaultValue==='function'){
-     const method='field.'+model+'.'+name+'.default';fieldCallbackNames.push(method);
-     callbacks[method]=()=>{const value=field.defaultValue();if(value instanceof Promise){void value.catch(()=>undefined);return {...fieldValue(undefined),asynchronous:true}}return fieldValue(value)};
-    }
-    if (field.validator?.input) {
-     const method = 'field.'+model+'.'+name+'.validate'; fieldCallbackNames.push(method);
-     callbacks[method] = value => {
-      const result = field.validator.input['~standard'].validate(value);
-      if (result instanceof Promise) {void result.catch(()=>undefined);return {...fieldValue(undefined),asynchronous:true};}
-      return {...fieldValue(result.value),invalid:!!result.issues,message:result.issues?.[0]?.message ?? ''};
-     };
-    }
-    if (field.transform?.input) {
-     const method = 'field.'+model+'.'+name+'.transform'; fieldCallbackNames.push(method);
-     callbacks[method] = async value => fieldValue(await field.transform.input(value));
-    }
-   }
-  }
-  const encodeFields = (fields: FixtureOptions) => JSON.stringify(Object.fromEntries(Object.entries(fields).map(([name,field]:[string,FixtureOptions])=>{
-   const {validator:_validator,transform:_transform,...metadata} = field;return [name,metadata];
-  })));
+  function hydrate(value:any,modelHint=''):any {return hydrateFixture(value,modelHint,fieldSchemas,adapterModels)}
+  const fieldCallbackNames=registerFieldCallbacks({user:options.user?.additionalFields ?? {},session:session.additionalFields ?? {},...Object.fromEntries(Object.entries(adapterModels).map(([model,schema])=>[model,schema.fields])),...Object.fromEntries(Object.entries(organizationOptions?.schema??{}).filter(([model])=>model!=='session').map(([model,schema])=>[model,(schema as any).additionalFields??{}]))},callbacks);
   const otpCallbackNames: string[] = [];
   const otpContext = (payload: FixtureOptions) => {
     const request = payload.request ? new Request(payload.request.url, {method: payload.request.method, headers: payload.request.headers, body: payload.request.method === 'POST' ? payload.request.body : undefined}) : undefined;
@@ -1340,10 +915,4 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     emails,
     db,
   };
-}
-
-function safeCloneRequest(request?: Request): Request | undefined {
-  if (!request) return undefined;
-  try { return request.clone(); }
-  catch { return new Request(request.url, {method: request.method, headers: request.headers}); }
 }

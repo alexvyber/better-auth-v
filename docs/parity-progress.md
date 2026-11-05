@@ -1253,6 +1253,45 @@ HTTP migration/login/CSRF/restart smoke, TypeScript checking and twelve source a
 architecture audits pass. Nothing is published to VPM and the 0.1.0 release is
 unchanged.
 
+## Directory organization
+
+The package root now contains only `auth.v`, `config.v` and `types.v`. Shared
+implementation lives under `internal/runtime`, `internal/http`,
+`internal/features/<feature>`, `internal/persistence/<backend>`, `internal/schema`
+and `internal/crypto`. `v.mod` registers the recursive `internal` source group;
+these remain the public `better_auth` V module, retaining private access and
+existing public names. Independent command, schema, policy, driver and Unicode
+modules retain their own boundaries.
+
+Mixed backend files were split into their backend directories. Capability
+interfaces have one owner, record codecs and query execution are separate, and
+feature orchestration no longer resides in PostgreSQL files. The split preserves
+all 277 relocated declarations exactly. Native tests are co-located; all 48 test
+files preserve their original bytes. The native runner supplies sibling source
+files through V's `-file-list` and isolates module resolution with a temporary
+mapping to this checkout. This also fixes native tests in a checkout whose
+directory is named `better-auth-v`, independently of global installed modules.
+
+All 58 owned TypeScript test files now live under `tests/contracts`. Only
+AST-identified module/file references changed; all other bytes are preserved.
+Imported upstream test bodies and snapshots remain unchanged. The manifest and
+its generator point native SDK supplements to their new contract paths.
+
+Verification passes all 3586 TypeScript cases across the same 152 files in
+bounded groups, with exact file membership checked against JSON reports. All
+139 native functions across 48 files, fifteen source/layout audits, TypeScript
+checking and the HTTP migration/authentication/CSRF/restart smoke pass. The shared
+upstream adapter matrix passes all 669 cases after backend separation. Installed
+consumers verify all six import/backend combinations and the relocated native
+headers. CI additionally checks representative co-located private-module tests
+and the external plugin contract with checksum-pinned V 0.5.2 on macOS and Linux.
+A fresh renamed checkout independently verifies those three test targets.
+
+Parallel local verification terminated with signal 9; those runs are not counted
+as passing. Serial native checks, isolated package checks and bounded TypeScript
+groups completed without altering assertions, exclusions or timeouts. The release
+tag is unchanged and nothing is published to VPM.
+
 ## Guardrails for continuing
 
 - Authentication decisions and persistence belong in V. TS code translates test

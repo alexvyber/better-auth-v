@@ -2,7 +2,8 @@
 // manifest's other source groups when starting from a nested test directory.
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
-import {readdirSync,readFileSync} from 'node:fs';
+import {readdirSync,readFileSync,mkdtempSync,symlinkSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
 import {dirname,join,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
@@ -37,6 +38,10 @@ if(process.argv[1] && resolve(process.argv[1])===fileURLToPath(import.meta.url))
  }else{
   const jobs=Number(process.env.BETTER_AUTH_TEST_JOBS??1);
   assert(Number.isInteger(jobs)&&jobs>0,'BETTER_AUTH_TEST_JOBS must be a positive integer');
+  // A Git checkout may be named better-auth-v rather than better_auth. Explicit
+  // module identity also prevents a globally installed copy masking this source.
+  const modules=mkdtempSync(join(tmpdir(),'better-auth-native-modules-'));
+  symlinkSync(root,join(modules,'better_auth'),process.platform==='win32'?'junction':'dir');
   let next=0,passed=0;
   async function worker(){
    while(next<selected.length){
@@ -45,7 +50,7 @@ if(process.argv[1] && resolve(process.argv[1])===fileURLToPath(import.meta.url))
     if(test.sources.length)args.push('-file-list',test.sources.map(path=>join(root,path)).join(','));
     args.push(join(root,test.path));
     const result=await new Promise(resolveRun=>{
-     const child=spawn(process.env.V??'v',args,{cwd:root,env:{...process.env,V_C_ERROR_BUG_REPORT_DISABLED:'1'}});
+     const child=spawn(process.env.V??'v',args,{cwd:root,env:{...process.env,VMODULES:modules,V_C_ERROR_BUG_REPORT_DISABLED:'1'}});
      let output='';
      child.stdout.on('data',chunk=>output+=chunk);
      child.stderr.on('data',chunk=>output+=chunk);
@@ -56,7 +61,9 @@ if(process.argv[1] && resolve(process.argv[1])===fileURLToPath(import.meta.url))
     else console.error(`FAIL ${test.path}\n${result.output}`);
    }
   }
-  await Promise.all(Array.from({length:Math.min(jobs,selected.length)},worker));
+  try{
+   await Promise.all(Array.from({length:Math.min(jobs,selected.length)},worker));
+  }finally{rmSync(modules,{recursive:true,force:true})}
   console.log(`Native tests: ${passed}/${selected.length} files passed`);
   process.exitCode=passed===selected.length?0:1;
  }

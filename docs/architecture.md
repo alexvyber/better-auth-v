@@ -166,4 +166,6 @@ subset with `node scripts/test-native.mjs internal/features/organization`.
 implicitly load sibling source groups for a nested test; the runner supplies the
 rest of `better_auth` through `-file-list`, without copying tests or exposing
 private helpers. Independent-module and external-plugin tests compile normally.
+The runner creates a temporary `better_auth` module mapping to this checkout,
+so renamed checkouts work and global module installations cannot mask the source.
 The default is one compiler at a time; `BETTER_AUTH_TEST_JOBS` controls concurrency.

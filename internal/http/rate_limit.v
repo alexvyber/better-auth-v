@@ -33,11 +33,6 @@ pub:
 	reset       bool
 }
 
-pub interface RateLimitDatabase {
-mut:
-	consume_rate_limit(input RateLimitInput) !RateLimitDecision
-}
-
 fn decide_rate_limit(previous ?RateLimitRecord, input RateLimitInput) RateLimitDecision {
 	mut prior := ?ratelimit.Record(none)
 	if record := previous { prior = ratelimit.Record{

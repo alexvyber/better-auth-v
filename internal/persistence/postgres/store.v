@@ -30,25 +30,6 @@ mut:
 	transaction       bool
 }
 
-pub interface ConfigurableStorage {
-mut:
-	configure_fields(user_fields map[string]AdditionalField, session_fields map[string]AdditionalField) !
-}
-
-pub interface UserUpdateReturningStorage {
-mut:
-	update_user_returning(user User) !User
-}
-
-pub interface PlainSessionTokenStorage {
-	stores_plain_session_tokens() bool
-}
-
-pub interface AtomicVerificationStorage {
-mut:
-	take_verification(id string, identifier string) !Lookup[Verification]
-}
-
 pub fn open_postgres(options PostgresOptions) !PostgresStorage {
 	if options.connection_string == '' { return error('PostgreSQL connection string is required') }
 	if options.schema == '' || options.schema.contains('\x00') {

@@ -84,11 +84,6 @@ pub fn (storage MongoStorage) generate_storage_id(_ string) !string {
 	return mongo_object_id()
 }
 
-pub interface ConfigurableIDStorage {
-mut:
-	configure_ids(strategy string, custom bool) !
-}
-
 pub fn (mut storage MongoStorage) configure_ids(strategy string, custom bool) ! {
 	storage.options = MongoOptions{
 		...storage.options
@@ -98,10 +93,6 @@ pub fn (mut storage MongoStorage) configure_ids(strategy string, custom bool) ! 
 	if storage.options.uuid_ids && storage.options.string_ids {
 		return error('conflicting MongoDB ID configuration')
 	}
-}
-
-pub interface StorageIDGenerator {
-	generate_storage_id(model string) !string
 }
 
 fn (storage &MongoStorage) collection(model string) string {
@@ -540,11 +531,6 @@ pub fn (mut storage MongoStorage) sessions(user_id string) ![]Session {
 		storage.column('session', 'userId'): storage.id_value(user_id)!
 	})!
 	return rows.map(decode_session(it)!)
-}
-
-pub interface TokenLookupStorage {
-mut:
-	session_by_token(token string) !Lookup[Session]
 }
 
 pub fn (mut storage MongoStorage) session_by_token(token string) !Lookup[Session] {

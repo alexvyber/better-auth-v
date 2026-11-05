@@ -1,10 +1,5 @@
 module better_auth
 
-pub interface MigratingStorage {
-mut:
-	migrate() !
-}
-
 fn (storage &PostgresStorage) sql_type(model string, field string) !string {
 	if reference := (storage.additional(model)[field] or { AdditionalField{} }).references {
 		if reference.field == 'id' { return storage.sql_type(reference.model, 'id') }
@@ -210,14 +205,4 @@ pub fn (mut storage PostgresStorage) consume_rate_limit(input RateLimitInput) !R
 		count:        current[0].val(0).i64()
 		last_request: current[0].val(1).i64()
 	}, input)
-}
-
-pub fn (mut a Auth) migrate_storage() ! {
-	a.mutex.@lock()
-	defer { a.mutex.unlock() }
-	if a.closed || a.operation.attempt.transaction.active {
-		return error('cannot migrate active or closed auth storage')
-	}
-	mut storage := a.storage
-	if mut storage is MigratingStorage { storage.migrate()! }
 }

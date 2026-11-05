@@ -2,11 +2,6 @@ module better_auth
 
 import x.json2
 
-pub interface ManagedTransactionStorage {
-mut:
-	run_managed_transaction(operation fn () !string) !string
-}
-
 @[heap]
 struct MongoTransactionAttempt {
 mut:

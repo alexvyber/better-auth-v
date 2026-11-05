@@ -114,6 +114,11 @@ Neither imports the auth runtime. Database-native types stay behind these module
 boundaries. The root storage adapters translate auth records and own their schema
 mapping and migration rules, retaining existing public types and storage interfaces.
 
+`internal/persistence/capabilities.v` owns backend-neutral capability interfaces.
+Backend methods live exclusively under their backend directory; query execution,
+field validation and feature orchestration are separate from those implementations.
+Architecture checks enforce this ownership as well as the small root.
+
 Driver implementations use V's conditional source files: `-d sqlite` and
 `-d postgres` enable the relevant native import and linkage. Without a flag, a
 backend exposes the same connection contract with explicit disabled errors and

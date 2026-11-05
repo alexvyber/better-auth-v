@@ -2,28 +2,6 @@ module better_auth
 
 import x.json2
 
-// Organization limits and last-owner/assigned-role rules span multiple rows.
-// The initial portable barrier serializes mutations per physical organization
-// store, including user-wide organization counts. Raw application writes must
-// participate separately; this is a transaction barrier, not a distributed lease.
-pub interface OrganizationLockingStorage {
-mut:
-	lock_organization_mutations() !
-}
-
-fn (mut context EndpointContext) organization_lock_mutations() ! {
-	if !context.auth.transactions_enabled { return }
-	mut storage := context.auth.storage
-	if mut storage is OrganizationLockingStorage { storage.lock_organization_mutations()! }
-}
-
-pub fn (mut storage PostgresStorage) lock_organization_mutations() ! {
-	if !storage.transaction { return error('organization locking requires a transaction') }
-	storage.connection.exec_param('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',
-
-		'better-auth-v:organization:' + storage.table('organization'))!
-}
-
 fn (storage &MongoStorage) organization_lock_collection() string {
 	return '_ba_organization_lock_' + digest(storage.collection('organization'))[..16]
 }

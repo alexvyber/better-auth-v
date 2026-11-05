@@ -31,3 +31,14 @@ test('root remains a small public entry and shared implementation sources are re
  assert.match(readFileSync(join(root,'v.mod'),'utf8'),/subdirs:\s*\[\s*'internal'\s*\]/);
  for(const path of sources('internal'))assert.match(readFileSync(join(root,path),'utf8'),/^module better_auth$/m,path);
 });
+
+test('storage implementation methods stay with their backend',()=>{
+ const backends={MemoryStorage:'memory',MemorySecondaryStorage:'memory',NoSecondaryStorage:'memory',SQLiteStorage:'sqlite',PostgresStorage:'postgres',MongoStorage:'mongo',RedisStorage:'redis',RedisTCPClient:'redis'};
+ for(const path of sources('internal').filter(path=>!path.endsWith('_test.v'))){
+  const source=readFileSync(join(root,path),'utf8');
+  for(const [type,backend] of Object.entries(backends)){
+   const receiver=new RegExp(`^(?:pub )?fn \\([^\\n]*\\b${type}\\)`,'m');
+   if(receiver.test(source))assert(path.startsWith(`internal/persistence/${backend}/`),`${type} implementation outside its backend: ${path}`);
+  }
+ }
+});

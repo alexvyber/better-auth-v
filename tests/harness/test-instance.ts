@@ -86,6 +86,7 @@ afterAll(async () => {
 });
 
 const routes: Record<string, [string, string]> = {
+ impersonateUser:['POST','/admin/impersonate-user'],stopImpersonating:['POST','/admin/stop-impersonating'],
  getUser:['GET','/admin/get-user'],createUser:['POST','/admin/create-user'],
  listUsers:['GET','/admin/list-users'],setRole:['POST','/admin/set-role'],
  banUser:['POST','/admin/ban-user'],unbanUser:['POST','/admin/unban-user'],
@@ -304,7 +305,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       const input = schemaPluginOptions(plugin);
       if (!input) throw new Error(`Native schema plugin ${plugin.id} requires its fixture descriptor`);
       if (plugin.id === 'admin') {
-        assertKeys(input, ['defaultRole','adminRoles','adminUserIds','roles','ac','defaultBanReason','defaultBanExpiresIn','bannedUserMessage','schema'], 'admin');
+        assertKeys(input, ['defaultRole','adminRoles','adminUserIds','roles','ac','defaultBanReason','defaultBanExpiresIn','bannedUserMessage','schema','allowImpersonatingAdmins','impersonationSessionDuration'], 'admin');
         assertKeys(input.schema??{},['user','session'],'admin.schema');
         for(const value of Object.values(input.schema??{}) as any[]){assertKeys(value,['fields','modelName'],'admin.schema.model');for(const name of Object.values(value.fields??{})){if(typeof name!=='string')throw new Error('Admin schema field aliases must be strings');}}
         for(const role of Object.values(input.roles ?? {}) as any[]) {if(!role?.statements)throw new Error('Native admin roles require explicit permission statements');}
@@ -1168,7 +1169,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     const headers = new Headers();
     cookieSetter(headers)({response});
     const result = await api.getSession({headers});
-    return {...result, headers, runWithUser: <T>(callback: (headers: Headers) => T) => currentUserHeaders.run(headers, () => callback(headers))};
+    return {...result, res:hydrate(await response.json()), headers, runWithUser: <T>(callback: (headers: Headers) => T) => currentUserHeaders.run(headers, () => callback(headers))};
   }
   const db = {
     async create<T = Record<string, unknown>>(args: FixtureOptions): Promise<T> {

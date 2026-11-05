@@ -254,7 +254,16 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 		}
 		return err
 	}
-	session := a.make_session(account.user.id, RequestContext{ headers: req.headers }, true)!
+	session := a.make_session(account.user.id, RequestContext{ headers: req.headers }, true) or {
+		if err is APIError {
+			if err.code == 'BANNED_USER' {
+				a.rollback_transaction()
+				a.begin_transaction(false)!
+				return a.oauth_callback_error(stored, record.id, 'BANNED_USER', err.message)
+			}
+		}
+		return err
+	}
 	mut response := Response{
 		status:  302
 		headers: [
@@ -274,18 +283,30 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 }
 
 fn (mut a Auth) generic_oauth_error(stored OAuthState, record_id string, reason IError) !Response {
+	code := if reason is APIError { reason.code.to_lower() } else { 'unable_to_get_user_info' }
+	return a.oauth_callback_error(stored, record_id, code, '')
+}
+
+fn (mut a Auth) oauth_callback_error(stored OAuthState, record_id string, code string, description string) !Response {
 	a.remove_verification(record_id)!
 	callback := if stored.error_callback_url != '' {
 		stored.error_callback_url
 	} else {
 		a.base_url().trim_right('/') + a.config.base_path + '/error'
 	}
-	code := if reason is APIError { reason.code.to_lower() } else { 'unable_to_get_user_info' }
-	separator := if callback.contains('?') { '&' } else { '?' }
+	a.check_redirect(callback, 'errorCallbackURL')!
+	parsed := urllib.parse(callback)!
+	mut query := parsed.query()
+	query.set('error', code)
+	if description != '' { query.set('error_description', description) }
+	location := urllib.URL{
+		...parsed
+		raw_query: query.encode()
+	}.str()
 	return a.oauth_cookie(Response{
 		status:  302
 		headers: [
-			Header{'location', callback + separator + 'error=' + urllib.query_escape(code)},
+			Header{'location', location},
 		]
 	}, '', true)
 }

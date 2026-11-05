@@ -738,13 +738,26 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   Impersonation, callback redirects, generic endpoint hooks, query performance and
   the excluded source cases remain open.
 
-The latest full `make check` passes 2295 TypeScript cases across 107 files, all 105 native
+- Added admin impersonation/restoration, protected ownership/session overrides,
+  independent expiry, original remember preference, signed restoration cookies,
+  separate admin-target permission and normal-session filtering. Banned OAuth
+  callbacks now roll back pending writes and redirect with the configured message,
+  preserving trusted callback query parameters and fragments. The main 70-case
+  admin suite passes in full; 90 selected source cases repeat on all three adapters
+  (270 cases). Twelve owned impersonation contracts and two more native functions
+  cover cookie persistence, forged/revoked/restored sessions, current roles, hook
+  inputs, ID isolation and failed OAuth rollback. Pure SDK constructor/client probes,
+  generic endpoint hooks and numeric-ID/username variants remain open.
+
+The latest full `make check` passes 2340 TypeScript cases across 108 files, all 107 native
 V test functions across 35 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus
 passes. The MongoDB/Nabu matrix includes 304 cases across nine files; the admin
-source matrix adds 234 cases across three backends, plus thirteen owned contracts.
+source matrix passes 270 cases across three backends, plus 25 owned contracts.
+An additional preserved support-role runtime case, repeated on all three backends
+after that full check, brings the verified current set to 2343 cases.
 
 The user resumed work and authorized incremental commits and pushes to
 `alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.

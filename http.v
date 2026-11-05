@@ -538,7 +538,11 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 		}
 		'/list-sessions' {
 			current := a.require_session(ctx, true)!
-			sessions := a.user_sessions(current.user.id)!
+			mut sessions := a.user_sessions(current.user.id)!
+			for plugin in a.config.plugins {
+				if plugin is AdminPlugin { sessions = sessions.filter(!js_truthy(it.additional_fields['impersonatedBy'] or {
+						json2.Any(json2.Null{})})) }
+			}
 			encoded := sessions.map(a.session_json(it)).join(',')
 			return Response{
 				headers: [Header{'content-type', 'application/json'}]

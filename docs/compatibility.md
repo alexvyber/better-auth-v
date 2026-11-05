@@ -665,7 +665,7 @@ application migration is claimed.
 
 `AdminPlugin{options: AdminOptions{...}}` supplies user creation/get/update/removal,
 role changes, banning/unbanning, password setting, user/session listing, individual
-and bulk session revocation and permission checks. The existing `AdminSchemaPlugin`
+and bulk session revocation, permission checks and impersonation/restoration. The existing `AdminSchemaPlugin`
 continues to supply only schema/default contributions. Default admin/user grants,
 custom role permission statements, comma-separated roles, configured admin IDs,
 custom ban messages, default ban reasons/durations and millisecond expiry are
@@ -684,16 +684,31 @@ storage/cache paths. Session creation also checks bans outside HTTP contexts,
 clearing expired bans before proceeding. Admin-created users run the provisioning
 gate and receive configured scalar additional-field defaults.
 
-78 unchanged upstream cases pass on SQLite, PostgreSQL UUID columns and MongoDB
-ObjectIds (234 repeated runtime cases). Thirteen independent contracts cover Brand
+90 unchanged upstream cases pass on SQLite, PostgreSQL UUID columns and MongoDB
+ObjectIds (270 repeated runtime cases), including the complete 70-case main admin
+suite. The fixtures supply the upstream test-instance Google/linking defaults. Thirteen independent contracts cover Brand
 Map's `platform-admin`/curator grants, stale cookie snapshots, primary secondary
 revocation, trusted provisioning versus HTTP access, empty role/action tables,
 individual session revocation, password provisioning, mapped ban columns and precise
-default ban durations. Three native test functions cover permission composition,
-constructor/schema checks and ban enforcement on internal session creation.
+default ban durations. Twelve additional impersonation contracts check persistence
+markers, custom cookie prefixes, expiry, filtering, deletion/replay, forged cookies,
+revoked original sessions and role demotion on all three adapters. Five native
+functions cover permission composition, constructor/schema checks, internal bans,
+creation-hook overrides/ID isolation and failed OAuth binding rollback.
 
-Impersonation, banned OAuth callback redirects, general endpoint hook composition,
-original hook-preloaded revocation tests, numeric-ID/username variants and the
+Impersonation requires the user impersonation grant and a separate admin-target
+grant (or the explicit legacy opt-in). The temporary session expires independently,
+has no persistent browser cookie and carries a protected owner ID. A signed
+`admin_session` cookie references the original session and remember preference.
+Restoration checks that reference and owner, deletes the temporary session, clears
+the reference cookie and returns the current stored user. Ordinary user session
+listing excludes impersonation sessions. Banned OAuth callbacks consume state,
+roll back pending account writes and redirect to the validated error callback with
+`BANNED_USER` and the configured message; query parameters and fragments survive.
+Direct ID-token sign-in continues to return a JSON error.
+
+General endpoint hook composition, original hook-preloaded revocation tests,
+numeric-ID/username variants, pure client/constructor-only source probes and the
 remaining source cases are still unported. Native list filtering/sorting currently
 uses typed adapter scans rather than a complete database query API; collation,
 array/number filter coercion, arbitrary additional-field transform sequencing and

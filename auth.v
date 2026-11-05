@@ -282,7 +282,15 @@ fn (a &Auth) check_password_max(password string) ! {
 }
 
 fn (mut a Auth) make_session(user_id string, ctx RequestContext, remember bool) !Session {
-	if encoded := (a.intercept_internal('createSession', '[${json.encode(user_id)},${!remember}]')!).value {
+	return a.make_session_overridden(user_id, ctx, remember, map[string]json2.Any{}, false)
+}
+
+fn (mut a Auth) make_session_overridden(user_id string, ctx RequestContext, remember bool, overrides map[string]json2.Any, override_all bool) !Session {
+	mut arguments := '[${json.encode(user_id)},${!remember}]'
+	if overrides.len > 0 {
+		arguments = '[${json.encode(user_id)},${!remember},${json2.Any(overrides).json_str()},${override_all}]'
+	}
+	if encoded := (a.intercept_internal('createSession', arguments)!).value {
 		return decode_session(encoded)!
 	}
 
@@ -306,6 +314,24 @@ fn (mut a Auth) make_session(user_id string, ctx RequestContext, remember bool) 
 			''
 		}
 		user_agent: ctx.headers['user-agent']
+	}
+	if overrides.len > 0 {
+		mut fields := json2.decode[map[string]json2.Any](encode_session(session))!
+		for key, value in overrides {
+			if key == 'id' { continue
+			 }
+			if !override_all {
+				if key in ['userId', 'token', 'expiresAt', 'createdAt', 'updatedAt'] { continue
+				 }
+				if definition := a.config.session_fields[key] {
+					if definition.default_value != none { continue
+					 }
+				}
+			}
+			if key in core_session_fields || key in a.config.session_fields { fields[key] = value }
+		}
+		actual := decode_session(json2.Any(fields).json_str())!
+		return a.persist_session(Session{ ...actual, persistent: remember })
 	}
 	return a.persist_session(session)
 }

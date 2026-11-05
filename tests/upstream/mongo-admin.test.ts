@@ -11,7 +11,7 @@ import {exportJWK,generateKeyPair,SignJWT} from 'jose';
 import {HttpResponse,http} from 'msw';
 import {setupServer} from 'msw/node';
 import {beforeAll,afterAll,afterEach,describe,it,expect,vi} from 'vitest';
-import {getTestInstance} from '../harness/mongo-fixture.js';
+import {getTestInstance} from '../harness/admin-mongo-fixture.js';
 import {admin} from '../harness/plugins.js';
 import {createAuthClient} from 'better-auth/client';
 import {adminClient} from 'better-auth/client/plugins';
@@ -594,7 +594,74 @@ describe("Admin plugin", async () => {
 		});
 		expect(res.error?.code).toBe("BANNED_USER");
 		expect(res.error?.status).toBe(403);
-	});;;
+	});
+
+	it("should not allow banned user to sign in with social provider", async () => {
+		const headers = new Headers();
+		const res = await client.signIn.social(
+			{
+				provider: "google",
+			},
+			{
+				throw: true,
+				onSuccess: cookieSetter(headers),
+			},
+		);
+		const state = new URL(res.url!).searchParams.get("state");
+		let errorLocation: string | null = null;
+		await client.$fetch("/callback/google", {
+			query: {
+				state,
+				code: "test",
+			},
+			headers,
+			method: "GET",
+			onError(context) {
+				expect(context.response.status).toBe(302);
+				const location = context.response.headers.get("location");
+				errorLocation = location;
+			},
+		});
+		expect(errorLocation).toBeDefined();
+		expect(errorLocation).toContain("error=BANNED_USER");
+	});
+
+	it("should redirect banned social sign-in to a cross-origin errorCallbackURL", async () => {
+		const errorCallbackURL = "https://frontend.example.com/auth-error";
+		const headers = new Headers();
+		const res = await client.signIn.social(
+			{
+				provider: "google",
+				errorCallbackURL,
+			},
+			{
+				throw: true,
+				onSuccess: cookieSetter(headers),
+			},
+		);
+		const state = new URL(res.url!).searchParams.get("state");
+		let errorLocation: string | null = null;
+		await client.$fetch("/callback/google", {
+			query: {
+				state,
+				code: "test",
+			},
+			headers,
+			method: "GET",
+			onError(context) {
+				expect(context.response.status).toBe(302);
+				errorLocation = context.response.headers.get("location");
+			},
+		});
+		expect(errorLocation).toBeTruthy();
+		const url = new URL(errorLocation!);
+		expect(url.origin).toBe("https://frontend.example.com");
+		expect(`${url.origin}${url.pathname}`).toBe(errorCallbackURL);
+		expect(url.searchParams.get("error")).toBe("BANNED_USER");
+		expect(url.searchParams.get("error_description")).toBe(
+			"Banned: Test reason",
+		);
+	});
 
 	it("should resolve async banned user message", async () => {
 		const res = await client.signIn.email({
@@ -802,7 +869,419 @@ describe("Admin plugin", async () => {
 		name: "Impersonate User",
 	};
 
-	const impersonateHeaders = new Headers();;;;;;;;;;
+	const impersonateHeaders = new Headers();
+	it("should allow admins to impersonate user", async () => {
+		const userToImpersonate = await client.signUp.email(data);
+		const session = await client.getSession({
+			fetchOptions: {
+				headers: new Headers({
+					Authorization: `Bearer ${userToImpersonate.data?.token}`,
+				}),
+			},
+		});
+		const res = await client.admin.impersonateUser(
+			{
+				userId: session.data?.user.id || "",
+			},
+			{
+				headers: adminHeaders,
+				onSuccess: (ctx) => {
+					cookieSetter(impersonateHeaders)(ctx);
+				},
+			},
+		);
+		expect(res.data?.session).toBeDefined();
+		expect(res.data?.user?.id).toBe(session.data?.user.id);
+	});
+
+	/**
+	 * @see https://github.com/better-auth/better-auth/issues/9401
+	 */
+	it("should revalidate useSession after admin impersonation", async () => {
+		vi.stubGlobal("window", {});
+		const { headers } = await signInWithTestUser();
+		const browserHeaders = new Headers(headers);
+		const browserClient = createAuthClient({
+			baseURL: "http://localhost:3000",
+			plugins: [adminClient()],
+			fetchOptions: {
+				customFetchImpl: async (url, init) => {
+					const requestHeaders = new Headers(browserHeaders);
+					const nextHeaders = init?.headers;
+					if (nextHeaders instanceof Headers) {
+						for (const [key, value] of nextHeaders.entries()) {
+							requestHeaders.set(key, value);
+						}
+					} else if (nextHeaders && typeof nextHeaders === "object") {
+						for (const [key, value] of Object.entries(nextHeaders)) {
+							if (typeof value === "string") {
+								requestHeaders.set(key, value);
+							}
+						}
+					}
+					return customFetchImpl(url, {
+						...init,
+						headers: requestHeaders,
+					});
+				},
+			},
+		});
+		type SessionState = ReturnType<typeof browserClient.useSession.get>;
+		type SessionData = NonNullable<SessionState["data"]>;
+		const waitForSessionData = async (
+			matches: (session: SessionData) => boolean,
+			triggerRead = false,
+		) => {
+			return new Promise<SessionData>((resolve, reject) => {
+				let unsubscribe = () => {};
+				const timeoutId = setTimeout(() => {
+					unsubscribe();
+					reject(new Error("Timed out waiting for session data"));
+				}, 1500);
+
+				unsubscribe = browserClient.useSession.subscribe((state) => {
+					if (state.isPending || state.isRefetching || state.data === null) {
+						return;
+					}
+
+					if (!matches(state.data)) {
+						return;
+					}
+
+					clearTimeout(timeoutId);
+					unsubscribe();
+					resolve(state.data);
+				});
+
+				if (triggerRead) {
+					browserClient.useSession.get();
+				}
+			});
+		};
+		const targetUser = await client.signUp.email({
+			email: "impersonate-reactive@mail.com",
+			password: "password",
+			name: "Impersonate Reactive User",
+		});
+
+		try {
+			const freshAdminSession = await browserClient.getSession();
+			const reactiveAdminSession = await waitForSessionData(
+				(session) => session.user.id === freshAdminSession.data?.user.id,
+				true,
+			);
+
+			expect(reactiveAdminSession.user.id).toBe(
+				freshAdminSession.data?.user.id,
+			);
+
+			await browserClient.admin.impersonateUser(
+				{
+					userId: targetUser.data?.user.id || "",
+				},
+				{
+					onSuccess: (ctx) => {
+						cookieSetter(browserHeaders)(ctx);
+					},
+				},
+			);
+
+			const freshImpersonatedSession = await browserClient.getSession();
+			expect(freshImpersonatedSession.data?.user.id).toBe(
+				targetUser.data?.user.id,
+			);
+
+			const reactiveImpersonatedSession = await waitForSessionData(
+				(session) => session.user.id === targetUser.data?.user.id,
+			);
+
+			expect(reactiveImpersonatedSession.user.id).toBe(
+				targetUser.data?.user.id,
+			);
+		} finally {
+			vi.unstubAllGlobals();
+		}
+	});
+
+	it("should not allow non-admin to impersonate user", async () => {
+		const res = await client.admin.impersonateUser(
+			{
+				userId: newUser?.id || "",
+			},
+			{
+				headers: userHeaders,
+			},
+		);
+		expect(res.error?.status).toBe(403);
+	});
+
+	it("should not allow to impersonate admins without impersonate-admins permission", async () => {
+		const userToImpersonate = await client.signUp.email({
+			email: "impersonate-admin@mail.com",
+			password: "password",
+			name: "Impersonate Admin User",
+		});
+		const userId = userToImpersonate.data?.user.id || "";
+		await client.admin.setRole({
+			userId,
+			role: "admin",
+			fetchOptions: {
+				headers: adminHeaders,
+			},
+		});
+		const res = await client.admin.impersonateUser(
+			{
+				userId,
+			},
+			{ headers: adminHeaders },
+		);
+
+		expect(res.error?.status).toBe(403);
+	});
+
+	it("should allow impersonating admins with impersonate-admins permission", async () => {
+		const ac = createAccessControl({
+			user: [
+				"create",
+				"list",
+				"set-role",
+				"ban",
+				"impersonate",
+				"impersonate-admins",
+				"delete",
+				"set-password",
+				"get",
+				"update",
+			],
+			session: ["list", "revoke", "delete"],
+		} as const);
+
+		const superAdminRole = ac.newRole({
+			user: [
+				"create",
+				"list",
+				"set-role",
+				"ban",
+				"impersonate",
+				"impersonate-admins",
+				"delete",
+				"set-password",
+				"get",
+				"update",
+			],
+			session: ["list", "revoke", "delete"],
+		});
+		const regularAdminRole = ac.newRole({
+			user: [
+				"create",
+				"list",
+				"set-role",
+				"ban",
+				"impersonate",
+				"delete",
+				"set-password",
+				"get",
+				"update",
+			],
+			session: ["list", "revoke", "delete"],
+		});
+		const userRole = ac.newRole({
+			user: [],
+			session: [],
+		});
+
+		const {
+			signInWithTestUser: signInSuperAdmin,
+			signInWithUser: signInAsUser,
+			customFetchImpl: fetchImpl,
+		} = await getTestInstance(
+			{
+				plugins: [
+					admin({
+						ac,
+						roles: {
+							"super-admin": superAdminRole,
+							admin: regularAdminRole,
+							user: userRole,
+						},
+					}),
+				],
+				databaseHooks: {
+					user: {
+						create: {
+							before: async (user) => {
+								if (user.name === "Super Admin") {
+									return { data: { ...user, role: "super-admin" } };
+								}
+							},
+						},
+					},
+				},
+			},
+			{ testUser: { name: "Super Admin" } },
+		);
+		const c = createAuthClient({
+			fetchOptions: { customFetchImpl: fetchImpl },
+			plugins: [
+				adminClient({
+					ac,
+					roles: {
+						"super-admin": superAdminRole,
+						admin: regularAdminRole,
+						user: userRole,
+					},
+				}),
+			],
+			baseURL: "http://localhost:3000",
+		});
+		const { headers: superAdminHeaders } = await signInSuperAdmin();
+
+		const { data: targetAdmin } = await c.signUp.email({
+			email: "target-admin-perm@test.com",
+			password: "password",
+			name: "Target Admin Perm",
+		});
+		await c.admin.setRole(
+			{ userId: targetAdmin!.user.id, role: "admin" },
+			{ headers: superAdminHeaders },
+		);
+
+		// super-admin has impersonate-admins permission, should succeed
+		const res = await c.admin.impersonateUser(
+			{ userId: targetAdmin!.user.id },
+			{ headers: superAdminHeaders },
+		);
+		expect(res.data?.session).toBeDefined();
+		expect(res.data?.user?.id).toBe(targetAdmin!.user.id);
+
+		// regular admin does NOT have impersonate-admins permission, should fail
+		const { data: regularAdmin } = await c.signUp.email({
+			email: "regular-admin-perm@test.com",
+			password: "password",
+			name: "Regular Admin Perm",
+		});
+		await c.admin.setRole(
+			{ userId: regularAdmin!.user.id, role: "admin" },
+			{ headers: superAdminHeaders },
+		);
+		const { headers: regularAdminHeaders } = await signInAsUser(
+			"regular-admin-perm@test.com",
+			"password",
+		);
+		const res2 = await c.admin.impersonateUser(
+			{ userId: targetAdmin!.user.id },
+			{ headers: regularAdminHeaders },
+		);
+		expect(res2.error?.status).toBe(403);
+	});
+
+	it("should allow impersonating admins with legacy allowImpersonatingAdmins option", async () => {
+		const { signInWithTestUser: signInAdmin, customFetchImpl: fetchImpl } =
+			await getTestInstance(
+				{
+					plugins: [
+						admin({
+							allowImpersonatingAdmins: true,
+						}),
+					],
+					databaseHooks: {
+						user: {
+							create: {
+								before: async (user) => {
+									if (user.name === "Admin") {
+										return { data: { ...user, role: "admin" } };
+									}
+								},
+							},
+						},
+					},
+				},
+				{ testUser: { name: "Admin" } },
+			);
+		const c = createAuthClient({
+			fetchOptions: { customFetchImpl: fetchImpl },
+			plugins: [adminClient()],
+			baseURL: "http://localhost:3000",
+		});
+		const { headers: aHeaders } = await signInAdmin();
+
+		const { data: targetAdmin } = await c.signUp.email({
+			email: "target-admin-legacy@test.com",
+			password: "password",
+			name: "Target Admin Legacy",
+		});
+		await c.admin.setRole(
+			{ userId: targetAdmin!.user.id, role: "admin" },
+			{ headers: aHeaders },
+		);
+
+		const res = await c.admin.impersonateUser(
+			{ userId: targetAdmin!.user.id },
+			{ headers: aHeaders },
+		);
+		expect(res.data?.session).toBeDefined();
+		expect(res.data?.user?.id).toBe(targetAdmin!.user.id);
+	});
+
+	it("should filter impersonated sessions", async () => {
+		const { headers } = await signInWithUser(data.email, data.password);
+		const res = await client.listSessions({
+			fetchOptions: {
+				headers,
+			},
+		});
+		expect(res.data?.length).toBe(2);
+	});
+
+	it("should allow admin to stop impersonating", async () => {
+		const res = await client.admin.stopImpersonating(
+			{},
+			{
+				headers: impersonateHeaders,
+				onSuccess: (ctx) => {
+					cookieSetter(impersonateHeaders)(ctx);
+				},
+			},
+		);
+		expect(res.data?.session).toBeDefined();
+
+		const afterStopImpersonationRes = await client.admin.listUsers({
+			fetchOptions: {
+				headers: impersonateHeaders,
+			},
+			query: {
+				filterField: "role",
+				filterOperator: "eq",
+				filterValue: "admin",
+			},
+		});
+		expect(afterStopImpersonationRes.data?.users.length).toBeGreaterThan(1);
+	});
+
+	it("should allow admin to revoke user session", async () => {
+		const {
+			res: { user },
+		} = await signInWithUser(data.email, data.password);
+		const sessions = await client.admin.listUserSessions(
+			{
+				userId: user.id,
+			},
+			{
+				headers: adminHeaders,
+			},
+		);
+		expect(sessions.data?.sessions.length).toBe(3);
+		const res = await client.admin.revokeUserSession(
+			{ sessionToken: sessions.data?.sessions[0]!.token || "" },
+			{ headers: adminHeaders },
+		);
+		expect(res.data?.success).toBe(true);
+		const sessions2 = await client.admin.listUserSessions(
+			{ userId: user?.id || "" },
+			{ headers: adminHeaders },
+		);
+		expect(sessions2.data?.sessions.length).toBe(2);
+	});
 
 	it("should not allow non-admin to revoke user sessions", async () => {
 		const res = await client.admin.revokeUserSessions(
@@ -1816,7 +2295,26 @@ describe("access control", async () => {
 			{ userId: createdUser.data?.user.id || "" },
 			{ headers: headers },
 		);
-	});;;
+	});;
+
+	it("should properly type custom roles in createUser", async () => {
+		const createdUser = await client.admin.createUser(
+			{
+				name: "Test User with Support Role",
+				email: "support-role@test.com",
+				password: "test",
+				role: "support", // This should be accepted as "support" is a custom role
+			},
+			{
+				headers: headers,
+			},
+		);
+		expect(createdUser.data?.user.role).toBe("support");
+		await client.admin.removeUser(
+			{ userId: createdUser.data?.user.id || "" },
+			{ headers: headers },
+		);
+	});
 });
 
 describe("Admin plugin id-token sign-in", async () => {

@@ -276,7 +276,13 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 		'createSession' {
 			if args.len < 1 { return error('createSession requires a user id') }
 			remember := if args.len > 1 { !args[1].bool() } else { true }
-			session := c.auth.make_session(args[0].str(), c.auth.request_context, remember)!
+			mut overrides := map[string]json2.Any{}
+			if args.len > 2 {
+				if args[2] !is json2.Null { overrides = args[2].as_map().clone() }
+			}
+			all := args.len > 3 && args[3].bool()
+			session := c.auth.make_session_overridden(args[0].str(), c.auth.request_context,
+				remember, overrides, all)!
 			return encode_internal_session(session)
 		}
 		'findSession' {

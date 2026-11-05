@@ -5,16 +5,18 @@ import x.json2
 
 pub struct AdminOptions {
 pub:
-	default_role           string = 'user'            @[json: defaultRole]
-	admin_roles            ?[]string         @[json: adminRoles]
-	admin_user_ids         []string          @[json: adminUserIds]
-	user_field_names       map[string]string @[json: userFieldNames]
-	session_field_names    map[string]string @[json: sessionFieldNames]
-	roles                  ?map[string]map[string][]string
-	default_ban_reason     string = 'No reason' @[json: defaultBanReason]
-	default_ban_expires_in f64    @[json: defaultBanExpiresIn]
-	banned_user_message    string = 'You have been banned from this application. Please contact support if you believe this is an error.' @[json: bannedUserMessage]
-	banned_message         fn (mut EndpointContext, User) !string = default_banned_message @[skip]
+	allow_impersonating_admins     bool              @[json: allowImpersonatingAdmins]
+	impersonation_session_duration f64    = 3600               @[json: impersonationSessionDuration]
+	default_role                   string = 'user'            @[json: defaultRole]
+	admin_roles                    ?[]string         @[json: adminRoles]
+	admin_user_ids                 []string          @[json: adminUserIds]
+	user_field_names               map[string]string @[json: userFieldNames]
+	session_field_names            map[string]string @[json: sessionFieldNames]
+	roles                          ?map[string]map[string][]string
+	default_ban_reason             string = 'No reason' @[json: defaultBanReason]
+	default_ban_expires_in         f64    @[json: defaultBanExpiresIn]
+	banned_user_message            string = 'You have been banned from this application. Please contact support if you believe this is an error.' @[json: bannedUserMessage]
+	banned_message                 fn (mut EndpointContext, User) !string = default_banned_message @[skip]
 }
 
 fn default_banned_message(mut _ EndpointContext, _ User) !string {
@@ -92,7 +94,11 @@ fn (mut auth Auth) check_admin_ban(user User, options AdminOptions) ! {
 				fields['banned'] = false
 				fields['banReason'] = json2.Null{}
 				fields['banExpires'] = json2.Null{}
-				auth.update_user_record(User{ ...user, additional_fields: fields })!
+				auth.update_user_record(User{
+					...user
+					updated_at:        stamp_millis(auth.clock_millis())
+					additional_fields: fields
+				})!
 				return
 			}
 		}
@@ -161,7 +167,7 @@ pub fn (_ AdminPlugin) endpoints() []Endpoint {
 	mut result := []Endpoint{}
 	for path in ['create-user', 'set-role', 'ban-user', 'unban-user', 'update-user',
 		'set-user-password', 'remove-user', 'list-user-sessions', 'revoke-user-session',
-		'revoke-user-sessions', 'has-permission'] {
+		'revoke-user-sessions', 'has-permission', 'impersonate-user', 'stop-impersonating'] {
 		result << Endpoint{
 			path:    '/admin/' + path
 			handler: admin_endpoint
@@ -274,6 +280,9 @@ fn admin_endpoint(mut context EndpointContext, request Request) !Response {
 			return fail(400, 'VALIDATION_ERROR', 'Invalid request body')
 		}
 	}
+	if path == 'stop-impersonating' { return admin_stop_impersonating(mut context) }
+	if path == 'impersonate-user' { return admin_impersonate(mut context, actor or {
+			return fail(401, 'UNAUTHORIZED', 'Unauthorized')}, fields, options) }
 	if path == 'create-user' { return admin_create_user(mut context, actor, fields, options) }
 	if path == 'has-permission' {
 		permission := fields['permissions'] or {

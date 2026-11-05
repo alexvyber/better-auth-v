@@ -262,9 +262,9 @@
         "Admin plugin"
       ],
       "test": "should not allow banned user to sign in with social provider",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -272,9 +272,9 @@
         "Admin plugin"
       ],
       "test": "should redirect banned social sign-in to a cross-origin errorCallbackURL",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -402,9 +402,9 @@
         "Admin plugin"
       ],
       "test": "should allow admins to impersonate user",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -412,9 +412,9 @@
         "Admin plugin"
       ],
       "test": "should revalidate useSession after admin impersonation",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -422,9 +422,9 @@
         "Admin plugin"
       ],
       "test": "should not allow non-admin to impersonate user",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -432,9 +432,9 @@
         "Admin plugin"
       ],
       "test": "should not allow to impersonate admins without impersonate-admins permission",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -442,9 +442,9 @@
         "Admin plugin"
       ],
       "test": "should allow impersonating admins with impersonate-admins permission",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -452,9 +452,9 @@
         "Admin plugin"
       ],
       "test": "should allow impersonating admins with legacy allowImpersonatingAdmins option",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -462,9 +462,9 @@
         "Admin plugin"
       ],
       "test": "should filter impersonated sessions",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -472,9 +472,9 @@
         "Admin plugin"
       ],
       "test": "should allow admin to stop impersonating",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -482,9 +482,9 @@
         "Admin plugin"
       ],
       "test": "should allow admin to revoke user session",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -794,7 +794,7 @@
       "test": "should validate on the client",
       "selected": false,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
     },
     {
       "suite": "access control",
@@ -874,7 +874,7 @@
       "test": "should throw error when assigning non-existent admin roles",
       "selected": false,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
     },
     {
       "suite": "access control",
@@ -882,9 +882,9 @@
         "access control"
       ],
       "test": "should properly type custom roles in createUser",
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "edge cases: userId validation",
@@ -894,7 +894,7 @@
       "test": "should allow admin to check permissions with useNumberId",
       "selected": false,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
     },
     {
       "suite": "edge cases: userId validation",
@@ -904,7 +904,7 @@
       "test": "should return correct error when userId is missing and not call DB with undefined",
       "selected": false,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
     },
     {
       "suite": "edge cases: userId validation",
@@ -914,7 +914,7 @@
       "test": "should return user not found when userId is empty string",
       "selected": false,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
     },
     {
       "suite": "edge cases: userId validation",
@@ -924,7 +924,7 @@
       "test": "should not crash if userId is 'NaN'",
       "selected": false,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
     },
     {
       "suite": "Admin plugin id-token sign-in",
@@ -964,7 +964,7 @@
       "test": "should reject privileged calls from a demoted admin holding a cached admin snapshot",
       "selected": false,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
     },
     {
       "suite": "admin authorization is revocation-aware with cookie cache",
@@ -974,7 +974,7 @@
       "test": "should reject a banned admin within the cookie-cache window",
       "selected": false,
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
     },
     {
       "suite": "admin create-user password length",

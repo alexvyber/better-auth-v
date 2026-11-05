@@ -287,10 +287,10 @@
         "Admin plugin"
       ],
       "test": "should not allow banned user to sign in with social provider",
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -298,10 +298,10 @@
         "Admin plugin"
       ],
       "test": "should redirect banned social sign-in to a cross-origin errorCallbackURL",
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -441,10 +441,10 @@
         "Admin plugin"
       ],
       "test": "should allow admins to impersonate user",
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -452,10 +452,10 @@
         "Admin plugin"
       ],
       "test": "should revalidate useSession after admin impersonation",
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -463,10 +463,10 @@
         "Admin plugin"
       ],
       "test": "should not allow non-admin to impersonate user",
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -474,10 +474,10 @@
         "Admin plugin"
       ],
       "test": "should not allow to impersonate admins without impersonate-admins permission",
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -485,10 +485,10 @@
         "Admin plugin"
       ],
       "test": "should allow impersonating admins with impersonate-admins permission",
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -496,10 +496,10 @@
         "Admin plugin"
       ],
       "test": "should allow impersonating admins with legacy allowImpersonatingAdmins option",
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -507,10 +507,10 @@
         "Admin plugin"
       ],
       "test": "should filter impersonated sessions",
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -518,10 +518,10 @@
         "Admin plugin"
       ],
       "test": "should allow admin to stop impersonating",
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -529,10 +529,10 @@
         "Admin plugin"
       ],
       "test": "should allow admin to revoke user session",
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "Admin plugin",
@@ -873,7 +873,7 @@
       "selected": false,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
     },
     {
       "suite": "access control",
@@ -961,7 +961,7 @@
       "selected": false,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
     },
     {
       "suite": "access control",
@@ -969,10 +969,10 @@
         "access control"
       ],
       "test": "should properly type custom roles in createUser",
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": null
     },
     {
       "suite": "edge cases: userId validation",
@@ -983,7 +983,7 @@
       "selected": false,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
     },
     {
       "suite": "edge cases: userId validation",
@@ -994,7 +994,7 @@
       "selected": false,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
     },
     {
       "suite": "edge cases: userId validation",
@@ -1005,7 +1005,7 @@
       "selected": false,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
     },
     {
       "suite": "edge cases: userId validation",
@@ -1016,7 +1016,7 @@
       "selected": false,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
     },
     {
       "suite": "Admin plugin id-token sign-in",
@@ -1060,7 +1060,7 @@
       "selected": false,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
     },
     {
       "suite": "admin authorization is revocation-aware with cookie cache",
@@ -1071,7 +1071,7 @@
       "selected": false,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+      "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
     },
     {
       "suite": "admin create-user password length",

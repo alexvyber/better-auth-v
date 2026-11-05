@@ -35,15 +35,27 @@ jobs:
         run: |
           brew install pkg-config openssl@3 sqlite libpq
           echo "PKG_CONFIG_PATH=$(brew --prefix openssl@3)/lib/pkgconfig:$(brew --prefix libpq)/lib/pkgconfig:$(brew --prefix sqlite)/lib/pkgconfig" >> "$GITHUB_ENV"
-      - uses: actions/checkout@v4
-        with:
-          repository: vlang/v
-          ref: '0.5.2'
-          path: .ci-v
-          persist-credentials: false
-      - name: Build V
+      - name: Install checksum-pinned V 0.5.2 release
         run: |
-          make -C .ci-v CC=cc
-          echo "$GITHUB_WORKSPACE/.ci-v" >> "$GITHUB_PATH"
+          case "$RUNNER_OS/$RUNNER_ARCH" in
+            Linux/X64)
+              archive=v_linux.zip
+              checksum=86caf9e70c3342d48ef19eb4f6c47b709f18c90ae86255520d5c29df6b482e23
+              ;;
+            macOS/ARM64)
+              archive=v_macos_arm64.zip
+              checksum=e539a8dc3aeea47267f3cf00c25c4f0a364d8037fb13f5379d2a574a7abac8ee
+              ;;
+            macOS/X64)
+              archive=v_macos_x86_64.zip
+              checksum=de19ef02874aec502f091b75e504e4836da38f627ddf7f7f9ecf6e8cf262f9d0
+              ;;
+            *) echo "Unsupported runner: $RUNNER_OS/$RUNNER_ARCH"; exit 1 ;;
+          esac
+          curl --fail --location --retry 3 "https://github.com/vlang/v/releases/download/0.5.2/$archive" -o "$RUNNER_TEMP/v.zip"
+          echo "$checksum  $RUNNER_TEMP/v.zip" | shasum -a 256 --check
+          unzip -q "$RUNNER_TEMP/v.zip" -d "$RUNNER_TEMP/v-release"
+          "$RUNNER_TEMP/v-release/v/v" version
+          echo "$RUNNER_TEMP/v-release/v" >> "$GITHUB_PATH"
       - name: Check installed package consumers
         run: make check-package

@@ -83,7 +83,7 @@ a temporary local Git snapshot; the namespaced registry layout is simulated. Thi
 does not submit to VPM or claim that a public registry download has been tested.
 
 The package CI repeats this default consumer check on Ubuntu and macOS using
-V 0.5.2. A green local macOS result alone does not establish Linux or Windows
+checksum-pinned official V 0.5.2 release binaries. A green local macOS result alone does not establish Linux or Windows
 support. MongoDB dependency setup and the full conformance matrix remain separate
 from the default package CI. For implementation changes also run `make check` as
 documented in the README.

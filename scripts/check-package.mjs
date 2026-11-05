@@ -40,6 +40,18 @@ fn main() {
   })]
  }
  mut auth := better_auth.new(config, storage)!
+ // Compile public generic transaction results from an unrelated module.
+ answer := auth.transaction[int](fn (mut context better_auth.EndpointContext) !int {
+  return context.transaction[int](fn (mut _ better_auth.EndpointContext) !int {
+   return 42
+  })
+ })!
+ assert answer == 42
+ response := auth.transaction[better_auth.Response](fn (mut _ better_auth.EndpointContext) !better_auth.Response {
+  return better_auth.Response{status: 201, body: 'typed package result'}
+ })!
+ assert response.status == 201
+ assert response.body == 'typed package result'
  created := auth.sign_up_email(better_auth.SignUpInput{
   email: 'package@example.com'
   name: 'Package consumer'

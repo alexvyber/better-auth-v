@@ -1173,6 +1173,42 @@ to migrate configured unique indexes before writes. Package checks include both
 namespaced imports and a real Git install of the local candidate, not a VPM
 registry publication. The release tag and registry status are unchanged.
 
+## Architecture refactor
+
+The backend-independent `schema` submodule now owns built-in logical fields and
+references. Auth initialization compiles configured fields and table references
+into a registry used by adapter field validation and join resolution. PostgreSQL
+no longer supplies the logical field list for unrelated storage implementations.
+The shared source matrix passes all 669 runtime cases across SQLite, PostgreSQL
+and MongoDB, with each backend verified separately.
+
+The TypeScript fixture now composes separate configuration, field conversion,
+adapter transport, async scopes and plugin helpers. The native bridge separates
+CLI dispatch, configuration lifetime, command execution, protocol and callback
+families. Its entry file is 108 lines, down from 1,551; the TypeScript fixture
+entry is 918 lines, down from 1,349. Authentication and retry policy remain native.
+
+Operation and retry-attempt state now have explicit owners. Transaction lifecycle
+and typed after-commit effects are separate from database hook orchestration.
+Native typed transaction APIs replace HTTP response JSON round trips, while
+legacy string APIs delegate to the same runner. Plugin endpoint metadata declares
+replayability instead of inferring it from an organization path prefix. Existing
+custom endpoints using that prefix must explicitly opt into replayability.
+
+New native checks verify attempt-state reset, exactly one committed hook effect,
+typed structured results and nested rollback. All 134 native functions across
+44 files pass. Focused verification also passes 87 integration cases covering
+MongoDB faults, organization concurrency, atomic increments, adapter transactions,
+application schemas, Nabu OIDC and JWT rollback, plus 156 unchanged organization
+cases on SQLite and MongoDB. The first three refactor commits pass package CI
+on macOS and Linux with V 0.5.2.
+
+See [architecture and ownership](architecture.md) for the concrete boundaries and
+remaining work. Typed adapter command decoding, independent storage/feature
+modules and optional database linking remain outstanding. This structural batch
+does not expand the declared upstream feature-parity coverage. The 0.1.0 release
+and VPM publication status are unchanged.
+
 ## Guardrails for continuing
 
 - Authentication decisions and persistence belong in V. TS code translates test

@@ -8,6 +8,9 @@ This is an initial implementation, not full Better Auth parity. The implemented
 and missing behavior is listed in [the compatibility contract](docs/compatibility.md).
 There is no dependency on a web framework.
 
+See [architecture and ownership](docs/architecture.md) for the schema registry,
+operation contexts, transaction lifecycle and conformance harness boundaries.
+
 ## Install with VPM
 
 The package is being prepared for registration as `alexvyber.better_auth`, version

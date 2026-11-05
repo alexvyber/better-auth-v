@@ -1,5 +1,6 @@
 module better_auth
 
+import better_auth.domain.permissions as permission_policy
 import net.urllib
 import x.json2
 
@@ -115,45 +116,13 @@ fn (mut auth Auth) check_admin_ban(user User, options AdminOptions) ! {
 
 fn (options AdminOptions) effective_roles() map[string]map[string][]string {
 	if roles := options.roles { return roles.clone() }
-	return {
-		'admin': {
-			'user':    ['create', 'list', 'set-role', 'ban', 'impersonate', 'delete', 'set-password',
-				'set-email', 'get', 'update']
-			'session': ['list', 'revoke', 'delete']
-		}
-		'user':  {
-			'user':    []string{}
-			'session': []string{}
-		}
-	}
+	return permission_policy.admin_roles()
 }
 
-pub fn (options AdminOptions) has_permission(user User, permissions map[string][]string) bool {
+pub fn (options AdminOptions) has_permission(user User, requested map[string][]string) bool {
 	if user.id in options.admin_user_ids { return true }
-	if permissions.len == 0 { return false }
-	roles := options.effective_roles()
-	for role in (user.additional_fields['role'] or { json2.Any(options.default_role) }).str().split(',') {
-		granted := (roles[role] or { continue }).clone()
-		mut allowed := true
-		for resource, actions in permissions {
-			if actions.len == 0 {
-				allowed = false
-				break
-			}
-			scope := granted[resource] or {
-				allowed = false
-				break
-			}
-			for action in actions {
-				if action !in scope {
-					allowed = false
-					break
-				}
-			}
-		}
-		if allowed { return true }
-	}
-	return false
+	role := (user.additional_fields['role'] or { json2.Any(options.default_role) }).str()
+	return permission_policy.allows(role, options.effective_roles(), requested)
 }
 
 fn (a &Auth) admin_options() !AdminOptions {

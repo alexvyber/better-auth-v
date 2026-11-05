@@ -1,5 +1,6 @@
 module better_auth
 
+import better_auth.domain.permissions as permission_policy
 import json
 import x.json2
 
@@ -36,13 +37,7 @@ fn (mut context EndpointContext) organization_roles(id string) !map[string]map[s
 }
 
 fn (mut context EndpointContext) organization_has_permission(id string, role string, permissions map[string][]string) !bool {
-	return (AdminOptions{
-		roles: context.organization_roles(id)!
-	}).has_permission(User{
-		additional_fields: {
-			'role': json2.Any(role)
-		}
-	}, permissions)
+	return permission_policy.allows(role, context.organization_roles(id)!, permissions)
 }
 
 fn (mut context EndpointContext) organization_validate_roles(id string, role string) ! {

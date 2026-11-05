@@ -1,6 +1,6 @@
 module better_auth
 
-import math
+import better_auth.domain.ratelimit
 
 pub struct RateLimitRule {
 pub:
@@ -39,40 +39,27 @@ mut:
 }
 
 fn decide_rate_limit(previous ?RateLimitRecord, input RateLimitInput) RateLimitDecision {
-	if record := previous {
-		if input.now - record.last_request < input.window * 1000 {
-			if record.count >= input.max {
-				return RateLimitDecision{
-					retry_after: i64(math.ceil(f64(record.last_request + input.window * 1000 -
-						input.now) / 1000))
-					next:        record
-				}
-			}
-			return RateLimitDecision{
-				allowed: true
-				next:    RateLimitRecord{
-					key:          input.key
-					count:        record.count + 1
-					last_request: input.now
-				}
-			}
-		}
-		return RateLimitDecision{
-			allowed: true
-			reset:   true
-			next:    RateLimitRecord{
-				key:          input.key
-				count:        1
-				last_request: input.now
-			}
-		}
-	}
+	mut prior := ?ratelimit.Record(none)
+	if record := previous { prior = ratelimit.Record{
+			key:          record.key
+			count:        record.count
+			last_request: record.last_request
+		} }
+	decision := ratelimit.decide(prior, ratelimit.Input{
+		key:          input.key
+		now:          input.now
+		window:       input.window
+		max:          input.max
+		prune_before: input.prune_before
+	})
 	return RateLimitDecision{
-		allowed: true
-		next:    RateLimitRecord{
-			key:          input.key
-			count:        1
-			last_request: input.now
+		allowed:     decision.allowed
+		retry_after: decision.retry_after
+		reset:       decision.reset
+		next:        RateLimitRecord{
+			key:          decision.next.key
+			count:        decision.next.count
+			last_request: decision.next.last_request
 		}
 	}
 }

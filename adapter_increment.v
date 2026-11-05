@@ -1,5 +1,6 @@
 module better_auth
 
+import better_auth.adapter
 import json
 import math
 import x.json2
@@ -37,16 +38,15 @@ fn (c &EndpointContext) adapter_mutation_field(model string, field string) !Addi
 	}
 }
 
-fn (mut c EndpointContext) adapter_increment(query map[string]json2.Any) !string {
-	adapter_keys(query, ['model', 'where', 'increment', 'set'])!
-	model := (query['model'] or { return error('missing adapter model') }).str()
+fn (mut c EndpointContext) adapter_increment(query adapter.Increment) !string {
+	model := query.model
 	if model != 'user' && model !in c.auth.config.adapter_models {
 		return error('atomic increments support users and configured adapter models')
 	}
-	where := adapter_array(query['where'] or { return error('missing increment predicate') })!
+	where := query.where
 	c.adapter_filters(model, where)!
-	deltas := adapter_object(query['increment'] or { return error('missing increment map') })!
-	set := adapter_object(query['set'] or { json2.Any(map[string]json2.Any{}) })!
+	deltas := query.deltas.clone()
+	set := query.set.clone()
 	for field, delta in deltas {
 		definition := c.adapter_mutation_field(model, field)!
 		if definition.field_type != 'number' || !adapter_number(delta) || math.is_nan(delta.f64())
@@ -95,7 +95,7 @@ fn (mut c EndpointContext) adapter_increment(query map[string]json2.Any) !string
 			if model in c.auth.config.adapter_models { c.adapter_validate_model(model, updated)! }
 			mut expected := map[string]json2.Any{}
 			for clause in where {
-				field := (clause.as_map()['field'] or { json2.Any('') }).str()
+				field := clause.field
 				expected[field] = selected[field] or { json2.Any(json2.Null{}) }
 			}
 			for field, _ in patch {

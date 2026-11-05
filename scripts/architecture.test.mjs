@@ -18,7 +18,7 @@ test('independent adapter, domain and SQL driver modules do not import the auth 
  }
 });
 test('native SQL imports occur only in explicitly enabled driver files',()=>{
- const paths=[...readdirSync(root).filter(path=>path.endsWith('.v')),...sources('storage')];
+ const paths=[...readdirSync(root).filter(path=>path.endsWith('.v')),...sources('adapter'),...sources('domain'),...sources('storage')];
  for(const path of paths){
   const source=readFileSync(join(root,path),'utf8');
   if(/^import\s+db\.sqlite\b/m.test(source))assert.match(path,/^storage\/sqlite\/.*_d_sqlite\.v$/);

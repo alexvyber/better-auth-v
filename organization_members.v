@@ -1,5 +1,6 @@
 module better_auth
 
+import better_auth.schema as model_schema
 import x.json2
 
 fn (mut context EndpointContext) organization_selected_id(fields map[string]json2.Any, session Session) !string {
@@ -27,7 +28,7 @@ fn organization_list_members(mut context EndpointContext, current SessionResult,
 	filter_field := (fields['filterField'] or { json2.Any('') }).str()
 	sort_field := (fields['sortBy'] or { json2.Any('') }).str()
 	for field in [filter_field, sort_field] {
-		if field != '' && field !in postgres_core_fields['member']
+		if field != '' && field !in model_schema.core_fields('member')
 			&& field !in context.auth.config.model_fields['member'] {
 			return fail(400, 'VALIDATION_ERROR', 'Unknown member field')
 		}

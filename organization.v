@@ -1,5 +1,6 @@
 module better_auth
 
+import better_auth.schema as model_schema
 import net.urllib
 import x.json2
 
@@ -185,7 +186,7 @@ fn (auth &Auth) organization_output(model string, data map[string]json2.Any) !ma
 		map[string]AdditionalField{}
 	}).clone()
 	for key, value in data {
-		if key !in postgres_core_fields[model] {
+		if key !in model_schema.core_fields(model) {
 			definition := schema[key] or { continue }
 			if !definition.returned { continue
 			 }
@@ -202,7 +203,7 @@ fn (auth &Auth) organization_output(model string, data map[string]json2.Any) !ma
 
 fn (auth &Auth) organization_defaults(model string, data map[string]json2.Any) !map[string]json2.Any {
 	mut result := map[string]json2.Any{}
-	for field in postgres_core_fields[model] {
+	for field in model_schema.core_fields(model) {
 		if value := data[field] { result[field] = value }
 	}
 	for field, definition in auth.config.model_fields[model] or {

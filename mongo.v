@@ -1,5 +1,6 @@
 module better_auth
 
+import better_auth.schema as model_schema
 import encoding.base64
 import encoding.hex
 import json
@@ -38,12 +39,12 @@ fn mongo_name(value string) bool {
 pub fn open_mongo(options MongoOptions) !MongoStorage {
 	if !mongo_name(options.database) { return error('invalid MongoDB database') }
 	for model, collection in options.tables {
-		if model !in postgres_core_fields || !mongo_name(collection) {
+		if !model_schema.is_core_model(model) || !mongo_name(collection) {
 			return error('invalid MongoDB collection mapping')
 		}
 	}
 	for model, fields in options.fields {
-		if model !in postgres_core_fields { return error('invalid MongoDB field mapping model') }
+		if !model_schema.is_core_model(model) { return error('invalid MongoDB field mapping model') }
 		for field, column in fields {
 			if field == 'id' && column != '_id' { return error('MongoDB id must map to _id') }
 			if !mongo_name(column) { return error('invalid MongoDB field mapping') }
@@ -61,7 +62,7 @@ pub fn open_mongo(options MongoOptions) !MongoStorage {
 pub fn (mut storage MongoStorage) configure_fields(users map[string]AdditionalField, sessions map[string]AdditionalField) ! {
 	storage.user_fields = users.clone()
 	storage.session_fields = sessions.clone()
-	for model, _ in postgres_core_fields {
+	for model in model_schema.core_models() {
 		mut used := map[string]bool{}
 		for field in storage.logical_fields(model) {
 			column := storage.column(model, field)
@@ -130,7 +131,7 @@ fn (storage &MongoStorage) additional(model string) map[string]AdditionalField {
 }
 
 fn (storage &MongoStorage) logical_fields(model string) []string {
-	mut fields := (postgres_core_fields[model] or { ['id'] }).clone()
+	mut fields := model_schema.core_fields_or_id(model).clone()
 	for field, _ in storage.additional(model) {
 		fields << field
 	}

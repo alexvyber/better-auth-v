@@ -1,5 +1,6 @@
 module better_auth
 
+import better_auth.schema as model_schema
 import x.json2
 
 pub struct OpenAPIOptions {
@@ -70,7 +71,7 @@ fn openapi_ref(model string) json2.Any {
 
 fn openapi_core_fields(model string) map[string]AdditionalField {
 	mut result := map[string]AdditionalField{}
-	for name in postgres_core_fields[model] {
+	for name in model_schema.core_fields(model) {
 		if name == 'id' { continue
 		 }
 		date := name in ['createdAt', 'updatedAt', 'expiresAt', 'accessTokenExpiresAt',

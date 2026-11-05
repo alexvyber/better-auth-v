@@ -10,16 +10,7 @@ fn (c &EndpointContext) adapter_field(model string, field string) ! {
 		&& model !in c.auth.config.adapter_models {
 		return error('unsupported adapter model')
 	}
-	extra := if model == 'user' {
-		c.auth.config.user_fields
-	} else if model == 'session' {
-		c.auth.config.session_fields
-	} else {
-		(c.auth.config.adapter_models[model] or { AdapterModel{} }).fields
-	}
-	if field != 'id' && field !in (postgres_core_fields[model] or { []string{} }) && field !in extra {
-		return error('unknown adapter field: ${field}')
-	}
+	c.auth.models.require_field(model, field)!
 }
 
 fn adapter_keys(data map[string]json2.Any, allowed []string) ! {

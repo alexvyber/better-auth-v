@@ -1,5 +1,6 @@
 module better_auth
 
+import better_auth.schema as model_schema
 import json
 import x.json2
 
@@ -27,10 +28,10 @@ fn validate_adapter_models(models map[string]AdapterModel) ! {
 	mut names := map[string]bool{}
 	for model, definition in models {
 		name := if definition.name == '' { model } else { definition.name }
-		if model == '' || model in postgres_core_fields
+		if model == '' || model_schema.is_core_model(model)
 			|| model in ['__proto__', 'constructor', 'prototype'] || model.contains('\x00')
 			|| model.contains('|') || name == '' || name.contains('\x00')
-			|| name.to_lower() in names || name in postgres_core_fields {
+			|| name.to_lower() in names || model_schema.is_core_model(name) {
 			return error('invalid or colliding adapter model name')
 		}
 		names[name.to_lower()] = true
@@ -51,12 +52,12 @@ fn validate_adapter_models(models map[string]AdapterModel) ! {
 				return error('unsupported adapter field type')
 			}
 			if reference := attribute.references {
-				if reference.model !in postgres_core_fields && reference.model !in models {
+				if !model_schema.is_core_model(reference.model) && reference.model !in models {
 					return error('unknown adapter reference model')
 				}
-				if reference.field != 'id' && reference.field !in (postgres_core_fields[reference.model] or {
-					[]string{}
-				}) && reference.field !in (models[reference.model] or { AdapterModel{} }).fields {
+				if reference.field != 'id' && reference.field !in model_schema.core_fields(reference.model) && reference.field !in (models[reference.model] or {
+					AdapterModel{}
+				}).fields {
 					return error('unknown adapter reference field')
 				}
 			}
@@ -78,7 +79,7 @@ pub fn (mut s PostgresStorage) configure_adapter_models(models map[string]Adapte
 	validate_adapter_models(models)!
 	s.adapter_models = models.clone()
 	mut names := map[string]bool{}
-	mut all := postgres_core_fields.keys()
+	mut all := model_schema.core_models()
 	all << models.keys()
 	for model in all {
 		name := s.table(model)
@@ -92,7 +93,7 @@ pub fn (mut s MongoStorage) configure_adapter_models(models map[string]AdapterMo
 	validate_mongo_adapter_columns(models)!
 	s.adapter_models = models.clone()
 	mut names := map[string]bool{}
-	mut all := postgres_core_fields.keys()
+	mut all := model_schema.core_models()
 	all << models.keys()
 	for model in all {
 		name := s.collection(model)
@@ -123,7 +124,7 @@ fn (storage &MongoStorage) identifier_field(model string, field string) bool {
 		return reference.field == 'id'
 	}
 	return field == 'id'
-		|| (model in postgres_core_fields && field in ['userId', 'organizationId', 'inviterId'])
+		|| (model_schema.is_core_model(model) && field in ['userId', 'organizationId', 'inviterId'])
 }
 
 fn adapter_model_table(models map[string]AdapterModel, model string) !string {

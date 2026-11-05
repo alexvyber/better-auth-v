@@ -9,6 +9,7 @@ import x.json2
 
 @[heap]
 pub struct Auth {
+	models ModelRegistry
 pub:
 	config Config
 mut:
@@ -54,8 +55,7 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 	for plugin in config.plugins {
 		if plugin is ValidatingPlugin { plugin.validate()! }
 	}
-	validate_organization_fields(config.model_fields)!
-	validate_adapter_models(config.adapter_models)!
+	models := compile_model_registry(config)!
 	mut configured_storage := storage
 	if mut configured_storage is AdapterModelStorage {
 		configured_storage.configure_adapter_models(config.adapter_models)!
@@ -215,6 +215,7 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 		}
 	}
 	return &Auth{
+		models:                    models
 		production_cookie_default: os.getenv('NODE_ENV') == 'production'
 		initial_trusted_origins:   initial_trusted_origins
 		user_defined_fields:       input_config.user_fields.keys()

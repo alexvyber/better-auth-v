@@ -1,5 +1,6 @@
 module better_auth
 
+import better_auth.schema as model_schema
 import json
 import net.urllib
 import x.json2
@@ -318,7 +319,7 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 					return error('organization lookup supports equality only')
 				}
 				field := (filter['field'] or { return error('missing field') }).str()
-				if field !in postgres_core_fields[model]
+				if field !in model_schema.core_fields(model)
 					&& field !in c.auth.config.model_fields[model] {
 					return error('unknown organization lookup field')
 				}

@@ -1,5 +1,6 @@
 module better_auth
 
+import better_auth.schema as model_schema
 import x.json2
 
 fn (mut storage MongoStorage) index(model string, fields []string, unique bool, ttl bool, optional_type string) ! {
@@ -62,7 +63,7 @@ fn (mut storage MongoStorage) index(model string, fields []string, unique bool, 
 pub fn (mut storage MongoStorage) migrate() ! {
 	if storage.transaction { return error('cannot migrate active MongoDB transaction') }
 	// Create every collection before a transaction can touch it.
-	mut models := postgres_core_fields.keys()
+	mut models := model_schema.core_models()
 	models << storage.adapter_models.keys()
 	for model in models {
 		storage.client.command(storage.options.database, {

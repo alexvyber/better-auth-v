@@ -1,5 +1,6 @@
 module better_auth
 
+import better_auth.schema as model_schema
 import db.pg
 import json
 import x.json2
@@ -54,12 +55,12 @@ pub fn open_postgres(options PostgresOptions) !PostgresStorage {
 		return error('invalid PostgreSQL schema')
 	}
 	for model, table in options.tables {
-		if model !in postgres_core_fields || table == '' || table.contains('\x00') {
+		if !model_schema.is_core_model(model) || table == '' || table.contains('\x00') {
 			return error('invalid PostgreSQL table mapping')
 		}
 	}
 	for model, fields in options.fields {
-		if model !in postgres_core_fields { return error('invalid PostgreSQL field mapping model') }
+		if !model_schema.is_core_model(model) { return error('invalid PostgreSQL field mapping model') }
 		mut used := map[string]bool{}
 		for _, column in fields {
 			if column == '' || column.contains('\x00') || column in used {
@@ -118,25 +119,6 @@ fn (storage &PostgresStorage) column_sql(model string, field string) string {
 	return sql_identifier(storage.column(model, field))
 }
 
-const postgres_core_fields = {
-	'organization':     ['id', 'name', 'slug', 'logo', 'metadata', 'createdAt']
-	'member':           ['id', 'organizationId', 'userId', 'role', 'createdAt']
-	'invitation':       ['id', 'organizationId', 'email', 'role', 'status', 'inviterId', 'expiresAt',
-		'createdAt']
-	'organizationRole': ['id', 'organizationId', 'role', 'permission', 'createdAt', 'updatedAt']
-	'user':             ['id', 'name', 'email', 'emailVerified', 'image', 'createdAt', 'updatedAt']
-	'session':          ['id', 'userId', 'token', 'expiresAt', 'createdAt', 'updatedAt', 'ipAddress',
-		'userAgent']
-	'account':          ['id', 'userId', 'accountId', 'providerId', 'password', 'accessToken',
-		'refreshToken', 'idToken', 'accessTokenExpiresAt', 'refreshTokenExpiresAt', 'scope',
-		'createdAt', 'updatedAt']
-	'verification':     ['id', 'identifier', 'value', 'expiresAt', 'createdAt', 'updatedAt']
-	'jwks':             ['id', 'publicKey', 'privateKey', 'alg', 'crv', 'createdAt', 'expiresAt']
-	'rateLimit':        ['key', 'count', 'lastRequest']
-	'twoFactor':        ['id', 'userId', 'secret', 'backupCodes', 'verified',
-		'failedVerificationCount', 'lockedUntil']
-}
-
 fn (storage &PostgresStorage) additional(model string) map[string]AdditionalField {
 	return if model == 'user' {
 		storage.user_fields
@@ -150,7 +132,7 @@ fn (storage &PostgresStorage) additional(model string) map[string]AdditionalFiel
 }
 
 fn (storage &PostgresStorage) logical_fields(model string) []string {
-	mut fields := (postgres_core_fields[model] or { ['id'] }).clone()
+	mut fields := model_schema.core_fields_or_id(model).clone()
 	for field, _ in storage.additional(model) {
 		fields << field
 	}

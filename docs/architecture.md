@@ -75,21 +75,42 @@ storage construction and individual callback families have separate files.
 Authentication, predicate evaluation, persistence and retries remain in V.
 Imported upstream test bodies and their preservation manifests are unchanged.
 
-## Remaining structural work
+## Typed adapter commands
 
-- Decode trusted adapter JSON once into typed commands and predicates. Dynamic
-  plugin record values can remain JSON without making query control flow dynamic.
-- Separate storage implementations from mixed runtime files, then establish
-  independently compilable driver modules with explicit capabilities.
-- Extract domain services and plugin orchestration from the root module after
-  resolving their shared record and interface contracts.
-- Make optional database dependencies optional at import time. The default root
-  module still links libpq, SQLite and OpenSSL, including memory-only consumers.
+The independent `adapter` module decodes the trusted JSON command boundary into
+`Create`, `Read`, `Mutation` and `Increment` variants. Predicates, connectors,
+comparison modes, sort direction, pagination, projection and join options are
+parsed once. Query execution and atomic retries consume these plans directly;
+only application-defined record values remain dynamic JSON. Schema validation
+still runs against the Auth registry, including when no row matches.
 
-These steps need public API planning: V aliases do not transparently satisfy an
-interface whose method uses the original nominal record type. Moving records into
-another module and aliasing them back would break existing storage implementations.
-Moving same-module files into directories alone would not establish that boundary.
+## Independent storage and domain modules
+
+`storage/sqlite` owns SQLite connection setup, prepared execution and driver rows.
+`storage/postgres` owns libpq connections, prepared execution, savepoints and rows.
+Neither imports the auth runtime. Database-native types stay behind these module
+boundaries. The root storage adapters translate auth records and own their schema
+mapping and migration rules, retaining existing public types and storage interfaces.
+
+Driver implementations use V's conditional source files: `-d sqlite` and
+`-d postgres` enable the relevant native import and linkage. Without a flag, a
+backend exposes the same connection contract with explicit disabled errors and
+no database imports. Opening the root adapter therefore fails with the required
+flag rather than silently substituting another backend. Memory-only consumers
+still need OpenSSL, but neither SQL library. MongoDB retains its separate
+`-d mongodb` native-driver opt-in.
+
+`domain/permissions` owns complete-role permission decisions and built-in role
+grants. Admin and organization services share it without constructing synthetic
+users to check organization permissions. `domain/ratelimit` owns window decisions,
+counter progression and retry-after rounding. Both compile and test independently
+of HTTP, configuration, persistence, OpenSSL and the root auth module.
+
+The remaining feature orchestration and auth record mappings still live in the
+root module. Extracting every auth service or complete storage adapter is further
+work, rather than a consequence of moving its native I/O into a separate module.
+Existing record and storage interface types remain stable: V aliases alone do not
+transparently satisfy interfaces using another nominal record type.
 
 ## Verification
 
@@ -104,7 +125,7 @@ For real-scrypt cases on a loaded machine, an optimized native bridge can be
 selected without changing test bodies or timeouts:
 
 ```sh
-V_C_ERROR_BUG_REPORT_DISABLED=1 v -prod -o build/auth-bridge-prod cmd/bridge
+V_C_ERROR_BUG_REPORT_DISABLED=1 v -prod -d sqlite -d postgres -o build/auth-bridge-prod cmd/bridge
 BETTER_AUTH_BRIDGE_BIN="$PWD/build/auth-bridge-prod" pnpm exec vitest run --maxWorkers=1
 ```
 

@@ -24,16 +24,19 @@ v install alexvyber.better_auth
 import alexvyber.better_auth
 ```
 
-Use V 0.5.2 and a C compiler. The default module links OpenSSL 3, SQLite and
-PostgreSQL's libpq, including when using the memory or SQLite store. Install their
-development headers/libraries first:
+Use V 0.5.2, a C compiler and OpenSSL 3. The default memory-backed build links
+no database libraries. SQLite and PostgreSQL are explicit compile-time opt-ins:
+`v -d sqlite ...` and `v -d postgres ...`; combine both flags when needed.
+Install development libraries for the backends you enable:
 
 ```sh
 # macOS / Homebrew
-brew install pkg-config openssl@3 sqlite libpq
+brew install pkg-config openssl@3
+# Optional databases: brew install sqlite libpq
 
 # Ubuntu / Debian
-sudo apt-get install build-essential pkg-config libssl-dev libsqlite3-dev libpq-dev
+sudo apt-get install build-essential pkg-config libssl-dev
+# Optional databases: sudo apt-get install libsqlite3-dev libpq-dev
 ```
 
 Node.js, pnpm, database servers and the upstream TypeScript tests are development
@@ -42,7 +45,8 @@ an additional native driver build; see [the package guide](docs/publishing.md).
 
 From a checkout, `make check-package` verifies both installed import layouts in
 isolated consumers, including Unicode password hashing, SQLite restart/login and
-RSA JWT signing/verification. It requires Node.js for the verification script but
+RSA JWT signing/verification. It also checks default, SQLite-only and PostgreSQL-only
+link dependencies. It requires Node.js for the verification script but
 does not install npm packages or use checkout build artifacts.
 
 ## Implemented
@@ -133,8 +137,10 @@ does not install npm packages or use checkout build artifacts.
 
 Tested with V 0.5.2, Node.js 24, and pnpm 12. RSA/ECDSA support requires OpenSSL 3
 development headers and libraries, discovered through V's `net.openssl` module.
-SQLite uses V's `db.sqlite` binding
-and its native SQLite dependency. The full test suite also requires `redis-server`
+`-d sqlite` enables the independent SQLite driver using V's `db.sqlite` binding
+and its native SQLite dependency. `-d postgres` enables the independent libpq
+driver. The root constructors remain available and report the required flag when
+a disabled backend is requested. The full test suite also requires `redis-server`
 and `redis-cli` on PATH; its isolated Redis process disables persistence. The
 PostgreSQL adapter uses V's `db.pg`/libpq binding (development headers and libraries
 must be installed). PostgreSQL conformance tests start isolated temporary clusters;

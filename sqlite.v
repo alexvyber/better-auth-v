@@ -1,13 +1,13 @@
 module better_auth
 
-import db.sqlite
+import better_auth.storage.sqlite as sqlite_driver
 import json
 import x.json2
 
 pub struct SQLiteStorage {
 mut:
 	adapter_models      map[string]AdapterModel
-	db                  sqlite.DB
+	db                  sqlite_driver.Connection
 	options             SQLiteOptions
 	model_fields        map[string]map[string]AdditionalField
 	model_unique_ready  bool = true
@@ -55,9 +55,7 @@ pub fn open_sqlite_with_options(path string, options SQLiteOptions) !SQLiteStora
 		}
 		used[column.to_lower()] = true
 	}
-	db := sqlite.connect(path)!
-	db.exec('PRAGMA foreign_keys = ON')!
-	db.busy_timeout(5000)
+	db := sqlite_driver.open(path)!
 	return SQLiteStorage{
 		db:      db
 		options: SQLiteOptions{

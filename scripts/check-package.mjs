@@ -20,6 +20,7 @@ for(const required of ['v.mod','LICENSE','UPSTREAM_LICENSE','jws_openssl.h','mon
 assert(!files.some(file=>/^(?:build|node_modules|\.upstream)\//.test(file)),'Generated dependencies must not be tracked');
 const temporary=mkdtempSync(join(tmpdir(),'better-auth-package-'));
 const v=process.env.V??'v';
+const coreOnly=process.argv.includes('--core-only');
 const consumer=(prefix)=>`module main
 
 import ${prefix}
@@ -74,6 +75,49 @@ fn main() {
  println('Installed package verified: ${prefix}')
 }
 `;
+// Keep core linking independent of native database headers/libraries.
+const coreConsumer=(prefix)=>`module main
+import ${prefix}
+
+fn main() {
+ mut auth := better_auth.new(better_auth.Config{
+  secret: 'memory-package-secret-at-least-32-characters'
+ }, better_auth.MemoryStorage{})!
+ defer {auth.close() or {}}
+ assert auth.with_internal(fn (mut context better_auth.EndpointContext) !string {
+  user := context.create_user(better_auth.User{id:'core-user',email:'core@example.com'})!
+  return user.id
+ })! == 'core-user'
+ mut sqlite_disabled := false
+ better_auth.open_sqlite(':memory:') or {
+  assert err.msg().contains('-d sqlite')
+  sqlite_disabled = true
+ }
+ assert sqlite_disabled
+ mut postgres_disabled := false
+ better_auth.open_postgres(better_auth.PostgresOptions{connection_string:'host=localhost'}) or {
+  assert err.msg().contains('-d postgres')
+  postgres_disabled = true
+ }
+ assert postgres_disabled
+}
+`;
+const postgresConsumer=(prefix)=>`module main
+import ${prefix}
+fn main() {
+ mut rejected := false
+ // Forces native PostgreSQL connection handling without a database server.
+ better_auth.open_postgres(better_auth.PostgresOptions{connection_string:'invalid'}) or {
+  assert !err.msg().contains('support is disabled')
+  rejected = true
+ }
+ assert rejected
+}
+`;
+function linkedLibraries(binary) {
+ const output=execFileSync(process.platform==='darwin'?'otool':'ldd',process.platform==='darwin'?['-L',binary]:[binary],{encoding:'utf8'});
+ return process.platform==='darwin'?output.split('\n').slice(1).join('\n'):output;
+}
 try{
  const source=join(temporary,'source');mkdirSync(source,{recursive:true});
  for(const file of files){
@@ -100,11 +144,21 @@ try{
   }
   assert(!existsSync(join(installed,'build')));
   writeFileSync(join(app,'v.mod'),"Module { name: 'package_consumer' version: '0.0.0' dependencies: [] }\n");
-  writeFileSync(join(app,'main.v'),consumer(prefix));
-  execFileSync(v,['run','main.v'],{
-   cwd:app,stdio:'inherit',timeout:180000,
-   env,
-  });
+  for(const [name,code,flags] of [
+   ['core',coreConsumer(prefix),[]],
+   ['sqlite',consumer(prefix),['-d','sqlite']],
+   ['postgres',postgresConsumer(prefix),['-d','postgres']],
+  ]){
+   if(coreOnly && name!=='core')continue;
+   writeFileSync(join(app,'main.v'),code);
+   const binary=join(app,name);
+   execFileSync(v,[...flags,'-o',binary,'main.v'],{cwd:app,stdio:'inherit',timeout:180000,env});
+   const linked=linkedLibraries(binary);
+   if(name!=='sqlite')assert(!/sqlite/i.test(linked),`${name} unexpectedly links SQLite: ${linked}`);
+   if(name!=='postgres')assert(!/libpq/i.test(linked),`${name} unexpectedly links libpq: ${linked}`);
+   execFileSync(binary,[],{cwd:app,stdio:'inherit',timeout:180000,env});
+   console.log(`Installed ${prefix}: ${name} consumer and dependency isolation verified`);
+  }
  }
  console.log('Package checks passed without Node packages, a database server, or checkout build artifacts.');
 }finally{rmSync(temporary,{recursive:true,force:true})}

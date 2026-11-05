@@ -25,16 +25,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Install Linux native dependencies
+      - name: Install Linux core dependencies
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential pkg-config libssl-dev libsqlite3-dev libpq-dev
-      - name: Install macOS native dependencies
+          sudo apt-get install -y build-essential pkg-config libssl-dev
+      - name: Install macOS core dependencies
         if: runner.os == 'macOS'
         run: |
-          brew install pkg-config openssl@3 sqlite libpq
-          echo "PKG_CONFIG_PATH=$(brew --prefix openssl@3)/lib/pkgconfig:$(brew --prefix libpq)/lib/pkgconfig:$(brew --prefix sqlite)/lib/pkgconfig" >> "$GITHUB_ENV"
+          brew install pkg-config openssl@3
+          echo "PKG_CONFIG_PATH=$(brew --prefix openssl@3)/lib/pkgconfig" >> "$GITHUB_ENV"
       - name: Install checksum-pinned V 0.5.2 release
         run: |
           case "$RUNNER_OS/$RUNNER_ARCH" in
@@ -57,5 +57,15 @@ jobs:
           unzip -q "$RUNNER_TEMP/v.zip" -d "$RUNNER_TEMP/v-release"
           "$RUNNER_TEMP/v-release/v/v" version
           echo "$RUNNER_TEMP/v-release/v" >> "$GITHUB_PATH"
-      - name: Check installed package consumers
+      - name: Check memory consumers before installing optional SQL dependencies
+        run: node scripts/check-package.mjs --core-only
+      - name: Install optional Linux SQL dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y libsqlite3-dev libpq-dev
+      - name: Install optional macOS SQL dependencies
+        if: runner.os == 'macOS'
+        run: |
+          brew install sqlite libpq
+          echo "PKG_CONFIG_PATH=$(brew --prefix openssl@3)/lib/pkgconfig:$(brew --prefix libpq)/lib/pkgconfig:$(brew --prefix sqlite)/lib/pkgconfig" >> "$GITHUB_ENV"
+      - name: Check installed package consumers and optional SQL linking
         run: make check-package

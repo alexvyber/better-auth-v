@@ -1,7 +1,7 @@
 module better_auth
 
 import better_auth.schema as model_schema
-import db.pg
+import better_auth.storage.postgres as postgres_driver
 import json
 import x.json2
 
@@ -20,7 +20,7 @@ pub:
 pub struct PostgresStorage {
 mut:
 	adapter_models    map[string]AdapterModel
-	connection        &pg.Conn
+	connection        &postgres_driver.Connection
 	options           PostgresOptions
 	model_fields      map[string]map[string]AdditionalField
 	user_fields       map[string]AdditionalField
@@ -60,7 +60,9 @@ pub fn open_postgres(options PostgresOptions) !PostgresStorage {
 		}
 	}
 	for model, fields in options.fields {
-		if !model_schema.is_core_model(model) { return error('invalid PostgreSQL field mapping model') }
+		if !model_schema.is_core_model(model) {
+			return error('invalid PostgreSQL field mapping model')
+		}
 		mut used := map[string]bool{}
 		for _, column in fields {
 			if column == '' || column.contains('\x00') || column in used {
@@ -69,8 +71,7 @@ pub fn open_postgres(options PostgresOptions) !PostgresStorage {
 			used[column] = true
 		}
 	}
-	connection := pg.connect_direct_with_conninfo(options.connection_string)!
-	connection.exec("SET TIME ZONE 'UTC'")!
+	connection := postgres_driver.open(options.connection_string)!
 	return PostgresStorage{
 		connection: connection
 		options:    options

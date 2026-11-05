@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:bridge": "mkdir -p build && V_C_ERROR_BUG_REPORT_DISABLED=1 \"${V:-v}\" -o build/auth-bridge cmd/bridge",
+    "build:bridge": "mkdir -p build && V_C_ERROR_BUG_REPORT_DISABLED=1 \"${V:-v}\" -d sqlite -d postgres -o build/auth-bridge cmd/bridge",
     "test": "pnpm build:bridge && pnpm build:mongo && vitest run",
     "typecheck": "tsc --noEmit",
     "check:package": "node scripts/check-package.mjs",
@@ -13,7 +13,7 @@
     "postgres:setup": "node scripts/build-test-postgres.mjs",
     "mongo:setup": "node scripts/build-test-mongo.mjs",
     "mongo:driver": "node scripts/build-test-mongo.mjs --driver-only",
-    "build:mongo": "mkdir -p build && V_C_ERROR_BUG_REPORT_DISABLED=1 \"${V:-v}\" -d mongodb -o build/mongo-auth-bridge cmd/bridge && V_C_ERROR_BUG_REPORT_DISABLED=1 \"${V:-v}\" -d mongodb -o build/mongo-command cmd/mongo"
+    "build:mongo": "mkdir -p build && V_C_ERROR_BUG_REPORT_DISABLED=1 \"${V:-v}\" -d sqlite -d postgres -d mongodb -o build/mongo-auth-bridge cmd/bridge && V_C_ERROR_BUG_REPORT_DISABLED=1 \"${V:-v}\" -d mongodb -o build/mongo-command cmd/mongo"
   },
   "devDependencies": {
     "@better-auth/core": "1.7.15",

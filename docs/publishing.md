@@ -12,10 +12,12 @@ Better Auth parity.
 
 ## Consumer requirements
 
-V 0.5.2, Git, a C compiler, OpenSSL 3 development files, SQLite development files,
-and libpq development files are required for the default module. Both database
-bindings are currently compiled into the root module even when the application
-uses another store. No VPM dependencies are declared. Node.js and pnpm are not
+V 0.5.2, Git, a C compiler and OpenSSL 3 development files are required for the
+default memory-backed module. SQLite requires `-d sqlite` and SQLite development
+files; PostgreSQL requires `-d postgres` and libpq development files. Combine the
+flags if both are used. No database headers or libraries are required for a
+memory-only build. Disabled backend constructors return an error naming the flag.
+No VPM dependencies are declared. Node.js and pnpm are not
 runtime dependencies; PostgreSQL and Redis servers are only needed if those stores
 are used. SQLite needs no server.
 
@@ -43,6 +45,8 @@ fn main() {
     println(response.body)
 }
 ```
+
+Compile this SQLite example with `v -d sqlite run main.v`.
 
 Direct Git installs before registry registration use `v.mod`'s unqualified name,
 so their import is `better_auth`. V 0.5.2 can resolve a registered name for a direct
@@ -76,7 +80,9 @@ This check copies tracked files into two isolated `VMODULES` roots, one with
 outside the repository, without custom compiler search paths or global V modules.
 It verifies real scrypt/NFKC hashing, SQLite migrations and login after restart,
 RSA JWT signing/verification and key persistence, bundled C headers and embedded
-Unicode tables. Licenses and required package files must be tracked; generated
+Unicode tables. Separate default, SQLite-only and PostgreSQL-only builds assert
+that their binaries do not link disabled SQL libraries. The PostgreSQL check
+exercises connection-string rejection without a database server. Licenses and required package files must be tracked; generated
 build/dependency trees must not be tracked. New package files must be staged before
 running this check. The unqualified layout uses VPM's actual Git installer against
 a temporary local Git snapshot; the namespaced registry layout is simulated. This

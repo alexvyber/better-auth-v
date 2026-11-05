@@ -1209,6 +1209,50 @@ modules and optional database linking remain outstanding. This structural batch
 does not expand the declared upstream feature-parity coverage. The 0.1.0 release
 and VPM publication status are unchanged.
 
+## Typed commands, independent policies and optional SQL drivers
+
+The independent `adapter` module decodes trusted JSON once into distinct create,
+read, mutation and increment commands. Typed predicates and enums now drive
+filtering, indexed token lookup and atomic guards. Sorting, pagination, projection
+and join options are decoded before execution. Dynamic application record values
+remain JSON. Two native decoder tests cover complete plans and malformed options;
+the nonfinite-increment native test now enters through the command boundary while
+preserving its original assertions. The first batch passes 720 integration cases,
+including the complete 669-case shared upstream adapter matrix.
+
+Independent `domain/permissions` and `domain/ratelimit` modules own permission
+decisions, built-in role grants and rate-limit window decisions. Root APIs retain
+their record/interface types and delegate to these policies. Complete-role grants
+remain required: splitting a request across individually insufficient roles does
+not grant permission. All 72 unchanged dynamic-role cases pass across SQLite,
+PostgreSQL and MongoDB.
+
+Independent `storage/sqlite` and `storage/postgres` modules now own native
+connections, prepared execution and driver-owned rows. Root storage integrations
+retain auth record mapping, migrations and their existing public types. Native
+SQL bindings compile only with `-d sqlite` or `-d postgres`; a disabled backend
+reports its required flag. The memory-only default links OpenSSL without either
+SQL library. The server example enables SQLite only; test builders explicitly
+enable their required backends. Additional feature orchestration and complete
+record adapters remain in the root module; native I/O separation does not imply
+that every storage or auth service has become an independent module.
+
+All 139 native functions across 48 files pass with SQL enabled. The independent
+SQLite driver also passes its disabled-mode test without SQL flags. After the
+driver extraction, all 669 shared upstream adapter cases pass in three disjoint
+223-case backend selections. A combined run terminated with signal 9 and is not
+counted as successful. The isolated reruns retain every selected assertion.
+
+Installed package verification passes six consumers: memory-only, SQLite-only and
+PostgreSQL-only under both namespaced and Git-installed layouts. Each inspects the
+binary's linked libraries to reject disabled SQL dependencies; PostgreSQL's
+connection parser is exercised without a database server. A package check killed
+during parallel compilation was repeated successfully. CI now runs the default
+consumers before installing optional SQL dependencies, then all six consumers.
+HTTP migration/login/CSRF/restart smoke, TypeScript checking and twelve source and
+architecture audits pass. Nothing is published to VPM and the 0.1.0 release is
+unchanged.
+
 ## Guardrails for continuing
 
 - Authentication decisions and persistence belong in V. TS code translates test

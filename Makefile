@@ -1,4 +1,5 @@
 V ?= v
+SQL_FLAGS := -d sqlite -d postgres
 export V_C_ERROR_BUG_REPORT_DISABLED = 1
 
 .PHONY: check check-package test test-v test-ts test-audit integration fmt
@@ -11,18 +12,20 @@ check-package:
 test: test-audit test-v test-ts
 
 test-audit:
-	node --test scripts/upstream-coverage.test.mjs scripts/adapter-suite-imports.test.mjs
+	node --test scripts/upstream-coverage.test.mjs scripts/adapter-suite-imports.test.mjs scripts/architecture.test.mjs
 
 test-v:
-	$(V) test .
+	$(V) $(SQL_FLAGS) test .
 
 test-ts:
 	V="$(V)" pnpm test
 	pnpm typecheck
 
-build/auth-server: *.v *.h examples/server/main.v
+PACKAGE_SOURCES := $(wildcard *.v *.h adapter/*.v schema/*.v domain/*/*.v storage/*/*.v normalization/*.v examples/server/*.v) normalization/data/tables.txt v.mod
+
+build/auth-server: $(PACKAGE_SOURCES)
 	mkdir -p build
-	$(V) -o build/auth-server examples/server
+	$(V) -d sqlite -o build/auth-server examples/server
 
 integration: build/auth-server
 	node scripts/http-smoke.mjs

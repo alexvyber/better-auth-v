@@ -168,4 +168,5 @@ rest of `better_auth` through `-file-list`, without copying tests or exposing
 private helpers. Independent-module and external-plugin tests compile normally.
 The runner creates a temporary `better_auth` module mapping to this checkout,
 so renamed checkouts work and global module installations cannot mask the source.
+Compiled native test binaries also stay in that temporary directory.
 The default is one compiler at a time; `BETTER_AUTH_TEST_JOBS` controls concurrency.

@@ -45,8 +45,9 @@ if(process.argv[1] && resolve(process.argv[1])===fileURLToPath(import.meta.url))
   let next=0,passed=0;
   async function worker(){
    while(next<selected.length){
-    const test=selected[next++];
-    const args=['-d','sqlite','-d','postgres'];
+    const position=next++;
+    const test=selected[position];
+    const args=['-d','sqlite','-d','postgres','-o',join(modules,`native-test-${position}`)];
     if(test.sources.length)args.push('-file-list',test.sources.map(path=>join(root,path)).join(','));
     args.push(join(root,test.path));
     const result=await new Promise(resolveRun=>{

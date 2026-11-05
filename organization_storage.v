@@ -13,6 +13,7 @@ mut:
 	organization_create(model string, encoded string) !
 	organization_update(model string, encoded string) !
 	organization_delete(model string, id string) !
+	organization_claim_invitation(id string, from_status string, status string) !bool
 }
 
 pub interface ConfigurableModelStorage {
@@ -342,4 +343,53 @@ pub fn (mut storage MongoStorage) organization_delete(model string, id string) !
 		}
 	}
 	storage.delete_row(model, id)!
+}
+
+pub fn (mut storage MemoryStorage) organization_claim_invitation(id string, from_status string, status string) !bool {
+	storage.check_write()!
+	key := 'invitation|' + id
+	encoded := storage.records.organizations[key] or { return false }
+	mut row := org_json_fields(encoded)!
+	if (row['status'] or { json2.Any('') }).str() != from_status { return false }
+	row['status'] = status
+	storage.records.organizations[key] = json2.Any(row).json_str()
+	return true
+}
+
+pub fn (mut storage SQLiteStorage) organization_claim_invitation(id string, from_status string, status string) !bool {
+	rows := storage.db.exec_param_many("UPDATE auth_invitation SET data=json_set(data,'$.status',?) WHERE id=? AND json_extract(data,'$.status')=? RETURNING id", [
+		status,
+		id,
+		from_status,
+	])!
+	return rows.len == 1
+}
+
+pub fn (mut storage PostgresStorage) organization_claim_invitation(id string, from_status string, status string) !bool {
+	if storage.sql_type('invitation', 'id')! == 'uuid' && !postgres_uuid_identifier(id) {
+		return false
+	}
+	rows := storage.connection.exec_param_many('UPDATE ${storage.table('invitation')} SET ${storage.column_sql('invitation',
+		'status')}=$1 WHERE ${storage.column_sql('invitation', 'id')}=$2 AND ${storage.column_sql('invitation',
+		'status')}=$3 RETURNING ${storage.column_sql('invitation', 'id')}',
+		[status, id, from_status])!
+	return rows.len == 1
+}
+
+pub fn (mut storage MongoStorage) organization_claim_invitation(id string, from_status string, status string) !bool {
+	reply := storage.command({
+		'findAndModify': BSONValue(storage.collection('invitation'))
+		'query':         BSONValue({
+			storage.column('invitation', 'id'):     storage.id_value(id)!
+			storage.column('invitation', 'status'): BSONValue(from_status)
+		})
+		'update':        BSONValue({
+			'$set': BSONValue({
+				storage.column('invitation', 'status'): BSONValue(status)
+			})
+		})
+		'new':           BSONValue(true)
+	}, 3)!
+	value := reply['value'] or { return false }
+	return value !is json2.Null
 }

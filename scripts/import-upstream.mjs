@@ -236,15 +236,48 @@ for(const [prefix,fixture,surface] of [['postgres','postgres-fixture','native-po
 }
 const organizationCRUD={file:'organization-crud',path:'packages/better-auth/src/plugins/organization/routes/crud-org.test.ts',
  suites:new Set(['get-full-organization','get-organization','organization hooks','updateOrganization']),
- skippedTests:new Set(['should include invitations in the response','should apply beforeCreateTeam hook','should apply afterCreateTeam hook','should allow passing id through `beforeCreateTeam`','should allow passing id through `beforeCreateInvitation`']),
+ skippedTests:new Set(['should apply beforeCreateTeam hook','should apply afterCreateTeam hook','should allow passing id through `beforeCreateTeam`']),
  executionSurface:'native-api-upstream-test-origin-defaults',
  unportedReason:'Invitation and team integration cases remain for subsequent batches',
  imports:`import {describe,expect,it,vi} from 'vitest';
+import type {APIError} from 'better-auth/api';
 import {createAuthClient} from 'better-auth/client';
 import {organizationClient,ORGANIZATION_ERROR_CODES} from 'better-auth/client/plugins';
 import {getTestInstance} from '../harness/organization-fixture.js';
 import {organization} from '../harness/plugins.js';
 `};
+const organizationInvitations={file:'organization-invitations',path:'packages/better-auth/src/plugins/organization/routes/crud-invites.test.ts',
+ suites:new Set(['organization invitation recipient ownership gates']),
+ skippedTests:new Set(['requires verified email for invitation ID calls when the database owns IDs','accepts an invitation by ID with database-owned IDs when verification is explicitly disabled']),
+ executionSurface:'native-api-upstream-test-origin-defaults',unportedReason:'Database-owned numeric ID generation and organization teams remain unported',
+ imports:`import type {BetterAuthOptions,GenerateIdFn} from '@better-auth/core';
+import type {OrganizationOptions} from 'better-auth/plugins/organization';
+import {describe,expect,it} from 'vitest';
+import {organizationClient} from 'better-auth/client/plugins';
+import {organization} from '../harness/plugins.js';
+import {getTestInstance} from '../harness/organization-fixture.js';
+`};
+plans.push(organizationInvitations);
+const invitationLifecycle={file:'organization-invitation-lifecycle',path:'packages/better-auth/src/plugins/organization/organization.test.ts',
+ suites:new Set(['invitation expiration and filtering','invitation limit','cancel pending invitations on re-invite','re-invite without cancelPendingInvitationsOnReInvite still throws','resend invitation should reuse existing']),
+
+ executionSurface:'native-api-upstream-test-origin-defaults',unportedReason:'Remaining organization suites and dynamic invitation limits remain unported',
+ imports:`import {describe,expect,it,vi} from 'vitest';
+import type {APIError} from 'better-auth/api';
+import {createAuthClient} from 'better-auth/client';
+import {organizationClient,ORGANIZATION_ERROR_CODES} from 'better-auth/client/plugins';
+import {organization} from '../harness/plugins.js';
+import {getTestInstance} from '../harness/organization-fixture.js';
+`};
+plans.push(invitationLifecycle);
+for(const [prefix,fixture,surface] of [['postgres','postgres-fixture','native-postgres-uuid-mapped-physical-schema'],['mongo','mongo-fixture','native-mongodb-objectid-replica-set']]){
+ for(const plan of [organizationInvitations,invitationLifecycle]){
+  // Non-UUID custom generator source case uses the explicit text-ID fixture.
+  const fixturePath=prefix==='postgres'?'../harness/organization-postgres-text-fixture.js':'../harness/organization-'+fixture+'.js';
+  plans.push({...plan,file:prefix+'-'+plan.file,imports:plan.imports.replace('../harness/organization-fixture.js',fixturePath),executionSurface:surface});
+ }
+}
+
 plans.push(organizationCRUD);
 for(const [prefix,fixture,surface] of [['postgres','postgres-fixture','native-postgres-uuid-mapped-physical-schema'],['mongo','mongo-fixture','native-mongodb-objectid-replica-set']]){plans.push({...organizationCRUD,file:prefix+'-organization-crud',imports:organizationCRUD.imports.replace('../harness/organization-fixture.js','../harness/organization-'+fixture+'.js'),executionSurface:surface})}
 const policy = plans.find(plan => plan.file === 'oauth-link-policy');

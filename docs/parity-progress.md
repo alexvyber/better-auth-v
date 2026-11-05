@@ -761,7 +761,17 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   TTL-enabled replica set continues to verify actual expiration and equivalent
   existing indexes; production storage behavior is unchanged.
 
-The latest full `make check` passes 2418 TypeScript cases across 112 files, all 110
+- Added native organization invitations, email callbacks, custom expiry, limits,
+  resend/cancel policies, recipient ownership/verification gates and trusted email
+  enumeration. Guarded status transitions and transactional acceptance prevent
+  duplicate membership; independent PostgreSQL/MongoDB concurrent requests verify
+  one winner. Hook/delivery failures roll back database changes and allow retry.
+  18 unchanged invitation cases repeat on three backends (54 cases), and two more
+  CRUD cases per backend cover invitation views and hook-supplied IDs. Eleven owned
+  contracts plus one native function verify integration boundaries. Database-owned
+  numeric IDs, team invitations and full callback context remain open.
+
+The latest full `make check` passes 2489 TypeScript cases across 119 files, all 111
 native V test functions across 36 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
 Formatting and `git diff --check` pass. Repeated backend runs do not increase unique
@@ -770,7 +780,7 @@ upstream source coverage, and these results do not imply full upstream parity.
 The user resumed work and authorized incremental commits and pushes to
 `alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.
 The objective remains incomplete. The corpus currently records 32 completely
-imported files, eleven partial imports and 393 unported files; imported status describes source
+imported files, thirteen partial imports and 391 unported files; imported status describes source
 preservation, not broad feature completion.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise
@@ -780,7 +790,7 @@ preservation, not broad feature completion.
 2. Complete remaining JWT/plugin integration details: schema/column mappings,
    remaining callback/type counterparts, and broader provider use. Verify combinations with deferred
    read-only session GET and other hooks; JWT header issuance can rotate keys.
-3. Complete remaining admin integration and complete organization invitations, member management and dynamic RBAC, plus account-cookie behavior and remaining rotation combinations. The complete
+3. Complete remaining admin integration and complete organization member management and dynamic RBAC, plus account-cookie behavior and remaining rotation combinations. The complete
    sign-up/session source runs do not establish full plugin or stateless parity.
    Preserve every original assertion when importing additional suites.
 4. Complete the PostgreSQL/MongoDB adapter contracts, query and plugin schemas, and add MySQL,

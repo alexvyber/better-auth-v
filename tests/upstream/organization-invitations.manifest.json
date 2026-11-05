@@ -1,0 +1,197 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/organization/routes/crud-invites.test.ts",
+  "sha256": "c20c7b64aac086dcd221a567df9de4532fb87897aebe07c961205aeea9098890",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "organization invitation recipient ownership gates",
+      "suites": [
+        "organization invitation recipient ownership gates"
+      ],
+      "test": "accepts an invitation by ID from an unverified matching session by default",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "organization invitation recipient ownership gates",
+      "suites": [
+        "organization invitation recipient ownership gates"
+      ],
+      "test": "marks an invitation rejected by ID from an unverified matching session by default",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "organization invitation recipient ownership gates",
+      "suites": [
+        "organization invitation recipient ownership gates"
+      ],
+      "test": "gets an invitation by ID from an unverified matching session by default",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "organization invitation recipient ownership gates",
+      "suites": [
+        "organization invitation recipient ownership gates"
+      ],
+      "test": "rejects listUserInvitations from an unverified session",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "organization invitation recipient ownership gates",
+      "suites": [
+        "organization invitation recipient ownership gates"
+      ],
+      "test": "keeps listUserInvitations gated when invitation ID verification is disabled",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "organization invitation recipient ownership gates",
+      "suites": [
+        "organization invitation recipient ownership gates"
+      ],
+      "test": "requires verified email for invitation ID calls when explicitly enabled",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "organization invitation recipient ownership gates",
+      "suites": [
+        "organization invitation recipient ownership gates"
+      ],
+      "test": "requires verified email for invitation ID calls when the database owns IDs",
+      "selected": false,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": "Database-owned numeric ID generation and organization teams remain unported"
+    },
+    {
+      "suite": "organization invitation recipient ownership gates",
+      "suites": [
+        "organization invitation recipient ownership gates"
+      ],
+      "test": "requires verified email for invitation ID calls when advanced generateId is custom",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "organization invitation recipient ownership gates",
+      "suites": [
+        "organization invitation recipient ownership gates"
+      ],
+      "test": "accepts an invitation by ID with database-owned IDs when verification is explicitly disabled",
+      "selected": false,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": "Database-owned numeric ID generation and organization teams remain unported"
+    },
+    {
+      "suite": "organization invitation recipient ownership gates",
+      "suites": [
+        "organization invitation recipient ownership gates"
+      ],
+      "test": "accepts the invitation once the recipient verifies their email when verification is required",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "invitation teamId must belong to the invitation's organization",
+      "suites": [
+        "invitation teamId must belong to the invitation's organization"
+      ],
+      "test": "rejects creating an invitation with a teamId from another organization",
+      "selected": false,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": "Database-owned numeric ID generation and organization teams remain unported"
+    },
+    {
+      "suite": "invitation teamId must belong to the invitation's organization",
+      "suites": [
+        "invitation teamId must belong to the invitation's organization"
+      ],
+      "test": "rejects accepting an invitation whose teamId points at another org",
+      "selected": false,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": "Database-owned numeric ID generation and organization teams remain unported"
+    },
+    {
+      "suite": "invitation teamId must belong to the invitation's organization",
+      "suites": [
+        "invitation teamId must belong to the invitation's organization"
+      ],
+      "test": "uses the accepted invitation team ids if they change after the initial read",
+      "selected": false,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": "Database-owned numeric ID generation and organization teams remain unported"
+    },
+    {
+      "suite": "invitation teamId must belong to the invitation's organization",
+      "suites": [
+        "invitation teamId must belong to the invitation's organization"
+      ],
+      "test": "keeps the invitation pending when a referenced team no longer exists",
+      "selected": false,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": "Database-owned numeric ID generation and organization teams remain unported"
+    },
+    {
+      "suite": "invitation teamId must belong to the invitation's organization",
+      "suites": [
+        "invitation teamId must belong to the invitation's organization"
+      ],
+      "test": "clears the removed team from a pending invitation so it degrades to an organization-level invitation",
+      "selected": false,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": "Database-owned numeric ID generation and organization teams remain unported"
+    },
+    {
+      "suite": "invitation teamId must belong to the invitation's organization",
+      "suites": [
+        "invitation teamId must belong to the invitation's organization"
+      ],
+      "test": "keeps the remaining teams on a multi-team invitation when one team is removed",
+      "selected": false,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": "Database-owned numeric ID generation and organization teams remain unported"
+    },
+    {
+      "suite": "invitation teamId must belong to the invitation's organization",
+      "suites": [
+        "invitation teamId must belong to the invitation's organization"
+      ],
+      "test": "does not list another organization's team members from a mismatched teamMember row",
+      "selected": false,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": "Database-owned numeric ID generation and organization teams remain unported"
+    }
+  ]
+}

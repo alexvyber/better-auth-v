@@ -34,7 +34,7 @@
     "plugins": {
       "files": 45,
       "declarations": 1315,
-      "importedFiles": 14
+      "importedFiles": 16
     },
     "adapters": {
       "files": 16,
@@ -24056,7 +24056,7 @@
       "path": "packages/better-auth/src/plugins/organization/organization.test.ts",
       "sha256": "52869dfcdfd4403ff3ecc71104898d8ba51a17210da6baf80b8288ca7b2c2501",
       "group": "plugins",
-      "status": "unported",
+      "status": "imported-partial-file",
       "kind": "runtime",
       "declarations": [
         {
@@ -25201,7 +25201,7 @@
       "path": "packages/better-auth/src/plugins/organization/routes/crud-invites.test.ts",
       "sha256": "c20c7b64aac086dcd221a567df9de4532fb87897aebe07c961205aeea9098890",
       "group": "plugins",
-      "status": "unported",
+      "status": "imported-partial-file",
       "kind": "runtime",
       "declarations": [
         {

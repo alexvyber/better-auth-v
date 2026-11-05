@@ -216,8 +216,7 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
 - `AdminSchemaPlugin` and `OrganizationSchemaPlugin` supply creation defaults and
   protected authority fields. `AdminPlugin` now supplies native admin operations and
   ban enforcement as described below. `OrganizationPlugin` supplies the scoped
-  organization and membership foundation described below; invitations, dynamic roles
-  and teams remain open. The schema-only types do not register those endpoints. Custom synthetic-user callbacks support enumeration
+  organization and membership foundation and invitation APIs described below; dynamic roles and teams remain open. The schema-only types do not register those endpoints. Custom synthetic-user callbacks support enumeration
   protection with plugin fields and receive only user-defined additional inputs.
 - Secondary storage supports primary sessions, optional database copies, database
   fallback, preserved expired rows, TTLs, and atomic token consumption/counters in
@@ -367,7 +366,7 @@ storage parity, full stateless/account-cookie behavior, complete JWT/JWKS plugin
 remaining output field transforms/validators and functional defaults,
 remaining database-column mapping options, richer hooks,
 username/phone authentication, remaining two-factor integration details, passkeys, remaining admin integration,
-remaining organization operations, invitations, dynamic RBAC, teams, API keys, OAuth/OIDC server functionality,
+remaining organization operations, dynamic RBAC, teams, API keys, OAuth/OIDC server functionality,
 SSO/SAML/SCIM, and payment/integration plugins remain unimplemented.
 
 Unsupported capabilities are not advertised as working endpoints. Source test
@@ -733,16 +732,39 @@ Four scoped model schemas support additional fields, validation and mapped
 PostgreSQL/MongoDB tables/collections and fields. SQLite migration 7 adds payload
 organization/member/invitation/role tables, constraints and configured unique indexes;
 it does not implement upstream physical column aliases or a generic query API.
-22 unchanged organization CRUD source cases run on each backend (66 repeated
-cases), with nine owned integration cases and three native test functions. The
+24 unchanged organization CRUD source cases run on each backend (72 repeated
+cases), with nine owned foundation integration cases and four native test functions.
+The CRUD PostgreSQL fixture keeps UUID references and explicitly uses a text
+invitation primary key for the upstream hook-supplied custom ID case. The
 source fixture explicitly translates upstream test-context defaults that skip
 origin/CSRF checks; production defaults and independent HTTP contracts stay strict.
 
-Invitation APIs/email callbacks, public membership management, dynamic access
-control, teams, complete active-membership cleanup, generic hook composition and
+Public membership management, dynamic access control, teams, complete active-membership cleanup, generic hook composition and
 full organization source coverage remain open. Application databases are untouched.
 
 Mongo fixtures with simulated upstream dates disable the background TTL worker,
 while retaining production indexes. The independent expiry contract uses a separate
 server with the worker enabled and verifies actual deletion. Production MongoDB
 storage does not disable TTL cleanup.
+
+
+Organization invitations now support delivery callbacks, protected extra fields,
+custom expiry, static and callback invitation limits, resend retaining the ID and
+refreshing expiry, optional cancel-on-reinvite, recipient reads, acceptance,
+rejection (including expired invitations), cancellation, organization lists and
+verified-recipient pending lists. Headerless trusted calls can enumerate an explicit
+email; HTTP callers cannot. ID-based calls match the current stored user's email
+and apply explicit verification policy, defaulting to required for custom ID
+callbacks. The source's database-owned numeric-ID variant remains unported.
+Acceptance uses a guarded pending-to-accepted update on each adapter and creates
+membership/active-session changes in the enclosing transaction. A failed callback
+rolls back writes; external email delivery itself cannot be rolled back.
+
+Eight unchanged recipient-ownership cases and ten invitation lifecycle cases run
+on each backend (54 repeated cases). Eleven independent contracts cover Brand Map
+callback data/aliases, protected review defaults, tenant isolation, failed delivery,
+acceptance rollback/retry, membership limits and concurrent acceptance through
+independent PostgreSQL/MongoDB connections. One new native function tests stale
+status claims and transaction rollback in memory/SQLite. Team-linked invitations,
+complete callback context, atomic cross-request aggregate limits and generic
+upstream adapter query contracts remain open.

@@ -1,0 +1,1112 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/organization/organization.test.ts",
+  "sha256": "52869dfcdfd4403ff3ecc71104898d8ba51a17210da6baf80b8288ca7b2c2501",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "organization type",
+      "suites": [
+        "organization type"
+      ],
+      "test": "empty org type should works",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization type",
+      "suites": [
+        "organization type"
+      ],
+      "test": "allows dynamic roles in create invitation input",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should have correct schema order when dynamicAccessControl is enabled",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should include activeTeamId when both dynamicAccessControl and teams are enabled",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "create organization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should check if organization slug is available",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should prevent creating organization with empty slug",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should prevent creating organization with empty name",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should create organization directly in the server without cookie",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow listing organizations",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow updating organization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should prevent updating organization to duplicate slug",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow updating organization metadata",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow updating organization metadata with a constructor key",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should prevent updating organization to empty slug",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should prevent updating organization to empty name",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow activating organization and set session",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow activating organization by slug",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow getting full org on server",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow getting full org on server using slug",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "invites user to organization with role",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should create invitation with multiple roles",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should not allow inviting a user twice regardless of email casing",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow accepting invitation when user signs up with different email casing",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow getting a member",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow updating member",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow setting multiple roles",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow setting multiple roles when you have multiple yourself",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should not allow inviting member with a creator role unless they are creator",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow multi-role owner to invite with owner role",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow leaving organization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "shouldn't allow updating owner role if you're not owner",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow removing member from organization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "shouldn't allow removing last owner from organization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should validate permissions",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should return BAD_REQUEST when non-member tries to delete organization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow deleting organization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should have server side methods",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should add member on the server directly",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should add member on the server with multiple roles",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should respect membershipLimit when adding members to organization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should respect membershipLimit function when adding members to organization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow listing invitations for an org",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow listing invitations for a user using authClient",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization",
+      "suites": [
+        "organization"
+      ],
+      "test": "should allow listing invitations for a user using server",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "invitation expiration and filtering",
+      "suites": [
+        "invitation expiration and filtering"
+      ],
+      "test": "should allow rejecting expired invitations",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "invitation expiration and filtering",
+      "suites": [
+        "invitation expiration and filtering"
+      ],
+      "test": "should only list pending invitations for a user",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "invitation expiration and filtering",
+      "suites": [
+        "invitation expiration and filtering"
+      ],
+      "test": "should not list rejected invitations",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should return success",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should return not success",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should return not success",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "dynamic access control should merge DB permissions with built-in roles",
+      "suites": [
+        "dynamic access control should merge DB permissions with built-in roles"
+      ],
+      "test": "should merge DB permissions with built-in role permissions",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "dynamic access control should merge DB permissions with built-in roles",
+      "suites": [
+        "dynamic access control should merge DB permissions with built-in roles"
+      ],
+      "test": "should not lose built-in actions when DB defines partial actions for the same resource",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "invitation limit",
+      "suites": [
+        "invitation limit"
+      ],
+      "test": "should invite member to organization",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "invitation limit",
+      "suites": [
+        "invitation limit"
+      ],
+      "test": "should throw error when invitation limit is reached",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "invitation limit",
+      "suites": [
+        "invitation limit"
+      ],
+      "test": "should throw error with custom invitation limit",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cancel pending invitations on re-invite",
+      "suites": [
+        "cancel pending invitations on re-invite"
+      ],
+      "test": "should cancel pending invitations on re-invite",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "cancel pending invitations on re-invite",
+      "suites": [
+        "cancel pending invitations on re-invite"
+      ],
+      "test": "should cancel pending invitation and create a new one when re-inviting without resend",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "re-invite without cancelPendingInvitationsOnReInvite still throws",
+      "suites": [
+        "re-invite without cancelPendingInvitationsOnReInvite still throws"
+      ],
+      "test": "should still throw USER_IS_ALREADY_INVITED when option is disabled",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "resend invitation should reuse existing",
+      "suites": [
+        "resend invitation should reuse existing"
+      ],
+      "test": "should reuse existing invitation when resend is true",
+      "selected": true,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "owner can update roles",
+      "suites": [
+        "owner can update roles"
+      ],
+      "test": "allows setting custom role to a user",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "owner can update roles",
+      "suites": [
+        "owner can update roles"
+      ],
+      "test": "allows org owner to set a custom role for themselves",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "owner can update roles",
+      "suites": [
+        "owner can update roles"
+      ],
+      "test": "allows an org owner to remove their own creator role if not sole owner",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "types",
+      "suites": [
+        "types"
+      ],
+      "test": "should infer active organization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "Expect team endpoints to still be defined",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "Should infer the organization schema",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "create organization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "update organization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "list user organizations",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "useListOrganizations hook",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "set active organization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "should infer team additional fields on $Infer.Team",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "should infer organization additional fields on $Infer.Organization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "should infer member additional fields on $Infer.Member",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "useActiveOrganization hook",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields",
+        "active organization hook refresh"
+      ],
+      "test": "updates active member when setActive changes organization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields",
+        "active organization hook refresh"
+      ],
+      "test": "updates session and active member when create switches active organization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "getFullOrganization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "add member",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "list members",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "get active member",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "remove member",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "create invitation",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "get invitation",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "accept invitation",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "list invitations",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "create team",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "Additional Fields",
+      "suites": [
+        "Additional Fields"
+      ],
+      "test": "update team",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization hooks",
+      "suites": [
+        "organization hooks"
+      ],
+      "test": "should call organization creation hooks",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization hooks",
+      "suites": [
+        "organization hooks"
+      ],
+      "test": "should call invitation hooks",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization delete hooks receive endpoint context",
+      "suites": [
+        "organization delete hooks receive endpoint context"
+      ],
+      "test": "passes endpoint context to beforeDeleteOrganization and afterDeleteOrganization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization additionalFields with returned: false",
+      "suites": [
+        "organization additionalFields with returned: false"
+      ],
+      "test": "inferOrgAdditionalFields should filter out schema keys without additionalFields",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization additionalFields with returned: false",
+      "suites": [
+        "organization additionalFields with returned: false"
+      ],
+      "test": "should save field with returned: false but not return it in response",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization additionalFields with returned: false",
+      "suites": [
+        "organization additionalFields with returned: false"
+      ],
+      "test": "should not return secret field when getting organization by slug",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization additionalFields with returned: false",
+      "suites": [
+        "organization additionalFields with returned: false"
+      ],
+      "test": "should not return secret field when listing organizations",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization additionalFields with returned: false",
+      "suites": [
+        "organization additionalFields with returned: false"
+      ],
+      "test": "should not return member secret field in full organization response",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization additionalFields with returned: false",
+      "suites": [
+        "organization additionalFields with returned: false"
+      ],
+      "test": "should not return invitation secret field",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "organization additionalFields with returned: false",
+      "suites": [
+        "organization additionalFields with returned: false"
+      ],
+      "test": "should not return secret field after updating organization",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "delete cascade rollback",
+      "suites": [
+        "delete cascade rollback"
+      ],
+      "test": "rolls back deleteOrganization when an intermediate step throws",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    },
+    {
+      "suite": "delete cascade rollback",
+      "suites": [
+        "delete cascade rollback"
+      ],
+      "test": "rolls back removeMember when an intermediate step throws",
+      "selected": false,
+      "executionSurface": "native-postgres-uuid-mapped-physical-schema",
+      "upstreamDisabled": false,
+      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+    }
+  ]
+}

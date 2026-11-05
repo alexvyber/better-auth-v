@@ -90,6 +90,7 @@ const routes: Record<string, [string, string]> = {
  checkOrganizationSlug:['POST','/organization/check-slug'],setActiveOrganization:['POST','/organization/set-active'],
  listOrganizations:['GET','/organization/list'],getFullOrganization:['GET','/organization/get-full-organization'],getOrganization:['GET','/organization/get-organization'],
  getActiveMember:['GET','/organization/get-active-member'],listMembers:['GET','/organization/list-members'],addMember:['POST','/internal/organization/add-member'],
+ createInvitation:['POST','/organization/invite-member'],acceptInvitation:['POST','/organization/accept-invitation'],rejectInvitation:['POST','/organization/reject-invitation'],cancelInvitation:['POST','/organization/cancel-invitation'],getInvitation:['GET','/organization/get-invitation'],listInvitations:['GET','/organization/list-invitations'],listUserInvitations:['GET','/organization/list-user-invitations'],
 
  impersonateUser:['POST','/admin/impersonate-user'],stopImpersonating:['POST','/admin/stop-impersonating'],
  getUser:['GET','/admin/get-user'],createUser:['POST','/admin/create-user'],
@@ -316,11 +317,11 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
         for(const role of Object.values(input.roles ?? {}) as any[]) {if(!role?.statements)throw new Error('Native admin roles require explicit permission statements');}
         adminOptions = input;
       } else {
-        assertKeys(input, ['teams','allowUserToCreateOrganization','organizationLimit','membershipLimit','creatorRole','disableOrganizationDeletion','roles','ac','schema','organizationHooks'], 'organization');
+        assertKeys(input, ['teams','allowUserToCreateOrganization','organizationLimit','membershipLimit','creatorRole','disableOrganizationDeletion','roles','ac','schema','organizationHooks','sendInvitationEmail','invitationExpiresIn','invitationLimit','cancelPendingInvitationsOnReInvite','requireEmailVerificationOnInvitation'], 'organization');
         if(typeof input.organizationLimit==='function'||typeof input.membershipLimit==='function')throw new Error('Dynamic organization limits remain unported');
         assertKeys(input.schema??{},['organization','member','invitation','session','organizationRole'],'organization.schema');
         for(const model of Object.values(input.schema??{}) as any[]){assertKeys(model,['modelName','fields','additionalFields'],'organization.schema.model');}
-        assertKeys(input.organizationHooks??{},['beforeCreateOrganization','afterCreateOrganization','beforeAddMember','afterAddMember','beforeUpdateOrganization','afterUpdateOrganization','beforeDeleteOrganization','afterDeleteOrganization'],'organization.hooks');
+        assertKeys(input.organizationHooks??{},['beforeCreateOrganization','afterCreateOrganization','beforeAddMember','afterAddMember','beforeUpdateOrganization','afterUpdateOrganization','beforeDeleteOrganization','afterDeleteOrganization','beforeCreateInvitation','afterCreateInvitation','beforeAcceptInvitation','afterAcceptInvitation','beforeRejectInvitation','afterRejectInvitation','beforeCancelInvitation','afterCancelInvitation'],'organization.hooks');
         for(const role of Object.values(input.roles??{}) as any[]){if(!role?.statements)throw new Error('Native organization roles require explicit permission statements');}
         if(input.teams?.enabled&&Object.keys(input).some(key=>key!=='teams'))throw new Error('Organization teams currently supply schema only');
         assertKeys(input.teams ?? {}, ['enabled'], 'organization.teams');
@@ -430,11 +431,11 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   );
   assertKeys(
     advanced,
-    ["database", "disableCSRFCheck", "disableOriginCheck", "trustedProxyHeaders", "cookies", "cookiePrefix", "useSecureCookies", "crossSubDomainCookies", "defaultCookieAttributes"],
+    ["database", "generateId", "disableCSRFCheck", "disableOriginCheck", "trustedProxyHeaders", "cookies", "cookiePrefix", "useSecureCookies", "crossSubDomainCookies", "defaultCookieAttributes"],
     "advanced",
   );
   assertKeys(advanced.database ?? {}, ['generateId'], 'advanced.database');
-  const configuredId = advanced.database?.generateId;
+  const configuredId = advanced.generateId ?? advanced.database?.generateId;
   if (configuredId !== undefined && configuredId !== 'uuid' && typeof configuredId !== 'function') throw new Error('Persisted serial/database-generated IDs remain unported');
   assertKeys(advanced.crossSubDomainCookies ?? {}, ['enabled', 'domain'], 'advanced.crossSubDomainCookies');
   const cookieNames: Record<string, string> = {};
@@ -796,6 +797,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
    callbacks['twoFactor.'+name] = payload => callback(hydrate(payload.data), otpContext(payload));
   }
   for(const [name,hook] of Object.entries(organizationOptions?.organizationHooks??{}) as [string,any][]){callbacks['organization.'+name]=payload=>hook(hydrate(payload.data));}
+  if(typeof organizationOptions?.invitationLimit==='function')callbacks['organization.invitationLimit']=payload=>organizationOptions!.invitationLimit(hydrate(payload.data));
+  if(organizationOptions?.sendInvitationEmail)callbacks['organization.sendInvitationEmail']=payload=>organizationOptions!.sendInvitationEmail(hydrate(payload.data),payload.request?new Request(payload.request.url,{method:payload.request.method,headers:payload.request.headers}):undefined);
   if(typeof organizationOptions?.allowUserToCreateOrganization==='function')callbacks['organization.allowCreate']=payload=>organizationOptions!.allowUserToCreateOrganization(hydrate(payload.data));
   const anonymousCallbackNames: string[] = [];
   if (anonymousOptions?.generateName) { anonymousCallbackNames.push('name'); callbacks['anonymous.name'] = payload => anonymousOptions.generateName(otpContext(payload)); }
@@ -862,10 +865,13 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       organization_schema: !!organizationOptions,
       organization:organizationOptions&&!organizationOptions.teams?.enabled?{
        allowUserToCreateOrganization:typeof organizationOptions.allowUserToCreateOrganization==='boolean'?organizationOptions.allowUserToCreateOrganization:undefined,
+       invitationExpiresIn:organizationOptions.invitationExpiresIn,invitationLimit:typeof organizationOptions.invitationLimit==='number'?organizationOptions.invitationLimit:undefined,cancelPendingInvitationsOnReInvite:organizationOptions.cancelPendingInvitationsOnReInvite,requireEmailVerificationOnInvitation:organizationOptions.requireEmailVerificationOnInvitation,
        organizationLimit:organizationOptions.organizationLimit,membershipLimit:organizationOptions.membershipLimit,creatorRole:organizationOptions.creatorRole,disableOrganizationDeletion:organizationOptions.disableOrganizationDeletion,
        roles:organizationOptions.roles?Object.fromEntries(Object.entries(organizationOptions.roles).map(([name,role])=>[name,(role as any).statements])):undefined,
       }:undefined,
       organization_hooks:Object.keys(organizationOptions?.organizationHooks??{}),
+      organization_invitation_limit:typeof organizationOptions?.invitationLimit==='function',
+      organization_invitation_email:!!organizationOptions?.sendInvitationEmail,
       organization_creation_callback:typeof organizationOptions?.allowUserToCreateOrganization==='function',
       organization_fields_json:Object.fromEntries(Object.entries(organizationOptions?.schema??{}).filter(([model])=>model!=='session').map(([model,schema])=>[model,encodeFields((schema as any).additionalFields??{})])),
       organization_teams: organizationOptions?.teams?.enabled ?? false,
@@ -1113,7 +1119,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   };
   const auth = {
     $context: Promise.resolve(context),
-    api: api as typeof api & { listUsers(args?:FixtureOptions):Promise<{users:UserWithRole[];total:number;limit?:number;offset?:number}>; signInEmail: FixtureResponseAPI; verifyTOTP: FixtureResponseAPI; verifyTwoFactorOTP: FixtureResponseAPI; enableTwoFactor: FixtureEnableTwoFactorAPI; signUpEmail: SignUpAPI<O>; getSession: SessionAPI<O>; getJwks(args?: FixtureOptions): Promise<JSONWebKeySet>; generateBackupCodes(args?: FixtureOptions): Promise<{status: boolean; backupCodes: string[]}>; viewBackupCodes(args?: FixtureOptions): Promise<{status: boolean; backupCodes: string[]}> },
+    api: api as typeof api & { getFullOrganization(args?:FixtureOptions):Promise<({[key:string]:any;members:{[key:string]:any;user:{[key:string]:any;email:string}}[]})|null>; listUsers(args?:FixtureOptions):Promise<{users:UserWithRole[];total:number;limit?:number;offset?:number}>; signInEmail: FixtureResponseAPI; verifyTOTP: FixtureResponseAPI; verifyTwoFactorOTP: FixtureResponseAPI; enableTwoFactor: FixtureEnableTwoFactorAPI; signUpEmail: SignUpAPI<O>; getSession: SessionAPI<O>; getJwks(args?: FixtureOptions): Promise<JSONWebKeySet>; generateBackupCodes(args?: FixtureOptions): Promise<{status: boolean; backupCodes: string[]}>; viewBackupCodes(args?: FixtureOptions): Promise<{status: boolean; backupCodes: string[]}> },
     handler: (request: Request) => dispatch(request),
     options,
   };

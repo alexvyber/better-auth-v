@@ -67,10 +67,10 @@
         "get-full-organization"
       ],
       "test": "should include invitations in the response",
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
-      "reason": "Invitation and team integration cases remain for subsequent batches"
+      "reason": null
     },
     {
       "suite": "get-full-organization",
@@ -265,10 +265,10 @@
         "organization hooks"
       ],
       "test": "should allow passing id through `beforeCreateInvitation`",
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
-      "reason": "Invitation and team integration cases remain for subsequent batches"
+      "reason": null
     },
     {
       "suite": "organization hooks",

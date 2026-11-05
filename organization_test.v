@@ -92,3 +92,41 @@ fn test_organization_unique_additional_fields_fail_closed_until_migration() ! {
 		assert false
 	}
 }
+
+fn exercise_invitation_claim(mut storage OrganizationStorage) ! {
+	storage.organization_create('organization', '{"id":"org","name":"Organization","slug":"claim"}')!
+	storage.organization_create('invitation',
+		'{"id":"invitation","organizationId":"org","inviterId":"owner","email":"invitee@example.com","role":"member","status":"pending"}')!
+	// Two requests can read the same pending record; only one may change its status.
+	first := storage.organization_rows('invitation', {
+		'id': 'invitation'
+	})!
+	second := storage.organization_rows('invitation', {
+		'id': 'invitation'
+	})!
+	assert first == second
+	assert storage.organization_claim_invitation('invitation', 'pending', 'accepted')!
+	assert !storage.organization_claim_invitation('invitation', 'pending', 'accepted')!
+	assert !storage.organization_claim_invitation('invitation', 'pending', 'rejected')!
+	assert !storage.organization_claim_invitation('missing', 'pending', 'accepted')!
+	assert (org_json_fields((storage.organization_rows('invitation', {
+		'id': 'invitation'
+	})!)[0])!['status'] or { return error('status missing') }).str() == 'accepted'
+}
+
+fn test_invitation_claim_prevents_stale_status_replay_and_rolls_back() ! {
+	mut memory := open_memory()
+	memory.create_user(organization_test_user())!
+	memory.begin()!
+	exercise_invitation_claim(mut memory)!
+	memory.rollback()!
+	assert (memory.organization_rows('invitation', {})!).len == 0
+	mut sqlite := open_sqlite(':memory:')!
+	defer { sqlite.close() or {} }
+	sqlite.migrate()!
+	sqlite.create_user(organization_test_user())!
+	sqlite.begin()!
+	exercise_invitation_claim(mut sqlite)!
+	sqlite.rollback()!
+	assert (sqlite.organization_rows('invitation', {})!).len == 0
+}

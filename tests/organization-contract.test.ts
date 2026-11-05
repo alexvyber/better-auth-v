@@ -36,7 +36,7 @@ for(const [backend,factory] of [['sqlite',getTestInstance],['postgres',postgresI
    await expect(ready.auth.api.getFullOrganization({headers:outsider.headers,query:{organizationId:created.id}})).rejects.toMatchObject({status:'FORBIDDEN'});
    const hidden=await ready.auth.handler(new Request('http://localhost:3000/api/auth/internal/organization/add-member',{method:'POST',headers:{'content-type':'application/json','origin':'http://localhost:3000','cookie':outsider.headers.get('cookie')!},body:JSON.stringify({organizationId:created.id,userId:other.user.id,role:'owner'})}));expect(hidden.status).toBe(404);
    await ready.auth.api.addMember({body:{organizationId:created.id,userId:other.user.id,role:'member'}});
-   expect((await ready.auth.api.getFullOrganization({headers:outsider.headers,query:{organizationId:created.id}})).members).toHaveLength(2);
+   expect((await ready.auth.api.getFullOrganization({headers:outsider.headers,query:{organizationId:created.id}}))!.members).toHaveLength(2);
    await expect(ready.auth.api.updateOrganization({headers:outsider.headers,body:{organizationId:created.id,data:{name:'Taken over'}}})).rejects.toMatchObject({status:'FORBIDDEN'});
   });
   it('rolls back organization and owner membership when an organization hook fails',async()=>{

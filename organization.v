@@ -5,16 +5,28 @@ import x.json2
 
 pub struct OrganizationOptions {
 pub:
-	allow_user_to_create bool = true   @[json: allowUserToCreateOrganization]
-	organization_limit   ?int   @[json: organizationLimit]
-	membership_limit     int    = 100    @[json: membershipLimit]
-	creator_role         string = 'owner' @[json: creatorRole]
-	disable_deletion     bool   @[json: disableOrganizationDeletion]
-	roles                ?map[string]map[string][]string
-	additional_fields    map[string]map[string]AdditionalField                    @[skip]
-	hook                 fn (mut EndpointContext, string, string) !Lookup[string] = no_organization_hook @[skip]
-	allow_creation       fn (mut EndpointContext, User) !bool                     = default_organization_creation                     @[skip]
+	allow_user_to_create        bool = true   @[json: allowUserToCreateOrganization]
+	organization_limit          ?int   @[json: organizationLimit]
+	membership_limit            int    = 100    @[json: membershipLimit]
+	creator_role                string = 'owner' @[json: creatorRole]
+	invitation_expires_in       f64    = 172800    @[json: invitationExpiresIn]
+	invitation_limit_callback   fn (mut EndpointContext, string) !int = no_invitation_limit @[skip]
+	invitation_limit            int = 100   @[json: invitationLimit]
+	cancel_pending_invitations  bool  @[json: cancelPendingInvitationsOnReInvite]
+	require_verified_invitation ?bool @[json: requireEmailVerificationOnInvitation]
+	send_invitation_email       fn (mut EndpointContext, string) ! = no_invitation_email @[skip]
+	disable_deletion            bool @[json: disableOrganizationDeletion]
+	roles                       ?map[string]map[string][]string
+	additional_fields           map[string]map[string]AdditionalField                    @[skip]
+	hook                        fn (mut EndpointContext, string, string) !Lookup[string] = no_organization_hook @[skip]
+	allow_creation              fn (mut EndpointContext, User) !bool                     = default_organization_creation                     @[skip]
 }
+
+fn no_invitation_limit(mut _ EndpointContext, _ string) !int {
+	return error('invitation limit callback is not configured')
+}
+
+fn no_invitation_email(mut _ EndpointContext, _ string) ! {}
 
 fn no_organization_hook(mut _ EndpointContext, _ string, _ string) !Lookup[string] {
 	return Lookup[string]{}
@@ -46,14 +58,15 @@ pub fn (plugin OrganizationPlugin) validate() ! {
 
 pub fn (_ OrganizationPlugin) endpoints() []Endpoint {
 	mut routes := []Endpoint{}
-	for path in ['create', 'update', 'delete', 'check-slug', 'set-active'] {
+	for path in ['create', 'update', 'delete', 'check-slug', 'set-active', 'invite-member',
+		'accept-invitation', 'reject-invitation', 'cancel-invitation'] {
 		routes << Endpoint{
 			path:    '/organization/' + path
 			handler: organization_endpoint
 		}
 	}
 	for path in ['get-full-organization', 'get-organization', 'list', 'get-active-member',
-		'list-members'] {
+		'list-members', 'get-invitation', 'list-invitations', 'list-user-invitations'] {
 		routes << Endpoint{
 			path:    '/organization/' + path
 			method:  'GET'
@@ -341,9 +354,16 @@ fn organization_endpoint(mut context EndpointContext, request Request) !Response
 		}
 	}
 	if path == 'add-member' { return organization_server_add_member(mut context, fields) }
+	if path == 'list-user-invitations' {
+		return organization_list_user_invitations(mut context, fields)
+	}
 	actor := (context.organization_actor(path == 'create')!).value
 	if path == 'create' { return organization_create(mut context, actor, fields) }
 	current := actor or { return fail(401, 'UNAUTHORIZED', 'Unauthorized') }
+	if path in ['invite-member', 'accept-invitation', 'reject-invitation', 'cancel-invitation',
+		'get-invitation', 'list-invitations'] {
+		return organization_invitation_endpoint(mut context, current, fields, path)
+	}
 	match path {
 		'list' {
 			mut result := []json2.Any{}

@@ -47,6 +47,8 @@ struct Options {
 	organization                      ?better_auth.OrganizationOptions
 	organization_fields_json          map[string]string
 	organization_hooks                []string
+	organization_invitation_limit     bool
+	organization_invitation_email     bool
 	organization_creation_callback    bool
 	organization_teams                bool
 	logout_providers                  []better_auth.GenericOAuthLogoutProvider
@@ -739,6 +741,23 @@ fn main() {
 							} }
 					}
 					return better_auth.Lookup[string]{}
+				}
+			}
+		}
+		if opts.organization_invitation_limit {
+			settings = better_auth.OrganizationOptions{
+				...settings
+				invitation_limit_callback: fn (mut context better_auth.EndpointContext, data string) !int {
+					return json2.decode[int](otp_callback('organization.invitationLimit', data, mut
+						context)!)!
+				}
+			}
+		}
+		if opts.organization_invitation_email {
+			settings = better_auth.OrganizationOptions{
+				...settings
+				send_invitation_email: fn (mut context better_auth.EndpointContext, data string) ! {
+					otp_callback('organization.sendInvitationEmail', data, mut context)!
 				}
 			}
 		}

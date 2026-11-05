@@ -1,5 +1,6 @@
 // Generated from pinned upstream source; do not edit assertions here.
 import {describe,expect,it,vi} from 'vitest';
+import type {APIError} from 'better-auth/api';
 import {createAuthClient} from 'better-auth/client';
 import {organizationClient,ORGANIZATION_ERROR_CODES} from 'better-auth/client/plugins';
 import {getTestInstance} from '../harness/organization-fixture.js';
@@ -130,7 +131,39 @@ describe("get-full-organization", async () => {
 		expect(result.error?.code).toContain(
 			ORGANIZATION_ERROR_CODES.ORGANIZATION_NOT_FOUND.code,
 		);
-	});;
+	});
+
+	it("should include invitations in the response", async () => {
+		await client.organization.setActive({
+			organizationId: org.data?.id as string,
+			fetchOptions: {
+				headers,
+			},
+		});
+
+		// Create an invitation
+		await client.organization.inviteMember({
+			email: "invited@test.com",
+			role: "member",
+			fetchOptions: {
+				headers,
+			},
+		});
+
+		const fullOrg = await client.organization.getFullOrganization({
+			fetchOptions: {
+				headers,
+			},
+		});
+
+		expect(fullOrg.data?.invitations).toBeDefined();
+		expect(Array.isArray(fullOrg.data?.invitations)).toBe(true);
+		const invitation = fullOrg.data?.invitations.find(
+			(inv: any) => inv.email === "invited@test.com",
+		);
+		expect(invitation).toBeDefined();
+		expect(invitation?.role).toBe("member");
+	});
 
 	it("should prioritize organizationSlug over organizationId when both are provided", async () => {
 		const result = await client.organization.getFullOrganization({
@@ -533,7 +566,44 @@ describe("organization hooks", async () => {
 			headers,
 		});
 		expect(afterAddMember).toHaveBeenCalled();
-	});;;;;
+	});;;;
+
+	it("should allow passing id through `beforeCreateInvitation`", async () => {
+		const customInvitationId = "custom-invitation-id";
+		const { auth, signInWithTestUser } = await getTestInstance({
+			plugins: [
+				organization({
+					organizationHooks: {
+						beforeCreateInvitation: async () => {
+							return {
+								data: {
+									id: customInvitationId,
+								},
+							};
+						},
+					},
+					async sendInvitationEmail() {},
+				}),
+			],
+		});
+		const { headers } = await signInWithTestUser();
+		const org = await auth.api.createOrganization({
+			body: {
+				name: "test",
+				slug: "test",
+			},
+			headers,
+		});
+		const invitation = await auth.api.createInvitation({
+			body: {
+				email: "invited@test.com",
+				role: "member",
+				organizationId: org?.id,
+			},
+			headers,
+		});
+		expect(invitation?.id).toBe(customInvitationId);
+	});
 
 	it("should allow internal organization creation when disabled for users", async () => {
 		const { auth } = await getTestInstance({

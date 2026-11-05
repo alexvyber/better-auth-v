@@ -1058,3 +1058,32 @@ The live contracts exposed an organization-default evaluation bug: an existing f
 still evaluated its fallback factory. Default resolution now short-circuits supplied
 values. Missing values evaluate a factory once, reads/docs leave it alone, and a native
 regression verifies a throwing factory cannot reject an explicit supplied value.
+
+### Existing application schema gate
+
+The application gate now creates Brand Map's auth-side PostgreSQL migration before
+V connects, seeds existing credentials/sessions, disables V migrations and uses
+the official client over loopback HTTP. The snapshot preserves all ten auth tables,
+their enum/UUIDv7 defaults, indexes, checks and auth-side foreign keys; the external
+file-service table is an explicit minimal fixture stub. An operation-level schema
+fingerprint stays unchanged. Existing session renewal/revocation, restart, JWT
+key creation, mapped fields, protected input, user-update effects, member joins,
+externally provisioned role grants, invitations, hashed OTP and one-time tokens
+are exercised. Current Brand Map source includes admin and one-time-token plugins;
+older observations of the application's plugin list no longer describe that source.
+
+Nabu's password-mode gate installs its index definitions and raw ObjectId/BSON-date
+documents before V connects. Existing upstream-signed cookies and scrypt credentials,
+session renewal, restart/revocation and application-owned data preservation pass.
+The existing signed-OIDC matrix remains a separate gate. See
+[application compatibility](application-compatibility.md) for exact scope and limits.
+These checks do not run either complete application or establish deployment parity.
+
+The gate found and fixed a native session-cookie restriction to 64-character
+tokens: signed upstream tokens with other lengths now authenticate, retaining HMAC
+verification. Bearer processing also accepts scheme casing/whitespace, encoded or
+decoded signatures and valid cookies when a signed bearer value is invalid.
+`set-auth-token` now contains the signed, URL-encoded session cookie value and is
+exposed to browser clients, matching upstream. All seven original bearer declarations
+(eleven runtime cases) are imported unchanged and run on each of three backends;
+backend copies add seven unique source declarations, not twenty-one.

@@ -89,7 +89,11 @@ fn (a &Auth) set_cookie(r Response, token string, remember bool) Response {
 		max_age)
 	mut result := with_header(r, 'set-cookie', value)
 	for plugin in a.config.plugins {
-		if plugin is BearerPlugin { result = with_header(result, 'set-auth-token', token) }
+		if plugin is BearerPlugin {
+			result = with_header(result, 'set-auth-token',
+				urllib.query_escape(a.sign_cookie(token)))
+			result = with_header(result, 'access-control-expose-headers', 'set-auth-token')
+		}
 	}
 	marker := a.cookie_name_for('dont_remember')
 	if !remember {

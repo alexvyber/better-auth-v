@@ -52,7 +52,7 @@ fn (a &Auth) sign_cookie(token string) string {
 
 fn (a &Auth) verify_cookie(value string) ?string {
 	token, signature := value.split_once('.') or { return none }
-	if token.len != 64 || signature.len > 64 { return none }
+	if token == '' || signature.len > 64 { return none }
 	return a.verify_signed_value(value)
 }
 

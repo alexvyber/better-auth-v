@@ -34,7 +34,7 @@
     "plugins": {
       "files": 45,
       "declarations": 1315,
-      "importedFiles": 20
+      "importedFiles": 21
     },
     "adapters": {
       "files": 16,
@@ -17785,9 +17785,9 @@
       "path": "packages/better-auth/src/plugins/bearer/bearer.test.ts",
       "sha256": "4ab76478e42b6d30b57e91b68e95da10b43ba43204e71515f1203bf744b21409",
       "group": "plugins",
-      "status": "unported",
-      "importedDeclarations": 0,
-      "unportedDeclarations": 7,
+      "status": "imported-complete-file",
+      "importedDeclarations": 7,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {

@@ -1,0 +1,543 @@
+{
+  "sources": [
+    {
+      "path": "platform/services/auth/src/create-auth.ts",
+      "sha256": "ea577a41373cf2fa439a71a77716555fbeff55dcb6e29196bec7e9f54f28c136"
+    },
+    {
+      "path": "packages/organization-permissions/src/exports.ts",
+      "sha256": "ec445c0a2ff0a15917699c8d1c5445b0cf356f205c713865a795139d76675106"
+    }
+  ],
+  "fields": {
+    "accessToken": "access_token",
+    "accessTokenExpiresAt": "access_token_expires_at",
+    "accountId": "account_id",
+    "createdAt": "created_at",
+    "idToken": "id_token",
+    "providerId": "provider_id",
+    "refreshToken": "refresh_token",
+    "refreshTokenExpiresAt": "refresh_token_expires_at",
+    "updatedAt": "updated_at",
+    "userId": "user_id",
+    "configId": "config_id",
+    "lastRefillAt": "last_refill_at",
+    "lastRequest": "last_request",
+    "rateLimitEnabled": "rate_limit_enabled",
+    "rateLimitMax": "rate_limit_max",
+    "rateLimitTimeWindow": "rate_limit_time_window",
+    "referenceId": "reference_id",
+    "refillAmount": "refill_amount",
+    "refillInterval": "refill_interval",
+    "requestCount": "request_count",
+    "expiresAt": "expires_at",
+    "inviterId": "inviter_id",
+    "organizationId": "organization_id",
+    "publicKey": "public_key",
+    "impersonatedBy": "impersonated_by",
+    "ipAddress": "ip_address",
+    "userAgent": "user_agent",
+    "backupCodes": "backup_codes",
+    "banExpires": "ban_expires",
+    "banReason": "ban_reason",
+    "bio": "bio",
+    "birthDate": "birth_date",
+    "city": "city",
+    "cover": "cover",
+    "curatorApplication": "curator_application",
+    "curatorStatus": "curator_status",
+    "curatorStatusChangedAt": "curator_status_changed_at",
+    "curatorStatusChangedBy": "curator_status_changed_by",
+    "curatorStatusReason": "curator_status_reason",
+    "customerStatus": "customer_status",
+    "customerType": "customer_type",
+    "deletedAt": "deleted_at",
+    "displayUsername": "display_username",
+    "emailVerified": "email_verified",
+    "failedVerificationCount": "failed_verification_count",
+    "firstName": "first_name",
+    "gender": "gender",
+    "imageMiniature": "image_miniature",
+    "isAnonymous": "is_anonymous",
+    "lastName": "last_name",
+    "lastLoginAt": "last_login_at",
+    "lockedUntil": "locked_until",
+    "metadata": "metadata",
+    "patronymic": "patronymic",
+    "socialLinks": "social_links",
+    "twoFactorEnabled": "two_factor_enabled",
+    "privateKey": "private_key"
+  },
+  "statements": {
+    "organization": [
+      "create",
+      "read",
+      "update",
+      "delete"
+    ],
+    "member": [
+      "create",
+      "read",
+      "update",
+      "delete"
+    ],
+    "invitation": [
+      "create",
+      "read",
+      "cancel"
+    ],
+    "accessControl": [
+      "create",
+      "read",
+      "update",
+      "delete"
+    ],
+    "apiKey": [
+      "create",
+      "read",
+      "update",
+      "delete"
+    ],
+    "approval": [
+      "read",
+      "update"
+    ],
+    "role": [
+      "create",
+      "read",
+      "update",
+      "delete"
+    ],
+    "store": [
+      "create",
+      "read",
+      "update",
+      "delete"
+    ],
+    "brand": [
+      "create",
+      "read",
+      "update",
+      "delete"
+    ],
+    "category": [
+      "create",
+      "read",
+      "update",
+      "delete"
+    ],
+    "collection": [
+      "create",
+      "read",
+      "update",
+      "delete"
+    ],
+    "banner": [
+      "create",
+      "read",
+      "update",
+      "delete"
+    ],
+    "content": [
+      "create",
+      "read",
+      "update",
+      "delete"
+    ],
+    "seo": [
+      "create",
+      "read",
+      "update",
+      "delete"
+    ],
+    "story": [
+      "create",
+      "read",
+      "update",
+      "delete"
+    ],
+    "product": [
+      "create",
+      "read",
+      "update",
+      "delete",
+      "publish",
+      "archive"
+    ],
+    "price": [
+      "create",
+      "read",
+      "update",
+      "delete"
+    ],
+    "setting": [
+      "read"
+    ],
+    "file": [
+      "create",
+      "read",
+      "delete"
+    ],
+    "media": [
+      "create",
+      "read",
+      "update",
+      "delete"
+    ],
+    "notification": [
+      "read"
+    ]
+  },
+  "roles": {
+    "owner": {
+      "organization": [
+        "read",
+        "update"
+      ],
+      "member": [
+        "read",
+        "update",
+        "delete"
+      ],
+      "invitation": [
+        "create",
+        "read",
+        "cancel"
+      ],
+      "accessControl": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "apiKey": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "approval": [],
+      "role": [],
+      "store": [
+        "read",
+        "update",
+        "delete"
+      ],
+      "brand": [
+        "create",
+        "read"
+      ],
+      "category": [
+        "read"
+      ],
+      "collection": [],
+      "banner": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "content": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "seo": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "story": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "product": [
+        "create",
+        "read",
+        "update",
+        "delete",
+        "publish",
+        "archive"
+      ],
+      "price": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "setting": [],
+      "file": [
+        "create",
+        "read",
+        "delete"
+      ],
+      "media": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "notification": [
+        "read"
+      ]
+    },
+    "admin": {
+      "organization": [
+        "read",
+        "update"
+      ],
+      "member": [
+        "read",
+        "update",
+        "delete"
+      ],
+      "invitation": [
+        "create",
+        "read",
+        "cancel"
+      ],
+      "accessControl": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "apiKey": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "approval": [],
+      "role": [],
+      "store": [
+        "read",
+        "update",
+        "delete"
+      ],
+      "brand": [
+        "create",
+        "read"
+      ],
+      "category": [
+        "read"
+      ],
+      "collection": [],
+      "banner": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "content": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "seo": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "story": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "product": [
+        "create",
+        "read",
+        "update",
+        "delete",
+        "publish",
+        "archive"
+      ],
+      "price": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "setting": [],
+      "file": [
+        "create",
+        "read",
+        "delete"
+      ],
+      "media": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "notification": [
+        "read"
+      ]
+    },
+    "catalog_manager": {
+      "organization": [],
+      "member": [],
+      "invitation": [],
+      "accessControl": [],
+      "apiKey": [],
+      "approval": [],
+      "role": [],
+      "store": [
+        "read",
+        "update"
+      ],
+      "brand": [
+        "create",
+        "read"
+      ],
+      "category": [
+        "read"
+      ],
+      "collection": [],
+      "banner": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "content": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "seo": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "story": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "product": [
+        "create",
+        "read",
+        "update",
+        "publish",
+        "archive"
+      ],
+      "price": [
+        "create",
+        "read",
+        "update"
+      ],
+      "setting": [],
+      "file": [
+        "create",
+        "read",
+        "delete"
+      ],
+      "media": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "notification": []
+    },
+    "support": {
+      "organization": [],
+      "member": [],
+      "invitation": [],
+      "accessControl": [],
+      "apiKey": [],
+      "approval": [],
+      "role": [],
+      "store": [
+        "read"
+      ],
+      "brand": [
+        "read"
+      ],
+      "category": [
+        "read"
+      ],
+      "collection": [],
+      "banner": [],
+      "content": [],
+      "seo": [],
+      "story": [],
+      "product": [
+        "read"
+      ],
+      "price": [],
+      "setting": [],
+      "file": [
+        "read"
+      ],
+      "media": [
+        "read"
+      ],
+      "notification": []
+    },
+    "viewer": {
+      "organization": [],
+      "member": [
+        "read"
+      ],
+      "invitation": [
+        "read"
+      ],
+      "accessControl": [
+        "read"
+      ],
+      "apiKey": [],
+      "approval": [],
+      "role": [],
+      "store": [
+        "read"
+      ],
+      "brand": [
+        "read"
+      ],
+      "category": [
+        "read"
+      ],
+      "collection": [],
+      "banner": [
+        "read"
+      ],
+      "content": [
+        "read"
+      ],
+      "seo": [
+        "read"
+      ],
+      "story": [
+        "read"
+      ],
+      "product": [
+        "read"
+      ],
+      "price": [
+        "read"
+      ],
+      "setting": [],
+      "file": [
+        "read"
+      ],
+      "media": [
+        "read"
+      ],
+      "notification": [
+        "read"
+      ]
+    }
+  }
+}

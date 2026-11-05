@@ -1,0 +1,28 @@
+{
+  "source": "platform/services/database-schema/prisma/migrations/20261102120000_catalog_baseline/migration.sql",
+  "sha256": "2b50d3da7fb2b65789036fb67d6503460b98b278fa18ad3c1964ff6d4b7aa4a3",
+  "tables": [
+    "auth_user",
+    "auth_session",
+    "auth_account",
+    "auth_verification",
+    "auth_organization",
+    "auth_member",
+    "auth_invitation",
+    "auth_organization_role",
+    "auth_two_factor",
+    "jwks"
+  ],
+  "enums": [
+    "customer_type_enum",
+    "customer_status_enum",
+    "curator_status_enum",
+    "organization_status_enum"
+  ],
+  "statements": 72,
+  "adaptations": [
+    "Auth-side statements copied verbatim; unrelated tables excluded.",
+    "Referenced file-service table represented by an id-only fixture stub.",
+    "Search path supplied by the disposable database fixture; UUIDv7 defaults preserved."
+  ]
+}

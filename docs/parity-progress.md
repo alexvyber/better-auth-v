@@ -918,7 +918,7 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   eager organization default evaluation; supplied values now bypass factories and
   missing values evaluate once. A native throwing-factory regression also passes.
 
-The latest full `make check` passes 2825 TypeScript cases across 143 files, all 121
+The latest full `make check` passes 2862 TypeScript cases across 147 files, all 122
 native V test functions across 38 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
 The six source-inventory audit tests also pass. Formatting and `git diff --check` pass. Repeated backend runs do not increase unique
@@ -926,8 +926,8 @@ upstream source coverage, and these results do not imply full upstream parity.
 
 The user resumed work and authorized incremental commits and pushes to
 `alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.
-The objective remains incomplete. The corpus currently records 33 completely
-imported files, sixteen partial imports and 387 unported files; imported status describes source
+The objective remains incomplete. The corpus currently records 34 completely
+imported files, sixteen partial imports and 386 unported files; imported status describes source
 preservation, not broad feature completion.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise
@@ -945,6 +945,25 @@ preservation, not broad feature completion.
    not the upstream physical schema.
 5. Implement the remaining provider, plugin, client-contract, browser integration,
    and tooling surfaces listed in the corpus and compatibility contract.
+
+## Existing application schema and bearer compatibility gate
+
+The application schema gate seeds Brand Map's existing PostgreSQL tables and Nabu's
+raw MongoDB documents before native initialization, disables V migrations and drives
+native authentication with the official SDK over HTTP. All four new contracts pass,
+including schema preservation, mapped fields, existing upstream credentials/cookies,
+renewal, restart/revocation, JWT keys, protected fields, organizations/roles/invitations,
+OTP and one-time tokens. The snapshot and its deviations are documented in
+`docs/application-compatibility.md`. Current Brand Map source includes admin and
+one-time-token plugins. Full applications and their domain services are not run.
+
+The gate exposed a fixed-length cookie-token assumption and the wrong bearer output
+header format. Native cookies now accept other upstream token lengths with HMAC
+verification intact; bearer scheme casing/whitespace/signature encoding and invalid
+signed-header cookie fallback follow upstream. The full original bearer suite passes
+on SQLite, PostgreSQL and MongoDB: 33 runtime cases, seven unique source declarations.
+The corpus now preserves 1211 unique declarations. A native signature regression also
+passes. Generic adapter query/join/transaction-failure contracts remain incomplete.
 
 ## Guardrails for continuing
 

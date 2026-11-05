@@ -20,6 +20,8 @@ import { schemaPluginOptions } from './plugins.js';
 // their objects; unsupported server configuration fails rather than being ignored.
 type FixtureOptions = Record<string, any>;
 interface FixtureUserOptions extends FixtureOptions {
+  fields?: NonNullable<BetterAuthOptions['user']>['fields'];
+  modelName?: string;
   deleteUser?: NonNullable<BetterAuthOptions['user']>['deleteUser'];
   changeEmail?: NonNullable<BetterAuthOptions['user']>['changeEmail'];
   additionalFields?: Record<string,DBFieldAttribute>;
@@ -225,7 +227,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   if (options.database !== undefined && !isNativeMemoryAdapter(options.database))
     throw new Error("Only the native memory-adapter fixture is supported as an explicit database");
   if (options.verification) {
-    assertKeys(options.verification, ['storeInDatabase', 'disableCleanup', 'storeIdentifier'], 'verification');
+    assertKeys(options.verification, ['storeInDatabase', 'disableCleanup', 'storeIdentifier', 'fields', 'modelName'], 'verification');
     const storage = options.verification.storeIdentifier;
     const modes = typeof storage === 'object' && storage && 'default' in storage ? [storage.default, ...Object.values(storage.overrides ?? {})] : [storage];
     if (modes.some(mode => mode !== undefined && mode !== 'plain' && mode !== 'hashed' && !(typeof mode === 'object' && mode && typeof (mode as FixtureOptions).hash === 'function'))) throw new Error('Invalid verification identifier hashing');
@@ -372,7 +374,9 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     }
     if (jwtOptions) throw new Error('Duplicate JWT plugin');
     jwtOptions = (plugin as {options?: FixtureOptions}).options ?? {};
-    assertKeys(jwtOptions, ['sessionCookieCache', 'jwks', 'jwt', 'disableSettingJwtHeader', 'adapter'], 'jwt');
+    assertKeys(jwtOptions, ['sessionCookieCache', 'jwks', 'jwt', 'disableSettingJwtHeader', 'adapter', 'schema'], 'jwt');
+    assertKeys(jwtOptions.schema??{}, ['jwks'], 'jwt.schema');
+    if(jwtOptions.schema?.jwks)assertKeys(jwtOptions.schema.jwks,['fields','modelName'],'jwt.schema.jwks');
     if (jwtOptions.adapter) {
       assertKeys(jwtOptions.adapter, ['getJwks', 'createJwk'], 'jwt.adapter');
       for (const method of ['getJwks', 'createJwk']) if (jwtOptions.adapter[method] !== undefined && typeof jwtOptions.adapter[method] !== 'function') throw new Error(`Invalid custom JWK callback: ${method}`);
@@ -421,6 +425,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       "preserveSessionInDatabase",
       "additionalFields",
       "cookieCache",
+      "fields", "modelName",
     ],
     "session",
   );
@@ -442,7 +447,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   }
   assertKeys(
     options.user ?? {},
-    ["additionalFields", "validateUserInfo", "changeEmail", "deleteUser"],
+    ["additionalFields", "validateUserInfo", "changeEmail", "deleteUser", "fields", "modelName"],
     "user",
   );
   assertKeys(options.user?.deleteUser ?? {}, ['enabled', 'sendDeleteAccountVerification', 'deleteTokenExpiresIn', 'beforeDelete', 'afterDelete'], 'user.deleteUser');
@@ -472,7 +477,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     }
   }
 
-  assertKeys(options.account ?? {}, ['fields', 'storeAccountCookie', 'encryptOAuthTokens', 'accountLinking'], 'account');
+  assertKeys(options.account ?? {}, ['fields', 'modelName', 'storeAccountCookie', 'encryptOAuthTokens', 'accountLinking'], 'account');
   if (options.account?.accountLinking) {
     assertKeys(options.account.accountLinking, ['enabled', 'trustedProviders', 'allowDifferentEmails', 'updateUserInfoOnLink', 'requireLocalEmailVerified', 'disableImplicitLinking'], 'account.accountLinking');
     if (options.account.accountLinking.allowDifferentEmails) throw new Error('Different-email account linking remains unported');
@@ -485,7 +490,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   if (google) {
     assertKeys(google, ['clientId', 'clientSecret', 'enabled', 'scope', 'disableDefaultScope', 'accessType', 'display', 'hd', 'prompt', 'includeGrantedScopes', 'redirectURI', 'authorizationEndpoint', 'disableIdTokenSignIn', 'mapProfileToUser'], 'socialProviders.google');
   }
-  assertKeys(options.account?.fields ?? {}, ['id', 'userId', 'providerId', 'accountId'], 'account.fields');
+  for(const [field,column] of Object.entries(options.account?.fields??{}))if(typeof column!=='string')throw new Error('Account field aliases must be strings: '+field);
   if (options.baseURL !== undefined && typeof options.baseURL !== 'string') throw new Error('Live dynamic baseURL configuration remains unported');
   const baseURL = typeof options.baseURL === 'string' ? options.baseURL : `http://localhost:${config.port ?? 3000}`;
   const basePath = options.basePath ?? "/api/auth";
@@ -833,7 +838,12 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   const mappedPluginSchema=(configuration:any)=>{
    if(!configuration)return configuration;
    const result={...configuration,tables:{...configuration.tables},fields:{...configuration.fields}};
-   for(const [model,definition] of [...Object.entries(adminOptions?.schema??{}),...Object.entries(organizationOptions?.schema??{})] as [string,any][]){
+   for(const model of ['user','session','account','verification'] as const){
+    const definition=options[model];
+    if(definition?.modelName)result.tables[model]=definition.modelName;
+    if(definition?.fields)result.fields[model]={...result.fields[model],...definition.fields};
+   }
+   for(const [model,definition] of [...Object.entries(adminOptions?.schema??{}),...Object.entries(organizationOptions?.schema??{}),...Object.entries(jwtOptions?.schema??{})] as [string,any][]){
     if(definition.modelName)result.tables[model]=definition.modelName;
     result.fields[model]={...result.fields[model],...definition.fields};
    }

@@ -1,0 +1,101 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/bearer/bearer.test.ts",
+  "sha256": "4ab76478e42b6d30b57e91b68e95da10b43ba43204e71515f1203bf744b21409",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "bearer",
+      "suites": [
+        "bearer"
+      ],
+      "test": "should get session",
+      "sourceStart": 273,
+      "sourceLine": 13,
+      "selected": true,
+      "executionSurface": "native-session-cookie-and-bearer-with-test-instance",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "bearer",
+      "suites": [
+        "bearer"
+      ],
+      "test": "should list session",
+      "sourceStart": 739,
+      "sourceLine": 36,
+      "selected": true,
+      "executionSurface": "native-session-cookie-and-bearer-with-test-instance",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "bearer",
+      "suites": [
+        "bearer"
+      ],
+      "test": "should work on server actions",
+      "sourceStart": 966,
+      "sourceLine": 47,
+      "selected": true,
+      "executionSurface": "native-session-cookie-and-bearer-with-test-instance",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "bearer",
+      "suites": [
+        "bearer"
+      ],
+      "test": "should work with an unsigned token",
+      "sourceStart": 1188,
+      "sourceLine": 56,
+      "selected": true,
+      "executionSurface": "native-session-cookie-and-bearer-with-test-instance",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "bearer",
+      "suites": [
+        "bearer"
+      ],
+      "test": "should work if valid cookie is provided even if authorization header isn't valid",
+      "sourceStart": 1447,
+      "sourceLine": 67,
+      "selected": true,
+      "executionSurface": "native-session-cookie-and-bearer-with-test-instance",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "bearer",
+      "suites": [
+        "bearer"
+      ],
+      "test": "should work with %s prefix (RFC 7235)",
+      "sourceStart": 1794,
+      "sourceLine": 79,
+      "selected": true,
+      "executionSurface": "native-session-cookie-and-bearer-with-test-instance",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "bearer",
+      "suites": [
+        "bearer"
+      ],
+      "test": "should work with %s token",
+      "sourceStart": 2191,
+      "sourceLine": 93,
+      "selected": true,
+      "executionSurface": "native-session-cookie-and-bearer-with-test-instance",
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

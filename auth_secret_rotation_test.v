@@ -3,6 +3,31 @@ module better_auth
 import net.urllib
 import os
 
+fn test_signed_session_tokens_accept_upstream_lengths_and_still_verify_signatures() ! {
+	mut auth := new(Config{
+		secret:  'application-schema-interop-secret-at-least-32-characters'
+		plugins: [Plugin(BearerPlugin{})]
+	}, MemoryStorage{})!
+	defer { auth.close() or {} }
+	for token in ['upstream-token', 'abcdefghijklmnopqrstuvwxyz123456', 'a'.repeat(64)] {
+		signed := auth.sign_cookie(token)
+		assert auth.verify_cookie(signed)? == token
+		assert auth.verify_cookie(token + '.invalid') == none
+		assert auth.verify_cookie('tampered-' + signed) == none
+		assert auth.context_token(RequestContext{
+			headers: {
+				'authorization': 'bEaReR  ' + token + ' '
+			}
+		})? == token
+		assert auth.context_token(RequestContext{
+			headers: {
+				'authorization': 'Bearer ' + urllib.query_escape(signed)
+			}
+		})? == token
+	}
+	assert auth.verify_cookie(auth.sign_cookie('')) == none
+}
+
 fn test_native_auth_rotation_preserves_persisted_keys_sessions_and_jwe_cache() ! {
 	path := os.join_path(os.temp_dir(), 'better-auth-rotation-${random_token()!}.db')
 	defer { os.rm(path) or {} }

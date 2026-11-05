@@ -16,6 +16,11 @@ const head = existsSync(marker)
 if (head !== commit)
   throw new Error(`Expected upstream ${commit}, got ${head}`);
 const plans = [
+ ...[['bearer','test-instance'],['postgres-bearer','postgres-fixture'],['mongo-bearer','mongo-fixture']].map(([file,fixture])=>({
+  file,path:'packages/better-auth/src/plugins/bearer/bearer.test.ts',suites:null,
+  imports:'import {describe,expect,it} from "vitest";\nimport {getTestInstance} from "../harness/'+fixture+'.js";\n',
+  executionSurface:'native-session-cookie-and-bearer-with-'+fixture,
+ })),
  {file:'oauth-link-policy',path:'packages/better-auth/src/oauth2/link-account.test.ts',
  suites:new Set(['oauth2 - email verification on link','oauth2 - account linking without trustedProviders','oauth2 - disableImplicitLinking','oauth2 - accountLinking.requireLocalEmailVerified: false opt-out']),
  includeHelpers:true,setupCalls:new Set(['beforeAll','afterEach','afterAll']),

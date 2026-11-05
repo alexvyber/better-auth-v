@@ -498,10 +498,15 @@ fn (mut a Auth) require_session(ctx RequestContext, fresh bool) !SessionResult {
 
 fn (a &Auth) context_token(ctx RequestContext) ?string {
 	for plugin in a.config.plugins {
-		if plugin.id() == 'bearer' && ctx.headers['authorization'].starts_with('Bearer ') {
-			token := ctx.headers['authorization'][7..]
-			if token.len == 64 { return token }
-			return a.verify_cookie(token)
+		if plugin.id() == 'bearer' && ctx.headers['authorization'].to_lower().starts_with('bearer ') {
+			token := ctx.headers['authorization'][7..].trim_space()
+			if token != '' && !token.contains('.') { return token }
+			decoded := if token.contains('%') {
+				urllib.path_unescape(token) or { token }
+			} else {
+				token
+			}
+			if verified := a.verify_cookie(decoded) { return verified }
 		}
 	}
 

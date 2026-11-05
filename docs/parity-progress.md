@@ -824,7 +824,16 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   Pure SDK probes and MongoDB's inapplicable SQL-null case
   remain explicitly excluded.
 
-The latest full `make check` passes 2711 TypeScript cases across 137 files, all 114
+- Completed preservation of the additional-fields source file: its four remaining
+  SDK/type probes run through a lazy native constructor fixture and the official
+  SDK, with an explicit execution-surface label. API/HTTP/context calls from that
+  constructor delegate to V and unsupported/prototype names fail explicitly.
+  Two native integration contracts verify constructor session protections and
+  React client sign-in fields. React/type test dependencies match the upstream
+  lockfile. These compiler/client probes are distinct from native runtime coverage;
+  the fixture does not establish complete production constructor/client parity.
+
+The latest full `make check` passes 2717 TypeScript cases across 139 files, all 114
 native V test functions across 37 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
 Formatting and `git diff --check` pass. Repeated backend runs do not increase unique

@@ -305,6 +305,19 @@ import {twoFactor} from '../harness/plugins.js';
 import {getTestInstance} from '../harness/test-instance.js';
 `};
 plans.push(additionalIntegration);
+plans.push({...additionalIntegration,file:'additional-field-sdk-contracts',
+ onlyTests:new Set(['should infer it on the client','should infer session additional fields on updateSession','should infer it on the client without direct import','should infer additional fields on signIn response with manual schema']),
+ executionSurface:'sdk-types-with-lazy-native-constructor-facade',unportedReason:'Native runtime cases are imported separately in the integration/runtime-default matrices',
+ imports:`import {describe,expect,expectTypeOf,it} from 'vitest';
+import type {Session} from 'better-auth';
+import {createAuthClient} from 'better-auth/client';
+import {createAuthClient as createReactAuthClient} from 'better-auth/react';
+import {inferAdditionalFields,twoFactorClient} from 'better-auth/client/plugins';
+import {twoFactor} from '../harness/plugins.js';
+import {betterAuth} from '../harness/constructor.js';
+import {getTestInstance} from '../harness/test-instance.js';
+`});
+
 plans.push({...additionalIntegration,file:'postgres-additional-field-integration',imports:additionalIntegration.imports.replace('../harness/test-instance.js','../harness/postgres-fixture.js'),executionSurface:'native-postgres-additional-field-integration'});
 plans.push({...additionalIntegration,file:'mongo-additional-field-integration',skippedTests:new Set(['should extends fields']),imports:additionalIntegration.imports.replace('../harness/test-instance.js','../harness/mongo-fixture.js'),executionSurface:'native-mongo-additional-field-integration',unportedReason:'Pure SDK/React constructor probes and the SQL-specific NULL-column assertion remain excluded from MongoDB runtime coverage'});
 

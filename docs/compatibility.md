@@ -878,9 +878,22 @@ update-value factories and default/transform sequencing remain open.
 Additional-field integration now imports six unchanged native runtime cases on
 SQLite/PostgreSQL and five on MongoDB (17 repeated cases), covering official-client
 profile updates, two-factor coexistence and defaults with primary/secondary sessions.
-Pure SDK/React constructor/type probes remain excluded. The SQL-specific absent
-column assertion is excluded from the MongoDB repeat because missing Mongo fields
+Four SDK/constructor/type probes run separately through the native constructor
+facade and official SDK, with their own execution-surface label. The SQL-specific
+absent column assertion is excluded from the MongoDB repeat because missing Mongo fields
 remain absent. SQLite's payload adapter now reads missing ordinary configured user/session
 fields as null across single, email, ID and list lookups. This read normalization
 runs no default factory and leaves stored payloads unchanged, as one native test
 verifies. Missing credential/transport-reserved user names are not synthesized. SQLite still does not share the upstream physical column schema.
+
+
+The additional-fields source file is now preserved in full across the native
+integration/runtime imports and a separately labelled four-case SDK/type import.
+A synchronous constructor fixture lazily starts the existing V bridge for API,
+HTTP and context calls; metadata retains upstream TypeScript inference. Unsupported
+API names fail explicitly, including prototype names. It does not call the
+TypeScript server implementation. Two native integration contracts verify protected
+session updates through this constructor and additional-field sign-in data through
+the official React client. React and its type package are pinned to versions in the
+upstream lockfile for these client tests. This is a test fixture, not a production
+TypeScript server facade or a claim of complete constructor/client parity.

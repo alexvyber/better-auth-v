@@ -19968,8 +19968,8 @@
       "sha256": "24e339e801fb7dcbe70245cae104169ae132609df41bac8276f75803f29980d4",
       "group": "plugins",
       "status": "imported-partial-file",
-      "importedDeclarations": 21,
-      "unportedDeclarations": 102,
+      "importedDeclarations": 23,
+      "unportedDeclarations": 100,
       "kind": "runtime",
       "declarations": [
         {

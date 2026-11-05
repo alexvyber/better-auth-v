@@ -410,7 +410,12 @@ fn test_oauth_new_user_cannot_bypass_registration_policy() ! {
 			'cookie': cookie
 		}
 	})
-	assert response.status == 403
+	assert response.status == 302
+	assert response.headers.any(it.name == 'location'
+		&& it.value.contains('error=registration_closed')
+		&& it.value.contains('error_description=Registration+closed'))
+	assert storage.db.q_int('SELECT count(*) FROM auth_account')! == 0
+	assert (auth.find_opaque_verification(state, 'oauth-state')!).value == none
 	assert storage.db.q_int('SELECT count(*) FROM auth_user')! == 0
 }
 
@@ -643,5 +648,67 @@ fn test_oauth_callback_denial_and_missing_code_consume_only_bound_state() ! {
 			}
 		}).status == 400
 	}
+	assert storage.db.q_int('SELECT count(*) FROM auth_user')! == 0
+}
+
+struct RejectOAuthAccountHook {}
+
+fn (_ RejectOAuthAccountHook) run(mut _ EndpointContext, event DatabaseEvent) !HookResult {
+	if event.model == 'account' && event.operation == 'create' && event.phase == 'before' {
+		return APIError{
+			status:  403
+			code:    'LinkCreationDenied'
+			message: 'Application rejected linking'
+		}
+	}
+	return HookResult{}
+}
+
+fn test_oauth_rejected_account_creation_rolls_back_user_and_preserves_application_code() ! {
+	mut storage := open_sqlite(':memory:')!
+	storage.migrate()!
+	mut auth := new(Config{
+		secret:           '12345678901234567890123456789012'
+		password_hasher:  FastHasher{}
+		social_providers: [OAuthProvider(FakeProvider{})]
+		database_hooks:   [DatabaseHook(RejectOAuthAccountHook{})]
+	}, storage)!
+	defer { auth.close() or {} }
+	state, cookie := start_test_oauth(mut auth)!
+	url := 'http://localhost:3000/api/auth/callback/test?code=good-code&state=' + state
+	response := auth.handle(Request{
+		url:     url
+		headers: {
+			'cookie': cookie
+		}
+	})
+	assert response.status == 302
+	mut location := ''
+	for header in response.headers {
+		if header.name == 'location' { location = header.value }
+	}
+	query := urllib.parse(location)!.query()
+	assert (query.get('error') or { '' }) == 'LinkCreationDenied'
+	assert (query.get('error_description') or { '' }) == 'Application rejected linking'
+	assert storage.db.q_int('SELECT count(*) FROM auth_user')! == 0
+	assert storage.db.q_int('SELECT count(*) FROM auth_account')! == 0
+	assert (auth.find_opaque_verification(state, 'oauth-state')!).value == none
+	assert auth.handle(Request{
+		url:     url
+		headers: {
+			'cookie': cookie
+		}
+	}).status == 400
+	// The internal application marker is never a public HTTP error field.
+	ordinary := auth.handle(Request{
+		method:  'POST'
+		url:     'http://localhost:3000/api/auth/sign-up/email'
+		headers: {
+			'content-type': 'application/json'
+		}
+		body:    '{"name":"User","email":"http@example.com","password":"password123"}'
+	})
+	assert ordinary.status == 403
+	assert !ordinary.body.contains('application_error')
 	assert storage.db.q_int('SELECT count(*) FROM auth_user')! == 0
 }

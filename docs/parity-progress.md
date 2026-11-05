@@ -838,7 +838,7 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   titles cannot inflate coverage. Six audit cases cover complementary selections,
   repeats, ambiguous legacy records, stale checksums and invalid source metadata;
   `make check` now includes them. Source bodies/assertions are unchanged. The inventory
-  identifies 1,194 preserved declarations, distinct from runtime/backend case counts.
+  identifies 1,196 preserved declarations, distinct from runtime/backend case counts.
 
 - Added native OpenAPI request schemas for all nine public email-OTP POST endpoints,
   including required fields, purpose enums, extensible signup input and the deprecated
@@ -877,7 +877,15 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   now includes the actual discovered issuer. IdP-initiated flows and remaining global
   error/context mappings remain unported.
 
-The latest full `make check` passes 2759 TypeScript cases across 141 files, all 118
+- Preserved application policy/hook API error codes and descriptions in OAuth
+  redirects, including exact casing. Callback rejection now rolls back pending
+  identity/account writes and queued effects while leaving consumed state unusable.
+  Two unchanged upstream policy tests, nine signed OIDC contracts across all three
+  adapters and one native function verify returned/thrown errors, before-account
+  hook failures, stateless rejection, replay and ordinary HTTP error privacy.
+  Post-commit hooks/external effects remain outside rollback guarantees.
+
+The latest full `make check` passes 2770 TypeScript cases across 142 files, all 119
 native V test functions across 38 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
 The six source-inventory audit tests also pass. Formatting and `git diff --check` pass. Repeated backend runs do not increase unique

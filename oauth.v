@@ -304,6 +304,9 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 	account := a.oauth_identity_account_with_signup(identity, provider_id,
 
 		provider !is GoogleProvider && provider !is GenericOAuthProvider, allowed_signup) or {
+		if err is APIError {
+			if err.application_error { return a.generic_oauth_error(stored, record.id, err) }
+		}
 		if provider is GenericOAuthProvider { return a.generic_oauth_error(stored, record.id, err) }
 		if provider is GoogleProvider {
 			if err is APIError {
@@ -316,9 +319,7 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 	}
 	session := a.make_session(account.user.id, RequestContext{ headers: req.headers }, true) or {
 		if err is APIError {
-			a.rollback_transaction()
-			a.begin_transaction(false)!
-			return a.oauth_callback_error(stored, record.id, err.code, err.message)
+			return a.oauth_abort_callback(stored, record.id, err.code, err.message)
 		}
 		return err
 	}
@@ -351,8 +352,21 @@ fn (a &Auth) oauth_default_error(code string) Response {
 }
 
 fn (mut a Auth) generic_oauth_error(stored OAuthState, record_id string, reason IError) !Response {
-	code := if reason is APIError { reason.code.to_lower() } else { 'unable_to_get_user_info' }
-	return a.oauth_callback_error(stored, record_id, code, '')
+	if reason is APIError {
+		if reason.application_error {
+			return a.oauth_abort_callback(stored, record_id, reason.code, reason.message)
+		}
+		return a.oauth_abort_callback(stored, record_id, reason.code.to_lower(), '')
+	}
+	return a.oauth_abort_callback(stored, record_id, 'unable_to_get_user_info', '')
+}
+
+fn (mut a Auth) oauth_abort_callback(stored OAuthState, record_id string, code string, description string) !Response {
+	// State was consumed in a prior committed transaction. Rejecting the callback
+	// must roll back any subsequent user/account writes without restoring the proof.
+	a.rollback_transaction()
+	a.begin_transaction(false)!
+	return a.oauth_callback_error(stored, record_id, code, description)
 }
 
 fn (mut a Auth) oauth_callback_error(stored OAuthState, record_id string, code string, description string) !Response {
@@ -436,12 +450,12 @@ fn (mut a Auth) oauth_identity_account_with_signup(identity OAuthIdentity, provi
 					provider_id: provider_id
 					profile:     identity.profile
 				}
-			})!
-			if decision.error != '' { return fail(403, decision.error, if decision.error_description != '' {
+			}) or { return as_application_error(err) }
+			if decision.error != '' { return as_application_error(fail(403, decision.error, if decision.error_description != '' {
 					decision.error_description
 				} else {
 					decision.error
-				})
+				}))
 			 }
 			user = a.persist_user(user)!
 		}

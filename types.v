@@ -117,6 +117,8 @@ pub:
 	code    string
 	message string
 	details map[string]json2.Any
+	// Set at application callback boundaries; OAuth redirects preserve these codes.
+	application_error bool @[skip]
 }
 
 pub fn (e APIError) msg() string {
@@ -133,6 +135,16 @@ fn fail(status int, code string, message string) IError {
 		code:    code
 		message: message
 	}
+}
+
+fn as_application_error(reason IError) IError {
+	if reason is APIError {
+		return APIError{
+			...reason
+			application_error: true
+		}
+	}
+	return reason
 }
 
 pub interface PasswordHasher {

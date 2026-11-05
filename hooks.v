@@ -31,7 +31,7 @@ fn (mut a Auth) before_record(model string, operation string, data string) !Look
 			operation: operation
 			phase:     'before'
 			data_json: encoded
-		})!
+		}) or { return as_application_error(err) }
 		if result.cancel { return Lookup[string]{} }
 		if patch := result.data_json { encoded = merge_record_json(encoded, patch)! }
 	}
@@ -80,7 +80,7 @@ fn (mut a Auth) run_task(task AfterCommitTask) ! {
 		auth: a
 	}
 	for hook in a.config.database_hooks {
-		hook.run(mut context, task.event)!
+		hook.run(mut context, task.event) or { return as_application_error(err) }
 	}
 }
 

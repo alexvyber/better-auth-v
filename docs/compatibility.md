@@ -926,7 +926,7 @@ The source inventory unions complementary imports by original AST position under
 matching source checksums. Backend repeats count once, duplicate titles retain
 separate identities and malformed source metadata fails the audit. Every manifest
 records original positions/lines. Six audit tests run through `make check`. The
-current 33 complete/16 partial/387 unported source-file counts and 1,194 preserved
+current 33 complete/16 partial/387 unported source-file counts and 1,196 preserved
 static declarations describe source coverage, including separately labelled SDK
 probes; they are not equivalent to native runtime or feature parity.
 
@@ -968,3 +968,17 @@ Nabu contracts exercise issuer rejection/success and hook rollback across SQLite
 PostgreSQL and MongoDB. A native function checks provider denial, missing code,
 browser binding, proof retention/consumption and replay. IdP-initiated flows, complete
 callback error mappings and custom global error-URL configuration remain open.
+
+
+OAuth user-policy and database-hook API errors retain application code casing and
+messages in trusted error redirects. The marker distinguishing application errors
+from native callback errors is omitted from HTTP/JSON representations. Rejected
+identity/account creation rolls back pending user/account writes and queued effects;
+the previously consumed OAuth state stays consumed. Two unchanged upstream policy
+cases cover provider/source metadata, raw profiles, descriptions and stateless
+rejection. Nine signed OIDC contracts repeat returned policy errors, thrown API
+errors and before-account hook failures on SQLite, PostgreSQL and MongoDB. One
+native function independently checks rollback, replay and marker privacy on ordinary
+HTTP signup errors. Post-commit hooks cannot roll back already committed writes;
+external application side effects and nontransactional stores retain their existing
+limits.

@@ -6,11 +6,12 @@ import net.urllib
 import x.json2
 
 fn (mut a Auth) intercept_internal(name string, arguments_json string) !Lookup[string] {
-	if a.config.internal_interceptor == pass_internal_operation || name in a.intercepting {
+	if a.config.internal_interceptor == pass_internal_operation
+		|| name in a.operation.interception.active {
 		return Lookup[string]{}
 	}
-	a.intercepting[name] = true
-	defer { a.intercepting.delete(name) }
+	a.operation.interception.active[name] = true
+	defer { a.operation.interception.active.delete(name) }
 	mut context := EndpointContext{
 		auth: a
 	}
@@ -274,18 +275,20 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 				stateful := !c.auth.config.stateless_sessions || c.auth.has_secondary()
 				query.set('disableCookieCache', stateful.str())
 			}
-			previous := c.auth.request_context
-			c.auth.request_context = RequestContext{
-				...previous
-				headers: headers
-			}
-			defer { c.auth.request_context = previous }
-			response := c.auth.dispatch(Request{
+			previous := c.auth.operation.request
+			request := Request{
 				method:  'GET'
 				url:     c.auth.base_url() + c.auth.config.base_path + '/get-session?' +
 					query.encode()
 				headers: headers
-			}, '/get-session', Payload{})!
+			}
+			response := c.auth.with_request_context[Response](RequestContext{
+				...previous
+				headers: headers
+			}, fn [request] (mut context EndpointContext) !Response {
+				return context.auth.dispatch(request, '/get-session', Payload{})
+			})!
+
 			return json.encode(response)
 		}
 		'adapterUpdateOrganizationModel' {
@@ -361,7 +364,7 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 				if args[2] !is json2.Null { overrides = args[2].as_map().clone() }
 			}
 			all := args.len > 3 && args[3].bool()
-			session := c.auth.make_session_overridden(args[0].str(), c.auth.request_context,
+			session := c.auth.make_session_overridden(args[0].str(), c.auth.operation.request,
 				remember, overrides, all)!
 			return encode_internal_session(session)
 		}

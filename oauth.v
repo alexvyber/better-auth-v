@@ -225,7 +225,7 @@ fn (mut a Auth) start_oauth(p Payload) !Response {
 			} else {
 				true
 			})!
-			session := a.make_session(account.user.id, a.request_context, true)!
+			session := a.make_session(account.user.id, a.operation.request, true)!
 			mut response := Response{
 				headers: [Header{'content-type', 'application/json'}]
 				body:    '{"redirect":false,"token":${json.encode(session.token)},"user":${a.user_json(account.user)}}'
@@ -277,7 +277,7 @@ fn (mut a Auth) start_oauth(p Payload) !Response {
 			provider:              provider.id()
 			verifier:              verifier
 			callback_url:          callback
-			anonymous_user_id:     if source := a.anonymous_link_session {
+			anonymous_user_id:     if source := a.operation.attempt.anonymous_link_session {
 				source.user.id
 			} else {
 				''
@@ -326,10 +326,12 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 
 	a.commit_transaction() or {
 		// After-commit hook failure must still expire the consumed state's cookie.
-		if !a.transaction_active { a.oauth_state_consumed = true }
+		if !a.operation.attempt.transaction.active {
+			a.operation.attempt.oauth_state_consumed = true
+		}
 		return err
 	}
-	a.oauth_state_consumed = true
+	a.operation.attempt.oauth_state_consumed = true
 	a.begin_transaction(false)!
 	if record.identifier != 'oauth-state' || verification_expiry_millis(record) < a.clock_millis() {
 		return fail(400, 'INVALID_STATE', 'Invalid OAuth state')

@@ -65,10 +65,11 @@ pub fn (plugin OrganizationPlugin) endpoints() []Endpoint {
 		'accept-invitation', 'reject-invitation', 'cancel-invitation', 'has-permission',
 		'update-member-role', 'create-role', 'update-role', 'delete-role', 'remove-member', 'leave'] {
 		routes << Endpoint{
-			path:           '/organization/' + path
-			hide_from_docs: !plugin.options.dynamic_access_control.enabled
+			path:             '/organization/' + path
+			transaction_mode: .replayable
+			hide_from_docs:   !plugin.options.dynamic_access_control.enabled
 				&& path in ['create-role', 'update-role', 'delete-role']
-			handler:        organization_endpoint
+			handler:          organization_endpoint
 		}
 	}
 	for path in ['get-full-organization', 'get-organization', 'list', 'get-active-member',
@@ -83,8 +84,9 @@ pub fn (plugin OrganizationPlugin) endpoints() []Endpoint {
 		}
 	}
 	routes << Endpoint{
-		path:    '/internal/organization/add-member'
-		handler: organization_endpoint
+		path:             '/internal/organization/add-member'
+		transaction_mode: .replayable
+		handler:          organization_endpoint
 	}
 	return routes
 }
@@ -143,7 +145,7 @@ fn (mut context EndpointContext) organization_record(id string) !map[string]json
 }
 
 fn (mut context EndpointContext) organization_actor(optional bool) !Lookup[SessionResult] {
-	if live := (context.auth.current_session(context.auth.request_context)!).value {
+	if live := (context.auth.current_session(context.auth.operation.request)!).value {
 		user := (context.auth.storage.user(live.user.id)!).value or {
 			return fail(401, 'UNAUTHORIZED', 'Unauthorized')
 		}
@@ -160,8 +162,8 @@ fn (mut context EndpointContext) organization_actor(optional bool) !Lookup[Sessi
 }
 
 fn (context &EndpointContext) trusted_headerless_call() bool {
-	if context.auth.request_context.request != none { return false }
-	for name, _ in context.auth.request_context.headers {
+	if context.auth.operation.request.request != none { return false }
+	for name, _ in context.auth.operation.request.headers {
 		if name != 'content-type' { return false }
 	}
 	return true
@@ -346,7 +348,7 @@ fn (mut context EndpointContext) organization_add_member(org map[string]json2.An
 fn organization_endpoint(mut context EndpointContext, request Request) !Response {
 	parsed := urllib.parse(request.url)!
 	path := parsed.path.all_after_last('/')
-	if path == 'add-member' && context.auth.request_context.request != none {
+	if path == 'add-member' && context.auth.operation.request.request != none {
 		return fail(404, 'NOT_FOUND', 'Not found')
 	}
 	mut fields := map[string]json2.Any{}

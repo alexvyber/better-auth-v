@@ -215,7 +215,7 @@ pub fn (mut storage PostgresStorage) consume_rate_limit(input RateLimitInput) !R
 pub fn (mut a Auth) migrate_storage() ! {
 	a.mutex.@lock()
 	defer { a.mutex.unlock() }
-	if a.closed || a.transaction_active {
+	if a.closed || a.operation.attempt.transaction.active {
 		return error('cannot migrate active or closed auth storage')
 	}
 	mut storage := a.storage

@@ -132,7 +132,7 @@ fn (mut a Auth) rate_limit(path string) !Lookup[Response] {
 		path
 	}
 	ip := if a.config.trust_proxy_ip_headers {
-		a.request_context.headers['x-forwarded-for'].split(',').last().trim_space()
+		a.operation.request.headers['x-forwarded-for'].split(',').last().trim_space()
 	} else {
 		''
 	}

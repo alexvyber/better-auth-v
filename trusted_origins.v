@@ -172,12 +172,12 @@ pub fn (a &Auth) is_trusted_origin(value string, allow_relative bool) bool {
 	for pattern in a.config.trusted_origins {
 		if matches_origin_pattern(value, pattern, allow_relative) { return true }
 	}
-	if a.request_context.request == none {
+	if a.operation.request.request == none {
 		for pattern in a.initial_trusted_origins {
 			if matches_origin_pattern(value, pattern, allow_relative) { return true }
 		}
 	}
-	for pattern in a.request_context.trusted_origins {
+	for pattern in a.operation.request.trusted_origins {
 		if matches_origin_pattern(value, pattern, allow_relative) { return true }
 	}
 	return false
@@ -259,7 +259,7 @@ fn no_trusted_origins(_ RequestContext) ![]string {
 
 fn (a &Auth) skip_origin_check() bool {
 	if a.config.disable_origin_check { return true }
-	request := a.request_context.request or { return false }
+	request := a.operation.request.request or { return false }
 	url := urllib.parse(request.url) or { return false }
 	path := normalized_origin_path(url.path)
 	base := a.config.base_path

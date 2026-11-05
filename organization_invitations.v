@@ -280,8 +280,8 @@ fn organization_invitation_endpoint(mut context EndpointContext, current Session
 }
 
 fn organization_list_user_invitations(mut context EndpointContext, fields map[string]json2.Any) !Response {
-	actor := (context.auth.current_session(context.auth.request_context)!).value
-	if context.auth.request_context.request != none && 'email' in fields {
+	actor := (context.auth.current_session(context.auth.operation.request)!).value
+	if context.auth.operation.request.request != none && 'email' in fields {
 		return fail(400, 'BAD_REQUEST', 'User email cannot be passed for client side API calls.')
 	}
 	mut email := ''

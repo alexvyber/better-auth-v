@@ -209,7 +209,7 @@ fn organization_get_or_activate(mut context EndpointContext, current SessionResu
 }
 
 fn organization_server_add_member(mut context EndpointContext, fields map[string]json2.Any) !Response {
-	current := (context.auth.current_session(context.auth.request_context)!).value
+	current := (context.auth.current_session(context.auth.operation.request)!).value
 	session := if live := current { live.session } else { Session{} }
 	id := organization_id(fields, session)
 	if id == '' { return fail(400, 'NO_ACTIVE_ORGANIZATION', 'No active organization') }

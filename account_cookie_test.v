@@ -64,7 +64,7 @@ fn test_native_account_cookie_binding_preserves_fresh_pending_writes() ! {
 	}, open_memory())!
 	defer { auth.close() or {} }
 	stale := auth.set_account_cookie(Response{}, '{"userId":"one"}')!
-	auth.request_context = RequestContext{
+	auth.operation.request = RequestContext{
 		headers: account_cookie_test_headers(stale)
 	}
 	target := SessionResult{

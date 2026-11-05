@@ -65,7 +65,7 @@ fn is_anonymous(user User) bool {
 
 fn sign_in_anonymous(mut context EndpointContext, _ Request) !Response {
 	options := context.auth.anonymous_options()!
-	if current := (context.auth.current_session(context.auth.request_context)!).value {
+	if current := (context.auth.current_session(context.auth.operation.request)!).value {
 		if is_anonymous(current.user) {
 			return fail(400, 'ANONYMOUS_USERS_CANNOT_SIGN_IN_AGAIN_ANONYMOUSLY',
 				'Anonymous users cannot sign in again anonymously')
@@ -110,7 +110,7 @@ fn sign_in_anonymous(mut context EndpointContext, _ Request) !Response {
 		})
 	 }
 	user := context.auth.persist_user(proposed)!
-	session := context.auth.make_session(user.id, context.auth.request_context, true)!
+	session := context.auth.make_session(user.id, context.auth.operation.request, true)!
 	return context.auth.set_session_cookies(Response{
 		headers: [Header{'content-type', 'application/json'}]
 		body:    '{"token":${json.encode(session.token)},"user":${context.auth.user_json(user)}}'
@@ -151,19 +151,19 @@ fn anonymous_link_path(path string) bool {
 }
 
 fn (mut a Auth) anonymous_before_request(path string) ! {
-	a.anonymous_link_session = none
+	a.operation.attempt.anonymous_link_session = none
 	a.anonymous_options() or { return }
 	if !anonymous_link_path(path) { return }
-	if current := (a.current_session(a.request_context)!).value {
-		if is_anonymous(current.user) { a.anonymous_link_session = current }
+	if current := (a.current_session(a.operation.request)!).value {
+		if is_anonymous(current.user) { a.operation.attempt.anonymous_link_session = current }
 	}
 }
 
 fn (mut a Auth) anonymous_after_response(path string, response Response) ! {
 	options := a.anonymous_options() or { return }
 	if !anonymous_link_path(path) || response.status >= 400 { return }
-	previous := a.anonymous_link_session or { return }
-	next := a.new_session or { return }
+	previous := a.operation.attempt.anonymous_link_session or { return }
+	next := a.operation.attempt.new_session or { return }
 	mut context := EndpointContext{
 		auth:    a
 		session: next
@@ -179,13 +179,13 @@ fn (mut a Auth) anonymous_after_response(path string, response Response) ! {
 }
 
 fn (mut a Auth) restore_anonymous_oauth_source(user_id string) ! {
-	if a.anonymous_link_session != none || user_id == '' { return }
+	if a.operation.attempt.anonymous_link_session != none || user_id == '' { return }
 	a.anonymous_options() or { return }
 	user := (a.storage.user(user_id)!).value or { return }
 	if !is_anonymous(user) { return }
 	for session in a.user_sessions(user_id)! {
 		if epoch_millis(session.expires_at)! >= a.clock_millis() {
-			a.anonymous_link_session = SessionResult{
+			a.operation.attempt.anonymous_link_session = SessionResult{
 				user:    user
 				session: session
 			}

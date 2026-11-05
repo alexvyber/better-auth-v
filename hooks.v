@@ -4,13 +4,6 @@ import json
 import time
 import x.json2
 
-struct AfterCommitTask {
-	kind    string
-	event   DatabaseEvent
-	session Session
-	user    User
-}
-
 fn merge_record_json(base string, patch string) !string {
 	mut fields := json2.decode[map[string]json2.Any](base)!
 	updates := json2.decode[map[string]json2.Any](patch)!
@@ -43,7 +36,7 @@ fn (mut a Auth) before_record(model string, operation string, data string) !Look
 fn (mut a Auth) after_record(model string, operation string, data string) ! {
 	if a.config.database_hooks.len == 0 { return }
 	a.queue_task(AfterCommitTask{
-		kind:  'hook'
+		kind:  .database_hook
 		event: DatabaseEvent{
 			model:     model
 			operation: operation
@@ -51,170 +44,6 @@ fn (mut a Auth) after_record(model string, operation string, data string) ! {
 			data_json: data
 		}
 	})!
-}
-
-fn (mut a Auth) queue_task(task AfterCommitTask) ! {
-	if a.transaction_active && a.transactions_enabled {
-		a.pending_tasks << task
-	} else {
-		a.run_task(task)!
-	}
-}
-
-fn (mut a Auth) run_task(task AfterCommitTask) ! {
-	if task.kind == 'remove-session' {
-		a.remove_cached_session(task.session)!
-		return
-	}
-	if task.kind == 'password-reset' {
-		a.config.on_password_reset(task.user)!
-		return
-	}
-	if task.kind == 'mirror-session' {
-		a.mirror_session(task.session) or {
-			a.config.log('error', 'Failed to mirror committed session to secondary storage')
-		}
-		return
-	}
-	mut context := EndpointContext{
-		auth: a
-	}
-	for hook in a.config.database_hooks {
-		hook.run(mut context, task.event) or { return as_application_error(err) }
-	}
-}
-
-fn (mut a Auth) begin_transaction(read_only bool) ! {
-	if a.transaction_active { return error('transaction is already active') }
-	if a.transactions_enabled {
-		if read_only {
-			a.storage.begin_read()!
-		} else {
-			a.storage.begin()!
-		}
-	}
-	a.transaction_active = true
-	a.pending_tasks = []AfterCommitTask{}
-	a.secondary_created = []Session{}
-}
-
-fn (mut a Auth) commit_transaction() ! {
-	mut context := EndpointContext{
-		auth: a
-	}
-	a.config.before_commit(mut context)!
-	if a.transactions_enabled { a.storage.commit()! }
-	a.finish_committed_transaction()!
-}
-
-fn (mut a Auth) finish_committed_transaction() ! {
-	a.transaction_active = false
-	a.secondary_created = []Session{}
-	tasks := a.pending_tasks.clone()
-	a.pending_tasks = []AfterCommitTask{}
-	for task in tasks {
-		a.run_task(task)!
-	}
-}
-
-fn (mut a Auth) rollback_transaction() {
-	if !a.transaction_active { return }
-	if a.transactions_enabled { a.storage.rollback() or {
-			a.config.log('error', 'Database rollback failed')} }
-	a.transaction_active = false
-	a.pending_tasks = []AfterCommitTask{}
-	for session in a.secondary_created {
-		a.remove_cached_session(session) or {
-			a.config.log('error', 'Failed to remove rolled-back secondary session')
-		}
-	}
-	a.secondary_created = []Session{}
-}
-
-// Trusted server-side internal operations get the same transaction and hooks as
-// HTTP operations. Hooks use their existing EndpointContext to avoid re-locking.
-pub fn (mut a Auth) with_internal(operation fn (mut EndpointContext) !string) !string {
-	a.mutex.@lock()
-	defer { a.mutex.unlock() }
-	if a.closed { return error('Auth instance is closed') }
-	a.begin_transaction(false)!
-	defer { a.rollback_transaction() }
-	mut context := EndpointContext{
-		auth: a
-	}
-	result := operation(mut context)!
-	a.commit_transaction()!
-	return result
-}
-
-// EndpointContext already owns Auth's lock. Nested work shares an active
-// transaction; after-commit work starts a new one without re-locking Auth.
-pub fn (c &EndpointContext) has_active_transaction() bool {
-	return c.auth.transaction_active
-}
-
-pub fn (mut c EndpointContext) with_transaction(operation fn (mut EndpointContext) !string) !string {
-	if c.auth.transaction_active { return operation(mut c) }
-	return c.auth.with_transaction_unlocked(operation)
-}
-
-// Unlike with_internal, this API delegates replayable transaction callbacks to
-// a driver's native transaction runner when available. A callback may run again.
-pub fn (mut a Auth) with_transaction(operation fn (mut EndpointContext) !string) !string {
-	a.mutex.@lock()
-	defer { a.mutex.unlock() }
-	if a.closed { return error('Auth instance is closed') }
-	return a.with_transaction_unlocked(operation)
-}
-
-fn (mut a Auth) with_transaction_unlocked(operation fn (mut EndpointContext) !string) !string {
-	defer { a.rollback_transaction() }
-	mut storage := a.storage
-	if mut storage is ManagedTransactionStorage {
-		if a.transactions_enabled {
-			saved_session := a.new_session
-			saved_anonymous := a.anonymous_link_session
-			saved_consumed := a.oauth_state_consumed
-			result := storage.run_managed_transaction(fn [mut a, operation, saved_session, saved_anonymous, saved_consumed] () !string {
-				// The driver has aborted/restarted the physical transaction before
-				// replay. Discard failed-attempt hooks and secondary-cache effects.
-				a.rollback_transaction()
-				a.new_session = saved_session
-				a.anonymous_link_session = saved_anonymous
-				a.oauth_state_consumed = saved_consumed
-				a.begin_transaction(false)!
-				mut context := EndpointContext{ auth: a }
-				value := operation(mut context) or {
-					a.rollback_transaction()
-					return err
-				}
-				a.config.before_commit(mut context) or {
-					a.rollback_transaction()
-					return err
-				}
-				return value
-			}) or {
-				a.new_session = saved_session
-				a.anonymous_link_session = saved_anonymous
-				a.oauth_state_consumed = saved_consumed
-				if err is MongoDriverError && err.cleanup_error != '' {
-					a.config.log('error',
-						'Failed to abort a MongoDB transaction whose commit did not complete: ' +
-						err.cleanup_error)
-				}
-				return err
-			}
-			a.finish_committed_transaction()!
-			return result
-		}
-	}
-	a.begin_transaction(false)!
-	mut context := EndpointContext{
-		auth: a
-	}
-	result := operation(mut context)!
-	a.commit_transaction()!
-	return result
 }
 
 fn (mut a Auth) persist_user(user User) !User {

@@ -99,7 +99,7 @@ fn (a &Auth) set_cookie(r Response, token string, remember bool) Response {
 	if !remember {
 		result = with_header(result, 'set-cookie', a.cache_cookie_header(marker,
 			urllib.query_escape(a.sign_cookie('true')), none))
-	} else if marker in cookie_values(a.request_context) {
+	} else if marker in cookie_values(a.operation.request) {
 		result = with_header(result, 'set-cookie', a.cache_cookie_header(marker, '', i64(0)))
 	}
 	return result
@@ -110,7 +110,7 @@ fn (a &Auth) clear_cookie(r Response) Response {
 	mut result := a.clear_cache_cookie(with_header(r, 'set-cookie', value))
 	if a.config.store_account_cookie { result = a.clear_account_cookies(result) }
 	marker := a.cookie_name_for('dont_remember')
-	if marker in cookie_values(a.request_context) {
+	if marker in cookie_values(a.operation.request) {
 		result = with_header(result, 'set-cookie', a.cache_cookie_header(marker, '', i64(0)))
 	}
 	return result
@@ -216,21 +216,19 @@ fn (mut a Auth) handle_prepared_result(prepared PreparedRequest, propagate_serve
 		method:  req.method.to_upper()
 		headers: headers
 	}
-	previous_anonymous := a.anonymous_link_session
-	defer { a.anonymous_link_session = previous_anonymous }
-	previous_session := a.new_session
-	a.new_session = none
-	defer { a.new_session = previous_session }
-	previous_oauth_state := a.oauth_state_consumed
-	a.oauth_state_consumed = false
-	defer { a.oauth_state_consumed = previous_oauth_state }
-	previous_context := a.request_context
-	defer { a.request_context = previous_context }
-	a.request_context = RequestContext{
-		...prepared.context
-		headers: headers
-		request: if direct { none } else { ?Request(normalized) }
+	previous_operation := a.operation
+	a.operation = &OperationContext{
+		request: RequestContext{
+			...prepared.context
+			headers: headers
+			request: if direct { none } else { ?Request(normalized) }
+		}
+		attempt: &AttemptContext{
+			anonymous_link_session: previous_operation.attempt.anonymous_link_session
+		}
 	}
+	defer { a.operation = previous_operation }
+
 	r := if response := prepared.response {
 		response
 	} else {
@@ -240,7 +238,7 @@ fn (mut a Auth) handle_prepared_result(prepared PreparedRequest, propagate_serve
 		}
 	}
 	mut result := r
-	if a.oauth_state_consumed && !result.headers.any(it.name == 'set-cookie'
+	if a.operation.attempt.oauth_state_consumed && !result.headers.any(it.name == 'set-cookie'
 		&& it.value.starts_with(a.oauth_cookie_name() + '=')) {
 		result = a.oauth_cookie(result, '', true)
 	}
@@ -358,19 +356,17 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 		}
 		a.check_redirect((u.query().get(field) or { '' }), field)!
 	}
-	if req.method == 'POST'
-		&& (path.starts_with('/organization/') || path == '/internal/organization/add-member') {
-		encoded := a.with_transaction_unlocked(fn [req, path, payload, body] (mut context EndpointContext) !string {
-			return json.encode(context.auth.dispatch_transaction(Request{ ...req, body: body },
-				path, payload)!)
-		})!
-		return json.decode(Response, encoded)!
+	mode := a.route_transaction_mode(path, req.method)
+	if mode == .replayable {
+		return a.run_transaction[Response](fn [req, path, payload, body] (mut context EndpointContext) !Response {
+			return context.auth.dispatch_transaction(Request{ ...req, body: body }, path, payload)
+		})
 	}
-	a.begin_transaction(path == '/get-session' && req.method == 'GET'
-		&& a.config.defer_session_refresh)!
+	a.begin_transaction(mode == .read_only)!
+
 	defer { a.rollback_transaction() }
 	result := a.dispatch_transaction(Request{ ...req, body: body }, path, payload)!
-	if a.transaction_active { a.commit_transaction()! }
+	if a.operation.attempt.transaction.active { a.commit_transaction()! }
 	return result
 }
 
@@ -447,7 +443,7 @@ fn (mut a Auth) check_csrf(req Request, path string) ! {
 
 fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 	ctx := RequestContext{
-		...a.request_context
+		...a.operation.request
 		headers: req.headers
 	}
 	u := urllib.parse(req.url)!
@@ -740,7 +736,7 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 			} else {
 				a.update_password(user.id, hash)!
 			}
-			a.queue_task(AfterCommitTask{ kind: 'password-reset', user: user })!
+			a.queue_task(AfterCommitTask{ kind: .password_reset, user: user })!
 			return json_response({
 				'status': true
 			})

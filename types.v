@@ -466,6 +466,7 @@ pub interface Plugin {
 
 pub struct Endpoint {
 pub:
+	transaction_mode TransactionMode
 	// Declarative input-schema trees for documentation; these do not validate requests.
 	body_schema      string
 	query_schema     string
@@ -548,5 +549,5 @@ fn discard_password_reset(_ User) ! {}
 fn discard_verification_callback(_ User, _ RequestContext) ! {}
 
 pub fn (c &EndpointContext) request_context() RequestContext {
-	return c.auth.request_context
+	return c.auth.operation.request
 }

@@ -91,7 +91,7 @@ fn (mut context EndpointContext) generate_one_time_token(session SessionResult) 
 
 fn generate_one_time_token_endpoint(mut context EndpointContext, _ Request) !Response {
 	options := context.auth.one_time_token_options()!
-	if options.disable_client_request && context.auth.request_context.request != none {
+	if options.disable_client_request && context.auth.operation.request.request != none {
 		return fail(400, 'BAD_REQUEST', 'Client requests are disabled')
 	}
 	session := context.session or { return fail(401, 'UNAUTHORIZED', 'Unauthorized') }
@@ -126,7 +126,7 @@ fn verify_one_time_token_endpoint(mut context EndpointContext, request Request) 
 }
 
 fn (mut a Auth) one_time_token_new_session(response Response) !Response {
-	session := a.new_session or { return response }
+	session := a.operation.attempt.new_session or { return response }
 	options := a.one_time_token_options() or { return response }
 	if !options.set_ott_header_on_new_session { return response }
 	mut context := EndpointContext{

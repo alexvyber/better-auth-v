@@ -223,7 +223,7 @@ fn (mut context EndpointContext) set_two_factor_enabled(current SessionResult, e
 		additional_fields: fields
 		updated_at:        stamp_millis(context.auth.clock_millis())
 	})!
-	session := context.auth.make_session(user.id, context.auth.request_context,
+	session := context.auth.make_session(user.id, context.auth.operation.request,
 		current.session.persistent)!
 	context.auth.remove_session(current.session.token)!
 	return SessionResult{
@@ -310,7 +310,7 @@ fn get_totp_uri(mut context EndpointContext, request Request) !Response {
 }
 
 fn generate_totp_endpoint(mut context EndpointContext, request Request) !Response {
-	if context.auth.request_context.request != none { return fail(404, 'NOT_FOUND', 'Not found') }
+	if context.auth.operation.request.request != none { return fail(404, 'NOT_FOUND', 'Not found') }
 	options := context.auth.two_factor_options() or { return error('two-factor not configured') }
 	if options.totp_options.disable {
 		return fail(400, 'TOTP_NOT_CONFIGURED', "totp isn't configured")
@@ -348,7 +348,7 @@ fn generate_backup_codes(mut context EndpointContext, request Request) !Response
 }
 
 fn view_backup_codes(mut context EndpointContext, request Request) !Response {
-	if context.auth.request_context.request != none { return fail(404, 'NOT_FOUND', 'Not found') }
+	if context.auth.operation.request.request != none { return fail(404, 'NOT_FOUND', 'Not found') }
 	records := context.two_factors(email_otp_string(email_otp_body(request)!, 'userId')!)!
 	if records.len == 0 {
 		return fail(400, 'BACKUP_CODES_NOT_ENABLED', "Backup codes aren't enabled")
@@ -386,7 +386,7 @@ struct TwoFactorChallenge {
 }
 
 fn (context &EndpointContext) two_factor_cookie(name string) ?string {
-	value := cookie_values(context.auth.request_context)[context.auth.cookie_name_for(name)] or {
+	value := cookie_values(context.auth.operation.request)[context.auth.cookie_name_for(name)] or {
 		return none
 	}
 	return context.auth.verify_signed_value(value)
@@ -401,7 +401,7 @@ fn (context &EndpointContext) two_factor_set_cookie(response Response, name stri
 }
 
 fn (mut context EndpointContext) two_factor_challenge() !TwoFactorChallenge {
-	if current := (context.auth.current_session(context.auth.request_context)!).value {
+	if current := (context.auth.current_session(context.auth.operation.request)!).value {
 		return TwoFactorChallenge{
 			user:    current.user
 			session: current.session
@@ -473,7 +473,7 @@ fn (mut a Auth) two_factor_sign_in(result AuthResult) !Lookup[Response] {
 		expired_trust = true
 	}
 	if session := result.session { a.remove_session(session.token)! }
-	a.new_session = none
+	a.operation.attempt.new_session = none
 	identifier := '2fa-' + generate_auth_id(20)!
 	expires := a.clock_millis() + options.two_factor_cookie_max_age * 1000
 	context.create_verification_value(Verification{
@@ -527,7 +527,7 @@ fn (mut context EndpointContext) complete_two_factor(challenge TwoFactorChalleng
 		// Burn before session creation; failures must never reopen the challenge.
 		context.commit_email_otp_gate()!
 		remember := (context.two_factor_cookie('dont_remember') or { '' }) != 'true'
-		session = context.auth.make_session(challenge.user.id, context.auth.request_context,
+		session = context.auth.make_session(challenge.user.id, context.auth.operation.request,
 			remember)!
 	}
 	actual := session or { return error('missing two-factor session') }

@@ -72,16 +72,16 @@ fn email_otp_verify_email(mut context EndpointContext, request Request) !Respons
 		return fail(400, 'USER_NOT_FOUND', 'User not found')
 	}
 
-	context.auth.config.before_email_verification(user, context.auth.request_context)!
+	context.auth.config.before_email_verification(user, context.auth.operation.request)!
 	updated := context.auth.update_user_record(User{
 		...user
 		email:          email
 		email_verified: true
 		updated_at:     stamp_millis(context.auth.clock_millis())
 	})!
-	context.auth.config.after_email_verification(updated, context.auth.request_context)!
+	context.auth.config.after_email_verification(updated, context.auth.operation.request)!
 	if context.auth.config.auto_sign_in_after_verification {
-		session := context.auth.make_session(user.id, context.auth.request_context, true)!
+		session := context.auth.make_session(user.id, context.auth.operation.request, true)!
 		return context.auth.set_session_cookies(Response{
 			headers: [Header{'content-type', 'application/json'}]
 			body:    '{"status":true,"token":${json.encode(session.token)},"user":${context.auth.user_json(updated)}}'
@@ -94,7 +94,7 @@ fn email_otp_verify_email(mut context EndpointContext, request Request) !Respons
 		headers: [Header{'content-type', 'application/json'}]
 		body:    '{"status":true,"token":null,"user":${context.auth.user_json(updated)}}'
 	}
-	if current := (context.auth.current_session(context.auth.request_context)!).value {
+	if current := (context.auth.current_session(context.auth.operation.request)!).value {
 		if current.user.id == updated.id { response = context.auth.set_cache_cookie(response, SessionResult{
 				...current
 				user: updated
@@ -151,7 +151,7 @@ fn email_otp_sign_in(mut context EndpointContext, request Request) !Response {
 		 }
 		user = context.auth.persist_user(proposed)!
 	}
-	session := context.auth.make_session(user.id, context.auth.request_context, true)!
+	session := context.auth.make_session(user.id, context.auth.operation.request, true)!
 	return context.auth.set_session_cookies(Response{
 		headers: [
 			Header{'content-type', 'application/json'},
@@ -289,14 +289,14 @@ fn email_otp_change(mut context EndpointContext, request Request) !Response {
 	if (context.auth.storage.user_by_email(new_email)!).value != none {
 		return fail(400, 'BAD_REQUEST', 'Email already in use')
 	}
-	context.auth.config.before_email_verification(user, context.auth.request_context)!
+	context.auth.config.before_email_verification(user, context.auth.operation.request)!
 	updated := context.auth.update_user_record(User{
 		...user
 		email:          new_email
 		email_verified: true
 		updated_at:     stamp_millis(context.auth.clock_millis())
 	})!
-	context.auth.config.after_email_verification(updated, context.auth.request_context)!
+	context.auth.config.after_email_verification(updated, context.auth.operation.request)!
 	return context.auth.set_session_cookies(json_response({
 		'success': true
 	}), SessionResult{ session: current.session, user: updated })

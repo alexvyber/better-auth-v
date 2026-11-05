@@ -41,7 +41,7 @@ fn (a &Auth) clear_account_cookies(response Response) Response {
 			|| (!it.value.starts_with(base + '=') && !it.value.starts_with(base + '.')))
 	}
 	result = with_unique_cookie(result, base, a.cache_cookie_header(base, '', i64(0)))
-	for name, _ in cookie_values(a.request_context) {
+	for name, _ in cookie_values(a.operation.request) {
 		if cache_chunk_index(name, base) != none {
 			result = with_unique_cookie(result, name, a.cache_cookie_header(name, '', i64(0)))
 		}
@@ -75,7 +75,7 @@ pub fn (a &Auth) set_account_cookie(response Response, payload_json string) !Res
 	age := if configured_age is json2.Null { ?i64(none) } else { ?i64(i64(math.floor(lifetime))) }
 	base := a.account_cookie_name()
 	mut result := a.clear_account_cookies(response)
-	if base !in cookie_values(a.request_context) {
+	if base !in cookie_values(a.operation.request) {
 		result = Response{
 			...result
 			headers: result.headers.filter(it.name.to_lower() != 'set-cookie'
@@ -106,7 +106,7 @@ fn (a &Auth) sync_account_cookie(response Response, session SessionResult) !Resp
 	if !a.config.store_account_cookie || pending_auth_cookie(response, a.account_cookie_name()) {
 		return response
 	}
-	data := a.get_account_cookie(a.request_context).value or { return response }
+	data := a.get_account_cookie(a.operation.request).value or { return response }
 	fields := json2.decode[map[string]json2.Any](data)!
 	bind := a.config.account_cookie_bind_user or { !a.config.stateless_sessions }
 	if bind && (fields['userId'] or { json2.Any(json2.Null{}) }) != json2.Any(session.user.id) {

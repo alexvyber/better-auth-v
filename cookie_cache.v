@@ -238,7 +238,7 @@ fn (a &Auth) cache_max_age(persistent bool) ?f64 {
 fn (a &Auth) clear_cache_cookie(response Response) Response {
 	mut result := response
 	base := a.cache_cookie_name()
-	for name, _ in cookie_values(a.request_context) {
+	for name, _ in cookie_values(a.operation.request) {
 		if name == base || cache_chunk_index(name, base) != none {
 			result = with_header(result, 'set-cookie', a.cache_cookie_header(name, '', i64(0)))
 		}
@@ -277,7 +277,7 @@ fn (mut a Auth) set_cache_cookie(response Response, current SessionResult) !Resp
 fn (mut a Auth) set_session_cookies(response Response, current SessionResult) !Response {
 	result := a.set_cache_cookie(a.set_cookie(response, current.session.token,
 		current.session.persistent), current)!
-	a.new_session = current
+	a.operation.attempt.new_session = current
 	return result
 }
 

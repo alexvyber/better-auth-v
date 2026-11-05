@@ -185,7 +185,7 @@ pub fn (_ AdminPlugin) endpoints() []Endpoint {
 
 // Cookie cache is a presentation optimization, never an authorization source.
 fn (mut context EndpointContext) admin_actor(optional bool) !Lookup[SessionResult] {
-	request := context.auth.request_context
+	request := context.auth.operation.request
 	current := (context.auth.current_session(request)!).value or {
 		mut has_headers := false
 		for name, _ in request.headers {

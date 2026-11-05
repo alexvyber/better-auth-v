@@ -22,11 +22,12 @@ fn admin_impersonate(mut context EndpointContext, actor SessionResult, fields ma
 		options.impersonation_session_duration
 	}
 	expires := stamp_millis(i64(f64(context.auth.clock_millis()) + duration * 1000))
-	session := context.auth.make_session_overridden(target.id, context.auth.request_context, false, {
+	session := context.auth.make_session_overridden(target.id, context.auth.operation.request,
+		false, {
 		'impersonatedBy': json2.Any(actor.user.id)
 		'expiresAt':      json2.Any(expires)
 	}, true)!
-	marker := (context.auth.verify_signed_value(cookie_values(context.auth.request_context)[context.auth.cookie_name_for('dont_remember')]) or {
+	marker := (context.auth.verify_signed_value(cookie_values(context.auth.operation.request)[context.auth.cookie_name_for('dont_remember')]) or {
 		''
 	})
 	factory := context.auth.auth_cookie_factory()
@@ -46,7 +47,7 @@ fn admin_impersonate(mut context EndpointContext, actor SessionResult, fields ma
 }
 
 fn admin_stop_impersonating(mut context EndpointContext) !Response {
-	current := (context.auth.current_session(context.auth.request_context)!).value or {
+	current := (context.auth.current_session(context.auth.operation.request)!).value or {
 		return fail(401, 'UNAUTHORIZED', 'Unauthorized')
 	}
 
@@ -59,7 +60,7 @@ fn admin_stop_impersonating(mut context EndpointContext) !Response {
 
 	factory := context.auth.auth_cookie_factory()
 	descriptor := factory.create_cookie('admin_session', {})
-	raw := cookie_values(context.auth.request_context)[descriptor.name]
+	raw := cookie_values(context.auth.operation.request)[descriptor.name]
 	original := context.auth.verify_signed_value(raw) or {
 		return fail(500, 'INTERNAL_SERVER_ERROR', 'Failed to find admin session')
 	}

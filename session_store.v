@@ -47,9 +47,11 @@ fn (mut a Auth) persist_session(session Session) !Session {
 	}
 	if a.has_secondary() {
 		if a.database_fallback() {
-			a.queue_task(AfterCommitTask{ kind: 'mirror-session', session: actual })!
+			a.queue_task(AfterCommitTask{ kind: .mirror_session, session: actual })!
 		} else {
-			if a.transaction_active && a.transactions_enabled { a.secondary_created << actual }
+			if a.operation.attempt.transaction.active && a.transactions_enabled {
+				a.operation.attempt.transaction.secondary_created << actual
+			}
 			a.mirror_session(actual)!
 		}
 	}
@@ -240,7 +242,7 @@ fn (mut a Auth) remove_session_row(session Session) ! {
 	if (a.before_record('session', 'delete', encode_session(session))!).value == none { return }
 	if a.has_secondary() {
 		if a.database_fallback() {
-			a.queue_task(AfterCommitTask{ kind: 'remove-session', session: session })!
+			a.queue_task(AfterCommitTask{ kind: .remove_session, session: session })!
 		} else {
 			a.remove_cached_session(session)!
 		}

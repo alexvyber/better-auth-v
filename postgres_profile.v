@@ -26,10 +26,10 @@ fn (mut a Auth) try_sync_oauth_profile(user User, identity OAuthIdentity) !User 
 	mut storage := a.storage
 	if mut storage is ProfileSyncStorage {
 		storage.start_profile_sync()!
-		tasks := a.pending_tasks.len
+		tasks := a.operation.attempt.transaction.pending_tasks.len
 		updated := a.sync_oauth_profile(user, identity) or {
 			storage.finish_profile_sync(false)!
-			a.pending_tasks = a.pending_tasks[..tasks].clone()
+			a.operation.attempt.transaction.pending_tasks = a.operation.attempt.transaction.pending_tasks[..tasks].clone()
 			a.config.log('warn', 'Could not update user info on account link')
 			return user
 		}

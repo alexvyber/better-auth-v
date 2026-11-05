@@ -13,6 +13,7 @@ pub struct Auth {
 pub:
 	config Config
 mut:
+	operation                 &OperationContext = &OperationContext{}
 	production_cookie_default bool
 	warned_origin_csrf        bool
 	initial_trusted_origins   []string
@@ -22,16 +23,8 @@ mut:
 	limits                    map[string]RateBucket
 	closed                    bool
 	secondary                 SecondaryStorage
-	transaction_active        bool
 	transactions_enabled      bool
-	pending_tasks             []AfterCommitTask
-	secondary_created         []Session
-	intercepting              map[string]bool
-	request_context           RequestContext
-	new_session               ?SessionResult
-	anonymous_link_session    ?SessionResult
 	oauth_nonce_requirements  map[string]bool
-	oauth_state_consumed      bool
 	user_defined_fields       []string
 }
 
@@ -568,7 +561,7 @@ fn (mut a Auth) issue_email(kind string, user User, callback string) ! {
 		user:    user
 		token:   token
 		url:     url
-		request: a.request_context.request
+		request: a.operation.request.request
 	})!
 }
 
@@ -603,7 +596,7 @@ fn (mut a Auth) consume_token(token string, kind string) !User {
 // An omitted base URL is resolved only for the current request. Direct server
 // calls without a request keep it unresolved, as in the pinned upstream API.
 fn (a &Auth) base_url() string {
-	return if a.config.base_url != '' { a.config.base_url } else { a.request_context.origin }
+	return if a.config.base_url != '' { a.config.base_url } else { a.operation.request.origin }
 }
 
 fn (a &Auth) trusted(origin string) bool {
@@ -621,7 +614,7 @@ fn (a &Auth) check_redirect(value string, input_field string) ! {
 		return fail(403, 'INVALID_CALLBACK_URL', 'Invalid ${field}')
 	}
 	// Trusted server calls have no HTTP origin policy; keep structural header checks.
-	if a.request_context.request == none { return }
+	if a.operation.request.request == none { return }
 	if !a.is_trusted_origin(value, true) {
 		return fail(403, 'INVALID_CALLBACK_URL', 'Invalid ${field}')
 	}
@@ -645,7 +638,7 @@ fn (a &Auth) secret_candidates() []string {
 pub fn (mut a Auth) set_adapter_transactions(enabled bool) ! {
 	a.mutex.@lock()
 	defer { a.mutex.unlock() }
-	if a.transaction_active {
+	if a.operation.attempt.transaction.active {
 		return error('cannot change adapter transactions during an operation')
 	}
 	a.transactions_enabled = enabled

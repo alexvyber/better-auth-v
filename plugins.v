@@ -58,7 +58,7 @@ fn magic_link_send(mut context EndpointContext, req Request) !Response {
 			user:    user
 			token:   token
 			url:     url
-			request: a.request_context.request
+			request: a.operation.request.request
 		})!
 	}
 	return json_response({
@@ -76,7 +76,7 @@ fn magic_link_verify(mut context EndpointContext, req Request) !Response {
 	a.begin_transaction(false)!
 	updated := if !user.email_verified { (context.revoke_unproven_account_access(user.id)!).value or {
 			return fail(400, 'INVALID_TOKEN', 'Invalid token')} } else { user }
-	session := a.make_session(user.id, a.request_context, true)!
+	session := a.make_session(user.id, a.operation.request, true)!
 	response := if callback != '' {
 		Response{
 			status:  302

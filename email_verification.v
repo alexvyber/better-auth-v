@@ -77,7 +77,7 @@ fn (a &Auth) verification_message(user User, callback string, target string, req
 		token:     token
 		url:       url
 		new_email: target
-		request:   a.request_context.request
+		request:   a.operation.request.request
 	}
 }
 
@@ -197,7 +197,7 @@ fn (mut a Auth) verify_email_request(req Request, ctx RequestContext) !Response 
 			email_verified: true
 			updated_at:     stamp_millis(a.clock_millis())
 		})!
-		a.config.after_email_verification(updated, a.request_context)!
+		a.config.after_email_verification(updated, a.operation.request)!
 		if active == none { active = SessionResult{
 				user:    updated
 				session: a.make_session(user.id, ctx, true)!
@@ -209,13 +209,13 @@ fn (mut a Auth) verify_email_request(req Request, ctx RequestContext) !Response 
 		})
 	}
 	if user.email_verified { return verification_success(callback, 'null') }
-	a.config.before_email_verification(user, a.request_context)!
+	a.config.before_email_verification(user, a.operation.request)!
 	updated := a.update_user_record(User{
 		...user
 		email_verified: true
 		updated_at:     stamp_millis(a.clock_millis())
 	})!
-	a.config.after_email_verification(updated, a.request_context)!
+	a.config.after_email_verification(updated, a.operation.request)!
 	mut result := verification_success(callback, 'null')
 	if a.config.auto_sign_in_after_verification {
 		if current := active {

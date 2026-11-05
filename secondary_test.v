@@ -130,9 +130,9 @@ fn (h SecondaryTestHook) run(mut context EndpointContext, event DatabaseEvent) !
 	mut log := h.log
 	log.events << '${event.model}.${event.operation}.${event.phase}'
 	if event.phase == 'before' && event.operation == 'create' {
-		assert context.auth.transaction_active
+		assert context.auth.operation.attempt.transaction.active
 	} else if event.phase == 'after' {
-		assert !context.auth.transaction_active
+		assert !context.auth.operation.attempt.transaction.active
 	}
 	if event.model == 'user' && event.operation == 'create' && event.phase == 'before' {
 		return HookResult{

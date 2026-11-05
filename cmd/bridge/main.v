@@ -144,6 +144,8 @@ fn (mut store RemoteJWKStore) create_key(key better_auth.Jwk, mut context better
 }
 
 struct RemoteEndpoint {
+	body_schema      string
+	query_schema     string
 	openapi_metadata string
 	hide_from_docs   bool
 	name             string
@@ -168,6 +170,8 @@ fn (p RemoteEndpointPlugin) endpoints() []better_auth.Endpoint {
 	for route in p.routes {
 		callback_name := 'plugin.' + p.name + '.' + route.name
 		endpoints << better_auth.Endpoint{
+			body_schema:      route.body_schema
+			query_schema:     route.query_schema
 			openapi_metadata: route.openapi_metadata
 			hide_from_docs:   route.hide_from_docs
 			path:             route.path

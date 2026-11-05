@@ -390,10 +390,14 @@ pub fn (auth &Auth) generate_openapi_schema() !string {
 			mut operations :=
 				(paths[endpoint.path] or { json2.Any(map[string]json2.Any{}) }).as_map().clone()
 			mut operation := auth.openapi_core_operation(endpoint.path, endpoint.method)!
-			if endpoint.openapi_metadata != '' {
-				for name, value in json2.decode[map[string]json2.Any](endpoint.openapi_metadata)! {
-					operation[name] = value
-				}
+			metadata := if endpoint.openapi_metadata != '' {
+				json2.decode[map[string]json2.Any](endpoint.openapi_metadata)!
+			} else {
+				map[string]json2.Any{}
+			}
+			openapi_endpoint_input(mut operation, endpoint, metadata)!
+			for name, value in metadata {
+				operation[name] = value
 			}
 			openapi_unique_id(mut operation, mut used_ids)
 			operations[endpoint.method.to_lower()] = json2.Any(operation)

@@ -11,6 +11,7 @@ import { parseSetCookieHeader } from "better-auth/cookies";
 import { afterAll } from "vitest";
 import { Bridge, recordMetadata, transportJSON } from "./bridge.js";
 import { isNativeMemoryAdapter } from "./memory-adapter.js";
+import {endpointSchema} from './endpoint-schema.js';
 import { nativeEndpoint, freshSessionMiddleware, nativeOriginSelector } from './endpoint.js';
 import { encodeJWTOptions } from './jwt-options.js';
 import { schemaPluginOptions } from './plugins.js';
@@ -330,13 +331,13 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       for (const [name, endpoint] of Object.entries(plugin.endpoints ?? {})) {
         const descriptor = nativeEndpoint(endpoint);
         if (!descriptor) throw new Error(`Plugin endpoint ${plugin.id}.${name} needs a native fixture descriptor`);
-        assertKeys(descriptor.options, ['method', 'use', 'query','metadata'], `plugin.${plugin.id}.${name}`);
+        assertKeys(descriptor.options, ['method', 'use', 'query','body','metadata'], `plugin.${plugin.id}.${name}`);
         assertKeys(descriptor.options.metadata??{},['openapi','scope'],'endpoint.metadata');
         const use = descriptor.options.use ?? [];
         if (use.some(middleware => middleware !== freshSessionMiddleware && !nativeOriginSelector(middleware))) throw new Error('Unsupported native middleware descriptor');
         const method = descriptor.options.method ?? 'GET';
         if (typeof method !== 'string') throw new Error('Endpoint method arrays are not bridged yet');
-        routes.push({name,openapi_metadata:descriptor.options.metadata?.openapi?transportJSON(descriptor.options.metadata.openapi):undefined,hide_from_docs:descriptor.options.metadata?.scope==='server', path: descriptor.path, method, fresh_session: use.includes(freshSessionMiddleware)});
+        routes.push({name,body_schema:descriptor.options.metadata?.openapi?.requestBody?undefined:endpointSchema(descriptor.options.body),query_schema:descriptor.options.metadata?.openapi?.parameters?undefined:endpointSchema(descriptor.options.query),openapi_metadata:descriptor.options.metadata?.openapi?transportJSON(descriptor.options.metadata.openapi):undefined,hide_from_docs:descriptor.options.metadata?.scope==='server', path: descriptor.path, method, fresh_session: use.includes(freshSessionMiddleware)});
         endpointCallbacks[`plugin.${plugin.id}.${name}`] = async payload => {
           const request = new Request(payload.request.url, {method: payload.request.method, headers: payload.request.headers, body: payload.request.method === 'POST' ? payload.request.body : undefined});
           const responseHeaders = new Headers();

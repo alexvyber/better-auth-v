@@ -51,3 +51,33 @@ it('documents native email OTP requests and accepts the documented sign-in field
  const result=await ready.auth.api.signInEmailOTP({body:{email,otp:delivered[0].otp,name:'Documented',tag:'native-data'}});expect(result.user).toMatchObject({email,emailVerified:true,tag:'native-data'});
  const session=await ready.auth.api.getSession({headers:{authorization:`Bearer ${result.token}`}});expect(session?.user.id).toBe(result.user.id);
 });
+
+import * as z from 'zod';
+it('projects custom endpoint schemas in V without running factories, preprocessors or handlers',async()=>{
+ const factory=vi.fn(()=>({secret:'runtime-only-factory-value'}));const preprocess=vi.fn(value=>value);const handler=vi.fn(async()=>({ok:true}));
+ const body=z.object({secret:z.string()}).default(factory);
+ const plugin={id:'custom-schema-contract',endpoints:{
+  defaults:createAuthEndpoint('/custom/defaults',{method:'POST',body},handler),
+  composed:createAuthEndpoint('/custom/composed',{method:'POST',body:z.object({value:z.string()}).and(z.object({value:z.number()}))},handler),
+  preprocess:createAuthEndpoint('/custom/preprocess',{method:'POST',body:z.preprocess(preprocess,z.object({choices:z.array(z.enum(['a','b'])),literal:z.literal('fixed'),readonly:z.string().readonly()}))},handler),
+  query:createAuthEndpoint('/custom/query',{method:'GET',query:z.object({search:z.string().min(3).optional()})},handler),
+ }};
+ const ready=await getTestInstance({plugins:[openAPI(),plugin]});
+ for(let i=0;i<2;i++){
+  const schema=await ready.auth.api.generateOpenAPISchema();
+  const bodyAt=(path:string)=>schema.paths[path].post.requestBody;
+  expect(bodyAt('/custom/defaults')).toMatchObject({required:false,content:{'application/json':{schema:{type:'object',required:['secret']}}}});
+  expect(bodyAt('/custom/composed').content['application/json'].schema).toEqual({allOf:[{type:'object',properties:{value:{type:'string'}},required:['value']},{type:'object',properties:{value:{type:'number'}},required:['value']}]});
+  expect(bodyAt('/custom/preprocess').content['application/json'].schema.properties).toEqual({choices:{type:'array',items:{type:'string',enum:['a','b']}},literal:{enum:['fixed']},readonly:{type:'string'}});
+  expect(schema.paths['/custom/query'].get.parameters).toEqual([{name:'search',in:'query',schema:{type:'string',minLength:3}}]);
+  expect(JSON.stringify(schema)).not.toContain('runtime-only-factory-value');
+ }
+ expect(factory).not.toHaveBeenCalled();expect(preprocess).not.toHaveBeenCalled();expect(handler).not.toHaveBeenCalled();
+});
+it('uses explicit body and query metadata before inspecting unsupported input schemas',async()=>{
+ const handler=vi.fn(async()=>({ok:true}));
+ const metadata={requestBody:{required:false,content:{'application/json':{schema:{type:'string' as const,description:'Explicit schema'}}}},parameters:[{name:'opaque',in:'query' as const,schema:{type:'string' as const}}]};
+ const ready=await getTestInstance({plugins:[openAPI(),{id:'schema-override-contract',endpoints:{opaque:createAuthEndpoint('/custom/opaque',{method:'POST',body:z.map(z.string(),z.string()),query:z.object({unsupported:z.map(z.string(),z.string())}),metadata:{openapi:metadata}},handler)}}]});
+ const operation=(await ready.auth.api.generateOpenAPISchema()).paths['/custom/opaque'].post;
+ expect(operation.requestBody).toEqual(metadata.requestBody);expect(operation.parameters).toEqual(metadata.parameters);expect(handler).not.toHaveBeenCalled();
+});

@@ -828,13 +828,30 @@ Native endpoints can provide JSON OpenAPI metadata and hide themselves from docs
 operation IDs remain unique. Internal endpoints and the reference page are omitted.
 Embedded schema/settings and nonce attributes are escaped without changing values.
 
-19 unchanged upstream cases verify model/request fields, nested social token input,
-optional/default types, nullable sessions, operation IDs and serialization. Four
-owned contracts verify explicit metadata, hidden paths, ID collisions, safe reference
-embedding, custom path and disabled reference. The import manifest identifies eight
-standalone fixture bindings omitted because their tests remain unselected. Original
-selected test bodies/assertions are preserved. Those omitted fixtures require phone
-or arbitrary endpoint/Zod-schema composition; they are not reported as implemented.
+26 unchanged upstream cases verify model/request fields, nested social token input,
+optional/default types, nullable sessions, operation IDs, serialization, custom body
+intersections/unions/records, query length constraints and wrapper requiredness.
+Six owned contracts verify explicit metadata, hidden paths, ID collisions, safe
+reference embedding, custom path, disabled reference, live OTP signup and custom
+schema boundaries. Only the phone-number fixture remains omitted; original selected
+test bodies/assertions are preserved.
+
+Native endpoints can supply `body_schema` and `query_schema` JSON descriptor trees.
+Each node has `kind` (for example `object`, `string`, `optional`, `intersection`),
+optional `description`, and optional input metadata `optional: true`. Objects contain
+`properties`, wrappers contain `inner`, intersections contain `left`/`right`, unions
+contain `options`, arrays contain `element`, records contain `key`/`value`, and pipes
+contain `input`/`output`. Strings can include `minLength`/`maxLength`; enums/literals
+contain `values`. Explicit `openapi_metadata.requestBody`/`parameters` override these
+trees. Unknown kinds and nesting beyond 64 fail explicitly. These descriptors document
+input shapes; they do not install runtime request validators.
+
+The fixture translates Zod structure and optional-input metadata into this IR. V
+projects JSON Schema, merges compatible object intersections, preserves conflicting
+intersections as `allOf`, and distinguishes optional properties from whole-body
+acceptance of undefined. Default/catch factories, preprocessors and endpoint handlers
+are never evaluated for documentation. Native functions independently check conflicting
+schemas, structural equality and malformed/deep descriptors.
 
 Email-OTP documentation includes all nine public POST request bodies, required
 fields, purpose enums, extensible signup fields and the deprecated reset alias.
@@ -842,8 +859,8 @@ Trusted OTP creation/read APIs remain absent from HTTP documentation. A native
 integration contract also exercises the documented OTP signup flow.
 
 This is not full OpenAPI parity. The full upstream endpoint snapshot, automatic
-plugin request/response schemas, arbitrary Zod composition, schema constraints,
-arbitrary Zod wrapper/default factories, POST OAuth callbacks, complete security/tag metadata and the
+plugin request/response schemas, remaining schema kinds/constraints, POST OAuth
+callbacks, complete security/tag metadata and the
 remaining source cases are open. Unknown plugin inputs are not fabricated: supply
 explicit native endpoint metadata to document their shapes. Native JSON fields use
 an unconstrained JSON Schema rather than the upstream model generator's `json` type.
@@ -908,6 +925,6 @@ The source inventory unions complementary imports by original AST position under
 matching source checksums. Backend repeats count once, duplicate titles retain
 separate identities and malformed source metadata fails the audit. Every manifest
 records original positions/lines. Six audit tests run through `make check`. The
-current 33 complete/16 partial/387 unported source-file counts and 1,168 preserved
+current 33 complete/16 partial/387 unported source-file counts and 1,175 preserved
 static declarations describe source coverage, including separately labelled SDK
 probes; they are not equivalent to native runtime or feature parity.

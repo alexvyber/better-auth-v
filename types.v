@@ -452,6 +452,9 @@ pub interface Plugin {
 
 pub struct Endpoint {
 pub:
+	// Declarative input-schema trees for documentation; these do not validate requests.
+	body_schema      string
+	query_schema     string
 	openapi_metadata string
 	hide_from_docs   bool
 	require_session  bool

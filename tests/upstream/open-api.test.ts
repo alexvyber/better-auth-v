@@ -2,7 +2,7 @@
 import type {BetterAuthPlugin} from '@better-auth/core';
 import {describe,expect,it} from 'vitest';
 import * as z from 'zod';
-import {createAuthEndpoint} from 'better-auth/api';
+import {createAuthEndpoint} from '../harness/endpoint.js';
 import {openAPI,phoneNumber,username} from 'better-auth/plugins';
 import {emailOTP} from '../harness/plugins.js';
 import type {OpenAPISchema,Path} from 'better-auth/plugins/open-api';
@@ -306,6 +306,27 @@ describe("open-api", async () => {
 				sendVerificationOTP: async () => {},
 			}),
 		],
+	});
+	const { auth: authWithNullableIntersection } = await getTestInstance({
+		plugins: [openAPI(), nullableIntersectionPlugin],
+	});
+	const { auth: authWithDefaultBody } = await getTestInstance({
+		plugins: [openAPI(), defaultBodyPlugin],
+	});
+	const { auth: authWithUnionIntersection } = await getTestInstance({
+		plugins: [openAPI(), unionIntersectionPlugin],
+	});
+	const { auth: authWithRecordIntersection } = await getTestInstance({
+		plugins: [openAPI(), recordIntersectionPlugin],
+	});
+	const { auth: authWithQueryConstraints } = await getTestInstance({
+		plugins: [openAPI(), queryConstraintsPlugin],
+	});
+	const { auth: authWithDefaultFactoryBody } = await getTestInstance({
+		plugins: [openAPI(), defaultFactoryBodyPlugin],
+	});
+	const { auth: authWithWrapperSemantics } = await getTestInstance({
+		plugins: [openAPI(), wrapperSemanticsPlugin],
 	});;
 
 	it("should mark model id fields as required and read-only", async () => {
@@ -796,5 +817,201 @@ describe("open-api", async () => {
 		expect(resetPasswordSchema.type).toBe("object");
 		expect(resetPasswordSchema.required).toEqual(["email", "otp", "password"]);
 		expect(resetPasswordSchema.additionalProperties).toBeUndefined();
-	});;;;;;;;
+	});
+
+	it("should preserve nullable object intersections when merging schemas", async () => {
+		const schema =
+			await authWithNullableIntersection.api.generateOpenAPISchema();
+		const paths = schema.paths as Record<string, any>;
+
+		const requestBody = paths["/test/nullable-intersection"].post.requestBody;
+		expect(requestBody.required).toBe(true);
+
+		const requestBodySchema = requestBody.content["application/json"].schema;
+		expect(requestBodySchema.type).toEqual(["object", "null"]);
+		expect(requestBodySchema.properties.email.type).toBe("string");
+		expect(requestBodySchema.properties.otp.type).toBe("string");
+		expect(requestBodySchema.required).toEqual(["email", "otp"]);
+	});
+
+	it("should mark default-wrapped request bodies as optional", async () => {
+		const schema = await authWithDefaultBody.api.generateOpenAPISchema();
+		const paths = schema.paths as Record<string, any>;
+
+		const requestBody = paths["/test/default-body"].post.requestBody;
+		expect(requestBody.required).toBe(false);
+
+		const requestBodySchema = requestBody.content["application/json"].schema;
+		expect(requestBodySchema.type).toBe("object");
+		expect(requestBodySchema.properties.rememberMe.type).toBe("boolean");
+		expect(requestBodySchema.default).toBeUndefined();
+	});
+
+	it("should represent object intersections with union branches", async () => {
+		const schema = await authWithUnionIntersection.api.generateOpenAPISchema();
+		const paths = schema.paths as Record<string, Path>;
+
+		const requestBody = getPostRequestBody(paths, "/test/choose-role");
+		expect(requestBody.required).toBe(true);
+
+		const requestBodySchema = requestBody.content["application/json"].schema;
+		expect(requestBodySchema.allOf).toHaveLength(2);
+		expect(getComposedSchemaItem(requestBodySchema.allOf, 0)).toEqual({
+			type: "object",
+			properties: {
+				organizationId: {
+					type: "string",
+				},
+			},
+		});
+		expect(getComposedSchemaItem(requestBodySchema.allOf, 1)).toEqual({
+			anyOf: [
+				{
+					type: "object",
+					properties: {
+						roleName: {
+							type: "string",
+						},
+					},
+					required: ["roleName"],
+				},
+				{
+					type: "object",
+					properties: {
+						roleId: {
+							type: "string",
+						},
+					},
+					required: ["roleId"],
+				},
+			],
+		});
+	});
+
+	it("should preserve record key schemas when merging object intersections", async () => {
+		const schema = await authWithRecordIntersection.api.generateOpenAPISchema();
+		const paths = schema.paths as Record<string, Path>;
+
+		const requestBody = getPostRequestBody(paths, "/test/update-fields");
+		const requestBodySchema = requestBody.content["application/json"].schema;
+
+		expect(requestBodySchema.type).toBe("object");
+		expect(requestBodySchema.required).toEqual(["knownField"]);
+		expect(getSchemaProperty(requestBodySchema, "knownField").type).toBe(
+			"string",
+		);
+		expect(requestBodySchema.additionalProperties).toEqual({
+			type: "boolean",
+		});
+		expect(requestBodySchema.propertyNames).toEqual({
+			description: "Custom field names must be at least two characters",
+			minLength: 2,
+			type: "string",
+		});
+	});
+
+	it("should preserve string length constraints for wrapped query parameters", async () => {
+		const schema = await authWithQueryConstraints.api.generateOpenAPISchema();
+		const paths = schema.paths as Record<string, Path>;
+		const path = paths["/test/query-constraints"];
+		expect(path).toBeDefined();
+
+		expect(getPathParameter(path, "direct").schema).toMatchObject({
+			minLength: 3,
+			type: "string",
+		});
+		expect(getPathParameter(path, "optional").schema).toMatchObject({
+			minLength: 4,
+			type: "string",
+		});
+		expect(getPathParameter(path, "defaulted").schema).toMatchObject({
+			minLength: 5,
+			type: "string",
+		});
+		expect(getPathParameter(path, "bounded").schema).toMatchObject({
+			maxLength: 12,
+			minLength: 6,
+			type: "string",
+		});
+	});
+
+	it("should not evaluate request body default factories", async () => {
+		defaultFactoryCallCount = 0;
+		const schema = await authWithDefaultFactoryBody.api.generateOpenAPISchema();
+		const paths = schema.paths as Record<string, Path>;
+
+		const requestBody = getPostRequestBody(paths, "/test/default-factory-body");
+		expect(requestBody.required).toBe(false);
+		expect(defaultFactoryCallCount).toBe(0);
+
+		const requestBodySchema = requestBody.content["application/json"].schema;
+		expect(requestBodySchema.default).toBeUndefined();
+		expect(getSchemaProperty(requestBodySchema, "nonce").type).toBe("string");
+	});
+
+	it("should compute required fields through Zod wrapper schemas", async () => {
+		wrapperDefaultFactoryCallCount = 0;
+		const schema = await authWithWrapperSemantics.api.generateOpenAPISchema();
+		const paths = schema.paths as Record<string, Path>;
+
+		const requestBody = getPostRequestBody(paths, "/test/wrapper-semantics");
+		expect(requestBody.required).toBe(true);
+
+		const requestBodySchema = requestBody.content["application/json"].schema;
+		expect(new Set(requestBodySchema.required)).toEqual(
+			new Set([
+				"nonOptional",
+				"unionOptional",
+				"unknownPayload",
+				"anyPayload",
+				"undefinedPayload",
+				"voidPayload",
+				"caughtPayload",
+				"intersectionOptional",
+			]),
+		);
+		expect(wrapperDefaultFactoryCallCount).toBe(0);
+
+		expect(
+			getSchemaProperty(requestBodySchema, "optionalNullable").type,
+		).toEqual(["string", "null"]);
+		expect(
+			getSchemaProperty(requestBodySchema, "nullableDefault").type,
+		).toEqual(["string", "null"]);
+		expect(
+			getSchemaProperty(requestBodySchema, "nullableDefault").default,
+		).toBeUndefined();
+		expect(getSchemaProperty(requestBodySchema, "prefaulted").type).toBe(
+			"string",
+		);
+		expect(
+			getSchemaProperty(requestBodySchema, "prefaulted").default,
+		).toBeUndefined();
+		expect(getSchemaProperty(requestBodySchema, "nonOptional").type).toBe(
+			"string",
+		);
+		expect(getSchemaProperty(requestBodySchema, "unionOptional").type).toBe(
+			"string",
+		);
+		expect(getSchemaProperty(requestBodySchema, "unknownPayload")).toEqual({});
+		expect(getSchemaProperty(requestBodySchema, "anyPayload")).toEqual({});
+		expect(getSchemaProperty(requestBodySchema, "undefinedPayload")).toEqual(
+			{},
+		);
+		expect(getSchemaProperty(requestBodySchema, "voidPayload")).toEqual({});
+		expect(getSchemaProperty(requestBodySchema, "caughtPayload").type).toBe(
+			"string",
+		);
+		expect(getSchemaProperty(requestBodySchema, "caughtOptional").type).toBe(
+			"string",
+		);
+		expect(
+			getSchemaProperty(requestBodySchema, "preprocessedOptional").type,
+		).toBe("string");
+		expect(
+			getSchemaProperty(requestBodySchema, "intersectionOptional").allOf,
+		).toBeDefined();
+		expect(requestBodySchema.required).not.toContain("caughtOptional");
+		expect(requestBodySchema.required).not.toContain("preprocessedOptional");
+	});
 });

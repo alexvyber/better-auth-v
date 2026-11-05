@@ -838,15 +838,24 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   titles cannot inflate coverage. Six audit cases cover complementary selections,
   repeats, ambiguous legacy records, stale checksums and invalid source metadata;
   `make check` now includes them. Source bodies/assertions are unchanged. The inventory
-  identifies 1,168 preserved declarations, distinct from runtime/backend case counts.
+  identifies 1,175 preserved declarations, distinct from runtime/backend case counts.
 
 - Added native OpenAPI request schemas for all nine public email-OTP POST endpoints,
   including required fields, purpose enums, extensible signup input and the deprecated
   reset alias. Three additional unchanged upstream cases and one owned live OTP
   signup contract pass; trusted internal OTP APIs stay hidden from HTTP docs.
 
-The latest full `make check` passes 2721 TypeScript cases across 139 files, all 114
-native V test functions across 37 files (including all 20,034 Unicode vectors),
+- Added declarative native custom endpoint input schemas and V projection for
+  object/record intersections, unions, arrays, nullable/default/catch/readonly/pipe
+  wrappers, required properties and query string constraints. Seven additional
+  unchanged upstream cases pass. Two owned contracts verify conflict fallback,
+  explicit override precedence and factory/preprocessor/handler isolation; two
+  native functions verify structural merges and malformed/deep schema rejection.
+  The fixture translates Zod structure only. This documentation IR does not install
+  runtime validators; remaining schema kinds and plugin route shapes remain open.
+
+The latest full `make check` passes 2730 TypeScript cases across 139 files, all 116
+native V test functions across 38 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
 The six source-inventory audit tests also pass. Formatting and `git diff --check` pass. Repeated backend runs do not increase unique
 upstream source coverage, and these results do not imply full upstream parity.

@@ -6,14 +6,7 @@
   "sha256": "09359c742cd3dd86dff4c1b503f45f29834b5910534f409383658226244be0d2",
   "changes": "Imports, native fixture and omission of unselected standalone fixture bindings; selected test bodies and assertions unchanged",
   "omittedUnselectedFixtureBindings": [
-    "authWithPhoneNumber",
-    "authWithNullableIntersection",
-    "authWithDefaultBody",
-    "authWithUnionIntersection",
-    "authWithRecordIntersection",
-    "authWithQueryConstraints",
-    "authWithDefaultFactoryBody",
-    "authWithWrapperSemantics"
+    "authWithPhoneNumber"
   ],
   "setupChanges": "Only standalone fixtures used exclusively by unselected tests are omitted; selected test bodies and assertions are unchanged",
   "tests": [
@@ -28,7 +21,7 @@
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, remaining endpoint schema kinds and POST OAuth callback documentation remain unported"
     },
     {
       "suite": "open-api",
@@ -119,7 +112,7 @@
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, remaining endpoint schema kinds and POST OAuth callback documentation remain unported"
     },
     {
       "suite": "open-api",
@@ -197,7 +190,7 @@
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, remaining endpoint schema kinds and POST OAuth callback documentation remain unported"
     },
     {
       "suite": "open-api",
@@ -210,7 +203,7 @@
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, remaining endpoint schema kinds and POST OAuth callback documentation remain unported"
     },
     {
       "suite": "open-api",
@@ -314,7 +307,7 @@
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, remaining endpoint schema kinds and POST OAuth callback documentation remain unported"
     },
     {
       "suite": "open-api",
@@ -327,7 +320,7 @@
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, remaining endpoint schema kinds and POST OAuth callback documentation remain unported"
     },
     {
       "suite": "open-api",
@@ -350,10 +343,10 @@
       "test": "should preserve nullable object intersections when merging schemas",
       "sourceStart": 28432,
       "sourceLine": 952,
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+      "reason": null
     },
     {
       "suite": "open-api",
@@ -363,10 +356,10 @@
       "test": "should mark default-wrapped request bodies as optional",
       "sourceStart": 29117,
       "sourceLine": 967,
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+      "reason": null
     },
     {
       "suite": "open-api",
@@ -376,10 +369,10 @@
       "test": "should represent object intersections with union branches",
       "sourceStart": 29688,
       "sourceLine": 980,
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+      "reason": null
     },
     {
       "suite": "open-api",
@@ -389,10 +382,10 @@
       "test": "should preserve record key schemas when merging object intersections",
       "sourceStart": 30685,
       "sourceLine": 1021,
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+      "reason": null
     },
     {
       "suite": "open-api",
@@ -402,10 +395,10 @@
       "test": "should preserve string length constraints for wrapped query parameters",
       "sourceStart": 31514,
       "sourceLine": 1043,
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+      "reason": null
     },
     {
       "suite": "open-api",
@@ -415,10 +408,10 @@
       "test": "should not evaluate request body default factories",
       "sourceStart": 32279,
       "sourceLine": 1068,
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+      "reason": null
     },
     {
       "suite": "open-api",
@@ -428,10 +421,10 @@
       "test": "should compute required fields through Zod wrapper schemas",
       "sourceStart": 32895,
       "sourceLine": 1082,
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+      "reason": null
     }
   ]
 }

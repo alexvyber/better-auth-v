@@ -1,0 +1,131 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/additional-fields/additional-fields.test.ts",
+  "sha256": "81a8731fb7e462ce0f2672a297f9aa5698d380555d1ed069a84299c7e089703e",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "additionalFields",
+      "suites": [
+        "additionalFields"
+      ],
+      "test": "should extends fields",
+      "selected": false,
+      "executionSurface": "native-mongo-additional-field-integration",
+      "upstreamDisabled": false,
+      "reason": "Pure SDK/React constructor probes and the SQL-specific NULL-column assertion remain excluded from MongoDB runtime coverage"
+    },
+    {
+      "suite": "additionalFields",
+      "suites": [
+        "additionalFields"
+      ],
+      "test": "should require additional fields on signUp",
+      "selected": true,
+      "executionSurface": "native-mongo-additional-field-integration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "additionalFields",
+      "suites": [
+        "additionalFields"
+      ],
+      "test": "should infer additional fields on update",
+      "selected": true,
+      "executionSurface": "native-mongo-additional-field-integration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "additionalFields",
+      "suites": [
+        "additionalFields"
+      ],
+      "test": "should work with other plugins",
+      "selected": true,
+      "executionSurface": "native-mongo-additional-field-integration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "additionalFields",
+      "suites": [
+        "additionalFields"
+      ],
+      "test": "should infer it on the client",
+      "selected": false,
+      "executionSurface": "native-mongo-additional-field-integration",
+      "upstreamDisabled": false,
+      "reason": "Pure SDK/React constructor probes and the SQL-specific NULL-column assertion remain excluded from MongoDB runtime coverage"
+    },
+    {
+      "suite": "additionalFields",
+      "suites": [
+        "additionalFields"
+      ],
+      "test": "should infer session additional fields on updateSession",
+      "selected": false,
+      "executionSurface": "native-mongo-additional-field-integration",
+      "upstreamDisabled": false,
+      "reason": "Pure SDK/React constructor probes and the SQL-specific NULL-column assertion remain excluded from MongoDB runtime coverage"
+    },
+    {
+      "suite": "additionalFields",
+      "suites": [
+        "additionalFields"
+      ],
+      "test": "should infer it on the client without direct import",
+      "selected": false,
+      "executionSurface": "native-mongo-additional-field-integration",
+      "upstreamDisabled": false,
+      "reason": "Pure SDK/React constructor probes and the SQL-specific NULL-column assertion remain excluded from MongoDB runtime coverage"
+    },
+    {
+      "suite": "additionalFields",
+      "suites": [
+        "additionalFields"
+      ],
+      "test": "should infer additional fields on signIn response with manual schema",
+      "selected": false,
+      "executionSurface": "native-mongo-additional-field-integration",
+      "upstreamDisabled": false,
+      "reason": "Pure SDK/React constructor probes and the SQL-specific NULL-column assertion remain excluded from MongoDB runtime coverage"
+    },
+    {
+      "suite": "additionalFields",
+      "suites": [
+        "additionalFields"
+      ],
+      "test": "should apply default values",
+      "selected": true,
+      "executionSurface": "native-mongo-additional-field-integration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "additionalFields",
+      "suites": [
+        "additionalFields"
+      ],
+      "test": "should apply default values with secondary storage",
+      "selected": true,
+      "executionSurface": "native-mongo-additional-field-integration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "runtime",
+      "suites": [
+        "runtime"
+      ],
+      "test": "should apply default value function on runtime",
+      "selected": false,
+      "executionSurface": "native-mongo-additional-field-integration",
+      "upstreamDisabled": false,
+      "reason": "Pure SDK/React constructor probes and the SQL-specific NULL-column assertion remain excluded from MongoDB runtime coverage"
+    }
+  ]
+}

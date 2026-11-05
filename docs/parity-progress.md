@@ -815,7 +815,16 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   JSON fields stay literal. Async/update factories and exhaustive transform/default
   combinations remain open.
 
-The latest full `make check` passes 2694 TypeScript cases across 134 files, all 113
+- Added six unchanged additional-field integration cases on SQLite/PostgreSQL and
+  five on MongoDB (17 repeated cases), including two-factor coexistence, official
+  clients, profile updates and secondary-session defaults. SQLite's configured
+  missing user/session fields now read as null consistently across lookup/list APIs.
+  One native function verifies legacy payloads remain unchanged and factories never
+  execute on these reads. Reserved credential/transport user names remain absent.
+  Pure SDK probes and MongoDB's inapplicable SQL-null case
+  remain explicitly excluded.
+
+The latest full `make check` passes 2711 TypeScript cases across 137 files, all 114
 native V test functions across 37 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
 Formatting and `git diff --check` pass. Repeated backend runs do not increase unique

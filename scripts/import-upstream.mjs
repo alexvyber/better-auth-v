@@ -295,6 +295,19 @@ const runtimeDefaults={file:'additional-field-runtime-defaults',path:'packages/b
 import {getTestInstance} from '../harness/test-instance.js';
 `};
 plans.push(runtimeDefaults);
+const additionalIntegration={...runtimeDefaults,file:'additional-field-integration',suites:new Set(['additionalFields']),
+ onlyTests:new Set(['should extends fields','should require additional fields on signUp','should infer additional fields on update','should work with other plugins','should apply default values','should apply default values with secondary storage']),
+ executionSurface:'native-api-additional-field-integration',unportedReason:'Pure SDK/React constructor and type-only probes remain excluded from native runtime coverage',
+ imports:`import {describe,expect,expectTypeOf,it} from 'vitest';
+import {createAuthClient} from 'better-auth/client';
+import {inferAdditionalFields,twoFactorClient} from 'better-auth/client/plugins';
+import {twoFactor} from '../harness/plugins.js';
+import {getTestInstance} from '../harness/test-instance.js';
+`};
+plans.push(additionalIntegration);
+plans.push({...additionalIntegration,file:'postgres-additional-field-integration',imports:additionalIntegration.imports.replace('../harness/test-instance.js','../harness/postgres-fixture.js'),executionSurface:'native-postgres-additional-field-integration'});
+plans.push({...additionalIntegration,file:'mongo-additional-field-integration',skippedTests:new Set(['should extends fields']),imports:additionalIntegration.imports.replace('../harness/test-instance.js','../harness/mongo-fixture.js'),executionSurface:'native-mongo-additional-field-integration',unportedReason:'Pure SDK/React constructor probes and the SQL-specific NULL-column assertion remain excluded from MongoDB runtime coverage'});
+
 for(const [prefix,fixture] of [['postgres','postgres-fixture'],['mongo','mongo-fixture']]){plans.push({...runtimeDefaults,file:prefix+'-additional-field-runtime-defaults',imports:runtimeDefaults.imports.replace('../harness/test-instance.js','../harness/'+fixture+'.js'),executionSurface:'native-'+prefix+'-functional-field-defaults'})}
 
 const organizationMembers={file:'organization-members',includeHelpers:true,path:'packages/better-auth/src/plugins/organization/routes/crud-members.test.ts',

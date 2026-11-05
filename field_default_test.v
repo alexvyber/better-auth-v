@@ -55,3 +55,58 @@ fn test_schema_generation_does_not_evaluate_native_default_factories() ! {
 	}
 	assert (storage.users()!).len == 0
 }
+
+fn test_sqlite_missing_configured_fields_read_as_null_without_running_defaults_or_rewriting_rows() ! {
+	mut storage := open_sqlite(':memory:')!
+	defer { storage.close() or {} }
+	storage.migrate()!
+	storage.create_user(User{
+		id:                'legacy'
+		name:              'Legacy'
+		email:             'legacy@example.com'
+		created_at:        '2025-01-01T00:00:00Z'
+		updated_at:        '2025-01-01T00:00:00Z'
+		additional_fields: {
+			'unmodeled': json2.Any(true)
+		}
+	})!
+	storage.create_session(Session{
+		id:         'session'
+		user_id:    'legacy'
+		token:      'token'
+		expires_at: '2030-01-01T00:00:00Z'
+		created_at: '2025-01-01T00:00:00Z'
+		updated_at: '2025-01-01T00:00:00Z'
+	}, 'hash')!
+	before := (storage.db.exec_param('SELECT data FROM auth_user WHERE id=?', 'legacy')!)[0].vals[0]
+	storage.configure_fields({
+		'password': AdditionalField{ field_type: 'string' }
+		'optional': AdditionalField{
+			field_type:      'string'
+			default_factory: native_failing_field_default
+		}
+	}, {
+		'note': AdditionalField{
+			field_type:      'string'
+			default_factory: native_failing_field_default
+		}
+	})!
+	user := (storage.user('legacy')!).value or { return error('missing legacy user') }
+	assert (user.additional_fields['optional'] or { return error('missing NULL') }) is json2.Null
+	assert 'password' !in user.additional_fields
+	assert (user.additional_fields['unmodeled'] or { json2.Any(false) }).bool()
+	by_email := (storage.user_by_email('legacy@example.com')!).value or {
+		return error('missing email user')
+	}
+
+	assert (by_email.additional_fields['optional'] or { return error('missing NULL') }) is json2.Null
+	assert ((storage.users()!)[0].additional_fields['optional'] or { return error('missing NULL') }) is json2.Null
+	session := (storage.session('hash')!).value or { return error('missing session') }
+	assert (session.additional_fields['note'] or { return error('missing NULL') }) is json2.Null
+	by_id := (storage.session_by_id('session')!).value or { return error('missing id session') }
+	assert (by_id.additional_fields['note'] or { return error('missing NULL') }) is json2.Null
+	assert ((storage.sessions('legacy')!)[0].additional_fields['note'] or {
+		return error('missing NULL')
+	}) is json2.Null
+	assert (storage.db.exec_param('SELECT data FROM auth_user WHERE id=?', 'legacy')!)[0].vals[0] == before
+}

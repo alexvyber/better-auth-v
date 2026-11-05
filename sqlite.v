@@ -2,6 +2,7 @@ module better_auth
 
 import db.sqlite
 import json
+import x.json2
 
 pub struct SQLiteStorage {
 mut:
@@ -191,7 +192,7 @@ pub fn (mut s SQLiteStorage) user(id string) !Lookup[User] {
 	rows := s.db.exec_param('SELECT data FROM auth_user WHERE id = ?', id)!
 	if rows.len == 0 { return Lookup[User]{} }
 	return Lookup[User]{
-		value: decode_user(rows[0].vals[0])!
+		value: s.decode_user_row(rows[0].vals[0])!
 	}
 }
 
@@ -199,7 +200,7 @@ pub fn (mut s SQLiteStorage) user_by_email(email string) !Lookup[User] {
 	rows := s.db.exec_param('SELECT data FROM auth_user WHERE email = ?', email)!
 	if rows.len == 0 { return Lookup[User]{} }
 	return Lookup[User]{
-		value: decode_user(rows[0].vals[0])!
+		value: s.decode_user_row(rows[0].vals[0])!
 	}
 }
 
@@ -213,7 +214,7 @@ pub fn (mut s SQLiteStorage) users() ![]User {
 	rows := s.db.exec('SELECT data FROM auth_user ORDER BY rowid')!
 	mut users := []User{}
 	for row in rows {
-		users << decode_user(row.vals[0])!
+		users << s.decode_user_row(row.vals[0])!
 	}
 	return users
 }
@@ -293,7 +294,7 @@ pub fn (mut s SQLiteStorage) session(token_hash string) !Lookup[Session] {
 	rows := s.db.exec_param('SELECT data,persistent,encrypted_token FROM auth_session WHERE token_hash=?',
 		token_hash)!
 	if rows.len == 0 { return Lookup[Session]{} }
-	parsed := decode_session(rows[0].vals[0])!
+	parsed := s.decode_session_row(rows[0].vals[0])!
 	return Lookup[Session]{
 		value: Session{
 			...parsed
@@ -308,7 +309,7 @@ pub fn (mut s SQLiteStorage) sessions(user_id string) ![]Session {
 		user_id)!
 	mut result := []Session{}
 	for row in rows {
-		parsed := decode_session(row.vals[0])!
+		parsed := s.decode_session_row(row.vals[0])!
 		result << Session{
 			...parsed
 			persistent:      row.vals[1] == '1'
@@ -322,7 +323,7 @@ pub fn (mut s SQLiteStorage) session_by_id(id string) !Lookup[Session] {
 	rows :=
 		s.db.exec_param('SELECT data,persistent,encrypted_token FROM auth_session WHERE id=?', id)!
 	if rows.len == 0 { return Lookup[Session]{} }
-	parsed := decode_session(rows[0].vals[0])!
+	parsed := s.decode_session_row(rows[0].vals[0])!
 	return Lookup[Session]{
 		value: Session{
 			...parsed
@@ -413,4 +414,36 @@ pub fn (mut s SQLiteStorage) verifications() ![]Verification {
 		values << json.decode(Verification, row.vals[0])!
 	}
 	return values
+}
+
+// The payload layout still exposes SQL column semantics for configured fields:
+// absent values read as NULL, without evaluating defaults or rewriting rows.
+fn sqlite_nullable_fields(schema map[string]AdditionalField, input map[string]json2.Any, excluded []string) map[string]json2.Any {
+	mut result := input.clone()
+	for name, _ in schema {
+		if name in excluded { continue
+		 }
+		if name !in result {
+			result[name] = json2.Null{}
+		}
+	}
+	return result
+}
+
+fn (storage &SQLiteStorage) decode_user_row(encoded string) !User {
+	user := decode_user(encoded)!
+	return User{
+		...user
+		additional_fields: sqlite_nullable_fields(storage.user_fields, user.additional_fields,
+			sign_up_reserved_fields)
+	}
+}
+
+fn (storage &SQLiteStorage) decode_session_row(encoded string) !Session {
+	session := decode_session(encoded)!
+	return Session{
+		...session
+		additional_fields: sqlite_nullable_fields(storage.session_fields,
+			session.additional_fields, [])
+	}
 }

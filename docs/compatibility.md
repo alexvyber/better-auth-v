@@ -580,7 +580,7 @@ Five original upstream profile-input/linking cases pass unchanged on SQLite and
 PostgreSQL. Seven independent cases cover Brand Map username validation, input
 transform precedence, async rejection, map/SQLite uniqueness, concurrent PostgreSQL
 uniqueness/aliases and failed profile-sync recovery. Output transformations,
-functional defaults, complete schema/query support and exhaustive index/type/error
+remaining default/transform combinations, complete schema/query support and exhaustive index/type/error
 mapping remain open. These tests do not establish full linking or provider parity.
 
 
@@ -838,7 +838,7 @@ or arbitrary endpoint/Zod-schema composition; they are not reported as implement
 
 This is not full OpenAPI parity. The full upstream endpoint snapshot, automatic
 plugin request/response schemas, arbitrary Zod composition, schema constraints,
-functional defaults, POST OAuth callbacks, complete security/tag metadata and the
+arbitrary Zod wrapper/default factories, POST OAuth callbacks, complete security/tag metadata and the
 remaining source cases are open. Unknown plugin inputs are not fabricated: supply
 explicit native endpoint metadata to document their shapes. Native JSON fields use
 an unconstrained JSON Schema rather than the upstream model generator's `json` type.
@@ -873,3 +873,14 @@ preserving configured JSON fields as literal data. The original upstream SDK typ
 requirements remain unchanged; omitted/null runtime inputs are independently tested
 through JSON HTTP. Asynchronous defaults, exhaustive undefined/legacy-row behavior,
 update-value factories and default/transform sequencing remain open.
+
+
+Additional-field integration now imports six unchanged native runtime cases on
+SQLite/PostgreSQL and five on MongoDB (17 repeated cases), covering official-client
+profile updates, two-factor coexistence and defaults with primary/secondary sessions.
+Pure SDK/React constructor/type probes remain excluded. The SQL-specific absent
+column assertion is excluded from the MongoDB repeat because missing Mongo fields
+remain absent. SQLite's payload adapter now reads missing ordinary configured user/session
+fields as null across single, email, ID and list lookups. This read normalization
+runs no default factory and leaves stored payloads unchanged, as one native test
+verifies. Missing credential/transport-reserved user names are not synthesized. SQLite still does not share the upstream physical column schema.

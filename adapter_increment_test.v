@@ -78,7 +78,7 @@ fn test_atomic_increment_rejects_nonfinite_and_unrepresentable_deltas() ! {
 			query['increment'] = json2.Any({
 				'credits': json2.Any(delta)
 			})
-			return context.adapter_increment(query)
+			return context.adapter_query('incrementOne', query)
 		}) or { rejected = true }
 		assert rejected
 	}

@@ -14,7 +14,7 @@ $if mongodb ? {
 		#flag -L /opt/homebrew/opt/openssl@3/lib
 	}
 }
-#include "@VMODROOT/mongo_driver.h"
+#include "@VMODROOT/internal/persistence/mongo/native/mongo_driver.h"
 
 @[typedef]
 struct C.ba_mongo {}

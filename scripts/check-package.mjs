@@ -14,7 +14,7 @@ assert.match(manifest,/version:\s*'\d+\.\d+\.\d+(?:-[^']+)?'/);
 assert.match(manifest,/license:\s*'MIT'/);
 assert.match(manifest,/repo_url:\s*'https:\/\/github\.com\/alexvyber\/better-auth-v'/);
 const files=execFileSync('git',['ls-files','-z'],{cwd:repository,encoding:'utf8'}).split('\0').filter(Boolean);
-for(const required of ['v.mod','LICENSE','UPSTREAM_LICENSE','jws_openssl.h','mongo_driver.h','normalization/nfkc.v','normalization/data/tables.txt','normalization/data/UNICODE_LICENSE']){
+for(const required of ['v.mod','LICENSE','UPSTREAM_LICENSE','internal/crypto/native/jws_openssl.h','internal/persistence/mongo/native/mongo_driver.h','normalization/nfkc.v','normalization/data/tables.txt','normalization/data/UNICODE_LICENSE']){
  assert(files.includes(required),`Required package file is not tracked: ${required}`);
 }
 assert(!files.some(file=>/^(?:build|node_modules|\.upstream)\//.test(file)),'Generated dependencies must not be tracked');

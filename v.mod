@@ -7,4 +7,5 @@ Module {
 	repo_url: 'https://github.com/alexvyber/better-auth-v'
 	repo_branch: 'main'
 	dependencies: []
+	subdirs: ['internal']
 }

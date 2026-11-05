@@ -3,7 +3,7 @@ module better_auth
 import net.openssl as _
 import x.json2
 
-#include "@VMODROOT/jws_openssl.h"
+#include "@VMODROOT/internal/crypto/native/jws_openssl.h"
 
 fn C.ba_chacha_encrypt(&u8, &u8, &u8, usize, &u8) int
 fn C.ba_chacha_decrypt(&u8, &u8, &u8, usize, &u8) int

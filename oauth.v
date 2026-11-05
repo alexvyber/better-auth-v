@@ -236,9 +236,16 @@ fn (mut a Auth) start_oauth(p Payload) !Response {
 }
 
 fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
-	provider := a.oauth_provider(provider_id)!
 	u := urllib.parse(req.url)!
-	state := u.query().get('state') or { return fail(400, 'INVALID_STATE', 'Invalid OAuth state') }
+	query := u.query()
+	for name in oauth_callback_fields {
+		if (query.to_map()[name] or { []string{} }).len > 1 {
+			return a.oauth_default_error('invalid_callback_request')
+		}
+	}
+	state := query.get('state') or { '' }
+	if state == '' { return a.oauth_default_error('state_not_found') }
+	provider := a.oauth_provider(provider_id)!
 	if state.len != 64 { return fail(400, 'INVALID_STATE', 'Invalid OAuth state') }
 	mut bound := false
 	for item in req.headers['cookie'].split(';') {
@@ -263,11 +270,23 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 	if stored.provider != provider_id { return fail(400, 'INVALID_STATE', 'Invalid OAuth state') }
 	a.check_redirect(stored.callback_url, 'callbackURL')!
 	a.restore_anonymous_oauth_source(stored.anonymous_user_id)!
-	code := u.query().get('code') or {
-		return fail(400, 'INVALID_CODE', 'Missing authorization code')
+	if reason := query.get('error') {
+		if reason != '' {
+			return a.oauth_callback_error(stored, record.id, reason, query.get('error_description') or {
+				''
+			})
+		}
 	}
+	code := query.get('code') or { '' }
+	if code == '' { return a.oauth_callback_error(stored, record.id, 'no_code', '') }
 	if code == '' || code.len > 4096 {
 		return fail(400, 'INVALID_CODE', 'Invalid authorization code')
+	}
+	if provider is GenericOAuthProvider {
+		issuer := query.get('iss') or { '' }
+		if issuer != '' && provider.issuer != '' && issuer != provider.issuer {
+			return a.oauth_callback_error(stored, record.id, 'issuer_mismatch', '')
+		}
 	}
 	redirect_uri := a.base_url().trim_right('/') + a.config.base_path + '/callback/' + provider_id
 	identity := if provider is GenericOAuthProvider {
@@ -297,11 +316,9 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 	}
 	session := a.make_session(account.user.id, RequestContext{ headers: req.headers }, true) or {
 		if err is APIError {
-			if err.code == 'BANNED_USER' {
-				a.rollback_transaction()
-				a.begin_transaction(false)!
-				return a.oauth_callback_error(stored, record.id, 'BANNED_USER', err.message)
-			}
+			a.rollback_transaction()
+			a.begin_transaction(false)!
+			return a.oauth_callback_error(stored, record.id, err.code, err.message)
 		}
 		return err
 	}
@@ -321,6 +338,16 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 	response =
 		a.set_session_cookies(response, SessionResult{ session: session, user: account.user })!
 	return a.oauth_cookie(response, '', true)
+}
+
+fn (a &Auth) oauth_default_error(code string) Response {
+	return Response{
+		status:  302
+		headers: [
+			Header{'location', a.base_url().trim_right('/') + a.config.base_path + '/error?error=' +
+				urllib.query_escape(code)},
+		]
+	}
 }
 
 fn (mut a Auth) generic_oauth_error(stored OAuthState, record_id string, reason IError) !Response {

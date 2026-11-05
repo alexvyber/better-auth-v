@@ -596,3 +596,52 @@ fn test_oauth_post_callback_defers_exchange_until_cookie_bound_get() ! {
 		}
 	}).status == 400
 }
+
+fn test_oauth_callback_denial_and_missing_code_consume_only_bound_state() ! {
+	mut storage := open_sqlite(':memory:')!
+	storage.migrate()!
+	mut auth := new(Config{
+		secret:           '12345678901234567890123456789012'
+		password_hasher:  FastHasher{}
+		social_providers: [OAuthProvider(FakeProvider{})]
+	}, storage)!
+	defer { auth.close() or {} }
+	missing :=
+		auth.handle(Request{ url: 'http://localhost:3000/api/auth/callback/test?code=unused' })
+	assert missing.status == 302
+	assert missing.headers.any(it.name == 'location'
+		&& it.value.ends_with('/error?error=state_not_found'))
+	for suffix in ['&error=access_denied&error_description=User+declined', ''] {
+		state, cookie := start_test_oauth(mut auth)!
+		url := 'http://localhost:3000/api/auth/callback/test?state=' + state + suffix
+		assert auth.handle(Request{ url: url }).status == 403
+		assert (auth.find_opaque_verification(state, 'oauth-state')!).value != none
+		result := auth.handle(Request{
+			url:     url
+			headers: {
+				'cookie': cookie
+			}
+		})
+		assert result.status == 302
+		mut location := ''
+		for header in result.headers {
+			if header.name == 'location' { location = header.value }
+		}
+		query := urllib.parse(location)!.query()
+		assert (query.get('error') or { '' }) == if suffix == '' {
+			'no_code'
+		} else {
+			'access_denied'
+		}
+		if suffix != '' { assert (query.get('error_description') or { '' }) == 'User declined'
+		 }
+		assert (auth.find_opaque_verification(state, 'oauth-state')!).value == none
+		assert auth.handle(Request{
+			url:     url
+			headers: {
+				'cookie': cookie
+			}
+		}).status == 400
+	}
+	assert storage.db.q_int('SELECT count(*) FROM auth_user')! == 0
+}

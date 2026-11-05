@@ -926,7 +926,7 @@ The source inventory unions complementary imports by original AST position under
 matching source checksums. Backend repeats count once, duplicate titles retain
 separate identities and malformed source metadata fails the audit. Every manifest
 records original positions/lines. Six audit tests run through `make check`. The
-current 33 complete/16 partial/387 unported source-file counts and 1,191 preserved
+current 33 complete/16 partial/387 unported source-file counts and 1,194 preserved
 static declarations describe source coverage, including separately labelled SDK
 probes; they are not equivalent to native runtime or feature parity.
 
@@ -953,3 +953,18 @@ V auth instances/configurations. It does not open a JavaScript database. The foc
 38-case verification/reservation/consumption matrix, type checking and inventory audit
 pass. These additions verify existing native behavior; general adapter/session/hook
 conformance and database-owned numeric IDs remain incomplete.
+
+
+Core OAuth GET callbacks redirect missing/empty state to `state_not_found` and
+repeated known query fields to `invalid_callback_request`, without authenticating or
+consuming a proof. Browser-bound provider denials preserve their error/description;
+missing codes redirect with `no_code` after state consumption. A nonempty callback
+`iss` must exactly match the generic provider's discovered issuer before token exchange.
+The native provider context exposes that public discovery value. Session creation
+API errors roll back user/account/session writes and redirect the original code and
+message to the trusted error callback. Three unchanged upstream generic-OAuth tests
+cover missing state, discovery metadata and cross-origin session-hook errors; six
+Nabu contracts exercise issuer rejection/success and hook rollback across SQLite,
+PostgreSQL and MongoDB. A native function checks provider denial, missing code,
+browser binding, proof retention/consumption and replay. IdP-initiated flows, complete
+callback error mappings and custom global error-URL configuration remain open.

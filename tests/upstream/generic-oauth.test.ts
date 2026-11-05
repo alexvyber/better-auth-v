@@ -1,4 +1,5 @@
 // Generated from pinned upstream source; do not edit assertions here.
+import {APIError} from "@better-auth/core/error";
 import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
 import type { GenericEndpointContext } from "@better-auth/core";
@@ -244,7 +245,102 @@ describe("oauth2", async () => {
 			customFetchImpl,
 		);
 		expect(callbackURL).toBe("http://localhost:3000/dashboard");
-	});;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	});
+
+	/**
+	 * @see https://github.com/better-auth/better-auth/issues/9702
+	 */
+	it("should redirect to cross-origin errorCallbackURL when a session hook throws APIError", async () => {
+		server.service.once("beforeUserinfo", (userInfoResponse) => {
+			userInfoResponse.body = {
+				email: "hook-reject@test.com",
+				name: "Hook Reject User",
+				sub: "hook-reject",
+				picture: "https://test.com/picture.png",
+				email_verified: true,
+			};
+			userInfoResponse.statusCode = 200;
+		});
+
+		const { customFetchImpl, cookieSetter } = await getTestInstance(
+			{
+				trustedOrigins: ["https://frontend.example.com"],
+				plugins: [
+					genericOAuth({
+						config: [
+							{
+								providerId: "test-hook-reject",
+								discoveryUrl: `http://localhost:${port}/.well-known/openid-configuration`,
+								clientId,
+								clientSecret,
+								pkce: true,
+							},
+						],
+					}),
+				],
+				databaseHooks: {
+					user: {
+						create: {
+							before: async (user) => ({
+								data: { ...user, emailVerified: true },
+							}),
+						},
+					},
+					session: {
+						create: {
+							before: async () => {
+								throw APIError.from("FORBIDDEN", {
+									code: "HOOK_REJECTED",
+									message: "Session hook rejected this user",
+								});
+							},
+						},
+					},
+				},
+			},
+			{ disableTestUser: true },
+		);
+		const authClient = createAuthClient({
+			baseURL: "http://localhost:3000",
+			fetchOptions: { customFetchImpl },
+		});
+		const headers = new Headers();
+		const res = await authClient.signIn.social({
+			provider: "test-hook-reject",
+			callbackURL: "https://frontend.example.com/dashboard",
+			errorCallbackURL: "https://frontend.example.com/auth-error",
+			fetchOptions: { onSuccess: cookieSetter(headers) },
+		});
+		const { callbackURL } = await simulateOAuthFlow(
+			res.data?.url || "",
+			headers,
+			customFetchImpl,
+		);
+		const url = new URL(callbackURL);
+		expect(url.origin).toBe("https://frontend.example.com");
+		expect(url.pathname).toBe("/auth-error");
+		expect(url.searchParams.get("error")).toBe("HOOK_REJECTED");
+		expect(url.searchParams.get("error_description")).toBe(
+			"Session hook rejected this user",
+		);
+	});;;;;;;;;;;;;;;;;;;
+
+	/**
+	 * @see https://github.com/better-auth/better-auth/pull/4951
+	 * @see https://github.com/better-auth/better-auth/pull/9069
+	 */
+	it("should redirect to the error page when a GET callback arrives without state", async () => {
+		const res = await customFetchImpl(
+			`http://localhost:3000/api/auth/callback/${providerId}?code=dummy`,
+			{
+				method: "GET",
+				redirect: "manual",
+			},
+		);
+
+		expect(res.status).toBe(302);
+		expect(res.headers.get("location")).toContain("state_not_found");
+	});;;;;;;;;;;;;;;;;;;;
 
 	it("should merge client-requested scopes with config scopes", async () => {
 		const { customFetchImpl, cookieSetter } = await getTestInstance({
@@ -287,7 +383,29 @@ describe("oauth2", async () => {
 		expect(scopes).toContain("openid");
 		expect(scopes).toContain("email");
 		expect(scopes).toContain("profile");
-	});;;;;;;
+	});;
+
+	it("should pass discovered issuer to the provider for RFC 9207 validation", async () => {
+		const { auth } = await getTestInstance({
+			plugins: [
+				genericOAuth({
+					config: [
+						{
+							providerId: "issuer-test",
+							discoveryUrl: `http://localhost:${port}/.well-known/openid-configuration`,
+							clientId: clientId,
+							clientSecret: clientSecret,
+						},
+					],
+				}),
+			],
+		});
+
+		const ctx = await auth.$context;
+		const provider = ctx.socialProviders.find((p) => p.id === "issuer-test");
+		expect(provider).toBeDefined();
+		expect(provider?.issuer).toBe(`http://localhost:${port}`);
+	});;;;;
 
 	describe("id_token verification", () => {
 		// The forged token carries valid iss/aud/exp claims; only its signing

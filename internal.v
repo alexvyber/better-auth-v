@@ -136,6 +136,7 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 				}
 				if provider is GenericOAuthProvider {
 					item['requiresIdTokenNonce'] = provider.requires_nonce()
+					if provider.issuer != '' { item['issuer'] = provider.issuer }
 				}
 				values << json2.Any(item)
 			}

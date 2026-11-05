@@ -45,7 +45,7 @@ async function instance(overrides: Record<string, any> = {}, dependencies: {fact
  const user = await adapter.createUser({email: 'provisioned@example.com', name: 'Provisioned', emailVerified: true}, {method: 'test'});
  return {...ready, user};
 }
-async function authorize(ready: Awaited<ReturnType<typeof instance>>, formPost=false) {
+async function authorize(ready: Awaited<ReturnType<typeof instance>>, formPost=false, callbackFields:Record<string,string>={}) {
  const headers = new Headers();
  const response = await ready.auth.api.signInSocial({body: {provider: 'tinyauth', callbackURL: 'http://localhost:3000/nabu'}, asResponse: true});
  ready.cookieSetter(headers)({response});
@@ -53,9 +53,10 @@ async function authorize(ready: Awaited<ReturnType<typeof instance>>, formPost=f
  const authorization = new URL(url);
  const redirect = await fetch(url, {redirect: 'manual'});
  const callback = redirect.headers.get('location')!;
- let finalCallback=callback;
+ const adjusted=new URL(callback);for(const [key,value] of Object.entries(callbackFields))adjusted.searchParams.set(key,value);
+ let finalCallback=adjusted.href;
  if(formPost){
-  const target=new URL(callback);
+  const target=new URL(finalCallback);
   const post=await ready.auth.handler(new Request(target.origin+target.pathname,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded',origin:issuer,'sec-fetch-site':'cross-site'},body:target.searchParams}));
   expect(post.status).toBe(302);expect(post.headers.getSetCookie()).toEqual([]);
   finalCallback=post.headers.get('location')!;
@@ -69,6 +70,27 @@ async function authorize(ready: Awaited<ReturnType<typeof instance>>, formPost=f
 
 describe('Nabu provisioned OIDC configuration', () => {
  for(const [backend,factory] of [['sqlite',getTestInstance],['postgres',postgresInstance],['mongo',mongoInstance]] as const){
+  it(`rejects an issuer mismatch before exchanging a code on ${backend}`,async()=>{
+   email='provisioned@example.com';verified=true;
+   const ready=await instance({},{factory});tokenRequest={};
+   const failed=await authorize(ready,false,{iss:'https://different-issuer.example'});
+   expect(failed.result.status).toBe(302);expect(new URL(failed.result.headers.get('location')!).searchParams.get('error')).toBe('issuer_mismatch');
+   expect(tokenRequest).toEqual({});expect(await (await ready.auth.$context).internalAdapter.findAccounts(ready.user.id)).toEqual([]);
+   expect(await ready.auth.api.getSession({headers:failed.headers})).toBeNull();
+   expect((await ready.auth.handler(new Request(failed.callback,{headers:failed.headers}))).status).toBe(400);
+   expect((await authorize(ready,false,{iss:issuer})).result.headers.get('location')).toBe('http://localhost:3000/nabu');
+  });
+  it(`rolls back linking and redirects the original session-hook error on ${backend}`,async()=>{
+   email='provisioned@example.com';verified=true;
+   const ready=await instance({trustedOrigins:['https://frontend.example.com'],databaseHooks:{session:{create:{before:async()=>{throw new APIError('FORBIDDEN',{code:'HOOK_REJECTED',message:'Session hook rejected this user'})}}}}},{factory});
+   const headers=new Headers();const start=await ready.auth.api.signInSocial({body:{provider:'tinyauth',callbackURL:'https://frontend.example.com/nabu',errorCallbackURL:'https://frontend.example.com/auth-error?preserved=yes'},asResponse:true});ready.cookieSetter(headers)({response:start});
+   const authorization=await fetch((await start.json()).url,{redirect:'manual'});const callback=authorization.headers.get('location')!;
+   const response=await ready.auth.handler(new Request(callback,{headers}));expect(response.status).toBe(302);
+   const location=new URL(response.headers.get('location')!);expect(location.origin+location.pathname).toBe('https://frontend.example.com/auth-error');expect(location.searchParams.get('preserved')).toBe('yes');expect(location.searchParams.get('error')).toBe('HOOK_REJECTED');expect(location.searchParams.get('error_description')).toBe('Session hook rejected this user');
+   expect(await (await ready.auth.$context).internalAdapter.findAccounts(ready.user.id)).toEqual([]);expect(await ready.auth.api.getSession({headers})).toBeNull();
+   expect((await ready.auth.handler(new Request(callback,{headers}))).status).toBe(400);
+  });
+
   it(`completes a cookie-less OIDC form POST through a browser-bound GET on ${backend}`,async()=>{
    email='provisioned@example.com';verified=true;
    const ready=await instance({},{factory});

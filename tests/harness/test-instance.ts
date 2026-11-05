@@ -563,7 +563,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   };
   const context = {
     adapter, internalAdapter, options, password,
-    socialProviders: [] as {id: string; requiresIdTokenNonce?: boolean}[],
+    socialProviders: [] as {id: string; issuer?:string; requiresIdTokenNonce?: boolean}[],
     secret: options.secrets?.[0]?.value ?? options.secret ?? 'better-auth-secret-that-is-long-enough-for-validation-test',
     session: null as unknown,
     authCookies: {} as {sessionToken: {name: string}; sessionData: {name: string}; accountData: {name: string}; dontRememberToken: {name: string}},

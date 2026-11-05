@@ -71,6 +71,8 @@ does not install npm packages or use checkout build artifacts.
 - Configured adapter tables with scalar/date/array/JSON fields, creation defaults,
   unique fields, references, mapped PostgreSQL/MongoDB names and schema-driven
   one-to-one/one-to-many joins. Declare `Config.adapter_models` before explicit migration.
+- Atomic `incrementOne` for users and configured adapter tables, with guarded
+  sets, signed numeric deltas, native conditional writes and bounded contention retries.
 - Secondary session storage with database fallback, TTLs, and an in-memory
   implementation; database mutation hooks and after-commit callbacks.
 - Sealed database session tokens and migration-aware account-column aliases.

@@ -2,7 +2,7 @@
   "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
   "changes": "Import paths only; all test bodies/assertions preserved. The native registrar selects recorded entries without registering exclusions as passing tests.",
   "executionSurface": "native SQLite/PostgreSQL/MongoDB auth and transaction adapters; TS fixture registration/configuration/transport only",
-  "coverageNote": "Shared suite entries are outside the test/spec corpus denominator. Basic exclusions are recorded individually; the joins wrapper repeats selected basic entries and does not increase unique coverage.",
+  "coverageNote": "Shared suite entries are outside the test/spec corpus denominator. All basic entries are selected; the joins wrapper repeats applicable basic entries and does not increase unique coverage.",
   "files": [
     {
       "path": "packages/test-utils/src/adapter/suites/auth-flow.ts",
@@ -510,8 +510,7 @@
           "title": "incrementOne - guarded set transition returns the row on a matching guard and null on a guard miss",
           "sourceStart": 60859,
           "sourceLine": 2168,
-          "selected": false,
-          "reason": "Atomic incrementOne remains unported"
+          "selected": true
         },
         {
           "title": "delete - should delete a model",

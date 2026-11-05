@@ -1164,17 +1164,42 @@ Session authentication retains an indexed token lookup and scoped user relations
 so unrelated encrypted session rows are not decrypted. The session adapter interceptor
 now follows the flat session-with-user-join contract, retaining internal persistence
 metadata outside the public DTO. Raw creation/mutation bypass application hooks;
-creation applies declared defaults. The subsequent custom-model continuation adds
-configured tables and relationships. Generic guarded increments remain separate;
-ordinary updates are not promoted to atomic compare-and-set transitions.
+creation applies declared defaults. Subsequent continuations add configured tables,
+relationships and atomic `incrementOne` for users/custom tables. Ordinary updates
+retain their existing semantics; the atomic operation is explicit.
 
-The unchanged shared basic source now selects 89 of 108 entries, including its init
-probe. Nineteen arbitrary-plugin/custom-relationship/increment entries remain explicitly
-excluded. The original joins wrapper repeats the applicable selections with joins
-enabled. Together with the prior auth/rollback suites, 555 cases pass across native
-SQLite/PostgreSQL/MongoDB. All source bodies and assertions remain unchanged; four
-source-preservation audits and the separate helper-entry inventory record selections.
-The static test/spec corpus denominator is unchanged.
+The unchanged shared basic source now selects all 108 entries, including its init
+probe. All nineteen previously excluded custom-table/join/increment entries are
+selected. The original joins wrapper repeats applicable cases with joins enabled;
+together with auth/rollback, the matrix contains 669 runtime cases across native
+SQLite/PostgreSQL/MongoDB and 117 unique shared helper entries. Bodies and assertions
+remain unchanged; four source-preservation audits and a separate helper inventory
+record selections. The static test/spec corpus denominator is unchanged.
+
+`Config.adapter_models` declares custom tables with scalar/date/array/JSON fields,
+defaults, uniqueness, logical/physical names and `AdapterReference` metadata. Declare
+it before `Auth.migrate_storage()`. SQLite uses per-model payload tables, PostgreSQL
+typed columns/foreign keys, and MongoDB typed IDs/dates and unique indexes. Native
+query execution validates references; SQLite and MongoDB do not install custom
+foreign-key/cascade constraints. A unique incoming reference returns an object or
+null, other incoming references return bounded arrays, and outgoing references return
+objects. Joins use logical fields even when the foreign key references a mapped
+email column. Ambiguous relations fail closed, including empty-result queries.
+MongoDB custom column aliases with dots or a leading `$` are rejected because these
+operations require literal field names. The shared adapter fixture consumes schema
+descriptors separately from plugin HTTP endpoints; raw team-table coverage does not
+claim organization-team endpoint parity.
+
+Explicit `incrementOne` supports users and configured tables. It evaluates the same
+native predicates, computes finite signed deltas and absolute sets, then atomically
+compares the predicate/mutation snapshot in storage before writing. A stale snapshot
+retries up to sixteen times; contention exhaustion throws, guard misses return null,
+and no-ops may return a snapshot without exclusive ownership. The conditional write
+remains atomic with transactions disabled. MongoDB uses the native managed transaction
+runner when enabled. Numeric increments override a set on the same field. Unknown
+fields, ID mutations, malformed values and unsafe increments fail closed. Other
+core-model increment APIs remain outside this implementation. Ordinary update is
+still distinct from atomic compare-and-set.
 
 Three native functions cover malformed-query deletion safety, projection/tenant
 isolation, timezone-equivalent date equality and unrelated-session isolation. The

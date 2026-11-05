@@ -14,8 +14,7 @@ for(const entry of metadata.files)test('preserves every original shared adapter 
  const ast=ts.createSourceFile(entry.path,source,ts.ScriptTarget.Latest,true);const declarations=[];
  function visit(node){
   if(ts.isPropertyAssignment(node)&&ts.isStringLiteral(node.name)&&(ts.isArrowFunction(node.initializer)||ts.isObjectLiteralExpression(node.initializer))){
-   const excluded=entry.path.endsWith('/basic.ts')&&/incrementOne/.test(node.getText(ast));
-   declarations.push({title:node.name.text,sourceStart:node.getStart(ast),sourceLine:ast.getLineAndCharacterOfPosition(node.getStart(ast)).line+1,selected:!excluded,...(excluded?{reason:'Atomic incrementOne remains unported'}:{})});
+   declarations.push({title:node.name.text,sourceStart:node.getStart(ast),sourceLine:ast.getLineAndCharacterOfPosition(node.getStart(ast)).line+1,selected:true});
   }
   ts.forEachChild(node,visit);
  }

@@ -89,6 +89,7 @@ pub fn (mut s PostgresStorage) configure_adapter_models(models map[string]Adapte
 
 pub fn (mut s MongoStorage) configure_adapter_models(models map[string]AdapterModel) ! {
 	validate_adapter_models(models)!
+	validate_mongo_adapter_columns(models)!
 	s.adapter_models = models.clone()
 	mut names := map[string]bool{}
 	mut all := postgres_core_fields.keys()
@@ -99,6 +100,17 @@ pub fn (mut s MongoStorage) configure_adapter_models(models map[string]AdapterMo
 			return error('adapter collection mapping collides with an existing model')
 		}
 		names[name] = true
+	}
+}
+
+fn validate_mongo_adapter_columns(models map[string]AdapterModel) ! {
+	for _, definition in models {
+		for field, attribute in definition.fields {
+			column := if attribute.field_name == '' { field } else { attribute.field_name }
+			if column.starts_with('$') || column.contains('.') {
+				return error('MongoDB adapter fields require literal column names without dots or a leading dollar sign')
+			}
+		}
 	}
 }
 

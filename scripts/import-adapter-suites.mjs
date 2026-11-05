@@ -19,8 +19,7 @@ for(const name of ['auth-flow','transactions','basic','joins']){
  const tests=[];
  function visit(node){
   if(ts.isPropertyAssignment(node)&&ts.isStringLiteral(node.name)&&(ts.isArrowFunction(node.initializer)||ts.isObjectLiteralExpression(node.initializer))){
-   const excluded=name==='basic'&&/incrementOne/.test(node.getText(ast));
-   tests.push({title:node.name.text,sourceStart:node.getStart(ast),sourceLine:ast.getLineAndCharacterOfPosition(node.getStart(ast)).line+1,selected:!excluded,...(excluded?{reason:'Atomic incrementOne remains unported'}:{})});
+   tests.push({title:node.name.text,sourceStart:node.getStart(ast),sourceLine:ast.getLineAndCharacterOfPosition(node.getStart(ast)).line+1,selected:true});
   }
   ts.forEachChild(node,visit);
  }
@@ -34,4 +33,4 @@ for(const name of ['auth-flow','transactions','basic','joins']){
  writeFileSync(target,imported);
  entries.push({path,target,snapshot,sha256:createHash('sha256').update(source).digest('hex'),tests});
 }
-writeFileSync('tests/upstream/adapter-suites.imports.json',JSON.stringify({commit,changes:'Import paths only; all test bodies/assertions preserved. The native registrar selects recorded entries without registering exclusions as passing tests.',executionSurface:'native SQLite/PostgreSQL/MongoDB auth and transaction adapters; TS fixture registration/configuration/transport only',coverageNote:'Shared suite entries are outside the test/spec corpus denominator. Basic exclusions are recorded individually; the joins wrapper repeats selected basic entries and does not increase unique coverage.',files:entries},null,2)+'\n');
+writeFileSync('tests/upstream/adapter-suites.imports.json',JSON.stringify({commit,changes:'Import paths only; all test bodies/assertions preserved. The native registrar selects recorded entries without registering exclusions as passing tests.',executionSurface:'native SQLite/PostgreSQL/MongoDB auth and transaction adapters; TS fixture registration/configuration/transport only',coverageNote:'Shared suite entries are outside the test/spec corpus denominator. All basic entries are selected; the joins wrapper repeats applicable basic entries and does not increase unique coverage.',files:entries},null,2)+'\n');

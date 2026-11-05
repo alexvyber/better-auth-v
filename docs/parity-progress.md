@@ -918,11 +918,11 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   eager organization default evaluation; supplied values now bypass factories and
   missing values evaluate once. A native throwing-factory regression also passes.
 
-The latest complete verification passes 3456 TypeScript cases across 151 files, all 126
-native V test functions across 40 files (including all 20,034 Unicode vectors),
+The latest complete verification passes 3586 TypeScript cases across 152 files, all 131
+native V test functions across 42 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
-The TypeScript suite ran in four disjoint shards after monolithic runs were
-terminated with signal 9; it covers every current test file. The ten
+The TypeScript suite ran in four disjoint shards; the final shard was rerun with
+one worker after a password-test bridge timeout. It covers every current test file. The ten
 source-preservation audit tests also pass. Formatting and `git diff --check` pass. Repeated backend runs do not increase unique
 upstream source coverage, and these results do not imply full upstream parity.
 
@@ -1122,6 +1122,56 @@ an adapter or creating Auth does not install custom tables.
 
 This batch also passes TypeScript checking and all 128 native test functions across
 41 files. Atomic incrementOne is the single remaining shared basic exclusion.
+
+## Atomic adapter increment continuation
+
+All nineteen previously excluded shared basic entries are now selected. The
+preserved basic suite selects all 108 entries; normal and joins wrappers repeat
+applicable cases on three backends. The total shared matrix is 669 runtime cases,
+with 117 unique helper entries across the four preserved sources, outside the
+static test/spec denominator. No upstream bodies or assertions were edited.
+
+The native `incrementOne` operation supports users and configured custom tables.
+It evaluates the existing predicate language, computes signed numeric deltas and
+absolute sets, and guards every predicate/mutated field in a native conditional
+write. PostgreSQL uses one typed conditional UPDATE/RETURNING, SQLite uses a
+conditional JSON field update/RETURNING, MongoDB uses findAndModify, and memory
+checks the snapshot before mutation. Failed comparisons reread/recheck up to
+sixteen attempts; exhausted contention throws instead of reporting a guard miss.
+Guard misses return null, and no-ops may return the read snapshot without exclusive
+ownership. Nonfinite/unsafe deltas, immutable IDs, unknown fields and malformed
+mutations fail before an empty lookup can hide them. Increments override a set on
+the same field, matching the upstream fallback. Numeric predicates now compare
+integer and floating representations by value.
+
+Conditional writes remain atomic with transactions disabled. The test facade
+transports increment calls through the native transaction boundary, allowing the
+native MongoDB managed runner to replay a transient transaction conflict. It does
+not compute counters, evaluate predicates or retry in JavaScript. Other core-model
+increment APIs, arbitrary provider/plugin endpoints and driver-specific suites
+remain outside this continuation.
+
+Sixteen owned integration cases supplement the unchanged guarded-set upstream
+entry: cross-connection winners, signed deltas/caps, OR guards without transactions,
+rollback, malformed mutations, no-ops and user additional counters on three
+backends, plus a real MongoDB failpoint that holds both conditional writes after
+their reads. The isolated negative control removes only MongoDB's conditional
+guard and reproduces two winners; the real implementation allows one. Two native
+functions verify stale guard rejection, preservation of unrelated fields, numeric
+representation equality and rejection of nonfinite/unrepresentable increments.
+
+Complete validation passes 3586 TypeScript cases in four disjoint shards
+(1061/701/1265/559 across 38 files each). The last shard passes with one worker
+after an initial two-worker run timed out in scrypt interoperability; all six
+password cases also pass independently, without changing assertions or timeouts.
+All 131 native functions across 42 files, ten preservation audits, TypeScript
+checking, HTTP migration/auth/CSRF/restart smoke and isolated package consumers
+pass. A final focused recheck passes all sixteen owned atomic contracts and six
+unchanged upstream increment cases after the validation changes, plus both native
+atomic functions. The SQLite atomic user write preserves the existing requirement
+to migrate configured unique indexes before writes. Package checks include both
+namespaced imports and a real Git install of the local candidate, not a VPM
+registry publication. The release tag and registry status are unchanged.
 
 ## Guardrails for continuing
 

@@ -9,6 +9,23 @@ fn adapter_model_test_query(mut auth Auth, query string) !json2.Any {
 	return json2.decode[json2.Any](encoded)
 }
 
+fn test_mongo_custom_columns_cannot_be_interpreted_as_paths_or_operators() {
+	for alias in ['nested.field', '$operator'] {
+		mut rejected := false
+		validate_mongo_adapter_columns({
+			'custom': AdapterModel{
+				fields: {
+					'value': AdditionalField{
+						field_type: 'json'
+						field_name: alias
+					}
+				}
+			}
+		}) or { rejected = true }
+		assert rejected
+	}
+}
+
 fn test_custom_adapter_schema_validation_uniqueness_joins_and_rollback() ! {
 	for backend in 0 .. 2 {
 		mut storage := Storage(MemoryStorage{})

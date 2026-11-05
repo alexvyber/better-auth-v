@@ -54,6 +54,7 @@ fn (c &EndpointContext) adapter_date(model string, field string) bool {
 }
 
 fn adapter_equal(a json2.Any, b json2.Any, insensitive bool) bool {
+	if adapter_number(a) && adapter_number(b) { return a.f64() == b.f64() }
 	if insensitive && a is string && b is string { return a.str().to_lower() == b.str().to_lower() }
 	return a.json_str() == b.json_str()
 }
@@ -462,6 +463,7 @@ fn (mut c EndpointContext) adapter_create(model string, input map[string]json2.A
 }
 
 fn (mut c EndpointContext) adapter_query(operation string, query map[string]json2.Any) !string {
+	if operation == 'incrementOne' { return c.adapter_increment(query) }
 	model := (query['model'] or { return error('missing adapter model') }).str()
 	if operation == 'create' {
 		adapter_keys(query, ['model', 'data', 'forceAllowId'])!

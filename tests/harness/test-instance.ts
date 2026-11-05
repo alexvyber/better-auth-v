@@ -80,6 +80,7 @@ interface FixtureTransactionAdapter {
   delete(query: FixtureOptions): Promise<void>;
   deleteMany(query: FixtureOptions): Promise<number>;
   count(query: FixtureOptions): Promise<number>;
+  incrementOne<T=any>(query: FixtureOptions): Promise<T|null>;
   nativeRunWithTransaction<T>(callback: () => Promise<T>): Promise<T>;
   options: {adapterConfig: {transaction: boolean;adapterName?:string}};
   transaction(callback: (transaction: FixtureTransactionAdapter) => Promise<unknown>): Promise<unknown>;
@@ -577,6 +578,9 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     async delete(query){await adapterQuery('delete',query)},
     async deleteMany(query){return adapterQuery('deleteMany',query)},
     async count(query){return adapterQuery('count',query)},
+    async incrementOne<T>(query:FixtureOptions):Promise<T|null>{
+     return adapter.nativeRunWithTransaction(()=>adapterQuery<T>('incrementOne',query));
+    },
     options: {adapterConfig: {transaction: true}},
     async transaction(callback): Promise<unknown> { return adapter.nativeRunWithTransaction(()=>callback(adapter)); },
   };

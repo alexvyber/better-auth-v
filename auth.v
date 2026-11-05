@@ -7,6 +7,7 @@ import sync
 import time
 import x.json2
 
+@[heap]
 pub struct Auth {
 pub:
 	config Config

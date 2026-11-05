@@ -34,7 +34,7 @@ async function start(ttl:boolean){
  const listener=createServer();listener.listen(0,'127.0.0.1');await once(listener,'listening');const port=(listener.address() as {port:number}).port;
  await new Promise<void>((resolve,reject)=>listener.close(error=>error?reject(error):resolve()));
  const binary=process.env.BETTER_AUTH_MONGO_BIN??fileURLToPath(new URL('../../build/deps/mongodb-macos-aarch64-8.0.6/bin/mongod',import.meta.url));
- const child=spawn(binary,['--dbpath',root,'--bind_ip','127.0.0.1','--port',String(port),'--replSet','rs0','--wiredTigerCacheSizeGB','0.25','--setParameter','ttlMonitorSleepSecs=1','--setParameter','ttlMonitorEnabled='+String(ttl),'--logpath',join(root,'server.log')],{stdio:'ignore'});
+ const child=spawn(binary,['--dbpath',root,'--bind_ip','127.0.0.1','--port',String(port),'--replSet','rs0','--wiredTigerCacheSizeGB','0.25','--setParameter','enableTestCommands=1','--setParameter','ttlMonitorSleepSecs=1','--setParameter','ttlMonitorEnabled='+String(ttl),'--logpath',join(root,'server.log')],{stdio:'ignore'});
  let spawnError:Error|undefined;child.once('error',error=>{spawnError=error});
  const uri=`mongodb://127.0.0.1:${port}/?directConnection=true&serverSelectionTimeoutMS=500&connectTimeoutMS=500`;
  try{

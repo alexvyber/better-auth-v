@@ -104,6 +104,10 @@ fn (mut a Auth) commit_transaction() ! {
 	}
 	a.config.before_commit(mut context)!
 	if a.transactions_enabled { a.storage.commit()! }
+	a.finish_committed_transaction()!
+}
+
+fn (mut a Auth) finish_committed_transaction() ! {
 	a.transaction_active = false
 	a.secondary_created = []Session{}
 	tasks := a.pending_tasks.clone()
@@ -151,10 +155,56 @@ pub fn (c &EndpointContext) has_active_transaction() bool {
 
 pub fn (mut c EndpointContext) with_transaction(operation fn (mut EndpointContext) !string) !string {
 	if c.auth.transaction_active { return operation(mut c) }
-	c.auth.begin_transaction(false)!
-	defer { c.auth.rollback_transaction() }
-	result := operation(mut c)!
-	c.auth.commit_transaction()!
+	return c.auth.with_transaction_unlocked(operation)
+}
+
+// Unlike with_internal, this API delegates replayable transaction callbacks to
+// a driver's native transaction runner when available. A callback may run again.
+pub fn (mut a Auth) with_transaction(operation fn (mut EndpointContext) !string) !string {
+	a.mutex.@lock()
+	defer { a.mutex.unlock() }
+	if a.closed { return error('Auth instance is closed') }
+	return a.with_transaction_unlocked(operation)
+}
+
+fn (mut a Auth) with_transaction_unlocked(operation fn (mut EndpointContext) !string) !string {
+	defer { a.rollback_transaction() }
+	mut storage := a.storage
+	if mut storage is ManagedTransactionStorage {
+		if a.transactions_enabled {
+			result := storage.run_managed_transaction(fn [mut a, operation] () !string {
+				// The driver has aborted/restarted the physical transaction before
+				// replay. Discard failed-attempt hooks and secondary-cache effects.
+				a.rollback_transaction()
+				a.begin_transaction(false)!
+				mut context := EndpointContext{ auth: a }
+				value := operation(mut context) or {
+					a.rollback_transaction()
+					return err
+				}
+				a.config.before_commit(mut context) or {
+					a.rollback_transaction()
+					return err
+				}
+				return value
+			}) or {
+				if err is MongoDriverError && err.cleanup_error != '' {
+					a.config.log('error',
+						'Failed to abort a MongoDB transaction whose commit did not complete: ' +
+						err.cleanup_error)
+				}
+				return err
+			}
+			a.finish_committed_transaction()!
+			return result
+		}
+	}
+	a.begin_transaction(false)!
+	mut context := EndpointContext{
+		auth: a
+	}
+	result := operation(mut context)!
+	a.commit_transaction()!
 	return result
 }
 

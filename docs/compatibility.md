@@ -1161,3 +1161,31 @@ owned Mongo cursor contract explicitly requests 200 rows to exercise `getMore`
 beyond the upstream default 100-row adapter page; its 105-row assertion is unchanged.
 Disposable backend databases are dropped after each shared-suite case to bound disk
 usage in the expanded matrix.
+
+### Replayable MongoDB transactions
+
+`Auth.with_transaction` and inactive `EndpointContext.with_transaction` use the pinned
+native driver's `mongoc_client_session_with_transaction` runner. Its timeout/backoff
+and commit policy distinguish transient body/commit failures from unknown commit
+results. Transient failures replay the callback; uncertain commit results retry only
+the commit. Pending hooks are discarded on failed attempts and run after successful
+physical commit. Callback error identity and native MongoDB labels survive RPC.
+Explicit early commits inside a managed transaction fail rather than weakening
+durable token-consumption boundaries.
+
+Terminal commit failure triggers best-effort abort on the same lsid/txnNumber, captured
+with public driver monitoring APIs. Raw abort attaches its explicit session through
+driver options, retries a retryable error once and accepts settled codes 251/256.
+Cleanup failures are logged while the original failure is retained, and the session
+is ended. Trusted transaction diagnostics contain counts and abort error information.
+
+Eight owned contracts inject real replica-set failures for partial-write rollback,
+body replay, commit-only retry, transient commit replay, committed effects, terminal
+cleanup/recovery, retryable abort and error preservation. A native decoding regression
+checks labels and secondary cleanup errors. The unchanged shared upstream suites are
+also verified; these fault tests are not counted as imports of the Node-driver mock
+tests. Test commands are enabled only on disposable test servers. Existing
+`with_internal` and HTTP request boundaries are unchanged in this batch; routes with
+intentional intermediate commits are not blindly replayed. External callback side
+effects can repeat inside a replayable transaction, and secondary caches are not part
+of a distributed database transaction.

@@ -7,6 +7,10 @@ import { AsyncLocalStorage, AsyncResource } from "node:async_hooks";
 import { setTimeout, clearTimeout } from "node:timers";
 
 const nativeAPIError = Symbol("native API error kind");
+const nativeMongoError = Symbol('native MongoDB error metadata');
+export function mongoErrorMetadata(error:unknown):{code:number;labels:string[]}|undefined {
+ return error&&typeof error==='object'&&nativeMongoError in error ? (error as any)[nativeMongoError] : undefined;
+}
 export const recordMetadata = Symbol("V internal session metadata");
 export function transportJSON(value: unknown): string {
   return JSON.stringify(value, (_key, item) => {
@@ -35,6 +39,9 @@ interface Reply {
   error_status?: number;
   error_is_api?: boolean;
   error_code?: string;
+  error_mongo?:boolean;
+  error_mongo_code?:number;
+  error_mongo_labels?:string[];
   response: WireResponse | null;
   emails: WireEmail[];
   logs: { level: string; message: string }[];
@@ -104,6 +111,7 @@ export class Bridge {
         if (reply.error) {
           const error = Object.assign(new Error(reply.error), {statusCode: reply.error_status, body: {code: reply.error_code, message: reply.error}});
           Object.defineProperty(error,nativeAPIError,{value:reply.error_is_api===true});
+          if(reply.error_mongo)Object.defineProperty(error,nativeMongoError,{value:{code:reply.error_mongo_code??0,labels:reply.error_mongo_labels??[]}});
           pending.reject(error);
           if (pending.op === 'init') this.abort(error);
         }
@@ -147,6 +155,9 @@ export class Bridge {
           error_is_api: error && typeof error === "object" && nativeAPIError in error ? (error as any)[nativeAPIError] : isAPIError(error),
           error_status: Number((error as {statusCode?: number})?.statusCode ?? 0),
           error_code: (error as {body?: {code?: string}})?.body?.code ?? '',
+          error_mongo: mongoErrorMetadata(error)!==undefined,
+          error_mongo_code: mongoErrorMetadata(error)?.code??0,
+          error_mongo_labels: mongoErrorMetadata(error)?.labels??[],
         }) + "\n",
       );
     }

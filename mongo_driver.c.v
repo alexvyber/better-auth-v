@@ -23,14 +23,18 @@ fn C.ba_mongo_open(&char) &C.ba_mongo
 fn C.ba_mongo_close(&C.ba_mongo)
 fn C.ba_mongo_command(&C.ba_mongo, &char, &u8, usize, int, int) &char
 fn C.ba_mongo_transaction(&C.ba_mongo, int) &char
+fn C.ba_mongo_managed(&C.ba_mongo, fn (voidptr) &char, voidptr) &char
+fn C.ba_mongo_transaction_stats(&C.ba_mongo) &char
 fn C.ba_mongo_oid(&u8)
 fn C.ba_mongo_free(&char)
 
 pub struct MongoDriverError {
 	Error
 pub:
-	code    int
-	message string
+	code          int
+	message       string
+	labels        []string
+	cleanup_error string
 }
 
 pub fn (error MongoDriverError) msg() string {
@@ -60,14 +64,21 @@ fn mongo_driver_reply(encoded &char) !map[string]json2.Any {
 	if isnil(encoded) { return error('MongoDB driver response is unavailable') }
 	data := unsafe { encoded.vstring().clone() }
 	C.ba_mongo_free(encoded)
+	return decode_mongo_driver_reply(data)
+}
+
+fn decode_mongo_driver_reply(data string) !map[string]json2.Any {
 	envelope := json2.decode[map[string]json2.Any](data)!
+	mut reply := (envelope['reply'] or { json2.Any(map[string]json2.Any{}) }).as_map()
+	labels := (reply['errorLabels'] or { json2.Any([]json2.Any{}) }).as_array().map(it.str())
 	if !(envelope['ok'] or { json2.Any(false) }).bool() {
 		return MongoDriverError{
-			code:    (envelope['code'] or { json2.Any(0) }).int()
-			message: (envelope['message'] or { json2.Any('MongoDB operation failed') }).str()
+			code:          (envelope['code'] or { json2.Any(0) }).int()
+			message:       (envelope['message'] or { json2.Any('MongoDB operation failed') }).str()
+			labels:        labels
+			cleanup_error: (reply['abortCleanupError'] or { json2.Any('') }).str()
 		}
 	}
-	mut reply := (envelope['reply'] or { json2.Any(map[string]json2.Any{}) }).as_map()
 	if cursor_id := envelope['cursorId'] {
 		mut cursor := (reply['cursor'] or { json2.Any(map[string]json2.Any{}) }).as_map()
 		cursor['id'] = cursor_id
@@ -80,6 +91,7 @@ fn mongo_driver_reply(encoded &char) !map[string]json2.Any {
 			return MongoDriverError{
 				code:    (item['code'] or { json2.Any(0) }).int()
 				message: (item['errmsg'] or { json2.Any('MongoDB write failed') }).str()
+				labels:  labels
 			}
 		}
 	}
@@ -88,6 +100,7 @@ fn mongo_driver_reply(encoded &char) !map[string]json2.Any {
 		return MongoDriverError{
 			code:    (fields['code'] or { json2.Any(0) }).int()
 			message: (fields['errmsg'] or { json2.Any('MongoDB write concern failed') }).str()
+			labels:  labels
 		}
 	}
 	return reply
@@ -106,6 +119,11 @@ pub fn (mut client MongoClient) command(database string, command map[string]BSON
 fn (mut client MongoClient) transaction(action int) ! {
 	if client.closed { return error('MongoDB client is closed') }
 	mongo_driver_reply(C.ba_mongo_transaction(client.handle, action))!
+}
+
+pub fn (mut client MongoClient) transaction_stats() !map[string]json2.Any {
+	if client.closed { return error('MongoDB client is closed') }
+	return mongo_driver_reply(C.ba_mongo_transaction_stats(client.handle))
 }
 
 pub fn (mut client MongoClient) close() ! {

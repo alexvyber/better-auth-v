@@ -26,6 +26,7 @@ mut:
 	session_fields map[string]AdditionalField
 	snapshots      map[string]string
 	transaction    bool
+	managed        bool
 }
 
 fn mongo_name(value string) bool {
@@ -338,7 +339,7 @@ fn (mut storage MongoStorage) delete_row(model string, id string) ! {
 
 pub fn (mut storage MongoStorage) begin() ! {
 	if storage.transaction { return error('MongoDB transaction already active') }
-	storage.client.transaction(1)!
+	if !storage.managed { storage.client.transaction(1)! }
 	storage.transaction = true
 	storage.snapshots.clear()
 }
@@ -348,6 +349,9 @@ pub fn (mut storage MongoStorage) begin_read() ! {
 }
 
 pub fn (mut storage MongoStorage) commit() ! {
+	if storage.managed {
+		return error('Explicit commit is not supported inside a managed MongoDB transaction')
+	}
 	if storage.transaction {
 		storage.client.transaction(2)!
 		storage.transaction = false
@@ -357,10 +361,14 @@ pub fn (mut storage MongoStorage) commit() ! {
 
 pub fn (mut storage MongoStorage) rollback() ! {
 	if storage.transaction {
-		storage.client.transaction(3)!
+		if !storage.managed { storage.client.transaction(3)! }
 		storage.transaction = false
 	}
 	storage.snapshots.clear()
+}
+
+pub fn (mut storage MongoStorage) transaction_stats() !map[string]json2.Any {
+	return storage.client.transaction_stats()
 }
 
 pub fn (mut storage MongoStorage) close() ! {

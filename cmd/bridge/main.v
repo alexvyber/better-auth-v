@@ -219,16 +219,19 @@ struct Command {
 }
 
 struct Reply {
-	id           int
-	error        ?string
-	error_status int
-	error_is_api bool
-	error_code   string
-	response     ?better_auth.Response
-	emails       []better_auth.EmailMessage @[skip]
-	logs         []better_auth.LogEvent
-	records_json string = '[]'
-	value_json   string = 'null'
+	id                 int
+	error              ?string
+	error_status       int
+	error_is_api       bool
+	error_code         string
+	error_mongo        bool
+	error_mongo_code   int
+	error_mongo_labels []string
+	response           ?better_auth.Response
+	emails             []better_auth.EmailMessage @[skip]
+	logs               []better_auth.LogEvent
+	records_json       string = '[]'
+	value_json         string = 'null'
 }
 
 struct State {
@@ -260,14 +263,38 @@ fn emit(reply Reply) {
 	flush_stdout()
 }
 
+fn emit_failure(id int, reason IError) {
+	emit(Reply{
+		id:                 id
+		error:              reason.msg()
+		error_is_api:       reason is better_auth.APIError
+		error_status:       if reason is better_auth.APIError { reason.status } else { 500 }
+		error_code:         if reason is better_auth.APIError {
+			reason.code
+		} else {
+			'INTERNAL_SERVER_ERROR'
+		}
+		error_mongo:        reason is better_auth.MongoDriverError
+		error_mongo_code:   if reason is better_auth.MongoDriverError { reason.code } else { 0 }
+		error_mongo_labels: if reason is better_auth.MongoDriverError {
+			reason.labels
+		} else {
+			[]string{}
+		}
+	})
+}
+
 struct CallbackReply {
-	op           string
-	value_json   string
-	error        ?string
-	callback_id  string
-	error_status int
-	error_is_api bool
-	error_code   string
+	op                 string
+	value_json         string
+	error              ?string
+	callback_id        string
+	error_status       int
+	error_is_api       bool
+	error_code         string
+	error_mongo        bool
+	error_mongo_code   int
+	error_mongo_labels []string
 }
 
 fn callback_error(reply CallbackReply) IError {
@@ -276,6 +303,11 @@ fn callback_error(reply CallbackReply) IError {
 			status:  reply.error_status
 			code:    reply.error_code
 			message: message
+		} }
+	if reply.error_mongo { return better_auth.MongoDriverError{
+			code:    reply.error_mongo_code
+			message: message
+			labels:  reply.error_mongo_labels
 		} }
 	return error(message)
 }
@@ -376,17 +408,7 @@ fn callback_with_context(method string, payload string, mut context better_auth.
 		command := json.decode(Command, line)!
 		if command.op == 'internal' {
 			value := invoke_bridge_internal(mut context, command) or {
-				emit(Reply{
-					id:           command.id
-					error:        err.msg()
-					error_is_api: err is better_auth.APIError
-					error_status: if err is better_auth.APIError { err.status } else { 500 }
-					error_code:   if err is better_auth.APIError {
-						err.code
-					} else {
-						'INTERNAL_SERVER_ERROR'
-					}
-				})
+				emit_failure(command.id, err)
 				continue
 			}
 			emit(Reply{ id: command.id, value_json: value })
@@ -394,7 +416,7 @@ fn callback_with_context(method string, payload string, mut context better_auth.
 			value := context.with_transaction(fn [command] (mut nested better_auth.EndpointContext) !string {
 				return callback_with_context(command.method, '{}', mut nested)
 			}) or {
-				emit(Reply{ id: command.id, error: err.msg() })
+				emit_failure(command.id, err)
 				continue
 			}
 			emit(Reply{ id: command.id, value_json: value })
@@ -410,7 +432,7 @@ fn callback_with_context(method string, payload string, mut context better_auth.
 				continue
 			}
 			filtered := filter_inspection(encoded, command.where_json) or {
-				emit(Reply{ id: command.id, error: err.msg() })
+				emit_failure(command.id, err)
 				continue
 			}
 			emit(Reply{ id: command.id, records_json: filtered })
@@ -1236,7 +1258,7 @@ fn main() {
 			continue
 		}
 		auth.set_adapter_transactions(command.transactions) or {
-			emit(Reply{ id: command.id, error: err.msg() })
+			emit_failure(command.id, err)
 			continue
 		}
 		state.now = command.now
@@ -1244,16 +1266,27 @@ fn main() {
 		match command.op {
 			'migrate' {
 				auth.migrate_storage() or {
-					emit(Reply{ id: command.id, error: err.msg() })
+					emit_failure(command.id, err)
 					continue
 				}
 				emit(Reply{ id: command.id })
 			}
+			'mongo-transaction-stats' {
+				if mut storage is better_auth.MongoStorage {
+					stats := storage.transaction_stats() or {
+						emit_failure(command.id, err)
+						continue
+					}
+					emit(Reply{ id: command.id, value_json: json2.Any(stats).json_str() })
+				} else {
+					emit(Reply{ id: command.id, error: 'MongoDB diagnostics require MongoDB storage' })
+				}
+			}
 			'transaction' {
-				value := auth.with_internal(fn [command] (mut context better_auth.EndpointContext) !string {
+				value := auth.with_transaction(fn [command] (mut context better_auth.EndpointContext) !string {
 					return callback_with_context(command.method, '{}', mut context)
 				}) or {
-					emit(Reply{ id: command.id, error: err.msg() })
+					emit_failure(command.id, err)
 					continue
 				}
 				emit(Reply{ id: command.id, value_json: value })
@@ -1263,59 +1296,49 @@ fn main() {
 				value := auth.with_internal(fn [command] (mut context better_auth.EndpointContext) !string {
 					return invoke_bridge_internal(mut context, command)
 				}) or {
-					emit(Reply{
-						id:           command.id
-						error:        err.msg()
-						error_is_api: err is better_auth.APIError
-						error_status: if err is better_auth.APIError { err.status } else { 500 }
-						error_code:   if err is better_auth.APIError {
-							err.code
-						} else {
-							'INTERNAL_SERVER_ERROR'
-						}
-					})
+					emit_failure(command.id, err)
 					continue
 				}
 				emit(Reply{ id: command.id, value_json: value, logs: state.logs[log_start..].clone() })
 			}
 			'configured-password-hash' {
 				value := fallback_hasher.hash(command.password) or {
-					emit(Reply{ id: command.id, error: err.msg() })
+					emit_failure(command.id, err)
 					continue
 				}
 				emit(Reply{ id: command.id, value_json: json.encode(value) })
 			}
 			'configured-password-verify' {
 				value := fallback_hasher.verify(command.password, command.hash) or {
-					emit(Reply{ id: command.id, error: err.msg() })
+					emit_failure(command.id, err)
 					continue
 				}
 				emit(Reply{ id: command.id, value_json: json.encode(value) })
 			}
 			'password-hash' {
 				value := better_auth.ScryptHasher{}.hash(command.password) or {
-					emit(Reply{ id: command.id, error: err.msg() })
+					emit_failure(command.id, err)
 					continue
 				}
 				emit(Reply{ id: command.id, value_json: json.encode(value) })
 			}
 			'password-verify' {
 				value := better_auth.ScryptHasher{}.verify(command.password, command.hash) or {
-					emit(Reply{ id: command.id, error: err.msg() })
+					emit_failure(command.id, err)
 					continue
 				}
 				emit(Reply{ id: command.id, value_json: json.encode(value) })
 			}
 			'prepare-request' {
 				prepared := auth.prepare_request(command.request, command.direct) or {
-					emit(Reply{ id: command.id, error: err.msg() })
+					emit_failure(command.id, err)
 					continue
 				}
 				emit(Reply{ id: command.id, value_json: json.encode(prepared) })
 			}
 			'complete-request' {
 				prepared := json.decode(better_auth.PreparedRequest, command.prepared_json) or {
-					emit(Reply{ id: command.id, error: err.msg() })
+					emit_failure(command.id, err)
 					continue
 				}
 				actual := better_auth.PreparedRequest{
@@ -1363,7 +1386,7 @@ fn main() {
 				if command.model == 'session' {
 					mut records := []better_auth.Session{}
 					users := storage.users() or {
-						emit(Reply{ id: command.id, error: err.msg() })
+						emit_failure(command.id, err)
 						continue
 					}
 					for user in users {
@@ -1372,7 +1395,7 @@ fn main() {
 					encoded := filter_inspection('[' +
 						records.map(better_auth.encode_session(it)).join(',') + ']',
 						command.where_json) or {
-						emit(Reply{ id: command.id, error: err.msg() })
+						emit_failure(command.id, err)
 						continue
 					}
 					emit(Reply{ id: command.id, records_json: encoded })
@@ -1381,13 +1404,13 @@ fn main() {
 				if command.model == 'twoFactor' {
 					if mut storage is better_auth.TwoFactorStorage {
 						records := storage.two_factors('') or {
-							emit(Reply{ id: command.id, error: err.msg() })
+							emit_failure(command.id, err)
 							continue
 						}
 						encoded := filter_inspection('[' +
 							records.map(better_auth.encode_two_factor(it)).join(',') + ']',
 							command.where_json) or {
-							emit(Reply{ id: command.id, error: err.msg() })
+							emit_failure(command.id, err)
 							continue
 						}
 						emit(Reply{ id: command.id, records_json: encoded })
@@ -1396,13 +1419,13 @@ fn main() {
 				}
 				if command.model == 'verification' {
 					records := storage.verifications() or {
-						emit(Reply{ id: command.id, error: err.msg() })
+						emit_failure(command.id, err)
 						continue
 					}
 					encoded := filter_inspection('[' +
 						records.map(better_auth.encode_verification(it)).join(',') + ']',
 						command.where_json) or {
-						emit(Reply{ id: command.id, error: err.msg() })
+						emit_failure(command.id, err)
 						continue
 					}
 					emit(Reply{ id: command.id, records_json: encoded })
@@ -1410,11 +1433,11 @@ fn main() {
 				}
 				if command.model == 'account' {
 					records := storage.accounts('') or {
-						emit(Reply{ id: command.id, error: err.msg() })
+						emit_failure(command.id, err)
 						continue
 					}
 					encoded := filter_inspection(json.encode(records), command.where_json) or {
-						emit(Reply{ id: command.id, error: err.msg() })
+						emit_failure(command.id, err)
 						continue
 					}
 					emit(Reply{ id: command.id, records_json: encoded })
@@ -1424,12 +1447,12 @@ fn main() {
 					continue
 				}
 				records := storage.users() or {
-					emit(Reply{ id: command.id, error: err.msg() })
+					emit_failure(command.id, err)
 					continue
 				}
 				encoded := filter_inspection('[' +
 					records.map(better_auth.encode_user(it)).join(',') + ']', command.where_json) or {
-					emit(Reply{ id: command.id, error: err.msg() })
+					emit_failure(command.id, err)
 					continue
 				}
 				emit(Reply{ id: command.id, records_json: encoded })

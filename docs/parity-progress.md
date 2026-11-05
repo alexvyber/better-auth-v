@@ -918,8 +918,8 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   eager organization default evaluation; supplied values now bypass factories and
   missing values evaluate once. A native throwing-factory regression also passes.
 
-The latest full `make check` passes 3426 TypeScript cases across 149 files, all 125
-native V test functions across 39 files (including all 20,034 Unicode vectors),
+The latest full `make check` passes 3434 TypeScript cases across 150 files, all 126
+native V test functions across 40 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
 The ten source-preservation audit tests also pass. Formatting and `git diff --check` pass. Repeated backend runs do not increase unique
 upstream source coverage, and these results do not imply full upstream parity.
@@ -1020,6 +1020,34 @@ session encryption. Final `make check`: 3426 TypeScript cases / 149 files, 125 n
 functions / 39 files, ten source audits, type checking and native HTTP smoke all pass.
 Formatting and diff checks pass. Query pushdown, arbitrary plugin relations, guarded
 increments, MongoDB transaction retries and organization aggregate races remain open.
+
+## Native MongoDB transaction retries
+
+`Auth.with_transaction` and inactive `EndpointContext.with_transaction` now delegate
+replayable callbacks to `mongoc_client_session_with_transaction`. Transient body or
+commit failures replay the body; unknown commit results retry commit without body
+replay. Failed-attempt pending hooks/cache cleanup are discarded, and committed
+hooks execute after the driver's successful commit. The native RPC preserves MongoDB
+labels and original callback identity, including a final commit error after an earlier
+transient callback error. Auth has a stable heap lifetime across native callbacks.
+
+A terminal failed commit uses a best-effort raw abort on its exact session/transaction,
+tracked through public APM metadata, with one retry for retryable abort errors. Settled
+251/256 replies are accepted, cleanup failures are logged without replacing the primary
+error, and sessions end on every result. Trusted diagnostics expose command counts and
+abort results. The test replica set alone enables test commands for fault injection.
+
+Eight owned real-server fault contracts cover replay, partial rollback, commit-only
+retry, committed-hook counts, terminal cleanup, retryable cleanup, error preservation
+and recovery. One native function checks error-label/cleanup decoding. The unchanged
+upstream auth/rollback/basic/join matrix still passes. These fault contracts are native
+equivalents; the original Node-driver mock suite is not claimed as imported.
+
+Final `make check`: 3434 TypeScript cases / 150 files, 126 native functions / 40 files,
+ten audits, type checking and HTTP smoke pass. This batch exposes retries through the
+explicit transaction API and callback contexts. Existing `with_internal` and HTTP
+transactions retain their current boundaries; organization HTTP integration is next.
+Callbacks in replayable transactions can execute more than once, as upstream does.
 
 ## Guardrails for continuing
 

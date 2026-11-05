@@ -519,6 +519,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       let cause: unknown;
       let failed = false;
       bridge.setCallback(method, () => nativeTransactionScope.run(true, async () => {
+        failed=false;cause=undefined;
         try { result = await callback(); return null; }
         catch (error) { failed = true; cause = error; throw error; }
       }));

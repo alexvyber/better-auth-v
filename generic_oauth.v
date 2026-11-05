@@ -6,7 +6,7 @@ import x.json2
 pub struct GenericOAuthConfig {
 pub:
 	provider_id                    string @[json: providerId]
-	name                           string
+	name                           ?string
 	client_id                      string            @[json: clientId]
 	client_secret                  string            @[json: clientSecret]
 	discovery_url                  string            @[json: discoveryUrl]
@@ -55,6 +55,10 @@ pub:
 
 pub fn (provider GenericOAuthProvider) id() string {
 	return provider.options.provider_id
+}
+
+pub fn (provider GenericOAuthProvider) name() string {
+	return provider.options.name or { provider.id() }
 }
 
 pub fn (provider GenericOAuthProvider) requires_nonce() bool {

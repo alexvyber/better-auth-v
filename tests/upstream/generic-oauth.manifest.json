@@ -1172,9 +1172,9 @@
       "test": "should use custom name when provided in config",
       "sourceStart": 126895,
       "sourceLine": 4467,
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+      "reason": null
     },
     {
       "suite": "oauth2",

@@ -134,6 +134,7 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 				mut item := {
 					'id': json2.Any(provider.id())
 				}
+				if provider is OAuthNamedProvider { item['name'] = provider.name() }
 				if provider is GenericOAuthProvider {
 					item['requiresIdTokenNonce'] = provider.requires_nonce()
 					if provider.issuer != '' { item['issuer'] = provider.issuer }

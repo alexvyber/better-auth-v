@@ -926,7 +926,7 @@ The source inventory unions complementary imports by original AST position under
 matching source checksums. Backend repeats count once, duplicate titles retain
 separate identities and malformed source metadata fails the audit. Every manifest
 records original positions/lines. Six audit tests run through `make check`. The
-current 33 complete/16 partial/387 unported source-file counts and 1,203 preserved
+current 33 complete/16 partial/387 unported source-file counts and 1,204 preserved
 static declarations describe source coverage, including separately labelled SDK
 probes; they are not equivalent to native runtime or feature parity.
 
@@ -1024,3 +1024,13 @@ and three additional Nabu linking-failure contracts cover these boundaries, roll
 private messages, cookie cleanup and replay. Nabu's older owned profile-rejection
 expectations were corrected from redirects to HTTP 403 after checking pinned source
 and the installed upstream runtime; imported upstream assertions are unchanged.
+
+
+Native OAuth providers can expose display names through `OAuthNamedProvider.name()`.
+Generic OAuth uses its configured name, preserving an explicit empty string and
+falling back to the provider ID only when absent; Google/GitHub expose their names.
+Native provider context metadata carries the value. The unchanged custom-name source
+case, Nabu's configured label across its backend contracts and an owned omitted/empty
+name contract pass (61 focused cases, type checking and six inventory audits).
+This metadata-only follow-up does not change authentication or persistence behavior;
+the preceding full verification count remains the `make check` result recorded above.

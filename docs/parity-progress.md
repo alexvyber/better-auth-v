@@ -838,7 +838,7 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   titles cannot inflate coverage. Six audit cases cover complementary selections,
   repeats, ambiguous legacy records, stale checksums and invalid source metadata;
   `make check` now includes them. Source bodies/assertions are unchanged. The inventory
-  identifies 1,203 preserved declarations, distinct from runtime/backend case counts.
+  identifies 1,204 preserved declarations, distinct from runtime/backend case counts.
 
 - Added native OpenAPI request schemas for all nine public email-OTP POST endpoints,
   including required fields, purpose enums, extensible signup input and the deprecated
@@ -903,6 +903,12 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   upstream cases, 45 backend error contracts and three Nabu linking-failure contracts
   verify these behaviors; Nabu's older owned redirect assertions were corrected using
   pinned source and an installed-upstream profile-error check.
+
+- Exposed native provider display names, including Nabu's configured label and
+  exact omitted/empty-name semantics. One unchanged upstream case and an owned
+  metadata case extend coverage; the focused generic-OAuth/Nabu matrix passes 61
+  cases, with type checking and six audits. This metadata-only follow-up is newer
+  than the complete verification run below; authentication/storage code is unchanged.
 
 The latest full `make check` passes 2819 TypeScript cases across 142 files, all 120
 native V test functions across 38 files (including all 20,034 Unicode vectors),

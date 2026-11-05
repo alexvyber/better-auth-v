@@ -16,6 +16,10 @@ pub fn (_ GitHubProvider) id() string {
 	return 'github'
 }
 
+pub fn (_ GitHubProvider) name() string {
+	return 'GitHub'
+}
+
 pub fn (p GitHubProvider) authorization_url(state string, challenge string, redirect_uri string) !string {
 	if p.client_id == '' || p.client_secret == '' {
 		return error('GitHub client credentials are required')

@@ -654,7 +654,31 @@ describe("oauth2", async () => {
 		const provider = ctx.socialProviders.find((p) => p.id === "issuer-test");
 		expect(provider).toBeDefined();
 		expect(provider?.issuer).toBe(`http://localhost:${port}`);
-	});;;;
+	});;
+
+	it("should use custom name when provided in config", async () => {
+		const { auth } = await getTestInstance({
+			plugins: [
+				genericOAuth({
+					config: [
+						{
+							providerId: "named-provider",
+							name: "My Custom Provider",
+							authorizationUrl: `http://localhost:${port}/authorize`,
+							tokenUrl: `http://localhost:${port}/token`,
+							clientId: clientId,
+							clientSecret: clientSecret,
+						},
+					],
+				}),
+			],
+		});
+
+		const ctx = await auth.$context;
+		const provider = ctx.socialProviders.find((p) => p.id === "named-provider");
+		expect(provider).toBeDefined();
+		expect(provider?.name).toBe("My Custom Provider");
+	});;
 
 	describe("validateUserInfo callback", () => {
 		it("should reject sign-in with provider metadata and raw profile", async () => {

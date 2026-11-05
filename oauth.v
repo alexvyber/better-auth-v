@@ -102,6 +102,10 @@ pub interface OAuthProvider {
 	exchange(string, string, string) !OAuthIdentity
 }
 
+pub interface OAuthNamedProvider {
+	name() string
+}
+
 pub interface OAuthIDTokenProvider {
 	supports_id_token() bool
 	verify_id_token(string, string) Lookup[string]

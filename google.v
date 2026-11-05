@@ -29,6 +29,10 @@ pub fn (_ GoogleProvider) id() string {
 	return 'google'
 }
 
+pub fn (_ GoogleProvider) name() string {
+	return 'Google'
+}
+
 fn (provider GoogleProvider) primary_client_id() string {
 	if provider.client_ids.len > 0 { return provider.client_ids[0] }
 	return provider.client_id

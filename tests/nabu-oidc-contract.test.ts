@@ -42,6 +42,7 @@ async function instance(overrides: Record<string, any> = {}, dependencies: {fact
   ...overrides,
  }, {disableTestUser: true,...dependencies.config});
  const adapter = (await ready.auth.$context).internalAdapter;
+ expect((await ready.auth.$context).socialProviders.find(provider=>provider.id==='tinyauth')?.name).toBe('Code & Money');
  const user = await adapter.createUser({email: 'provisioned@example.com', name: 'Provisioned', emailVerified: true}, {method: 'test'});
  return {...ready, user};
 }
@@ -67,6 +68,16 @@ async function authorize(ready: Awaited<ReturnType<typeof instance>>, formPost=f
  const result = await ready.auth.handler(new Request(finalCallback, {headers}));
  return {authorization, callback, headers, result};
 }
+
+it('preserves missing, empty and configured provider display names',async()=>{
+ const ready=await getTestInstance({plugins:[genericOAuth({config:[
+  {providerId:'fallback-name',authorizationUrl:'https://provider.example/authorize',tokenUrl:'https://provider.example/token',clientId:'name-client',clientSecret:'name-secret'},
+  {providerId:'empty-name',name:'',authorizationUrl:'https://provider.example/authorize',tokenUrl:'https://provider.example/token',clientId:'name-client',clientSecret:'name-secret'},
+  {providerId:'configured-name',name:'Code & Money / Nabu',authorizationUrl:'https://provider.example/authorize',tokenUrl:'https://provider.example/token',clientId:'name-client',clientSecret:'name-secret'},
+ ]})]},{disableTestUser:true});
+ const names=Object.fromEntries((await ready.auth.$context).socialProviders.map(provider=>[provider.id,provider.name]));
+ expect(names).toMatchObject({'fallback-name':'fallback-name','empty-name':'','configured-name':'Code & Money / Nabu'});
+});
 
 describe('Nabu provisioned OIDC configuration', () => {
  for(const [backend,factory] of [['sqlite',getTestInstance],['postgres',postgresInstance],['mongo',mongoInstance]] as const){

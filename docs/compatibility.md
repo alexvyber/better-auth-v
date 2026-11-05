@@ -739,7 +739,7 @@ invitation primary key for the upstream hook-supplied custom ID case. The
 source fixture explicitly translates upstream test-context defaults that skip
 origin/CSRF checks; production defaults and independent HTTP contracts stay strict.
 
-Teams, complete active-membership cleanup, generic hook composition and
+Teams, generic hook composition and
 full organization source coverage remain open. Application databases are untouched.
 
 Mongo fixtures with simulated upstream dates disable the background TTL worker,
@@ -812,8 +812,7 @@ case above 100 members is explicitly excluded because generic JS adapter interce
 is not implemented. Nine independent native integration cases verify 111 complete
 user joins, paging/filter totals, tenant and owner guards, failed hook rollback and
 cached active-selection cleanup. Generic database filtering/coercion/collation,
-functional membership limits, aggregate owner races and cleanup after forbidden
-organization reads still require work; typed list scans are not a generic query API.
+functional membership limits and aggregate owner races still require work; typed list scans are not a generic query API.
 
 
 ## Initial OpenAPI support
@@ -843,3 +842,12 @@ functional defaults, POST OAuth callbacks, complete security/tag metadata and th
 remaining source cases are open. Unknown plugin inputs are not fabricated: supply
 explicit native endpoint metadata to document their shapes. Native JSON fields use
 an unconstrained JSON Schema rather than the upstream model generator's `json` type.
+
+
+Denied organization metadata/full reads and activation now clear the current
+session's active selection while returning 403, matching upstream's intentional
+state change. Native request transactions commit that cleanup and refresh session
+cookies so cached selection agrees. Missing organization reads preserve an existing
+selection; missing-ID activation clears it before denying membership. Twelve owned
+cases across the three adapters verify persistent/cached state and unchanged
+membership. Other endpoint errors retain normal transaction rollback semantics.

@@ -798,7 +798,14 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   omitted standalone fixtures for unselected tests. Complete endpoint snapshots,
   automatic plugin schemas and arbitrary Zod composition remain open.
 
-The latest full `make check` passes 2670 TypeScript cases across 129 files, all 111
+- Fixed active-organization cleanup after denied metadata/full reads or activation.
+  Intentional cleanup commits while preserving the 403 response, and refreshed
+  cookies reflect the cleared selection. Missing-organization reads retain a valid
+  selection; failed activation clears it. Twelve independent cases repeat across
+  the three adapters alongside 72 unchanged CRUD source cases. Other failures
+  retain normal rollback behavior.
+
+The latest full `make check` passes 2682 TypeScript cases across 130 files, all 111
 native V test functions across 36 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
 Formatting and `git diff --check` pass. Repeated backend runs do not increase unique

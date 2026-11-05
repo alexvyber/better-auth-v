@@ -165,14 +165,23 @@ fn organization_get_or_activate(mut context EndpointContext, current SessionResu
 			headers: [Header{'content-type', 'application/json'}]
 			body:    'null'
 		} }
-	org := context.organization_record(id)!
+	mut org := map[string]json2.Any{}
+	if path != 'set-active' { org = context.organization_record(id)! }
 	if (context.organization_find('member', {
 		'organizationId': id
 		'userId':         current.user.id
 	})!).value == none {
-		return fail(403, 'USER_IS_NOT_A_MEMBER_OF_THE_ORGANIZATION',
-			'User is not a member of the organization')
+		// A denied selection clears active state upstream. Return the error response
+		// after that cleanup so the request transaction commits this intentional write.
+		updated := context.organization_set_active(current.session, none)!
+		denied := error_response(fail(403, 'USER_IS_NOT_A_MEMBER_OF_THE_ORGANIZATION',
+			'User is not a member of the organization'))
+		return context.auth.set_session_cookies(denied, SessionResult{
+			session: updated
+			user:    current.user
+		})
 	}
+	if path == 'set-active' { org = context.organization_record(id)! }
 	mut output := context.auth.organization_output('organization', org)!
 	if path == 'get-full-organization' {
 		members := context.organization_expanded_members(id, (fields['membersLimit'] or {

@@ -838,7 +838,7 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   titles cannot inflate coverage. Six audit cases cover complementary selections,
   repeats, ambiguous legacy records, stale checksums and invalid source metadata;
   `make check` now includes them. Source bodies/assertions are unchanged. The inventory
-  identifies 1,201 preserved declarations, distinct from runtime/backend case counts.
+  identifies 1,203 preserved declarations, distinct from runtime/backend case counts.
 
 - Added native OpenAPI request schemas for all nine public email-OTP POST endpoints,
   including required fields, purpose enums, extensible signup input and the deprecated
@@ -894,7 +894,17 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   defaults/opt-out and null expiry; a native function covers cookie migration,
   canonical precedence and replay. Cookie-only/JWE state formats remain unported.
 
-The latest full `make check` passes 2778 TypeScript cases across 142 files, all 120
+- Distinguished OAuth token, profile, identity and session failure boundaries.
+  Token failures use `invalid_code`; ordinary identity failures use the upstream
+  creation/linking codes; profile API errors preserve HTTP status/message/optional
+  code, including Nabu's 403 rejections. Code-less policy errors and unexpected session
+  exceptions keep their HTTP behavior. The bridge preserves API-error identity across
+  nested calls, and consumed state cookies expire on HTTP failures. Two unchanged
+  upstream cases, 45 backend error contracts and three Nabu linking-failure contracts
+  verify these behaviors; Nabu's older owned redirect assertions were corrected using
+  pinned source and an installed-upstream profile-error check.
+
+The latest full `make check` passes 2819 TypeScript cases across 142 files, all 120
 native V test functions across 38 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
 The six source-inventory audit tests also pass. Formatting and `git diff --check` pass. Repeated backend runs do not increase unique

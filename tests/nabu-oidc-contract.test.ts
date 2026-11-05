@@ -70,6 +70,15 @@ async function authorize(ready: Awaited<ReturnType<typeof instance>>, formPost=f
 
 describe('Nabu provisioned OIDC configuration', () => {
  for(const [backend,factory] of [['sqlite',getTestInstance],['postgres',postgresInstance],['mongo',mongoInstance]] as const){
+  it(`retains the provisioned user after an unexpected account-link hook failure on ${backend}`,async()=>{
+   email='provisioned@example.com';verified=true;
+   const ready=await instance({databaseHooks:{account:{create:{before:async()=>{throw new Error('private link failure')}}}}},{factory});
+   const {result,headers,callback}=await authorize(ready);expect(result.status).toBe(302);
+   const location=new URL(result.headers.get('location')!);expect(location.searchParams.get('error')).toBe('unable_to_link_account');expect(location.searchParams.has('error_description')).toBe(false);expect(location.href).not.toContain('private');
+   const adapter=(await ready.auth.$context).internalAdapter;expect(await adapter.findAccounts(ready.user.id)).toEqual([]);expect((await adapter.findUserById(ready.user.id)).emailVerified).toBe(true);expect(await ready.auth.api.getSession({headers})).toBeNull();
+   expect(result.headers.getSetCookie().some(cookie=>cookie.startsWith('better-auth.state=')&&cookie.includes('Max-Age=0'))).toBe(true);
+   expect((await ready.auth.handler(new Request(callback,{headers}))).status).toBe(400);
+  });
   it(`uses verified default linking and respects an explicit opt-out on ${backend}`,async()=>{
    email='provisioned@example.com';verified=true;
    const allowed=await instance({account:undefined},{factory});
@@ -141,7 +150,7 @@ describe('Nabu provisioned OIDC configuration', () => {
   email='outsider@example.com';verified=true;
   const ready=await instance({},{factory:mongoInstance});
   const {result,headers}=await authorize(ready);
-  expect(result.headers.get('location')).toContain('?error=');
+  expect(result.status).toBe(403);expect(result.headers.get('location')).toBeNull();expect(await result.json()).toEqual({message:'This SSO identity is not provisioned for Nabu'});
   expect(await ready.auth.api.getSession({headers})).toBeNull();
   expect(await (await ready.auth.$context).internalAdapter.findAccounts(ready.user.id)).toEqual([]);
  });
@@ -209,7 +218,7 @@ describe('Nabu provisioned OIDC configuration', () => {
   email = 'outsider@example.com'; verified = true;
   const ready = await instance();
   const {result} = await authorize(ready);
-  expect(result.headers.get('location')).toContain('?error=');
+  expect(result.status).toBe(403);expect(result.headers.get('location')).toBeNull();expect(await result.json()).toEqual({message:'This SSO identity is not provisioned for Nabu'});
   const adapter = (await ready.auth.$context).internalAdapter;
   expect(await adapter.findUserByEmail(email)).toBeNull();
   expect(await adapter.findAccounts(ready.user.id)).toEqual([]);
@@ -219,7 +228,7 @@ describe('Nabu provisioned OIDC configuration', () => {
  it('rejects a signed profile whose email is unverified', async () => {
   email = 'provisioned@example.com'; verified = false;
   const ready = await instance();
-  expect((await authorize(ready)).result.headers.get('location')).toContain('?error=');
+  const rejected=(await authorize(ready)).result;expect(rejected.status).toBe(403);expect(rejected.headers.get('location')).toBeNull();expect(await rejected.json()).toEqual({message:'A verified SSO email is required'});
   expect(await (await ready.auth.$context).internalAdapter.findAccounts(ready.user.id)).toEqual([]);
  });
 

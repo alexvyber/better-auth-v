@@ -280,7 +280,11 @@ pub fn (provider GenericOAuthProvider) exchange(code string, verifier string, re
 
 pub fn (provider GenericOAuthProvider) exchange_bound(code string, verifier string, redirect_uri string, nonce string) !OAuthIdentity {
 	tokens := if provider.options.get_token != default_generic_get_token {
-		provider.options.get_token(code, verifier, redirect_uri)!
+		provider.options.get_token(code, verifier, redirect_uri) or {
+			return OAuthTokenFailure{
+				reason: err
+			}
+		}
 	} else {
 		encoded := request_oauth_token(OAuthTokenRequestInput{
 			options:             OAuthTokenClientOptions{
@@ -296,8 +300,16 @@ pub fn (provider GenericOAuthProvider) exchange_bound(code string, verifier stri
 			token_endpoint_auth: provider.options.token_endpoint_auth
 			additional_params:   provider.options.token_url_params
 			headers:             provider.options.authorization_headers
-		}, 'authorization_code', provider.options.transport)!
-		parse_oauth_tokens(encoded, provider.options.clock_millis())!
+		}, 'authorization_code', provider.options.transport) or {
+			return OAuthTokenFailure{
+				reason: err
+			}
+		}
+		parse_oauth_tokens(encoded, provider.options.clock_millis()) or {
+			return OAuthTokenFailure{
+				reason: err
+			}
+		}
 	}
 	if provider.requires_nonce() && nonce == '' {
 		return fail(401, 'NONCE_BINDING_MISSING', 'Missing expected ID token nonce')
@@ -339,8 +351,12 @@ fn (provider GenericOAuthProvider) profile_identity(tokens OAuthTokens, nonce st
 	}
 	raw['emailVerified'] = raw['email_verified'] or { json2.Any(false) }
 	raw['image'] = raw['picture'] or { json2.Any(json2.Null{}) }
-	mapped :=
-		json2.decode[map[string]json2.Any](provider.options.map_profile(json2.Any(raw).json_str())!)!
+	mapped_json := provider.options.map_profile(json2.Any(raw).json_str()) or {
+		return OAuthProfileFailure{
+			reason: err
+		}
+	}
+	mapped := json2.decode[map[string]json2.Any](mapped_json)!
 	mut user := raw.clone()
 	for key, value in mapped {
 		user[key] = value

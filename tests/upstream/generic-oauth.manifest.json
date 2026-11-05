@@ -158,9 +158,9 @@
       "test": "should handle invalid provider ID",
       "sourceStart": 35429,
       "sourceLine": 1164,
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+      "reason": null
     },
     {
       "suite": "oauth2",
@@ -995,9 +995,9 @@
       "test": "should handle errors in custom getToken",
       "sourceStart": 109559,
       "sourceLine": 3847,
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+      "reason": null
     },
     {
       "suite": "oauth2",

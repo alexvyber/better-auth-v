@@ -217,6 +217,9 @@ fn (mut a Auth) handle_prepared_result(prepared PreparedRequest, propagate_serve
 	previous_session := a.new_session
 	a.new_session = none
 	defer { a.new_session = previous_session }
+	previous_oauth_state := a.oauth_state_consumed
+	a.oauth_state_consumed = false
+	defer { a.oauth_state_consumed = previous_oauth_state }
 	previous_context := a.request_context
 	defer { a.request_context = previous_context }
 	a.request_context = RequestContext{
@@ -233,6 +236,10 @@ fn (mut a Auth) handle_prepared_result(prepared PreparedRequest, propagate_serve
 		}
 	}
 	mut result := r
+	if a.oauth_state_consumed && !result.headers.any(it.name == 'set-cookie'
+		&& it.value.starts_with(a.oauth_cookie_name() + '=')) {
+		result = a.oauth_cookie(result, '', true)
+	}
 	parsed_url := urllib.parse(normalized.url) or { urllib.URL{} }
 	mut plugin_endpoint := false
 	for plugin in a.config.plugins {
@@ -781,7 +788,11 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 fn error_response(err IError) Response {
 	if err is APIError {
 		mut fields := err.details.clone()
-		fields['code'] = err.code
+		if err.code != '' {
+			fields['code'] = err.code
+		} else {
+			fields.delete('code')
+		}
 		fields['message'] = err.message
 		return Response{
 			status:      err.status

@@ -269,7 +269,16 @@ describe("oauth2", async () => {
 			headers,
 		);
 		expect(callbackURL).toBe("http://localhost:3000/dashboard");
-	});;
+	});
+
+	it("should handle invalid provider ID", async () => {
+		const res = await authClient.signIn.social({
+			provider: "invalid-provider",
+			callbackURL: "http://localhost:3000/dashboard",
+			newUserCallbackURL: "http://localhost:3000/new_user",
+		});
+		expect(res.error?.status).toBe(404);
+	});
 
 	it("should handle server error during OAuth flow", async () => {
 		server.service.once("beforeUserinfo", (userInfoResponse) => {
@@ -515,7 +524,72 @@ describe("oauth2", async () => {
 
 		expect(res.status).toBe(302);
 		expect(res.headers.get("location")).toContain("state_not_found");
-	});;;;;;;;;;;;;;;;;;;;
+	});;;;;;;;;;;;;;;;
+
+	// Note: raw token data preservation is already tested in the other custom getToken tests above
+	// This test is redundant as the GET-based and custom provider tests verify raw data preservation
+
+	it("should handle errors in custom getToken", async () => {
+		server.service.once("beforeUserinfo", (userInfoResponse) => {
+			userInfoResponse.body = {
+				email: "error-test@test.com",
+				name: "Error Test User",
+				sub: "error-test",
+				picture: "https://test.com/picture.png",
+				email_verified: true,
+			};
+			userInfoResponse.statusCode = 200;
+		});
+
+		const { customFetchImpl, cookieSetter } = await getTestInstance({
+			plugins: [
+				genericOAuth({
+					config: [
+						{
+							providerId: "error-provider",
+							clientId: clientId,
+							clientSecret: clientSecret,
+							discoveryUrl: `http://localhost:${port}/.well-known/openid-configuration`,
+							pkce: true,
+							getToken: async () => {
+								// Simulate token exchange failure
+								throw new Error("Token exchange failed");
+							},
+						},
+					],
+				}),
+			],
+		});
+
+		const authClient = createAuthClient({
+			baseURL: "http://localhost:3000",
+			fetchOptions: {
+				customFetchImpl,
+			},
+		});
+
+		const headers = new Headers();
+		const res = await authClient.signIn.social({
+			provider: "error-provider",
+			callbackURL: "http://localhost:3000/dashboard",
+			errorCallbackURL: "http://localhost:3000/error",
+			fetchOptions: {
+				onSuccess: cookieSetter(headers),
+			},
+		});
+
+		expect(res.data?.url).toContain(`http://localhost:${port}/authorize`);
+
+		// Attempt to complete the OAuth flow - should redirect to error URL
+		const { callbackURL } = await simulateOAuthFlow(
+			res.data?.url || "",
+			headers,
+			customFetchImpl,
+		);
+
+		expect(callbackURL).toContain("http://localhost:3000/error");
+		expect(callbackURL).toContain("error=");
+	});;;;
 
 	it("should merge client-requested scopes with config scopes", async () => {
 		const { customFetchImpl, cookieSetter } = await getTestInstance({

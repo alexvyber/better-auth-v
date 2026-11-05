@@ -29,6 +29,7 @@ mut:
 	new_session               ?SessionResult
 	anonymous_link_session    ?SessionResult
 	oauth_nonce_requirements  map[string]bool
+	oauth_state_consumed      bool
 	user_defined_fields       []string
 }
 

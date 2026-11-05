@@ -926,7 +926,7 @@ The source inventory unions complementary imports by original AST position under
 matching source checksums. Backend repeats count once, duplicate titles retain
 separate identities and malformed source metadata fails the audit. Every manifest
 records original positions/lines. Six audit tests run through `make check`. The
-current 33 complete/16 partial/387 unported source-file counts and 1,201 preserved
+current 33 complete/16 partial/387 unported source-file counts and 1,203 preserved
 static declarations describe source coverage, including separately labelled SDK
 probes; they are not equivalent to native runtime or feature parity.
 
@@ -1003,3 +1003,24 @@ failure. Three Nabu-style backend cases verify default verified linking, explici
 opt-out and null expiry output. A native function verifies legacy cookie acceptance,
 canonical precedence, proof retention and replay; direct Google ID-token coverage
 also asserts that neither state-cookie name is issued.
+
+
+OAuth error handling now distinguishes token exchange, provider profile mapping,
+identity creation/linking and session creation. Token/custom-token failures redirect
+with `invalid_code`; ordinary creation/linking failures use `unable_to_create_user`
+or `unable_to_link_account` without private messages. Profile-mapping API errors
+retain their HTTP status, optional code and message, matching Nabu's HTTP 403
+provisioning/verified-email rejection. Policy/session API errors without a code keep
+their HTTP status; coded policy errors retain the existing error redirect. Unexpected
+session failures return private HTTP 500 responses. Successfully consumed state
+cookies expire on HTTP errors as well as redirects, while failed state binding leaves
+the proof and cookie alone. Unknown sign-in provider IDs return HTTP 404.
+
+The bridge preserves API-error identity (including explicit 5xx API errors and absent
+codes) through nested calls; it does not invent callback error codes or convert
+ordinary exceptions into API rejections. Two more unchanged upstream cases cover
+unknown providers and custom token failure. Forty-five backend policy/error contracts
+and three additional Nabu linking-failure contracts cover these boundaries, rollback,
+private messages, cookie cleanup and replay. Nabu's older owned profile-rejection
+expectations were corrected from redirects to HTTP 403 after checking pinned source
+and the installed upstream runtime; imported upstream assertions are unchanged.

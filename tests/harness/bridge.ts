@@ -1,3 +1,4 @@
+import {isAPIError} from "@better-auth/core/utils/is-api-error";
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { createInterface } from "node:readline";
 import { STATUS_CODES } from "node:http";
@@ -5,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { AsyncLocalStorage, AsyncResource } from "node:async_hooks";
 import { setTimeout, clearTimeout } from "node:timers";
 
+const nativeAPIError = Symbol("native API error kind");
 export const recordMetadata = Symbol("V internal session metadata");
 export function transportJSON(value: unknown): string {
   return JSON.stringify(value, (_key, item) => {
@@ -31,6 +33,7 @@ interface Reply {
   id: number;
   error: string | null;
   error_status?: number;
+  error_is_api?: boolean;
   error_code?: string;
   response: WireResponse | null;
   emails: WireEmail[];
@@ -98,6 +101,7 @@ export class Bridge {
         this.pending.delete(reply.id);
         if (reply.error) {
           const error = Object.assign(new Error(reply.error), {statusCode: reply.error_status, body: {code: reply.error_code, message: reply.error}});
+          Object.defineProperty(error,nativeAPIError,{value:reply.error_is_api===true});
           pending.reject(error);
           if (pending.op === 'init') this.abort(error);
         }
@@ -138,8 +142,9 @@ export class Bridge {
           op: "callback-result",
           callback_id: callbackId,
           error: error instanceof Error ? error.message : String(error),
+          error_is_api: error && typeof error === "object" && nativeAPIError in error ? (error as any)[nativeAPIError] : isAPIError(error),
           error_status: Number((error as {statusCode?: number})?.statusCode ?? 0),
-          error_code: (error as {body?: {code?: string}})?.body?.code ?? 'CALLBACK_ERROR',
+          error_code: (error as {body?: {code?: string}})?.body?.code ?? '',
         }) + "\n",
       );
     }

@@ -222,6 +222,7 @@ struct Reply {
 	id           int
 	error        ?string
 	error_status int
+	error_is_api bool
 	error_code   string
 	response     ?better_auth.Response
 	emails       []better_auth.EmailMessage @[skip]
@@ -265,12 +266,13 @@ struct CallbackReply {
 	error        ?string
 	callback_id  string
 	error_status int
+	error_is_api bool
 	error_code   string
 }
 
 fn callback_error(reply CallbackReply) IError {
 	message := reply.error or { 'callback failed' }
-	if reply.error_status >= 400 && reply.error_status < 500 { return better_auth.APIError{
+	if reply.error_is_api && reply.error_status >= 400 && reply.error_status < 600 { return better_auth.APIError{
 			status:  reply.error_status
 			code:    reply.error_code
 			message: message
@@ -377,6 +379,7 @@ fn callback_with_context(method string, payload string, mut context better_auth.
 				emit(Reply{
 					id:           command.id
 					error:        err.msg()
+					error_is_api: err is better_auth.APIError
 					error_status: if err is better_auth.APIError { err.status } else { 500 }
 					error_code:   if err is better_auth.APIError {
 						err.code
@@ -1254,6 +1257,7 @@ fn main() {
 					emit(Reply{
 						id:           command.id
 						error:        err.msg()
+						error_is_api: err is better_auth.APIError
 						error_status: if err is better_auth.APIError { err.status } else { 500 }
 						error_code:   if err is better_auth.APIError {
 							err.code

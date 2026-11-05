@@ -10,6 +10,51 @@ import x.json2
 const oauth_callback_fields = ['code', 'error', 'device_id', 'error_description', 'state', 'user',
 	'iss']
 
+struct OAuthTokenFailure {
+	reason IError
+}
+
+fn (e OAuthTokenFailure) msg() string {
+	return e.reason.msg()
+}
+
+fn (e OAuthTokenFailure) code() int {
+	return e.reason.code()
+}
+
+struct OAuthProfileFailure {
+	reason IError
+}
+
+fn (e OAuthProfileFailure) msg() string {
+	return e.reason.msg()
+}
+
+fn (e OAuthProfileFailure) code() int {
+	return e.reason.code()
+}
+
+struct OAuthIdentityFailure {
+	error_code string
+	reason     IError
+}
+
+fn (e OAuthIdentityFailure) msg() string {
+	return e.reason.msg()
+}
+
+fn (e OAuthIdentityFailure) code() int {
+	return e.reason.code()
+}
+
+fn oauth_identity_failure(reason IError, code string) IError {
+	if reason is APIError { return reason }
+	return OAuthIdentityFailure{
+		error_code: code
+		reason:     reason
+	}
+}
+
 // Match upstream's form-post bridge: do not exchange codes or consume state until
 // the browser follows this GET redirect with its SameSite state cookie.
 fn (a &Auth) oauth_post_callback(req Request, body map[string]json2.Any) !Response {
@@ -118,7 +163,7 @@ fn (a &Auth) oauth_provider(id string) !OAuthProvider {
 	for provider in a.config.social_providers {
 		if provider.id() == id { return provider }
 	}
-	return fail(400, 'PROVIDER_NOT_FOUND', 'Provider not found')
+	return fail(404, 'PROVIDER_NOT_FOUND', 'Provider not found')
 }
 
 fn (a &Auth) oauth_cookie_name() string {
@@ -275,7 +320,12 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 		return fail(400, 'INVALID_STATE', 'Invalid OAuth state')
 	}
 
-	a.commit_transaction()!
+	a.commit_transaction() or {
+		// After-commit hook failure must still expire the consumed state's cookie.
+		if !a.transaction_active { a.oauth_state_consumed = true }
+		return err
+	}
+	a.oauth_state_consumed = true
 	a.begin_transaction(false)!
 	if record.identifier != 'oauth-state' || verification_expiry_millis(record) < a.clock_millis() {
 		return fail(400, 'INVALID_STATE', 'Invalid OAuth state')
@@ -318,6 +368,7 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 	account := a.oauth_identity_account_with_signup(identity, provider_id,
 
 		provider !is GoogleProvider && provider !is GenericOAuthProvider, allowed_signup) or {
+		if err is OAuthIdentityFailure { return a.generic_oauth_error(stored, record.id, err) }
 		if err is APIError {
 			if err.application_error { return a.generic_oauth_error(stored, record.id, err) }
 		}
@@ -333,6 +384,7 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 	}
 	session := a.make_session(account.user.id, RequestContext{ headers: req.headers }, true) or {
 		if err is APIError {
+			if err.code == '' { return err }
 			return a.oauth_abort_callback(stored, record.id, err.code, err.message)
 		}
 		return err
@@ -366,8 +418,16 @@ fn (a &Auth) oauth_default_error(code string) Response {
 }
 
 fn (mut a Auth) generic_oauth_error(stored OAuthState, record_id string, reason IError) !Response {
+	if reason is OAuthTokenFailure {
+		return a.oauth_abort_callback(stored, record_id, 'invalid_code', '')
+	}
+	if reason is OAuthProfileFailure { return reason.reason }
+	if reason is OAuthIdentityFailure {
+		return a.oauth_abort_callback(stored, record_id, reason.error_code, '')
+	}
 	if reason is APIError {
 		if reason.application_error {
+			if reason.code == '' { return reason }
 			return a.oauth_abort_callback(stored, record_id, reason.code, reason.message)
 		}
 		return a.oauth_abort_callback(stored, record_id, reason.code.to_lower(), '')
@@ -464,14 +524,18 @@ fn (mut a Auth) oauth_identity_account_with_signup(identity OAuthIdentity, provi
 					provider_id: provider_id
 					profile:     identity.profile
 				}
-			}) or { return as_application_error(err) }
+			}) or {
+				return oauth_identity_failure(as_application_error(err), 'unable_to_create_user')
+			}
 			if decision.error != '' { return as_application_error(fail(403, decision.error, if decision.error_description != '' {
 					decision.error_description
 				} else {
 					decision.error
 				}))
 			 }
-			user = a.persist_user(user)!
+			user = a.persist_user(user) or {
+				return oauth_identity_failure(err, 'unable_to_create_user')
+			}
 		}
 		base_account := Account{
 			id:          a.new_id('account')!
@@ -480,8 +544,15 @@ fn (mut a Auth) oauth_identity_account_with_signup(identity OAuthIdentity, provi
 			account_id:  identity.id
 		}
 		patch := a.oauth_account_patch(identity.tokens, '')!
-		selected_account = a.persist_account(decode_account(merge_record_json(json.encode(base_account),
-			json2.Any(patch).json_str())!)!)!
+		prepared := decode_account(merge_record_json(json.encode(base_account),
+			json2.Any(patch).json_str())!)!
+		selected_account = a.persist_account(prepared) or {
+			return oauth_identity_failure(err, if new_user {
+				'unable_to_create_user'
+			} else {
+				'unable_to_link_account'
+			})
+		}
 	}
 
 	if selected_account.account_id != identity.id || selected_account.provider_id != provider_id

@@ -8,6 +8,40 @@ This is an initial implementation, not full Better Auth parity. The implemented
 and missing behavior is listed in [the compatibility contract](docs/compatibility.md).
 There is no dependency on a web framework.
 
+## Install with VPM
+
+The package is being prepared for registration as `alexvyber.better_auth`, version
+`0.1.0`. It is not published to VPM yet. After registration:
+
+```sh
+v install alexvyber.better_auth
+```
+
+```v
+import alexvyber.better_auth
+```
+
+Use V 0.5.2 and a C compiler. The default module links OpenSSL 3, SQLite and
+PostgreSQL's libpq, including when using the memory or SQLite store. Install their
+development headers/libraries first:
+
+```sh
+# macOS / Homebrew
+brew install pkg-config openssl@3 sqlite libpq
+
+# Ubuntu / Debian
+sudo apt-get install build-essential pkg-config libssl-dev libsqlite3-dev libpq-dev
+```
+
+Node.js, pnpm, database servers and the upstream TypeScript tests are development
+tools; they are not needed to import or run the default V package. MongoDB needs
+an additional native driver build; see [the package guide](docs/publishing.md).
+
+From a checkout, `make check-package` verifies both installed import layouts in
+isolated consumers, including Unicode password hashing, SQLite restart/login and
+RSA JWT signing/verification. It requires Node.js for the verification script but
+does not install npm packages or use checkout build artifacts.
+
 ## Implemented
 
 - Email/password registration and login, configurable password hashing, and an
@@ -145,8 +179,11 @@ those in a V application through `Config` before using the corresponding flows.
 
 ## Embed in V
 
+For the installed VPM package, use the namespaced import below. Examples within
+this repository use `import better_auth` for the local checkout.
+
 ```v
-import better_auth
+import alexvyber.better_auth
 
 mut storage := better_auth.open_sqlite('auth.db')!
 storage.migrate()! // Usually a separate deployment step.

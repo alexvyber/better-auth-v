@@ -1,0 +1,49 @@
+name: Package installation
+
+on:
+  push:
+    branches: [main]
+    tags: ['0.*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  consumer:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-14]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install Linux native dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config libssl-dev libsqlite3-dev libpq-dev
+      - name: Install macOS native dependencies
+        if: runner.os == 'macOS'
+        run: |
+          brew install pkg-config openssl@3 sqlite libpq
+          echo "PKG_CONFIG_PATH=$(brew --prefix openssl@3)/lib/pkgconfig:$(brew --prefix libpq)/lib/pkgconfig:$(brew --prefix sqlite)/lib/pkgconfig" >> "$GITHUB_ENV"
+      - uses: actions/checkout@v4
+        with:
+          repository: vlang/v
+          ref: '0.5.2'
+          path: .ci-v
+          persist-credentials: false
+      - name: Build V
+        run: |
+          make -C .ci-v CC=cc
+          echo "$GITHUB_WORKSPACE/.ci-v" >> "$GITHUB_PATH"
+      - name: Check installed package consumers
+        run: make check-package

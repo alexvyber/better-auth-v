@@ -1,9 +1,12 @@
 V ?= v
 export V_C_ERROR_BUG_REPORT_DISABLED = 1
 
-.PHONY: check test test-v test-ts test-audit integration fmt
+.PHONY: check check-package test test-v test-ts test-audit integration fmt
 
 check: test-audit test-v test-ts integration
+
+check-package:
+	V="$(V)" node scripts/check-package.mjs
 
 test: test-audit test-v test-ts
 

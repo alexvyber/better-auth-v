@@ -28,7 +28,9 @@ if(!existsSync(join(prefix,'lib/libmongoc2.a'))){
  execFileSync('cmake',['--install',build],{stdio:'inherit'});
 }
 const alias=join(dependencies,'mongoc');if(!existsSync(alias))symlinkSync(prefix,alias,'dir');
-if(process.env.BETTER_AUTH_MONGO_BIN){execFileSync(process.env.BETTER_AUTH_MONGO_BIN,['--version'],{stdio:'inherit'})}
+if(process.argv.includes('--driver-only')){
+ console.log('Native MongoDB driver ready at '+alias);
+}else if(process.env.BETTER_AUTH_MONGO_BIN){execFileSync(process.env.BETTER_AUTH_MONGO_BIN,['--version'],{stdio:'inherit'})}
 else if(process.platform==='darwin'&&process.arch==='arm64'){
  const name='mongodb-macos-arm64-8.0.6.tgz';
  const serverArchive=await archive(name,`https://fastdl.mongodb.org/osx/${name}`,'a34313ca117b846efe34c1112cbb9fcf0d33f34f4f1837626619b5b01c5b514d');

@@ -204,6 +204,7 @@ pub:
 
 pub struct Config {
 pub:
+	adapter_models                    map[string]AdapterModel
 	app_name                          string              = 'Better Auth'
 	id_strategy                       string              = 'random'
 	generate_id                       fn (string) !string = no_id_generator
@@ -419,6 +420,7 @@ pub:
 
 pub struct AdditionalField {
 pub:
+	references      ?AdapterReference
 	field_name      string @[json: fieldName]
 	unique          bool
 	validate_input  fn (json2.Any) !FieldInputResult = passthrough_field_input @[skip]

@@ -18,6 +18,7 @@ pub:
 // independent Auth instances use independent connections and database atomics.
 pub struct PostgresStorage {
 mut:
+	adapter_models    map[string]AdapterModel
 	connection        &pg.Conn
 	options           PostgresOptions
 	model_fields      map[string]map[string]AdditionalField
@@ -95,7 +96,11 @@ pub fn (_ PostgresStorage) stores_plain_session_tokens() bool {
 
 fn (storage &PostgresStorage) table(model string) string {
 	return sql_identifier(storage.options.schema) + '.' + sql_identifier(storage.options.tables[model] or {
-		model
+		if custom := storage.adapter_models[model] {
+			if custom.name != '' { custom.name } else { model }
+		} else {
+			model
+		}
 	})
 }
 
@@ -139,13 +144,13 @@ fn (storage &PostgresStorage) additional(model string) map[string]AdditionalFiel
 		storage.session_fields
 	} else {
 		storage.model_fields[model] or {
-			map[string]AdditionalField{}
+			(storage.adapter_models[model] or { AdapterModel{} }).fields
 		}
 	}
 }
 
 fn (storage &PostgresStorage) logical_fields(model string) []string {
-	mut fields := postgres_core_fields[model].clone()
+	mut fields := (postgres_core_fields[model] or { ['id'] }).clone()
 	for field, _ in storage.additional(model) {
 		fields << field
 	}

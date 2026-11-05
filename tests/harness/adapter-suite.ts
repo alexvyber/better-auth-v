@@ -46,7 +46,7 @@ export function createTestSuite(name:string,settings:{defaultBetterAuthOptions?:
    const instance=()=>ready??=factory(options as any,config).then(value=>{opened.push(value);return value});
    beforeEach(async()=>{
     options=settings.defaultBetterAuthOptions??{};ready=undefined;postgres=undefined;mongo=undefined;
-    config={disableTestUser:true};
+    config={disableTestUser:true,adapterSchemaOnly:true};
     if(backend==='postgres'){postgres=await postgresOptions();config.nativePostgres=postgres}
     if(backend==='mongo'){mongo=await mongoOptions();config.nativeMongo=mongo}
    });

@@ -102,15 +102,13 @@
           "title": "create - should return null for nullable foreign keys",
           "sourceStart": 2815,
           "sourceLine": 106,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "create - should apply default values to fields",
           "sourceStart": 3510,
           "sourceLine": 137,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "findOne - should find a model",
@@ -122,8 +120,7 @@
           "title": "findOne - should not apply defaultValue if value not found",
           "sourceStart": 5359,
           "sourceLine": 212,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "findOne - should find a model using a reference field",
@@ -183,8 +180,7 @@
           "title": "findOne - should select fields with one-to-one join",
           "sourceStart": 13187,
           "sourceLine": 498,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "findOne - should select fields with multiple joins",
@@ -208,8 +204,7 @@
           "title": "findOne - should return an object for one-to-one joins",
           "sourceStart": 16905,
           "sourceLine": 626,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "findOne - should return an array for one-to-many joins",
@@ -221,22 +216,19 @@
           "title": "findOne - should work with both one-to-one and one-to-many joins",
           "sourceStart": 18766,
           "sourceLine": 697,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "findOne - should return null for failed base model lookup that has joins",
           "sourceStart": 20575,
           "sourceLine": 766,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "findOne - should join a model with modified field name",
           "sourceStart": 21549,
           "sourceLine": 803,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "findMany - should find many models",
@@ -278,8 +270,7 @@
           "title": "findMany - should select fields with one-to-one join",
           "sourceStart": 28368,
           "sourceLine": 1048,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "findMany - should select fields with multiple joins",
@@ -315,15 +306,13 @@
           "title": "findMany - should find many with one-to-one join",
           "sourceStart": 35027,
           "sourceLine": 1301,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "findMany - should find many with both one-to-one and one-to-many joins",
           "sourceStart": 36310,
           "sourceLine": 1351,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "findMany - should return an empty array when no models are found",
@@ -335,8 +324,7 @@
           "title": "findMany - should return empty array when base records don't exist with joins",
           "sourceStart": 38341,
           "sourceLine": 1423,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "findMany - should find many models with starts_with operator",
@@ -523,7 +511,7 @@
           "sourceStart": 60859,
           "sourceLine": 2168,
           "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "reason": "Atomic incrementOne remains unported"
         },
         {
           "title": "delete - should delete a model",
@@ -637,8 +625,7 @@
           "title": "findOne - multiple joins should return result even when some joined tables have no matching rows",
           "sourceStart": 74429,
           "sourceLine": 2610,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "findOne - should be able to perform a limited join",
@@ -668,15 +655,13 @@
           "title": "findOne - should return null for one-to-one join when joined record doesn't exist",
           "sourceStart": 81330,
           "sourceLine": 2845,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "findMany - should return null for one-to-one join when joined records don't exist",
           "sourceStart": 82484,
           "sourceLine": 2889,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "findMany - should return empty array for one-to-many join when joined records don't exist",
@@ -688,22 +673,19 @@
           "title": "findMany - should handle mixed joins correctly when some are missing",
           "sourceStart": 86412,
           "sourceLine": 3015,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "create - should support arrays",
           "sourceStart": 90269,
           "sourceLine": 3135,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "create - should support json",
           "sourceStart": 91418,
           "sourceLine": 3181,
-          "selected": false,
-          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+          "selected": true
         },
         {
           "title": "update - should support multiple where conditions under AND connector with unique field",

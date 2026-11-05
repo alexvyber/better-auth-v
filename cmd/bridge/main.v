@@ -48,6 +48,8 @@ struct Options {
 	organization_schema               bool
 	organization                      ?better_auth.OrganizationOptions
 	organization_fields_json          map[string]string
+	adapter_model_fields_json         map[string]string
+	adapter_model_names               map[string]string
 	organization_hooks                []string
 	organization_invitation_limit     bool
 	organization_invitation_email     bool
@@ -1035,7 +1037,18 @@ fn main() {
 			} }
 		generic << settings
 	}
+	mut adapter_models := map[string]better_auth.AdapterModel{}
+	for model, encoded in opts.adapter_model_fields_json {
+		adapter_models[model] = better_auth.AdapterModel{
+			name:   opts.adapter_model_names[model] or { model }
+			fields: field_schema(encoded, model, opts.field_callbacks) or {
+				emit(Reply{ id: init.id, error: err.msg() })
+				return
+			}
+		}
+	}
 	mut auth := better_auth.new(better_auth.Config{
+		adapter_models:               adapter_models
 		app_name:                     opts.app_name
 		id_strategy:                  opts.id_strategy
 		generate_id:                  if opts.custom_id_generator {

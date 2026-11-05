@@ -19,8 +19,8 @@ for(const name of ['auth-flow','transactions','basic','joins']){
  const tests=[];
  function visit(node){
   if(ts.isPropertyAssignment(node)&&ts.isStringLiteral(node.name)&&(ts.isArrowFunction(node.initializer)||ts.isObjectLiteralExpression(node.initializer))){
-   const excluded=name==='basic'&&(!ts.isArrowFunction(node.initializer)||/plugins:|incrementOne|oneToOneTable/.test(node.getText(ast)));
-   tests.push({title:node.name.text,sourceStart:node.getStart(ast),sourceLine:ast.getLineAndCharacterOfPosition(node.getStart(ast)).line+1,selected:!excluded,...(excluded?{reason:'Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported'}:{})});
+   const excluded=name==='basic'&&/incrementOne/.test(node.getText(ast));
+   tests.push({title:node.name.text,sourceStart:node.getStart(ast),sourceLine:ast.getLineAndCharacterOfPosition(node.getStart(ast)).line+1,selected:!excluded,...(excluded?{reason:'Atomic incrementOne remains unported'}:{})});
   }
   ts.forEachChild(node,visit);
  }

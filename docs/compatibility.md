@@ -1164,9 +1164,9 @@ Session authentication retains an indexed token lookup and scoped user relations
 so unrelated encrypted session rows are not decrypted. The session adapter interceptor
 now follows the flat session-with-user-join contract, retaining internal persistence
 metadata outside the public DTO. Raw creation/mutation bypass application hooks;
-creation applies declared defaults. Generic guarded increments and arbitrary plugin
-schemas/relationships remain unimplemented, and ordinary updates are not promoted to
-atomic compare-and-set transitions.
+creation applies declared defaults. The subsequent custom-model continuation adds
+configured tables and relationships. Generic guarded increments remain separate;
+ordinary updates are not promoted to atomic compare-and-set transitions.
 
 The unchanged shared basic source now selects 89 of 108 entries, including its init
 probe. Nineteen arbitrary-plugin/custom-relationship/increment entries remain explicitly

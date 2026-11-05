@@ -20,6 +20,7 @@ mut:
 @[heap]
 pub struct MemoryStorage {
 mut:
+	adapter_models map[string]AdapterModel
 	rate_limits    map[string]RateLimitRecord
 	model_fields   map[string]map[string]AdditionalField
 	user_fields    map[string]AdditionalField

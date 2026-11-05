@@ -1088,6 +1088,41 @@ The owned concurrency fixture uses the harness configuration type instead of
 propagating its precise plugin generic through every independent instance. This
 avoids excessive compiler work without changing runtime setup or assertions.
 
+## Configured adapter tables and custom joins
+
+Eighteen previously excluded shared basic entries now run unchanged. The focused
+auth/transaction/basic/join matrix passes 663 runtime cases across SQLite,
+PostgreSQL and MongoDB; basic selects 107 of 108 entries, with only incrementOne
+still excluded in this batch. Repeated join/backend cases do not increase unique
+source coverage, and the shared helper inventory remains separate from the static
+test/spec corpus.
+
+`Config.adapter_models` supplies native table/field/reference metadata. Explicit
+migrations create configured SQLite JSON-payload tables, typed PostgreSQL tables
+with mapped columns and foreign keys, and MongoDB collections with unique indexes.
+Native query execution applies defaults on creation, preserves nullable fields,
+arrays and JSON, validates types/references and supports custom raw mutation,
+filtering, projection and schema-driven joins. Unique references yield objects or
+null; other incoming references yield bounded arrays. Unknown/ambiguous joins fail
+closed even for empty base results. The renamed-email foreign-key case passes.
+
+The shared-suite fixture has an explicit schema-only mode: it transports plugin
+schema descriptors to native tables without claiming their HTTP endpoints are
+implemented. Organization/member/invitation raw models can join custom team tables;
+this does not establish full organization-team API parity. Core adapter updates
+remain user-only; custom configured models also support updates. References are
+validated by native writes; only PostgreSQL currently installs custom foreign-key
+constraints in the database. General queries/joins remain scan-based.
+
+Two owned native functions additionally verify memory/SQLite type/reference and
+unique failures, JSON preservation, projected joins, rollback and empty-result
+ambiguity rejection. Native adapter query regression tests and all ten preservation
+audits pass. Configuration must precede migration (`Auth.migrate_storage`); opening
+an adapter or creating Auth does not install custom tables.
+
+This batch also passes TypeScript checking and all 128 native test functions across
+41 files. Atomic incrementOne is the single remaining shared basic exclusion.
+
 ## Guardrails for continuing
 
 - Authentication decisions and persistence belong in V. TS code translates test

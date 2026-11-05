@@ -62,7 +62,9 @@ fn (mut storage MongoStorage) index(model string, fields []string, unique bool, 
 pub fn (mut storage MongoStorage) migrate() ! {
 	if storage.transaction { return error('cannot migrate active MongoDB transaction') }
 	// Create every collection before a transaction can touch it.
-	for model, _ in postgres_core_fields {
+	mut models := postgres_core_fields.keys()
+	models << storage.adapter_models.keys()
+	for model in models {
 		storage.client.command(storage.options.database, {
 			'create': BSONValue(storage.collection(model))
 		}, 2, false) or {
@@ -91,15 +93,29 @@ pub fn (mut storage MongoStorage) migrate() ! {
 	}
 	storage.index('member', ['userId'], false, false, '')!
 	storage.index('invitation', ['inviterId'], false, false, '')!
-	for model in ['user', 'session', 'organization', 'member', 'invitation', 'organizationRole'] {
+	mut indexed_models := ['user', 'session', 'organization', 'member', 'invitation',
+		'organizationRole']
+	indexed_models << storage.adapter_models.keys()
+	for model in indexed_models {
 		for field, definition in storage.additional(model) {
 			if definition.unique {
-				kind := match definition.field_type {
+				mut kind := match definition.field_type {
 					'string' { 'string' }
 					'number' { 'number' }
 					'boolean' { 'bool' }
 					'date' { 'date' }
 					else { return error('MongoDB unique additional field requires a scalar type') }
+				}
+
+				if reference := definition.references {
+					if reference.field == 'id' { kind = if storage.options.uuid_ids {
+							'binData'
+						} else if storage.options.string_ids {
+							'string'
+						} else {
+							'objectId'
+						}
+					 }
 				}
 
 				storage.index(model, [field], true, false, kind)!

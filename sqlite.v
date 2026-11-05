@@ -6,6 +6,7 @@ import x.json2
 
 pub struct SQLiteStorage {
 mut:
+	adapter_models      map[string]AdapterModel
 	db                  sqlite.DB
 	options             SQLiteOptions
 	model_fields        map[string]map[string]AdditionalField
@@ -113,6 +114,7 @@ pub fn (mut s SQLiteStorage) migrate() ! {
 		s.db.exec('CREATE TABLE auth_organization_role (id TEXT PRIMARY KEY, organization_id TEXT NOT NULL REFERENCES auth_organization(id) ON DELETE CASCADE, role TEXT NOT NULL, data TEXT NOT NULL, UNIQUE(organization_id,role))')!
 		s.db.exec('INSERT INTO auth_migration VALUES (7)')!
 	}
+	s.migrate_adapter_models()!
 	s.organization_unique_indexes(true)!
 	s.configured_unique_indexes(true)!
 	s.commit()!

@@ -6,6 +6,9 @@ mut:
 }
 
 fn (storage &PostgresStorage) sql_type(model string, field string) !string {
+	if reference := (storage.additional(model)[field] or { AdditionalField{} }).references {
+		if reference.field == 'id' { return storage.sql_type(reference.model, 'id') }
+	}
 	if model_types := storage.options.column_types[model] {
 		if explicit := model_types[field] {
 			if explicit !in ['text', 'uuid', 'boolean', 'integer', 'bigint', 'double precision',
@@ -52,16 +55,23 @@ pub fn (mut storage PostgresStorage) migrate() ! {
 
 		'better-auth-v:migrate:' + storage.options.schema)!
 	storage.connection.exec('CREATE SCHEMA IF NOT EXISTS ${sql_identifier(storage.options.schema)}')!
-	for model in ['user', 'session', 'account', 'verification', 'jwks', 'rateLimit', 'twoFactor',
-		'organization', 'member', 'invitation', 'organizationRole'] {
+	mut models := ['user', 'session', 'account', 'verification', 'jwks', 'rateLimit', 'twoFactor',
+		'organization', 'member', 'invitation', 'organizationRole']
+	models << storage.adapter_models.keys()
+	for model in models {
 		mut definitions := []string{}
 		for field in storage.logical_fields(model) {
 			kind := storage.sql_type(model, field)!
 			mut constraints := ''
+			if model in storage.adapter_models && (storage.additional(model)[field] or {
+				AdditionalField{}
+			}).required {
+				constraints += ' NOT NULL'
+			}
 			if field == 'id' || (model == 'rateLimit' && field == 'key') {
 				constraints = ' PRIMARY KEY'
 			}
-			if field in ['createdAt', 'updatedAt'] {
+			if field in ['createdAt', 'updatedAt'] && model !in storage.adapter_models {
 				constraints += ' NOT NULL DEFAULT CURRENT_TIMESTAMP'
 			}
 			if model == 'user' && field in ['name', 'email'] { constraints += ' NOT NULL' }
@@ -152,6 +162,19 @@ pub fn (mut storage PostgresStorage) migrate() ! {
 		storage.connection.exec('CREATE INDEX IF NOT EXISTS ' +
 			storage.index_name(model, 'organization') + ' ON ' + storage.table(model) +
 			' (' + storage.column_sql(model, 'organizationId') + ')')!
+	}
+	for model, definition in storage.adapter_models {
+		for field, attribute in definition.fields {
+			if reference := attribute.references {
+				name := 'ba_ref_' + digest(storage.table(model) + field)[..24]
+				if (storage.connection.exec_param2('SELECT 1 FROM pg_constraint WHERE conname=$1 AND conrelid=$2::regclass',
+					name, storage.table(model))!).len == 0 {
+					storage.connection.exec('ALTER TABLE ${storage.table(model)} ADD CONSTRAINT ${sql_identifier(name)} FOREIGN KEY (${storage.column_sql(model,
+						field)}) REFERENCES ${storage.table(reference.model)} (${storage.column_sql(reference.model,
+						reference.field)}) ON DELETE CASCADE')!
+				}
+			}
+		}
 	}
 	storage.commit()!
 	committed = true

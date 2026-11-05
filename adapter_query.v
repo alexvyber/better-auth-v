@@ -6,7 +6,8 @@ import x.json2
 // I/O; query evaluation stays native and uses logical schema names. Scan-based
 // execution is deliberately explicit until individual adapters push queries down.
 fn (c &EndpointContext) adapter_field(model string, field string) ! {
-	if model !in ['user', 'session', 'account', 'verification'] {
+	if model !in ['user', 'session', 'account', 'verification', 'organization', 'member', 'invitation', 'organizationRole']
+		&& model !in c.auth.config.adapter_models {
 		return error('unsupported adapter model')
 	}
 	extra := if model == 'user' {
@@ -14,9 +15,9 @@ fn (c &EndpointContext) adapter_field(model string, field string) ! {
 	} else if model == 'session' {
 		c.auth.config.session_fields
 	} else {
-		map[string]AdditionalField{}
+		(c.auth.config.adapter_models[model] or { AdapterModel{} }).fields
 	}
-	if field !in postgres_core_fields[model] && field !in extra {
+	if field != 'id' && field !in (postgres_core_fields[model] or { []string{} }) && field !in extra {
 		return error('unknown adapter field: ${field}')
 	}
 }
@@ -42,7 +43,13 @@ fn (c &EndpointContext) adapter_date(model string, field string) bool {
 		'refreshTokenExpiresAt'] {
 		return true
 	}
-	fields := if model == 'user' { c.auth.config.user_fields } else { c.auth.config.session_fields }
+	fields := if model == 'user' {
+		c.auth.config.user_fields
+	} else if model == 'session' {
+		c.auth.config.session_fields
+	} else {
+		(c.auth.config.adapter_models[model] or { AdapterModel{} }).fields
+	}
 	return (fields[field] or { AdditionalField{} }).field_type == 'date'
 }
 
@@ -206,7 +213,23 @@ fn (mut c EndpointContext) adapter_rows(model string) ![]json2.Any {
 			}
 		}
 		else {
-			return error('unsupported adapter model')
+			mut storage := c.auth.storage
+			if model in organization_models {
+				if mut storage is OrganizationStorage {
+					for row in storage.organization_rows(model, {})! {
+						rows << json2.decode[json2.Any](row)!
+					}
+					return rows
+				}
+				return error('unsupported organization adapter storage')
+			}
+			if mut storage is AdapterModelStorage {
+				for row in storage.adapter_model_rows(model)! {
+					rows << json2.decode[json2.Any](row)!
+				}
+			} else {
+				return error('unsupported adapter model storage')
+			}
 		}
 	}
 
@@ -302,10 +325,7 @@ fn (mut c EndpointContext) adapter_read(query map[string]json2.Any) ![]json2.Any
 	// Validate joins/selects even when the base lookup is empty.
 	joins := adapter_object(query['join'] or { json2.Any(map[string]json2.Any{}) })!
 	for target, option in joins {
-		if !((model == 'user' && target in ['session', 'account'])
-			|| (model in ['session', 'account'] && target == 'user')) {
-			return error('unsupported adapter relation')
-		}
+		c.adapter_relation(model, target)!
 		if option is bool { continue
 		 }
 		adapter_keys(adapter_object(option)!, ['limit'])!
@@ -332,16 +352,15 @@ fn (mut c EndpointContext) adapter_read(query map[string]json2.Any) ![]json2.Any
 		for target, option in joins {
 			if option is bool && !option.bool() { continue
 			 }
+			relation := c.adapter_relation(model, target)!
 			mut related := []json2.Any{}
-			candidates := if model == 'user' { c.adapter_user_rows(target, (base['id'] or {
+			candidates := if model == 'user' && target in ['session', 'account'] { c.adapter_user_rows(target, (base['id'] or {
 					json2.Any('')}).str())! } else { c.adapter_rows(target)! }
 			for row in candidates {
 				fields := row.as_map()
-				if (model == 'user' && (fields['userId'] or { json2.Any('') }).str() == (base['id'] or {
-					json2.Any('')
-				}).str()) || (target == 'user' && (fields['id'] or { json2.Any('') }).str() == (base['userId'] or {
-					json2.Any('')
-				}).str()) {
+				left := base[relation.base_field] or { json2.Any(json2.Null{}) }
+				right := fields[relation.target_field] or { json2.Any(json2.Null{}) }
+				if left !is json2.Null && right !is json2.Null && adapter_equal(left, right, false) {
 					related << row
 				}
 			}
@@ -351,7 +370,7 @@ fn (mut c EndpointContext) adapter_read(query map[string]json2.Any) ![]json2.Any
 				adapter_page(adapter_object(option)!, 'limit', 100)!
 			}
 			if related.len > cap { related = related[..cap].clone() }
-			projected[target] = if target == 'user' {
+			projected[target] = if relation.single {
 				if related.len == 0 { json2.Any(json2.Null{}) } else { related[0] }
 			} else {
 				json2.Any(related)
@@ -367,6 +386,36 @@ fn (mut c EndpointContext) adapter_create(model string, input map[string]json2.A
 	mut data := input.clone()
 	if !force { data.delete('id') }
 	if 'id' !in data { data['id'] = c.auth.new_id(model)! }
+	if model in organization_models {
+		for key, _ in data {
+			c.adapter_field(model, key)!
+		}
+		if 'createdAt' !in data { data['createdAt'] = stamp_millis(c.auth.clock_millis()) }
+		mut storage := c.auth.storage
+		if mut storage is OrganizationStorage {
+			storage.organization_create(model, json2.Any(data).json_str())!
+		} else {
+			return error('unsupported organization adapter storage')
+		}
+		return json2.Any(data).json_str()
+	}
+	if definition := c.auth.config.adapter_models[model] {
+		for key, _ in data {
+			c.adapter_field(model, key)!
+		}
+		data = fill_field_defaults(definition.fields, data)!
+		for key, field in definition.fields {
+			if key !in data && !field.required { data[key] = json2.Null{} }
+		}
+		c.adapter_validate_model(model, data)!
+		mut storage := c.auth.storage
+		if mut storage is AdapterModelStorage {
+			storage.adapter_model_write(model, json2.Any(data).json_str(), true)!
+		} else {
+			return error('unsupported adapter model storage')
+		}
+		return json2.Any(data).json_str()
+	}
 	for field in ['createdAt', 'updatedAt'] {
 		if field !in data { data[field] = stamp_millis(c.auth.clock_millis()) }
 	}
@@ -446,7 +495,8 @@ fn (mut c EndpointContext) adapter_query(operation string, query map[string]json
 	if operation !in ['update', 'updateMany', 'delete', 'deleteMany', 'count'] {
 		return error('unsupported adapter operation')
 	}
-	if operation in ['update', 'updateMany'] && model != 'user' {
+	if operation in ['update', 'updateMany'] && model != 'user'
+		&& model !in c.auth.config.adapter_models {
 		return error('raw update is currently supported for users only')
 	}
 	patch := if operation in ['update', 'updateMany'] {
@@ -468,14 +518,39 @@ fn (mut c EndpointContext) adapter_query(operation string, query map[string]json
 		id := (row['id'] or { return error('missing stored id') }).str()
 		if operation in ['delete', 'deleteMany'] {
 			match model {
-				'user' { c.auth.storage.delete_user(id)! }
-				'session' { c.auth.storage.delete_session(id)! }
-				'account' { c.auth.storage.delete_account(id)! }
-				else { c.auth.storage.delete_verification(id)! }
+				'user' {
+					c.auth.storage.delete_user(id)!
+				}
+				'session' {
+					c.auth.storage.delete_session(id)!
+				}
+				'account' {
+					c.auth.storage.delete_account(id)!
+				}
+				'verification' {
+					c.auth.storage.delete_verification(id)!
+				}
+				else {
+					mut storage := c.auth.storage
+					if mut storage is AdapterModelStorage {
+						storage.adapter_model_delete(model, id)!
+					}
+				}
 			}
 		} else if operation in ['update', 'updateMany'] {
 			for key, value in patch {
 				row[key] = value
+			}
+			if model in c.auth.config.adapter_models {
+				c.adapter_validate_model(model, row)!
+				mut storage := c.auth.storage
+				if mut storage is AdapterModelStorage {
+					storage.adapter_model_write(model, json2.Any(row).json_str(), false)!
+				}
+				updated = json2.Any(row).json_str()
+				if operation == 'update' { break
+				 }
+				continue
 			}
 			if 'updatedAt' !in patch { row['updatedAt'] = stamp_millis(c.auth.clock_millis()) }
 			c.auth.storage.update_user(decode_user(json2.Any(row).json_str())!)!

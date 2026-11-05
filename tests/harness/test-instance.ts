@@ -213,6 +213,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     config,
     [
       "deferMigrations",
+      "adapterSchemaOnly",
       "nativePostgres", "nativeSqlite",
       "nativeMongo",
       "disableTestUser",
@@ -259,7 +260,17 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   if (options.trustedOrigins) originSources.push(options.trustedOrigins);
   const endpointPlugins: FixtureOptions[] = [];
   const endpointCallbacks: Record<string, (payload: any) => Promise<unknown>> = {};
+  const adapterModels:Record<string,{modelName?:string;fields:Record<string,FixtureOptions>}>={};
   for (const plugin of options.plugins ?? []) {
+    // Shared DB suites consume schemas independently of plugin HTTP behavior.
+    if(config.adapterSchemaOnly&&plugin.schema){
+     for(const [model,definition] of Object.entries(plugin.schema) as [string,any][]){
+      if(['user','session','account','verification','jwks','rateLimit','twoFactor','organization','member','invitation','organizationRole'].includes(model))continue;
+      if(adapterModels[model])throw new Error('Duplicate adapter model: '+model);
+      adapterModels[model]={modelName:definition.modelName,fields:definition.fields??{}};
+     }
+     continue;
+    }
     if (plugin.id === 'magic-link') {
       magicLinkOptions = schemaPluginOptions(plugin);
       if (!magicLinkOptions) throw new Error('Magic link requires a native fixture descriptor');
@@ -332,7 +343,17 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     if (plugin.id !== 'jwt') {
       if (plugin.onRequest) requestHooks.push(plugin.onRequest.bind(plugin) as (request: Request, context: FixtureOptions) => unknown);
       if (plugin.init) initializers.push(plugin.init.bind(plugin) as (context: FixtureOptions) => unknown);
-      assertKeys(plugin, ['id', 'endpoints', 'init', 'onRequest'], `plugin.${plugin.id}`);
+      assertKeys(plugin, ['id', 'endpoints', 'init', 'onRequest','schema'], `plugin.${plugin.id}`);
+      for(const [model,definition] of Object.entries(plugin.schema??{}) as [string,any][]){
+       assertKeys(definition,['modelName','fields'],`plugin.${plugin.id}.schema.${model}`);
+       if(['user','session','account','verification','jwks','rateLimit','twoFactor','organization','member','invitation','organizationRole'].includes(model))throw new Error('Generic plugin core-model extensions require their native plugin');
+       if(adapterModels[model])throw new Error('Duplicate adapter model: '+model);
+       for(const field of Object.values(definition.fields??{}) as FixtureOptions[]){
+        assertKeys(field,['type','required','input','returned','defaultValue','fieldName','unique','references','validator','transform'],'adapter field');
+        assertKeys(field.references??{},['field','model'],'adapter reference');
+       }
+       adapterModels[model]={modelName:definition.modelName,fields:definition.fields??{}};
+      }
       const routes: FixtureOptions[] = [];
       for (const [name, endpoint] of Object.entries(plugin.endpoints ?? {})) {
         const descriptor = nativeEndpoint(endpoint);
@@ -541,7 +562,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       return adapterQuery('findMany',query);
     },
     async findOne<T>(query:FixtureOptions):Promise<T|null>{
-      if(['organization','member','invitation','organizationRole'].includes(query.model)){
+      if(!query.join&&['organization','member','invitation','organizationRole'].includes(query.model)){
        const reply=await bridge.send('internal',{method:'adapterFindOne',arguments_json:transportJSON([query])});return hydrate(JSON.parse(reply.value_json));
       }
       return adapterQuery('findOne',query);
@@ -561,7 +582,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   };
   async function adapterQuery<T=any>(operation:string,query:FixtureOptions):Promise<T>{
     const reply=await bridge.send('internal',{method:'adapterQuery',arguments_json:transportJSON([operation,query])});
-    return hydrate(JSON.parse(reply.value_json));
+    return hydrate(JSON.parse(reply.value_json),query.model);
   }
   bridge.setTransactionsProvider(() => adapter.options.adapterConfig.transaction !== false);
   const password = {
@@ -766,23 +787,23 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   }
   const fieldSchemas:Record<string,Record<string,FixtureOptions>>={user:{...options.user?.additionalFields},session:{...session.additionalFields},...Object.fromEntries(Object.entries(organizationOptions?.schema??{}).filter(([model])=>model!=='session').map(([model,schema])=>[model,{...(schema as any).additionalFields}]))};
   for(const plugin of options.plugins??[]){for(const [model,definition] of Object.entries(plugin.schema??{}) as [string,any][]){const fields=fieldSchemas[model]??={};for(const [name,field] of Object.entries(definition.fields??{})){fields[name]??=field as FixtureOptions}}}
-  function hydrate(value:any):any {
+  function hydrate(value:any,modelHint=''):any {
    if(value instanceof Date)return value;
-   if(Array.isArray(value))return value.map(hydrate);
+   if(Array.isArray(value))return value.map(item=>hydrate(item,modelHint));
    if(!value||typeof value!=='object')return value;
-   const model='email' in value&&'name' in value&&'emailVerified' in value?'user':'userId' in value&&'token' in value&&'expiresAt' in value?'session':'organizationId' in value?('inviterId' in value?'invitation':'userId' in value?'member':'permission' in value?'organizationRole':''):'slug' in value&&'name' in value?'organization':'';
+   const model=modelHint||('email' in value&&'name' in value&&'emailVerified' in value?'user':'userId' in value&&'token' in value&&'expiresAt' in value?'session':'organizationId' in value?('inviterId' in value?'invitation':'userId' in value?'member':'permission' in value?'organizationRole':''):'slug' in value&&'name' in value?'organization':'');
    const schema=fieldSchemas[model]??{};
    const result=Object.fromEntries(Object.entries(value).filter(([name])=>name!=='$vSession').map(([name,item])=>{
     if(schema[name]?.type==='json'||model==='organization'&&name==='metadata')return [name,item];
     if(typeof item==='string'&&(schema[name]?.type==='date'||['createdAt','updatedAt','expiresAt','accessTokenExpiresAt','refreshTokenExpiresAt'].includes(name)))return [name,new Date(item)];
-    return [name,hydrate(item)];
+    return [name,hydrate(item,adapterModels[name]?name:'')];
    }));
    if(value.$vSession)Object.defineProperty(result,recordMetadata,{value:value.$vSession});
    return result;
   }
   const fieldCallbackNames: string[] = [];
   const fieldValue = (value: unknown) => ({value: value ?? null, undefinedValue: value === undefined});
-  for (const [model, fields] of Object.entries({user:options.user?.additionalFields ?? {},session:session.additionalFields ?? {},...Object.fromEntries(Object.entries(organizationOptions?.schema??{}).filter(([model])=>model!=='session').map(([model,schema])=>[model,(schema as any).additionalFields??{}]))})) {
+  for (const [model, fields] of Object.entries({user:options.user?.additionalFields ?? {},session:session.additionalFields ?? {},...Object.fromEntries(Object.entries(adapterModels).map(([model,schema])=>[model,schema.fields])),...Object.fromEntries(Object.entries(organizationOptions?.schema??{}).filter(([model])=>model!=='session').map(([model,schema])=>[model,(schema as any).additionalFields??{}]))})) {
    for (const [name, field] of Object.entries(fields) as Array<[string,FixtureOptions]>) {
     if(typeof field.defaultValue==='function'){
      const method='field.'+model+'.'+name+'.default';fieldCallbackNames.push(method);
@@ -909,6 +930,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       organization_invitation_email:!!organizationOptions?.sendInvitationEmail,
       organization_creation_callback:typeof organizationOptions?.allowUserToCreateOrganization==='function',
       organization_fields_json:Object.fromEntries(Object.entries(organizationOptions?.schema??{}).filter(([model])=>model!=='session').map(([model,schema])=>[model,encodeFields((schema as any).additionalFields??{})])),
+      adapter_model_fields_json:Object.fromEntries(Object.entries(adapterModels).map(([model,schema])=>[model,encodeFields(schema.fields)])),
+      adapter_model_names:Object.fromEntries(Object.entries(adapterModels).map(([model,schema])=>[model,schema.modelName??model])),
       organization_teams: organizationOptions?.teams?.enabled ?? false,
       logout_providers: logoutProviders,
       endpoint_plugins: endpointPlugins,

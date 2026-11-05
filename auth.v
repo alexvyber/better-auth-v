@@ -55,7 +55,13 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 		if plugin is ValidatingPlugin { plugin.validate()! }
 	}
 	validate_organization_fields(config.model_fields)!
+	validate_adapter_models(config.adapter_models)!
 	mut configured_storage := storage
+	if mut configured_storage is AdapterModelStorage {
+		configured_storage.configure_adapter_models(config.adapter_models)!
+	} else if config.adapter_models.len > 0 {
+		return error('storage does not support adapter models')
+	}
 	if mut configured_storage is ConfigurableIDStorage {
 		configured_storage.configure_ids(config.id_strategy, config.generate_id != no_id_generator)!
 	}

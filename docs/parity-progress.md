@@ -749,20 +749,28 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   inputs, ID isolation and failed OAuth rollback. Pure SDK constructor/client probes,
   generic endpoint hooks and numeric-ID/username variants remain open.
 
-The latest full `make check` passes 2340 TypeScript cases across 108 files, all 107 native
-V test functions across 35 files (including all 20,034 Unicode vectors), TypeScript
-checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
-file contains 80 cases and the complete sign-up file contains 37. V formatting and
-`git diff --check` pass. These counts do not imply that the full upstream corpus
-passes. The MongoDB/Nabu matrix includes 304 cases across nine files; the admin
-source matrix passes 270 cases across three backends, plus 25 owned contracts.
-An additional preserved support-role runtime case, repeated on all three backends
-after that full check, brings the verified current set to 2343 cases.
+- Added the organization CRUD/membership foundation, static permission enforcement,
+  protected Brand Map review fields and creator/lifecycle hooks. SQLite migration 7
+  and mapped PostgreSQL/MongoDB models provide scoped persistence with uniqueness
+  and deletion cleanup. PostgreSQL readback preserves externally changed moderation
+  fields. 22 unchanged source cases repeat across three backends (66 cases), plus
+  nine owned contracts and three native functions. Invitation APIs and dynamic roles
+  remain the next Brand Map requirements. Source fixtures translate upstream's
+  test-only origin/CSRF defaults explicitly; native production validation stays strict.
+- Isolated simulated-clock MongoDB tests from the real TTL worker. A separate
+  TTL-enabled replica set continues to verify actual expiration and equivalent
+  existing indexes; production storage behavior is unchanged.
+
+The latest full `make check` passes 2418 TypeScript cases across 112 files, all 110
+native V test functions across 36 files (including all 20,034 Unicode vectors),
+TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
+Formatting and `git diff --check` pass. Repeated backend runs do not increase unique
+upstream source coverage, and these results do not imply full upstream parity.
 
 The user resumed work and authorized incremental commits and pushes to
 `alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.
 The objective remains incomplete. The corpus currently records 32 completely
-imported files, ten partial imports and 394 unported files; imported status describes source
+imported files, eleven partial imports and 393 unported files; imported status describes source
 preservation, not broad feature completion.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise
@@ -772,8 +780,7 @@ preservation, not broad feature completion.
 2. Complete remaining JWT/plugin integration details: schema/column mappings,
    remaining callback/type counterparts, and broader provider use. Verify combinations with deferred
    read-only session GET and other hooks; JWT header issuance can rotate keys.
-3. Complete remaining admin integration and implement organizations beyond their
-   schema/creation foundations, plus account-cookie behavior and remaining rotation combinations. The complete
+3. Complete remaining admin integration and complete organization invitations, member management and dynamic RBAC, plus account-cookie behavior and remaining rotation combinations. The complete
    sign-up/session source runs do not establish full plugin or stateless parity.
    Preserve every original assertion when importing additional suites.
 4. Complete the PostgreSQL/MongoDB adapter contracts, query and plugin schemas, and add MySQL,

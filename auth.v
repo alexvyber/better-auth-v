@@ -52,12 +52,16 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 	for plugin in config.plugins {
 		if plugin is ValidatingPlugin { plugin.validate()! }
 	}
+	validate_organization_fields(config.model_fields)!
 	mut configured_storage := storage
 	if mut configured_storage is ConfigurableIDStorage {
 		configured_storage.configure_ids(config.id_strategy, config.generate_id != no_id_generator)!
 	}
 	if mut configured_storage is ConfigurableStorage {
 		configured_storage.configure_fields(config.user_fields, config.session_fields)!
+	}
+	if mut configured_storage is ConfigurableModelStorage {
+		configured_storage.configure_model_fields(config.model_fields)!
 	}
 	initial_trusted_origins := config.trusted_origins_for(RequestContext{})!
 	mut secret_config := SymmetricSecret(config.secret)

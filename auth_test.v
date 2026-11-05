@@ -148,7 +148,7 @@ fn test_migrations_are_explicit_idempotent_and_reject_future_versions() ! {
 	assert storage.db.tables()!.len == 0
 	storage.migrate()!
 	storage.migrate()!
-	assert storage.db.q_int('SELECT count(*) FROM auth_migration')! == 6
+	assert storage.db.q_int('SELECT count(*) FROM auth_migration')! == 7
 	storage.db.exec('INSERT INTO auth_migration VALUES (99)')!
 	storage.migrate() or {
 		assert err.msg().contains('newer')

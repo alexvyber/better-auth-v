@@ -234,6 +234,19 @@ adminPlan.imports=adminPlan.imports.replace('../harness/test-instance.js','../ha
 for(const [prefix,fixture,surface] of [['postgres','postgres-fixture','native-postgres-uuid-mapped-physical-schema'],['mongo','mongo-fixture','native-mongodb-objectid-replica-set']]) {
  plans.push({...adminPlan,file:prefix+'-admin',imports:adminPlan.imports.replace('../harness/admin-fixture.js','../harness/admin-'+fixture+'.js'),executionSurface:surface});
 }
+const organizationCRUD={file:'organization-crud',path:'packages/better-auth/src/plugins/organization/routes/crud-org.test.ts',
+ suites:new Set(['get-full-organization','get-organization','organization hooks','updateOrganization']),
+ skippedTests:new Set(['should include invitations in the response','should apply beforeCreateTeam hook','should apply afterCreateTeam hook','should allow passing id through `beforeCreateTeam`','should allow passing id through `beforeCreateInvitation`']),
+ executionSurface:'native-api-upstream-test-origin-defaults',
+ unportedReason:'Invitation and team integration cases remain for subsequent batches',
+ imports:`import {describe,expect,it,vi} from 'vitest';
+import {createAuthClient} from 'better-auth/client';
+import {organizationClient,ORGANIZATION_ERROR_CODES} from 'better-auth/client/plugins';
+import {getTestInstance} from '../harness/organization-fixture.js';
+import {organization} from '../harness/plugins.js';
+`};
+plans.push(organizationCRUD);
+for(const [prefix,fixture,surface] of [['postgres','postgres-fixture','native-postgres-uuid-mapped-physical-schema'],['mongo','mongo-fixture','native-mongodb-objectid-replica-set']]){plans.push({...organizationCRUD,file:prefix+'-organization-crud',imports:organizationCRUD.imports.replace('../harness/organization-fixture.js','../harness/organization-'+fixture+'.js'),executionSurface:surface})}
 const policy = plans.find(plan => plan.file === 'oauth-link-policy');
 plans.push({...policy,file:'postgres-oauth-link-policy',imports:policy.imports.replace('../harness/test-instance.js','../harness/postgres-text-fixture.js'),executionSurface:'native-postgres-text-id-mapped-physical-schema'});
 const attemptPlan = plans.find(plan => plan.file === 'two-factor-attempt-cap');

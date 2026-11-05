@@ -21,6 +21,7 @@ pub struct MongoStorage {
 mut:
 	client         &MongoClient
 	options        MongoOptions
+	model_fields   map[string]map[string]AdditionalField
 	user_fields    map[string]AdditionalField
 	session_fields map[string]AdditionalField
 	snapshots      map[string]string
@@ -109,7 +110,9 @@ fn (storage &MongoStorage) additional(model string) map[string]AdditionalField {
 	} else if model == 'session' {
 		storage.session_fields
 	} else {
-		map[string]AdditionalField{}
+		storage.model_fields[model] or {
+			map[string]AdditionalField{}
+		}
 	}
 }
 
@@ -161,7 +164,7 @@ fn (storage &MongoStorage) physical(model string, logical map[string]json2.Any) 
 		if value := logical[field] {
 			mut encoded := bson_from_json(value)!
 			if value is string {
-				if field in ['id', 'userId'] {
+				if field in ['id', 'userId', 'organizationId', 'inviterId'] {
 					encoded = storage.id_value(value)!
 				} else if storage.is_date(model, field) && value != '' {
 					encoded = BSONDate{
@@ -209,7 +212,7 @@ fn (mut storage MongoStorage) decode_row(model string, row map[string]json2.Any)
 		if value := row[key[1..key.len - 1]] {
 			mut decoded := value
 			if value !is json2.Null {
-				if field in ['id', 'userId'] {
+				if field in ['id', 'userId', 'organizationId', 'inviterId'] {
 					decoded = json2.Any(mongo_decode_id(value)!)
 				} else if storage.is_date(model, field) {
 					decoded = mongo_decode_date(value)!
@@ -466,11 +469,14 @@ pub fn (mut storage MongoStorage) update_user_returning(user User) !User {
 }
 
 pub fn (mut storage MongoStorage) delete_user(id string) ! {
-	for model in ['session', 'account', 'twoFactor'] {
+	for model in ['session', 'account', 'twoFactor', 'member'] {
 		storage.delete_rows(model, {
 			storage.column(model, 'userId'): storage.id_value(id)!
 		})!
 	}
+	storage.delete_rows('invitation', {
+		storage.column('invitation', 'inviterId'): storage.id_value(id)!
+	})!
 	storage.delete_row('user', id)!
 }
 

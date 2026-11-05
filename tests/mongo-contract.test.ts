@@ -3,6 +3,7 @@ import {getTestInstance,mongoOptions,mongoCommand} from './harness/mongo-fixture
 describe('native MongoDB contracts',()=>{
  it('stores ObjectId references, BSON dates and indexed plain session tokens',async()=>{
   const configuration=await mongoOptions();const instance=await getTestInstance({}, {nativeMongo:configuration});
+  expect((await mongoCommand({...configuration,database:'admin'},{getParameter:1,ttlMonitorEnabled:1})).ttlMonitorEnabled).toBe(false);
   const {headers}=await instance.signInWithTestUser();const current=await instance.auth.api.getSession({headers});
   expect(current?.user.id).toMatch(/^[0-9a-f]{24}$/);
   const users=await mongoCommand(configuration,{find:'user',filter:{}});
@@ -59,7 +60,8 @@ describe('MongoDB schema and type contracts',()=>{
   expect((await mongoCommand(configuration,{count:'user',query:{login:'unique'}})).n).toBe(1);
  });
  it('creates the Nabu index set and removes expired BSON session dates through MongoDB TTL',async()=>{
-  const configuration=await mongoOptions();const instance=await getTestInstance({}, {nativeMongo:configuration});await instance.signInWithTestUser();
+  const configuration=await mongoOptions(true);const instance=await getTestInstance({}, {nativeMongo:configuration});await instance.signInWithTestUser();
+  expect((await mongoCommand({...configuration,database:'admin'},{getParameter:1,ttlMonitorEnabled:1})).ttlMonitorEnabled).toBe(true);
   const indexes=(await mongoCommand(configuration,{listIndexes:'session'})).cursor.firstBatch;
   expect(indexes).toEqual(expect.arrayContaining([expect.objectContaining({key:{token:1},unique:true}),expect.objectContaining({key:{expiresAt:1},expireAfterSeconds:0})]));
   expect((await mongoCommand(configuration,{listIndexes:'account'})).cursor.firstBatch).toEqual(expect.arrayContaining([expect.objectContaining({key:{providerId:1,accountId:1},unique:true})]));

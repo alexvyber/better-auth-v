@@ -44,6 +44,10 @@ struct Options {
 	admin_banned_callback             bool
 	admin_default_role                string = 'user'
 	organization_schema               bool
+	organization                      ?better_auth.OrganizationOptions
+	organization_fields_json          map[string]string
+	organization_hooks                []string
+	organization_creation_callback    bool
 	organization_teams                bool
 	logout_providers                  []better_auth.GenericOAuthLogoutProvider
 	google_profile_callback           bool
@@ -709,9 +713,48 @@ fn main() {
 			default_role: opts.admin_default_role
 		}
 	}
-	if opts.organization_schema { plugins << better_auth.OrganizationSchemaPlugin{
+	if given := opts.organization {
+		mut fields := map[string]map[string]better_auth.AdditionalField{}
+		for model, encoded in opts.organization_fields_json {
+			fields[model] = field_schema(encoded, model, opts.field_callbacks) or {
+				emit(Reply{ id: init.id, error: err.msg() })
+				return
+			}
+		}
+		mut settings := better_auth.OrganizationOptions{
+			...given
+			additional_fields: fields
+		}
+		if opts.organization_hooks.len > 0 {
+			names := opts.organization_hooks.clone()
+			settings = better_auth.OrganizationOptions{
+				...settings
+				hook: fn [names] (mut context better_auth.EndpointContext, name string, data string) !better_auth.Lookup[string] {
+					if name !in names { return better_auth.Lookup[string]{} }
+					result := json2.decode[json2.Any](otp_callback('organization.' + name, data, mut
+						context)!)!
+					if result is map[string]json2.Any {
+						if value := result['data'] { return better_auth.Lookup[string]{
+								value: value.json_str()
+							} }
+					}
+					return better_auth.Lookup[string]{}
+				}
+			}
+		}
+		if opts.organization_creation_callback { settings = better_auth.OrganizationOptions{
+				...settings
+				allow_creation: fn (mut context better_auth.EndpointContext, user better_auth.User) !bool {
+					return json2.decode[bool](otp_callback('organization.allowCreate', better_auth.encode_user(user), mut context)!)!}
+			} }
+		plugins << better_auth.OrganizationPlugin{
+			options: settings
+		}
+	} else if opts.organization_schema {
+		plugins << better_auth.OrganizationSchemaPlugin{
 			teams_enabled: opts.organization_teams
-		} }
+		}
+	}
 	for plugin in opts.endpoint_plugins {
 		plugins << better_auth.Plugin(plugin)
 	}

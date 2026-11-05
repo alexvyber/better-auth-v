@@ -15,7 +15,7 @@ fn (storage &PostgresStorage) sql_type(model string, field string) !string {
 			return explicit
 		}
 	}
-	if field == 'id' || (field == 'userId' && model in ['session', 'account', 'twoFactor']) { return if storage.options.uuid_ids {
+	if field == 'id' || (field == 'userId' && model in ['session', 'account', 'twoFactor', 'member']) || (field == 'organizationId' && model in ['member', 'invitation', 'organizationRole']) || (model == 'invitation' && field == 'inviterId') { return if storage.options.uuid_ids {
 			'uuid'
 		} else {
 			'text'
@@ -52,7 +52,8 @@ pub fn (mut storage PostgresStorage) migrate() ! {
 
 		'better-auth-v:migrate:' + storage.options.schema)!
 	storage.connection.exec('CREATE SCHEMA IF NOT EXISTS ${sql_identifier(storage.options.schema)}')!
-	for model in ['user', 'session', 'account', 'verification', 'jwks', 'rateLimit', 'twoFactor'] {
+	for model in ['user', 'session', 'account', 'verification', 'jwks', 'rateLimit', 'twoFactor',
+		'organization', 'member', 'invitation', 'organizationRole'] {
 		mut definitions := []string{}
 		for field in storage.logical_fields(model) {
 			kind := storage.sql_type(model, field)!
@@ -87,8 +88,24 @@ pub fn (mut storage PostgresStorage) migrate() ! {
 			if model == 'rateLimit' && field in ['count', 'lastRequest'] {
 				constraints += ' NOT NULL'
 			}
-			if field == 'userId' && model in ['session', 'account', 'twoFactor'] {
+			if field == 'userId' && model in ['session', 'account', 'twoFactor', 'member'] {
 				constraints += ' REFERENCES ${storage.table('user')} (${storage.column_sql('user', 'id')}) ON DELETE CASCADE'
+			}
+			if model == 'organization' && field in ['name', 'slug'] { constraints += ' NOT NULL' }
+			if model == 'member' && field in ['userId', 'role'] { constraints += ' NOT NULL' }
+			if model == 'invitation' && field in ['email', 'role', 'status', 'expiresAt'] {
+				constraints += ' NOT NULL'
+			}
+			if model == 'organizationRole' && field in ['role', 'permission'] {
+				constraints += ' NOT NULL'
+			}
+			if field == 'organizationId' && model in ['member', 'invitation', 'organizationRole'] {
+				constraints += ' NOT NULL REFERENCES ' + storage.table('organization') +
+					' (' + storage.column_sql('organization', 'id') + ') ON DELETE CASCADE'
+			}
+			if model == 'invitation' && field == 'inviterId' {
+				constraints += ' NOT NULL REFERENCES ' + storage.table('user') +
+					' (' + storage.column_sql('user', 'id') + ') ON DELETE CASCADE'
 			}
 			definitions << storage.column_sql(model, field) + ' ' + kind + constraints
 		}
@@ -111,7 +128,7 @@ pub fn (mut storage PostgresStorage) migrate() ! {
 	storage.connection.exec('CREATE UNIQUE INDEX IF NOT EXISTS ${storage.index_name('account',
 		'subject')} ON ${storage.table('account')} (${storage.column_sql('account', 'providerId')},${storage.column_sql('account',
 		'accountId')})')!
-	for model in ['session', 'account', 'twoFactor'] {
+	for model in ['session', 'account', 'twoFactor', 'member'] {
 		storage.connection.exec('CREATE INDEX IF NOT EXISTS ${storage.index_name(model, 'user')} ON ${storage.table(model)} (${storage.column_sql(model,
 			'userId')})')!
 	}
@@ -121,6 +138,21 @@ pub fn (mut storage PostgresStorage) migrate() ! {
 	storage.connection.exec('CREATE INDEX IF NOT EXISTS ${storage.index_name('rateLimit',
 		'last_request')} ON ${storage.table('rateLimit')} (${storage.column_sql('rateLimit',
 		'lastRequest')})')!
+	for model, fields in {
+		'organization':     ['slug']
+		'member':           ['organizationId', 'userId']
+		'organizationRole': ['organizationId', 'role']
+	} {
+		columns := fields.map(storage.column_sql(model, it)).join(',')
+		storage.connection.exec('CREATE UNIQUE INDEX IF NOT EXISTS ' +
+			storage.index_name(model, 'identity') + ' ON ' + storage.table(model) +
+			' (' + columns + ')')!
+	}
+	for model in ['member', 'invitation', 'organizationRole'] {
+		storage.connection.exec('CREATE INDEX IF NOT EXISTS ' +
+			storage.index_name(model, 'organization') + ' ON ' + storage.table(model) +
+			' (' + storage.column_sql(model, 'organizationId') + ')')!
+	}
 	storage.commit()!
 	committed = true
 }

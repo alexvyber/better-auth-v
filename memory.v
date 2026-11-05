@@ -1,10 +1,13 @@
 module better_auth
 
+import x.json2
+
 // The in-process adapter owns records independently of SQLite. Like a database
 // connection, it is serialized by Auth; independent Auth instances need their own
 // adapters. A transaction snapshots maps and restores them on rollback.
 struct MemoryRecords {
 mut:
+	organizations map[string]string
 	keys          map[string]Jwk
 	users         map[string]User
 	accounts      map[string]Account
@@ -18,6 +21,7 @@ mut:
 pub struct MemoryStorage {
 mut:
 	rate_limits    map[string]RateLimitRecord
+	model_fields   map[string]map[string]AdditionalField
 	user_fields    map[string]AdditionalField
 	session_fields map[string]AdditionalField
 	records        MemoryRecords
@@ -44,6 +48,7 @@ pub fn (mut s MemoryStorage) begin() ! {
 	s.check_open()!
 	if s.transaction { return error('transaction is already active') }
 	s.backup = MemoryRecords{
+		organizations: s.records.organizations.clone()
 		keys:          s.records.keys.clone()
 		users:         s.records.users.clone()
 		accounts:      s.records.accounts.clone()
@@ -138,6 +143,15 @@ pub fn (mut s MemoryStorage) update_user(user User) ! {
 
 pub fn (mut s MemoryStorage) delete_user(id string) ! {
 	s.check_write()!
+	for model in ['member', 'invitation'] {
+		field := if model == 'member' { 'userId' } else { 'inviterId' }
+		for encoded in s.organization_rows(model, {
+			field: id
+		})! {
+			row := org_json_fields(encoded)!
+			s.records.organizations.delete(model + '|' + (row['id'] or { json2.Any('') }).str())
+		}
+	}
 	s.delete_two_factors(id)!
 	s.records.users.delete(id)
 	for account in s.accounts(id)! {

@@ -1,0 +1,307 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/organization/routes/crud-org.test.ts",
+  "sha256": "7ea5f22620ba4ea5550a3e1cd4ead88c596b2d7d9187bf9d7219604c336d7469",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "get-full-organization",
+      "suites": [
+        "get-full-organization"
+      ],
+      "test": "should get organization by organizationId",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "get-full-organization",
+      "suites": [
+        "get-full-organization"
+      ],
+      "test": "should get organization by organizationSlug",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "get-full-organization",
+      "suites": [
+        "get-full-organization"
+      ],
+      "test": "should return null when no active organization and no query params",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "get-full-organization",
+      "suites": [
+        "get-full-organization"
+      ],
+      "test": "should throw FORBIDDEN when user is not a member of the organization",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "get-full-organization",
+      "suites": [
+        "get-full-organization"
+      ],
+      "test": "should throw BAD_REQUEST when organization doesn't exist",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "get-full-organization",
+      "suites": [
+        "get-full-organization"
+      ],
+      "test": "should include invitations in the response",
+      "selected": false,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": "Invitation and team integration cases remain for subsequent batches"
+    },
+    {
+      "suite": "get-full-organization",
+      "suites": [
+        "get-full-organization"
+      ],
+      "test": "should prioritize organizationSlug over organizationId when both are provided",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "get-full-organization",
+      "suites": [
+        "get-full-organization"
+      ],
+      "test": "should allow listing members with membersLimit",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "get-full-organization",
+      "suites": [
+        "get-full-organization"
+      ],
+      "test": "should use default membershipLimit when no membersLimit is specified",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "get-organization",
+      "suites": [
+        "get-organization"
+      ],
+      "test": "should get organization metadata by organizationId",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "get-organization",
+      "suites": [
+        "get-organization"
+      ],
+      "test": "should get organization metadata by organizationSlug",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "get-organization",
+      "suites": [
+        "get-organization"
+      ],
+      "test": "should fall back to the active organization",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "get-organization",
+      "suites": [
+        "get-organization"
+      ],
+      "test": "should return null when no active organization and no query params",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "get-organization",
+      "suites": [
+        "get-organization"
+      ],
+      "test": "should throw FORBIDDEN when user is not a member of the organization",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "get-organization",
+      "suites": [
+        "get-organization"
+      ],
+      "test": "should throw BAD_REQUEST when organization doesn't exist",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "get-organization",
+      "suites": [
+        "get-organization"
+      ],
+      "test": "should not include members or invitations unlike getFullOrganization",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "organization hooks",
+      "suites": [
+        "organization hooks"
+      ],
+      "test": "should apply beforeCreateOrganization hook",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "organization hooks",
+      "suites": [
+        "organization hooks"
+      ],
+      "test": "should apply afterCreateOrganization hook",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "organization hooks",
+      "suites": [
+        "organization hooks"
+      ],
+      "test": "should apply beforeAddMember hook",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "organization hooks",
+      "suites": [
+        "organization hooks"
+      ],
+      "test": "should apply afterAddMember hook",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "organization hooks",
+      "suites": [
+        "organization hooks"
+      ],
+      "test": "should apply beforeCreateTeam hook",
+      "selected": false,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": "Invitation and team integration cases remain for subsequent batches"
+    },
+    {
+      "suite": "organization hooks",
+      "suites": [
+        "organization hooks"
+      ],
+      "test": "should apply afterCreateTeam hook",
+      "selected": false,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": "Invitation and team integration cases remain for subsequent batches"
+    },
+    {
+      "suite": "organization hooks",
+      "suites": [
+        "organization hooks"
+      ],
+      "test": "should allow passing id through `beforeCreateTeam`",
+      "selected": false,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": "Invitation and team integration cases remain for subsequent batches"
+    },
+    {
+      "suite": "organization hooks",
+      "suites": [
+        "organization hooks"
+      ],
+      "test": "should allow passing id through `beforeCreateInvitation`",
+      "selected": false,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": "Invitation and team integration cases remain for subsequent batches"
+    },
+    {
+      "suite": "organization hooks",
+      "suites": [
+        "organization hooks"
+      ],
+      "test": "should allow internal organization creation when disabled for users",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateOrganization",
+      "suites": [
+        "updateOrganization"
+      ],
+      "test": "should clear the logo when passing null",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateOrganization",
+      "suites": [
+        "updateOrganization"
+      ],
+      "test": "should accept a null logo on create",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

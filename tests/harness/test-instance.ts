@@ -86,6 +86,11 @@ afterAll(async () => {
 });
 
 const routes: Record<string, [string, string]> = {
+ createOrganization:['POST','/organization/create'],updateOrganization:['POST','/organization/update'],deleteOrganization:['POST','/organization/delete'],
+ checkOrganizationSlug:['POST','/organization/check-slug'],setActiveOrganization:['POST','/organization/set-active'],
+ listOrganizations:['GET','/organization/list'],getFullOrganization:['GET','/organization/get-full-organization'],getOrganization:['GET','/organization/get-organization'],
+ getActiveMember:['GET','/organization/get-active-member'],listMembers:['GET','/organization/list-members'],addMember:['POST','/internal/organization/add-member'],
+
  impersonateUser:['POST','/admin/impersonate-user'],stopImpersonating:['POST','/admin/stop-impersonating'],
  getUser:['GET','/admin/get-user'],createUser:['POST','/admin/create-user'],
  listUsers:['GET','/admin/list-users'],setRole:['POST','/admin/set-role'],
@@ -311,7 +316,13 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
         for(const role of Object.values(input.roles ?? {}) as any[]) {if(!role?.statements)throw new Error('Native admin roles require explicit permission statements');}
         adminOptions = input;
       } else {
-        assertKeys(input, ['teams'], 'organization');
+        assertKeys(input, ['teams','allowUserToCreateOrganization','organizationLimit','membershipLimit','creatorRole','disableOrganizationDeletion','roles','ac','schema','organizationHooks'], 'organization');
+        if(typeof input.organizationLimit==='function'||typeof input.membershipLimit==='function')throw new Error('Dynamic organization limits remain unported');
+        assertKeys(input.schema??{},['organization','member','invitation','session','organizationRole'],'organization.schema');
+        for(const model of Object.values(input.schema??{}) as any[]){assertKeys(model,['modelName','fields','additionalFields'],'organization.schema.model');}
+        assertKeys(input.organizationHooks??{},['beforeCreateOrganization','afterCreateOrganization','beforeAddMember','afterAddMember','beforeUpdateOrganization','afterUpdateOrganization','beforeDeleteOrganization','afterDeleteOrganization'],'organization.hooks');
+        for(const role of Object.values(input.roles??{}) as any[]){if(!role?.statements)throw new Error('Native organization roles require explicit permission statements');}
+        if(input.teams?.enabled&&Object.keys(input).some(key=>key!=='teams'))throw new Error('Organization teams currently supply schema only');
         assertKeys(input.teams ?? {}, ['enabled'], 'organization.teams');
         organizationOptions = input;
       }
@@ -450,6 +461,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   for (const schema of [
     options.user?.additionalFields ?? {},
     session.additionalFields ?? {},
+    ...Object.values(organizationOptions?.schema??{}).map((model:any)=>model.additionalFields??{}),
   ]) {
     for (const field of Object.values(schema) as FixtureOptions[]) {
       assertKeys(
@@ -745,7 +757,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   }
   const fieldCallbackNames: string[] = [];
   const fieldValue = (value: unknown) => ({value: value ?? null, undefinedValue: value === undefined});
-  for (const [model, fields] of Object.entries({user:options.user?.additionalFields ?? {},session:session.additionalFields ?? {}})) {
+  for (const [model, fields] of Object.entries({user:options.user?.additionalFields ?? {},session:session.additionalFields ?? {},...Object.fromEntries(Object.entries(organizationOptions?.schema??{}).filter(([model])=>model!=='session').map(([model,schema])=>[model,(schema as any).additionalFields??{}]))})) {
    for (const [name, field] of Object.entries(fields) as Array<[string,FixtureOptions]>) {
     if (field.validator?.input) {
      const method = 'field.'+model+'.'+name+'.validate'; fieldCallbackNames.push(method);
@@ -783,6 +795,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
    twoFactorCallbackNames.push(name);
    callbacks['twoFactor.'+name] = payload => callback(hydrate(payload.data), otpContext(payload));
   }
+  for(const [name,hook] of Object.entries(organizationOptions?.organizationHooks??{}) as [string,any][]){callbacks['organization.'+name]=payload=>hook(hydrate(payload.data));}
+  if(typeof organizationOptions?.allowUserToCreateOrganization==='function')callbacks['organization.allowCreate']=payload=>organizationOptions!.allowUserToCreateOrganization(hydrate(payload.data));
   const anonymousCallbackNames: string[] = [];
   if (anonymousOptions?.generateName) { anonymousCallbackNames.push('name'); callbacks['anonymous.name'] = payload => anonymousOptions.generateName(otpContext(payload)); }
   if (anonymousOptions?.generateRandomEmail) { anonymousCallbackNames.push('email'); callbacks['anonymous.email'] = () => anonymousOptions.generateRandomEmail(); }
@@ -798,10 +812,10 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     bridge.setCallback(method, callback);
   if(typeof adminOptions?.bannedUserMessage==='function') callbacks['admin.bannedMessage']=payload=>adminOptions!.bannedUserMessage(hydrate(payload.data));
   for(const [method,callback] of Object.entries(callbacks)) bridge.setCallback(method,callback);
-  const mappedAdminSchema=(configuration:any)=>{
+  const mappedPluginSchema=(configuration:any)=>{
    if(!configuration)return configuration;
    const result={...configuration,tables:{...configuration.tables},fields:{...configuration.fields}};
-   for(const [model,definition] of Object.entries(adminOptions?.schema??{}) as [string,any][]){
+   for(const [model,definition] of [...Object.entries(adminOptions?.schema??{}),...Object.entries(organizationOptions?.schema??{})] as [string,any][]){
     if(definition.modelName)result.tables[model]=definition.modelName;
     result.fields[model]={...result.fields[model],...definition.fields};
    }
@@ -846,6 +860,14 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       admin_banned_callback: typeof adminOptions?.bannedUserMessage==='function',
       admin_default_role: adminOptions?.defaultRole ?? 'user',
       organization_schema: !!organizationOptions,
+      organization:organizationOptions&&!organizationOptions.teams?.enabled?{
+       allowUserToCreateOrganization:typeof organizationOptions.allowUserToCreateOrganization==='boolean'?organizationOptions.allowUserToCreateOrganization:undefined,
+       organizationLimit:organizationOptions.organizationLimit,membershipLimit:organizationOptions.membershipLimit,creatorRole:organizationOptions.creatorRole,disableOrganizationDeletion:organizationOptions.disableOrganizationDeletion,
+       roles:organizationOptions.roles?Object.fromEntries(Object.entries(organizationOptions.roles).map(([name,role])=>[name,(role as any).statements])):undefined,
+      }:undefined,
+      organization_hooks:Object.keys(organizationOptions?.organizationHooks??{}),
+      organization_creation_callback:typeof organizationOptions?.allowUserToCreateOrganization==='function',
+      organization_fields_json:Object.fromEntries(Object.entries(organizationOptions?.schema??{}).filter(([model])=>model!=='session').map(([model,schema])=>[model,encodeFields((schema as any).additionalFields??{})])),
       organization_teams: organizationOptions?.teams?.enabled ?? false,
       logout_providers: logoutProviders,
       endpoint_plugins: endpointPlugins,
@@ -870,8 +892,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
         audiences: Array.isArray(jwtOptions.jwt?.audience) ? jwtOptions.jwt.audience : null,
       },
       storage: config.nativeMongo ? 'mongo' : config.nativePostgres ? 'postgres' : stateless || isNativeMemoryAdapter(options.database) ? 'memory' : 'sqlite',
-      postgres: mappedAdminSchema(config.nativePostgres),
-      mongo: mappedAdminSchema(config.nativeMongo),
+      postgres: mappedPluginSchema(config.nativePostgres),
+      mongo: mappedPluginSchema(config.nativeMongo),
       stateless_sessions: stateless,
       secondary_storage: !!options.secondaryStorage,
       redis_tcp: nativeRedis?.tcp,

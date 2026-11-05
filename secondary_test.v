@@ -45,7 +45,7 @@ fn test_v1_rows_survive_migration_to_sealed_tokens_and_column_aliases() ! {
 		digest(token), encode_session(session), '1'])!
 	storage.migrate()!
 	storage.migrate()!
-	assert storage.db.q_int('SELECT count(*) FROM auth_migration')! == 6
+	assert storage.db.q_int('SELECT count(*) FROM auth_migration')! == 7
 	account := (storage.account(user.id, 'credential')!).value or {
 		return error('legacy account lost')
 	}

@@ -60,6 +60,9 @@ There is no dependency on a web framework.
 - Admin user management, roles and permission checks, bans, password setting and
   session revocation and impersonation/restoration, with current-store authorization
   and mapped plugin fields.
+- Organization creation, metadata, membership, active-organization selection and
+  update/delete permissions, with protected review fields, lifecycle hooks and
+  mapped PostgreSQL/MongoDB persistence. Invitations and dynamic roles remain open.
 - Generic OIDC discovery, signature/nonce verification, profile policy callbacks,
   verified-local-email linking gates, implicit-link switches and provisioned-user
   signup controls.

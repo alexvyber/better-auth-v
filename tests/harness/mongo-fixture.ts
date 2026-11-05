@@ -22,19 +22,19 @@ export async function mongoCommand(configuration: Pick<NativeMongoOptions,'uri'|
   child.stdin.end(JSON.stringify({...configuration,command})+'\n');
  });
 }
-let cluster:Promise<{root:string;uri:string;process:ChildProcess}>|undefined;
+const clusters=new Map<boolean,Promise<{root:string;uri:string;process:ChildProcess}>>();
 async function stop(child:ChildProcess){
  if(!child.pid||child.exitCode!==null||child.signalCode!==null)return;
  const exited=once(child,'exit');child.kill('SIGTERM');
  await Promise.race([exited,delay(10000,undefined,{ref:false}).then(()=>{child.kill('SIGKILL')})]);
  await exited;
 }
-async function start(){
+async function start(ttl:boolean){
  const root=await mkdtemp(join(tmpdir(),'better-auth-v-mongo-'));
  const listener=createServer();listener.listen(0,'127.0.0.1');await once(listener,'listening');const port=(listener.address() as {port:number}).port;
  await new Promise<void>((resolve,reject)=>listener.close(error=>error?reject(error):resolve()));
  const binary=process.env.BETTER_AUTH_MONGO_BIN??fileURLToPath(new URL('../../build/deps/mongodb-macos-aarch64-8.0.6/bin/mongod',import.meta.url));
- const child=spawn(binary,['--dbpath',root,'--bind_ip','127.0.0.1','--port',String(port),'--replSet','rs0','--wiredTigerCacheSizeGB','0.25','--setParameter','ttlMonitorSleepSecs=1','--logpath',join(root,'server.log')],{stdio:'ignore'});
+ const child=spawn(binary,['--dbpath',root,'--bind_ip','127.0.0.1','--port',String(port),'--replSet','rs0','--wiredTigerCacheSizeGB','0.25','--setParameter','ttlMonitorSleepSecs=1','--setParameter','ttlMonitorEnabled='+String(ttl),'--logpath',join(root,'server.log')],{stdio:'ignore'});
  let spawnError:Error|undefined;child.once('error',error=>{spawnError=error});
  const uri=`mongodb://127.0.0.1:${port}/?directConnection=true&serverSelectionTimeoutMS=500&connectTimeoutMS=500`;
  try{
@@ -49,8 +49,13 @@ async function start(){
   throw new Error('Temporary MongoDB did not elect a primary');
  }catch(error){await stop(child);await rm(root,{recursive:true,force:true});throw error}
 }
-afterAll(async()=>{if(!cluster)return;const running=await cluster.catch(()=>undefined);if(!running)return;try{await stop(running.process)}finally{await rm(running.root,{recursive:true,force:true})}});
-export async function mongoOptions():Promise<NativeMongoOptions>{const running=await(cluster??=start());return {uri:running.uri,database:'ba_'+randomUUID().replaceAll('-','')}}
+afterAll(async()=>{await Promise.all([...clusters.values()].map(async cluster=>{const running=await cluster.catch(()=>undefined);if(!running)return;try{await stop(running.process)}finally{await rm(running.root,{recursive:true,force:true})}}))});
+// Fixed historical clocks in upstream auth tests must not race the real server's
+// TTL clock. Indexes remain present; the real TTL contract opts into its own server.
+export async function mongoOptions(ttl=false):Promise<NativeMongoOptions>{
+ let cluster=clusters.get(ttl);if(!cluster){cluster=start(ttl);clusters.set(ttl,cluster)}
+ const running=await cluster;return {uri:running.uri,database:'ba_'+randomUUID().replaceAll('-','')};
+}
 export const getTestInstance:typeof nativeInstance=async(options={} as any,config={} as any)=>{
  if(Object.hasOwn(options,'database'))throw new Error('MongoDB matrix cannot override an explicit upstream database');
  const mongo=(config as any).nativeMongo??await mongoOptions();const generate=(options as any).advanced?.database?.generateId;

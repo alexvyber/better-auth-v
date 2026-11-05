@@ -268,6 +268,7 @@ pub:
 	logout_providers                  []OAuthLogoutProvider
 	user_fields                       map[string]AdditionalField
 	session_fields                    map[string]AdditionalField
+	model_fields                      map[string]map[string]AdditionalField
 	log                               fn (string, string) = discard_log
 	validate_user_info                fn (User, UserInfoSource) !ValidationDecision = accept_user_info
 	on_existing_user_sign_up          fn (User) !                   = discard_existing_user
@@ -299,6 +300,7 @@ pub struct PluginFields {
 pub:
 	user    map[string]AdditionalField
 	session map[string]AdditionalField
+	models  map[string]map[string]AdditionalField
 }
 
 pub interface SchemaPlugin {

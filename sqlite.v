@@ -7,6 +7,8 @@ pub struct SQLiteStorage {
 mut:
 	db                  sqlite.DB
 	options             SQLiteOptions
+	model_fields        map[string]map[string]AdditionalField
+	model_unique_ready  bool = true
 	user_fields         map[string]AdditionalField
 	session_fields      map[string]AdditionalField
 	unique_fields_ready bool = true
@@ -65,7 +67,7 @@ pub fn open_sqlite_with_options(path string, options SQLiteOptions) !SQLiteStora
 pub fn (mut s SQLiteStorage) migrate() ! {
 	s.db.exec('CREATE TABLE IF NOT EXISTS auth_migration (version INTEGER PRIMARY KEY)')!
 	version := s.db.q_int('SELECT coalesce(max(version), 0) FROM auth_migration')!
-	if version > 6 { return error('database schema is newer than this library') }
+	if version > 7 { return error('database schema is newer than this library') }
 	s.begin()!
 	mut committed := false
 	defer {
@@ -103,9 +105,18 @@ pub fn (mut s SQLiteStorage) migrate() ! {
 		s.db.exec('CREATE INDEX auth_two_factor_user_id ON auth_two_factor(user_id)')!
 		s.db.exec('INSERT INTO auth_migration VALUES (6)')!
 	}
+	if version < 7 {
+		s.db.exec('CREATE TABLE auth_organization (id TEXT PRIMARY KEY, slug TEXT NOT NULL UNIQUE, data TEXT NOT NULL)')!
+		s.db.exec('CREATE TABLE auth_member (id TEXT PRIMARY KEY, organization_id TEXT NOT NULL REFERENCES auth_organization(id) ON DELETE CASCADE, user_id TEXT NOT NULL REFERENCES auth_user(id) ON DELETE CASCADE, data TEXT NOT NULL, UNIQUE(organization_id,user_id))')!
+		s.db.exec('CREATE TABLE auth_invitation (id TEXT PRIMARY KEY, organization_id TEXT NOT NULL REFERENCES auth_organization(id) ON DELETE CASCADE, inviter_id TEXT NOT NULL REFERENCES auth_user(id) ON DELETE CASCADE, data TEXT NOT NULL)')!
+		s.db.exec('CREATE TABLE auth_organization_role (id TEXT PRIMARY KEY, organization_id TEXT NOT NULL REFERENCES auth_organization(id) ON DELETE CASCADE, role TEXT NOT NULL, data TEXT NOT NULL, UNIQUE(organization_id,role))')!
+		s.db.exec('INSERT INTO auth_migration VALUES (7)')!
+	}
+	s.organization_unique_indexes(true)!
 	s.configured_unique_indexes(true)!
 	s.commit()!
 	s.unique_fields_ready = true
+	s.model_unique_ready = true
 	committed = true
 }
 

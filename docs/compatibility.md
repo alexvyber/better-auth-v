@@ -215,8 +215,9 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   schemas, request hooks, and inferred client extensions remain incomplete.
 - `AdminSchemaPlugin` and `OrganizationSchemaPlugin` supply creation defaults and
   protected authority fields. `AdminPlugin` now supplies native admin operations and
-  ban enforcement as described below; organization/team operations and memberships
-  remain open. The schema-only types do not register those endpoints. Custom synthetic-user callbacks support enumeration
+  ban enforcement as described below. `OrganizationPlugin` supplies the scoped
+  organization and membership foundation described below; invitations, dynamic roles
+  and teams remain open. The schema-only types do not register those endpoints. Custom synthetic-user callbacks support enumeration
   protection with plugin fields and receive only user-defined additional inputs.
 - Secondary storage supports primary sessions, optional database copies, database
   fallback, preserved expired rows, TTLs, and atomic token consumption/counters in
@@ -366,7 +367,7 @@ storage parity, full stateless/account-cookie behavior, complete JWT/JWKS plugin
 remaining output field transforms/validators and functional defaults,
 remaining database-column mapping options, richer hooks,
 username/phone authentication, remaining two-factor integration details, passkeys, remaining admin integration,
-organizations/teams/RBAC, API keys, OAuth/OIDC server functionality,
+remaining organization operations, invitations, dynamic RBAC, teams, API keys, OAuth/OIDC server functionality,
 SSO/SAML/SCIM, and payment/integration plugins remain unimplemented.
 
 Unsupported capabilities are not advertised as working endpoints. Source test
@@ -657,7 +658,7 @@ callbacks on transaction conflicts. Conflicts fail closed. Optional OAuth profil
 sync has no MongoDB savepoint and can roll back the enclosing binding if a database
 error aborts the transaction. Two-factor contention relies on transactions; atomic
 guarded factor updates without transactions remain open. No general MongoDB
-pooling facade, nested field mapping, organization/plugin schema or actual Nabu
+pooling facade, nested field mapping, arbitrary plugin schema or actual Nabu
 application migration is claimed.
 
 
@@ -714,3 +715,34 @@ uses typed adapter scans rather than a complete database query API; collation,
 array/number filter coercion, arbitrary additional-field transform sequencing and
 complete validation/error timing still need work. No organization membership/RBAC
 or application migration is implied by the admin feature set.
+
+
+## Organization foundation
+
+`OrganizationPlugin` implements create/update/delete, slug checks, organization
+metadata/full views, membership lists, active organization selection and trusted
+server-only member creation. Authorization loads current membership; static role
+grants require one role to satisfy the complete requested permission set.
+Brand Map's disabled public creation, creator hook and protected review defaults
+are covered on SQLite, PostgreSQL and MongoDB. Lifecycle hook failures roll back
+organization and membership writes. PostgreSQL updates preserve external review
+changes and return the current stored row. MongoDB organization/member references
+use ObjectIds and creation timestamps use BSON dates.
+
+Four scoped model schemas support additional fields, validation and mapped
+PostgreSQL/MongoDB tables/collections and fields. SQLite migration 7 adds payload
+organization/member/invitation/role tables, constraints and configured unique indexes;
+it does not implement upstream physical column aliases or a generic query API.
+22 unchanged organization CRUD source cases run on each backend (66 repeated
+cases), with nine owned integration cases and three native test functions. The
+source fixture explicitly translates upstream test-context defaults that skip
+origin/CSRF checks; production defaults and independent HTTP contracts stay strict.
+
+Invitation APIs/email callbacks, public membership management, dynamic access
+control, teams, complete active-membership cleanup, generic hook composition and
+full organization source coverage remain open. Application databases are untouched.
+
+Mongo fixtures with simulated upstream dates disable the background TTL worker,
+while retaining production indexes. The independent expiry contract uses a separate
+server with the worker enabled and verifies actual deletion. Production MongoDB
+storage does not disable TTL cleanup.

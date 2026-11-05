@@ -83,7 +83,15 @@ pub fn (mut storage MongoStorage) migrate() ! {
 	storage.index('verification', ['identifier'], false, false, '')!
 	storage.index('rateLimit', ['key'], true, false, '')!
 	storage.index('twoFactor', ['userId'], false, false, '')!
-	for model in ['user', 'session'] {
+	storage.index('organization', ['slug'], true, false, '')!
+	storage.index('member', ['organizationId', 'userId'], true, false, '')!
+	storage.index('organizationRole', ['organizationId', 'role'], true, false, '')!
+	for model in ['member', 'invitation', 'organizationRole'] {
+		storage.index(model, ['organizationId'], false, false, '')!
+	}
+	storage.index('member', ['userId'], false, false, '')!
+	storage.index('invitation', ['inviterId'], false, false, '')!
+	for model in ['user', 'session', 'organization', 'member', 'invitation', 'organizationRole'] {
 		for field, definition in storage.additional(model) {
 			if definition.unique {
 				kind := match definition.field_type {

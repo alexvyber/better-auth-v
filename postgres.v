@@ -20,6 +20,7 @@ pub struct PostgresStorage {
 mut:
 	connection        &pg.Conn
 	options           PostgresOptions
+	model_fields      map[string]map[string]AdditionalField
 	user_fields       map[string]AdditionalField
 	session_fields    map[string]AdditionalField
 	snapshots         map[string]string
@@ -77,7 +78,8 @@ pub fn open_postgres(options PostgresOptions) !PostgresStorage {
 pub fn (mut storage PostgresStorage) configure_fields(user_fields map[string]AdditionalField, session_fields map[string]AdditionalField) ! {
 	storage.user_fields = user_fields.clone()
 	storage.session_fields = session_fields.clone()
-	for model in ['user', 'session', 'account', 'verification', 'jwks', 'rateLimit', 'twoFactor'] {
+	for model in ['user', 'session', 'account', 'verification', 'jwks', 'rateLimit', 'twoFactor',
+		'organization', 'member', 'invitation', 'organizationRole'] {
 		mut used := map[string]bool{}
 		for field in storage.logical_fields(model) {
 			column := storage.column(model, field)
@@ -112,17 +114,22 @@ fn (storage &PostgresStorage) column_sql(model string, field string) string {
 }
 
 const postgres_core_fields = {
-	'user':         ['id', 'name', 'email', 'emailVerified', 'image', 'createdAt', 'updatedAt']
-	'session':      ['id', 'userId', 'token', 'expiresAt', 'createdAt', 'updatedAt', 'ipAddress',
+	'organization':     ['id', 'name', 'slug', 'logo', 'metadata', 'createdAt']
+	'member':           ['id', 'organizationId', 'userId', 'role', 'createdAt']
+	'invitation':       ['id', 'organizationId', 'email', 'role', 'status', 'inviterId', 'expiresAt',
+		'createdAt']
+	'organizationRole': ['id', 'organizationId', 'role', 'permission', 'createdAt', 'updatedAt']
+	'user':             ['id', 'name', 'email', 'emailVerified', 'image', 'createdAt', 'updatedAt']
+	'session':          ['id', 'userId', 'token', 'expiresAt', 'createdAt', 'updatedAt', 'ipAddress',
 		'userAgent']
-	'account':      ['id', 'userId', 'accountId', 'providerId', 'password', 'accessToken',
+	'account':          ['id', 'userId', 'accountId', 'providerId', 'password', 'accessToken',
 		'refreshToken', 'idToken', 'accessTokenExpiresAt', 'refreshTokenExpiresAt', 'scope',
 		'createdAt', 'updatedAt']
-	'verification': ['id', 'identifier', 'value', 'expiresAt', 'createdAt', 'updatedAt']
-	'jwks':         ['id', 'publicKey', 'privateKey', 'alg', 'crv', 'createdAt', 'expiresAt']
-	'rateLimit':    ['key', 'count', 'lastRequest']
-	'twoFactor':    ['id', 'userId', 'secret', 'backupCodes', 'verified', 'failedVerificationCount',
-		'lockedUntil']
+	'verification':     ['id', 'identifier', 'value', 'expiresAt', 'createdAt', 'updatedAt']
+	'jwks':             ['id', 'publicKey', 'privateKey', 'alg', 'crv', 'createdAt', 'expiresAt']
+	'rateLimit':        ['key', 'count', 'lastRequest']
+	'twoFactor':        ['id', 'userId', 'secret', 'backupCodes', 'verified',
+		'failedVerificationCount', 'lockedUntil']
 }
 
 fn (storage &PostgresStorage) additional(model string) map[string]AdditionalField {
@@ -131,7 +138,9 @@ fn (storage &PostgresStorage) additional(model string) map[string]AdditionalFiel
 	} else if model == 'session' {
 		storage.session_fields
 	} else {
-		map[string]AdditionalField{}
+		storage.model_fields[model] or {
+			map[string]AdditionalField{}
+		}
 	}
 }
 

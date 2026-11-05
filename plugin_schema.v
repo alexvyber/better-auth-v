@@ -89,11 +89,21 @@ pub fn (p OrganizationSchemaPlugin) schema() PluginFields {
 }
 
 fn resolve_plugin_fields(config Config) Config {
+	mut models := config.model_fields.clone()
 	mut users := config.user_fields.clone()
 	mut sessions := config.session_fields.clone()
 	for plugin in config.plugins {
 		if plugin is SchemaPlugin {
 			fields := plugin.schema()
+			for model, schema in fields.models {
+				mut merged := (models[model] or {
+					map[string]AdditionalField{}
+				}).clone()
+				for key, definition in schema {
+					merged[key] = definition
+				}
+				models[model] = merged.clone()
+			}
 			for key, field in fields.user {
 				users[key] = field
 			}
@@ -104,6 +114,7 @@ fn resolve_plugin_fields(config Config) Config {
 	}
 	return Config{
 		...config
+		model_fields:   models
 		user_fields:    users
 		session_fields: sessions
 	}

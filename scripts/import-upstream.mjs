@@ -241,6 +241,8 @@ const organizationCRUD={file:'organization-crud',path:'packages/better-auth/src/
  unportedReason:'Invitation and team integration cases remain for subsequent batches',
  imports:`import {describe,expect,it,vi} from 'vitest';
 import type {APIError} from 'better-auth/api';
+import {createAccessControl} from 'better-auth/plugins/access';
+import {adminAc,defaultStatements,memberAc,ownerAc} from 'better-auth/plugins/organization/access';
 import {createAuthClient} from 'better-auth/client';
 import {organizationClient,ORGANIZATION_ERROR_CODES} from 'better-auth/client/plugins';
 import {getTestInstance} from '../harness/organization-fixture.js';
@@ -257,13 +259,32 @@ import {organizationClient} from 'better-auth/client/plugins';
 import {organization} from '../harness/plugins.js';
 import {getTestInstance} from '../harness/organization-fixture.js';
 `};
+const dynamicRoles={file:'organization-dynamic-roles',path:'packages/better-auth/src/plugins/organization/routes/crud-access-control.test.ts',
+ suites:new Set(['dynamic access control']),skippedTests:new Set(['should preserve exact built-in organization role statement types']),
+ executionSurface:'native-api-upstream-test-origin-defaults',unportedReason:'Pure TypeScript statement type probe is not a native runtime test',
+ imports:`import type {DBFieldAttribute} from '@better-auth/core/db';
+import {describe,expect,expectTypeOf,it} from 'vitest';
+import {createAuthClient} from 'better-auth/client';
+import {parseSetCookieHeader} from 'better-auth/cookies';
+import {createAccessControl} from 'better-auth/plugins/access';
+import {adminAc,defaultStatements,memberAc,ownerAc} from 'better-auth/plugins/organization/access';
+import {inferOrgAdditionalFields,organizationClient,ORGANIZATION_ERROR_CODES} from 'better-auth/client/plugins';
+import {organization} from '../harness/plugins.js';
+import {getTestInstance} from '../harness/organization-fixture.js';
+`};
+plans.push(dynamicRoles);
+for(const [prefix,fixture] of [['postgres','postgres-fixture'],['mongo','mongo-fixture']]){
+ plans.push({...dynamicRoles,file:prefix+'-organization-dynamic-roles',imports:dynamicRoles.imports.replace('../harness/organization-fixture.js','../harness/organization-'+fixture+'.js'),executionSurface:'native-'+prefix+'-dynamic-organization-roles'});
+}
 plans.push(organizationInvitations);
 const invitationLifecycle={file:'organization-invitation-lifecycle',path:'packages/better-auth/src/plugins/organization/organization.test.ts',
- suites:new Set(['invitation expiration and filtering','invitation limit','cancel pending invitations on re-invite','re-invite without cancelPendingInvitationsOnReInvite still throws','resend invitation should reuse existing']),
+ suites:new Set(['invitation expiration and filtering','invitation limit','cancel pending invitations on re-invite','re-invite without cancelPendingInvitationsOnReInvite still throws','resend invitation should reuse existing','dynamic access control should merge DB permissions with built-in roles']),
 
  executionSurface:'native-api-upstream-test-origin-defaults',unportedReason:'Remaining organization suites and dynamic invitation limits remain unported',
  imports:`import {describe,expect,it,vi} from 'vitest';
 import type {APIError} from 'better-auth/api';
+import {createAccessControl} from 'better-auth/plugins/access';
+import {adminAc,defaultStatements,memberAc,ownerAc} from 'better-auth/plugins/organization/access';
 import {createAuthClient} from 'better-auth/client';
 import {organizationClient,ORGANIZATION_ERROR_CODES} from 'better-auth/client/plugins';
 import {organization} from '../harness/plugins.js';

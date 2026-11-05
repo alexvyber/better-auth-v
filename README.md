@@ -63,7 +63,8 @@ There is no dependency on a web framework.
 - Organization creation, metadata, membership, active-organization selection and
   update/delete permissions, with protected review fields, lifecycle hooks and
   mapped PostgreSQL/MongoDB persistence, invitation delivery/acceptance/rejection,
-  cancellation, resend and expiry policies. Dynamic roles remain open.
+  cancellation, resend and expiry policies; dynamic role CRUD, grant checks and
+  member-role updates with live authorization.
 - Generic OIDC discovery, signature/nonce verification, profile policy callbacks,
   verified-local-email linking gates, implicit-link switches and provisioned-user
   signup controls.

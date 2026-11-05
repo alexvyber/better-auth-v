@@ -573,10 +573,10 @@
         "dynamic access control should merge DB permissions with built-in roles"
       ],
       "test": "should merge DB permissions with built-in role permissions",
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+      "reason": null
     },
     {
       "suite": "dynamic access control should merge DB permissions with built-in roles",
@@ -584,10 +584,10 @@
         "dynamic access control should merge DB permissions with built-in roles"
       ],
       "test": "should not lose built-in actions when DB defines partial actions for the same resource",
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
-      "reason": "Remaining organization suites and dynamic invitation limits remain unported"
+      "reason": null
     },
     {
       "suite": "invitation limit",

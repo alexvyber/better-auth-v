@@ -16,6 +16,8 @@ pub:
 	require_verified_invitation ?bool @[json: requireEmailVerificationOnInvitation]
 	send_invitation_email       fn (mut EndpointContext, string) ! = no_invitation_email @[skip]
 	disable_deletion            bool @[json: disableOrganizationDeletion]
+	dynamic_access_control      OrganizationDynamicAccessControl @[json: dynamicAccessControl]
+	ac_statements               ?map[string][]string             @[json: acStatements]
 	roles                       ?map[string]map[string][]string
 	additional_fields           map[string]map[string]AdditionalField                    @[skip]
 	hook                        fn (mut EndpointContext, string, string) !Lookup[string] = no_organization_hook @[skip]
@@ -59,14 +61,16 @@ pub fn (plugin OrganizationPlugin) validate() ! {
 pub fn (_ OrganizationPlugin) endpoints() []Endpoint {
 	mut routes := []Endpoint{}
 	for path in ['create', 'update', 'delete', 'check-slug', 'set-active', 'invite-member',
-		'accept-invitation', 'reject-invitation', 'cancel-invitation'] {
+		'accept-invitation', 'reject-invitation', 'cancel-invitation', 'has-permission',
+		'update-member-role', 'create-role', 'update-role', 'delete-role'] {
 		routes << Endpoint{
 			path:    '/organization/' + path
 			handler: organization_endpoint
 		}
 	}
 	for path in ['get-full-organization', 'get-organization', 'list', 'get-active-member',
-		'list-members', 'get-invitation', 'list-invitations', 'list-user-invitations'] {
+		'list-members', 'get-invitation', 'list-invitations', 'list-user-invitations', 'list-roles',
+		'get-role'] {
 		routes << Endpoint{
 			path:    '/organization/' + path
 			method:  'GET'
@@ -265,16 +269,9 @@ fn (mut context EndpointContext) organization_require(user_id string, organizati
 
 	member := org_json_fields(encoded)!
 	role := (member['role'] or { json2.Any('member') }).str()
-	options := context.auth.organization_options()!
-	if !(AdminOptions{
-		roles: options.effective_roles()
-	}).has_permission(User{
-		additional_fields: {
-			'role': json2.Any(role)
-		}
-	}, {
+	if !context.organization_has_permission(organization_id, role, {
 		resource: [action]
-	}) {
+	})! {
 		return fail(403, code, message)
 	}
 	return member
@@ -363,6 +360,15 @@ fn organization_endpoint(mut context EndpointContext, request Request) !Response
 	if path in ['invite-member', 'accept-invitation', 'reject-invitation', 'cancel-invitation',
 		'get-invitation', 'list-invitations'] {
 		return organization_invitation_endpoint(mut context, current, fields, path)
+	}
+	if path == 'has-permission' {
+		return organization_permission_endpoint(mut context, current, fields)
+	}
+	if path == 'update-member-role' {
+		return organization_update_member_role(mut context, current, fields)
+	}
+	if path in ['create-role', 'update-role', 'delete-role', 'list-roles', 'get-role'] {
+		return organization_role_endpoint(mut context, current, fields, path)
 	}
 	match path {
 		'list' {

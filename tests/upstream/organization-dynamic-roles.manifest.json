@@ -1,0 +1,285 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/organization/routes/crud-access-control.test.ts",
+  "sha256": "434a87ab891bff64bc748f9c9a321b264e1c3429bbaecc6fde93fed209125fb3",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should preserve exact built-in organization role statement types",
+      "selected": false,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": "Pure TypeScript statement type probe is not a native runtime test"
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "does not reveal dynamic role existence to members without update permission",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should successfully create a new role",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should not be allowed to create a role without the right ac resource permissions",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should not be allowed to create a role with higher permissions than the current role",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should not be allowed to create a role which is either predefined or already exists in DB",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should delete a role by id",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should delete a role by name",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should not be allowed to delete a role that is assigned to members",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should not be allowed to delete a role when member has multiple roles including that role",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should not be allowed to delete a role without necessary permissions",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should not be allowed to delete a role that doesn't exist",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should list roles",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should not be allowed to list roles without necessary permissions",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should get a role by id",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should get a role by name",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should update a role's permission by id",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should update a role's name by name",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should not be allowed to update a role without the right ac resource permissions",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should be able to update additional fields",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should not allow member to list roles using another member's permissions",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should not allow member to get role details using another member's permissions",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should not allow member to update roles without proper permissions (privilege escalation test)",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should properly identify the correct member when checking permissions",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "dynamic access control",
+      "suites": [
+        "dynamic access control"
+      ],
+      "test": "should not allow cross-organization privilege escalation",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

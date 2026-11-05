@@ -116,6 +116,7 @@ pub:
 	status  int
 	code    string
 	message string
+	details map[string]json2.Any
 }
 
 pub fn (e APIError) msg() string {

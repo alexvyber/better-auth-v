@@ -32,12 +32,7 @@ fn organization_invitation_create(mut context EndpointContext, current SessionRe
 		'YOU_ARE_NOT_ALLOWED_TO_INVITE_USERS_TO_THIS_ORGANIZATION',
 		'You are not allowed to invite users to this organization')!
 	role := admin_role(fields['role'] or { json2.Any('member') }, AdminOptions{})!
-	known := options.effective_roles()
-	for name in role.split(',') {
-		if name !in known && name !in ['owner', 'admin', 'member'] {
-			return fail(400, 'ROLE_NOT_FOUND', 'Role not found: ' + name)
-		}
-	}
+	context.organization_validate_roles(id, role)!
 	if options.creator_role in role.split(',') && options.creator_role !in (member['role'] or {
 		json2.Any('')
 	}).str().split(',') {

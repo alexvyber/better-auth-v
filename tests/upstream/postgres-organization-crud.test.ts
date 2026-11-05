@@ -1,6 +1,8 @@
 // Generated from pinned upstream source; do not edit assertions here.
 import {describe,expect,it,vi} from 'vitest';
 import type {APIError} from 'better-auth/api';
+import {createAccessControl} from 'better-auth/plugins/access';
+import {adminAc,defaultStatements,memberAc,ownerAc} from 'better-auth/plugins/organization/access';
 import {createAuthClient} from 'better-auth/client';
 import {organizationClient,ORGANIZATION_ERROR_CODES} from 'better-auth/client/plugins';
 import {getTestInstance} from '../harness/organization-postgres-fixture.js';

@@ -767,14 +767,14 @@ fn (mut a Auth) dispatch(req Request, path string, p Payload) !Response {
 
 fn error_response(err IError) Response {
 	if err is APIError {
+		mut fields := err.details.clone()
+		fields['code'] = err.code
+		fields['message'] = err.message
 		return Response{
 			status:      err.status
 			status_text: http.status_from_int(err.status).str().to_upper().replace(' ', '_')
 			headers:     [Header{'content-type', 'application/json'}]
-			body:        json.encode({
-				'code':    err.code
-				'message': err.message
-			})
+			body:        json2.Any(fields).json_str()
 		}
 	}
 	return Response{

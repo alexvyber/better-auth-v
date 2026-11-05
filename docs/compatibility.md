@@ -216,7 +216,7 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
 - `AdminSchemaPlugin` and `OrganizationSchemaPlugin` supply creation defaults and
   protected authority fields. `AdminPlugin` now supplies native admin operations and
   ban enforcement as described below. `OrganizationPlugin` supplies the scoped
-  organization and membership foundation and invitation APIs described below; dynamic roles and teams remain open. The schema-only types do not register those endpoints. Custom synthetic-user callbacks support enumeration
+  organization and membership foundation and invitation APIs described below; remaining member operations and teams remain open. The schema-only types do not register those endpoints. Custom synthetic-user callbacks support enumeration
   protection with plugin fields and receive only user-defined additional inputs.
 - Secondary storage supports primary sessions, optional database copies, database
   fallback, preserved expired rows, TTLs, and atomic token consumption/counters in
@@ -366,7 +366,7 @@ storage parity, full stateless/account-cookie behavior, complete JWT/JWKS plugin
 remaining output field transforms/validators and functional defaults,
 remaining database-column mapping options, richer hooks,
 username/phone authentication, remaining two-factor integration details, passkeys, remaining admin integration,
-remaining organization operations, dynamic RBAC, teams, API keys, OAuth/OIDC server functionality,
+remaining organization operations, teams, API keys, OAuth/OIDC server functionality,
 SSO/SAML/SCIM, and payment/integration plugins remain unimplemented.
 
 Unsupported capabilities are not advertised as working endpoints. Source test
@@ -739,7 +739,7 @@ invitation primary key for the upstream hook-supplied custom ID case. The
 source fixture explicitly translates upstream test-context defaults that skip
 origin/CSRF checks; production defaults and independent HTTP contracts stay strict.
 
-Public membership management, dynamic access control, teams, complete active-membership cleanup, generic hook composition and
+Remaining membership removal/list-query operations, teams, complete active-membership cleanup, generic hook composition and
 full organization source coverage remain open. Application databases are untouched.
 
 Mongo fixtures with simulated upstream dates disable the background TTL worker,
@@ -768,3 +768,31 @@ independent PostgreSQL/MongoDB connections. One new native function tests stale
 status claims and transaction rollback in memory/SQLite. Team-linked invitations,
 complete callback context, atomic cross-request aggregate limits and generic
 upstream adapter query contracts remain open.
+
+
+## Dynamic organization roles
+
+Dynamic role create/read/list/update/delete and live permission checks are native.
+Roles are scoped to organization and current user membership. Database permissions
+merge with the same static role's grants, preserving existing resources/actions.
+A role grant cannot exceed the caller's per-action authority; structured errors
+include missing permissions. Predefined names and assigned roles cannot be deleted,
+unknown resources are rejected, role names normalize to lowercase on writes, and
+an optional numeric role cap is enforced. Additional role fields apply input/default/
+output policies and mapped PostgreSQL/MongoDB schemas. Member role updates validate
+known static/dynamic names after authorization, enforce creator-role restrictions
+and last-owner checks, and invoke before/after hooks within the transaction.
+
+24 unchanged dynamic-role runtime source cases run on each backend (72 cases).
+The pure TypeScript statement-type probe is explicitly excluded. Two unchanged
+source merge cases also run on each backend. Nine owned integration cases verify
+live membership/grant edits with cookie caching, mapped role schemas, malformed
+persisted permissions failing closed, role caps and Brand Map policy. In that app,
+`accessControl` grants do not imply Better Auth's `ac` grants: upstream role-management
+APIs remain denied unless the configured role grants `ac`. App-provisioned native
+storage records can still contribute domain permissions. No application policy is
+changed to make those endpoints succeed.
+
+Role-count, last-owner and role-assignment aggregate races are not serialized across
+all concurrent requests. Generic adapter queries/hooks, functional role caps, empty
+permission-map edge cases and complete error/context timing still need coverage.

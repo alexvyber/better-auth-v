@@ -29,6 +29,46 @@ fn (mut a Auth) intercept_internal(name string, arguments_json string) !Lookup[s
 pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json string) !string {
 	args := json2.decode[[]json2.Any](arguments_json)!
 	match name {
+		'adapterCreateOrganizationModel' {
+			if args.len != 2 { return error('organization model create requires model and record') }
+			model := args[0].str()
+			organization_model(model)!
+			mut fields := args[1].as_map().clone()
+			if 'id' !in fields { fields['id'] = c.auth.new_id(model)! }
+			data := c.auth.organization_defaults(model, fields)!
+			c.organization_create_record(model, data)!
+			return json2.Any(data).json_str()
+		}
+		'adapterDeleteOrganizationModel' {
+			if args.len != 2 {
+				return error('organization model delete requires model and equality filters')
+			}
+			model := args[0].str()
+			organization_model(model)!
+			mut filter := map[string]string{}
+			for condition in args[1].as_array() {
+				item := condition.as_map()
+				field := (item['field'] or { json2.Any('') }).str()
+				if field !in ['id', 'organizationId'] || (item['operator'] or { json2.Any('eq') }).str() != 'eq' || (item['connector'] or {
+					json2.Any('AND')
+				}).str() != 'AND' {
+					return error('organization deletion supports scoped ID equalities only')
+				}
+				if field in filter { return error('duplicate organization filter') }
+				filter[field] = (item['value'] or { json2.Any('') }).str()
+			}
+			if filter.len == 0 { return error('organization deletion requires a scope') }
+			rows := c.organization_rows(model, filter)!
+			mut storage := c.auth.storage
+			if mut storage is OrganizationStorage {
+				for encoded in rows {
+					storage.organization_delete(model, (org_json_fields(encoded)!['id'] or {
+						json2.Any('')
+					}).str())!
+				}
+			}
+			return 'null'
+		}
 		'adapterUpdateVerification' {
 			if args.len != 3 || args[0].str() !in ['id', 'identifier'] {
 				return error('verification update requires id/identifier equality')

@@ -51,6 +51,7 @@ interface ServerOptions {
 }
 type FixtureResponseAPI = <const A extends FixtureOptions = FixtureOptions>(args?: A) => Promise<A extends {asResponse: true} ? Response : any>;
 type FixtureEnableTwoFactorAPI = <const A extends FixtureOptions = FixtureOptions>(args?: A) => Promise<A extends {asResponse: true} ? Response : {method: 'totp' | 'otp'; backupCodes: string[]; totpURI: string}>;
+type OrganizationAPI<O,K extends string> = O extends BetterAuthOptions ? K extends keyof Auth<O>['api'] ? Auth<O>['api'][K] : (args?:FixtureOptions)=>Promise<any> : (args?:FixtureOptions)=>Promise<any>;
 type SignUpAPI<O> = O extends BetterAuthOptions ? (Auth<O>["api"] extends {signUpEmail: infer F} ? F : Auth<{}>["api"]["signUpEmail"]) : Auth<{}>["api"]["signUpEmail"];
 type SessionAPI<O> = O extends BetterAuthOptions ? (Auth<O>["api"] extends {getSession: infer F} ? F : Auth<{}>["api"]["getSession"]) : Auth<{}>["api"]["getSession"];
 interface FixtureSession extends FixtureOptions {
@@ -91,6 +92,7 @@ const routes: Record<string, [string, string]> = {
  listOrganizations:['GET','/organization/list'],getFullOrganization:['GET','/organization/get-full-organization'],getOrganization:['GET','/organization/get-organization'],
  getActiveMember:['GET','/organization/get-active-member'],listMembers:['GET','/organization/list-members'],addMember:['POST','/internal/organization/add-member'],
  createInvitation:['POST','/organization/invite-member'],acceptInvitation:['POST','/organization/accept-invitation'],rejectInvitation:['POST','/organization/reject-invitation'],cancelInvitation:['POST','/organization/cancel-invitation'],getInvitation:['GET','/organization/get-invitation'],listInvitations:['GET','/organization/list-invitations'],listUserInvitations:['GET','/organization/list-user-invitations'],
+ hasPermission:['POST','/organization/has-permission'],updateMemberRole:['POST','/organization/update-member-role'],createOrgRole:['POST','/organization/create-role'],updateOrgRole:['POST','/organization/update-role'],deleteOrgRole:['POST','/organization/delete-role'],getOrgRole:['GET','/organization/get-role'],listOrgRoles:['GET','/organization/list-roles'],
 
  impersonateUser:['POST','/admin/impersonate-user'],stopImpersonating:['POST','/admin/stop-impersonating'],
  getUser:['GET','/admin/get-user'],createUser:['POST','/admin/create-user'],
@@ -312,16 +314,20 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       if (!input) throw new Error(`Native schema plugin ${plugin.id} requires its fixture descriptor`);
       if (plugin.id === 'admin') {
         assertKeys(input, ['defaultRole','adminRoles','adminUserIds','roles','ac','defaultBanReason','defaultBanExpiresIn','bannedUserMessage','schema','allowImpersonatingAdmins','impersonationSessionDuration'], 'admin');
+        assertKeys(input.dynamicAccessControl??{},['enabled','maximumRolesPerOrganization'],'organization.dynamicAccessControl');
+        if(typeof input.dynamicAccessControl?.maximumRolesPerOrganization==='function')throw new Error('Dynamic role limit callbacks remain unported');
         assertKeys(input.schema??{},['user','session'],'admin.schema');
         for(const value of Object.values(input.schema??{}) as any[]){assertKeys(value,['fields','modelName'],'admin.schema.model');for(const name of Object.values(value.fields??{})){if(typeof name!=='string')throw new Error('Admin schema field aliases must be strings');}}
         for(const role of Object.values(input.roles ?? {}) as any[]) {if(!role?.statements)throw new Error('Native admin roles require explicit permission statements');}
         adminOptions = input;
       } else {
-        assertKeys(input, ['teams','allowUserToCreateOrganization','organizationLimit','membershipLimit','creatorRole','disableOrganizationDeletion','roles','ac','schema','organizationHooks','sendInvitationEmail','invitationExpiresIn','invitationLimit','cancelPendingInvitationsOnReInvite','requireEmailVerificationOnInvitation'], 'organization');
+        assertKeys(input, ['teams','allowUserToCreateOrganization','organizationLimit','membershipLimit','creatorRole','disableOrganizationDeletion','roles','ac','schema','organizationHooks','sendInvitationEmail','invitationExpiresIn','invitationLimit','cancelPendingInvitationsOnReInvite','requireEmailVerificationOnInvitation','dynamicAccessControl'], 'organization');
         if(typeof input.organizationLimit==='function'||typeof input.membershipLimit==='function')throw new Error('Dynamic organization limits remain unported');
+        assertKeys(input.dynamicAccessControl??{},['enabled','maximumRolesPerOrganization'],'organization.dynamicAccessControl');
+        if(typeof input.dynamicAccessControl?.maximumRolesPerOrganization==='function')throw new Error('Dynamic role limit callbacks remain unported');
         assertKeys(input.schema??{},['organization','member','invitation','session','organizationRole'],'organization.schema');
         for(const model of Object.values(input.schema??{}) as any[]){assertKeys(model,['modelName','fields','additionalFields'],'organization.schema.model');}
-        assertKeys(input.organizationHooks??{},['beforeCreateOrganization','afterCreateOrganization','beforeAddMember','afterAddMember','beforeUpdateOrganization','afterUpdateOrganization','beforeDeleteOrganization','afterDeleteOrganization','beforeCreateInvitation','afterCreateInvitation','beforeAcceptInvitation','afterAcceptInvitation','beforeRejectInvitation','afterRejectInvitation','beforeCancelInvitation','afterCancelInvitation'],'organization.hooks');
+        assertKeys(input.organizationHooks??{},['beforeCreateOrganization','afterCreateOrganization','beforeAddMember','afterAddMember','beforeUpdateOrganization','afterUpdateOrganization','beforeDeleteOrganization','afterDeleteOrganization','beforeCreateInvitation','afterCreateInvitation','beforeAcceptInvitation','afterAcceptInvitation','beforeRejectInvitation','afterRejectInvitation','beforeCancelInvitation','afterCancelInvitation','beforeUpdateMemberRole','afterUpdateMemberRole'],'organization.hooks');
         for(const role of Object.values(input.roles??{}) as any[]){if(!role?.statements)throw new Error('Native organization roles require explicit permission statements');}
         if(input.teams?.enabled&&Object.keys(input).some(key=>key!=='teams'))throw new Error('Organization teams currently supply schema only');
         assertKeys(input.teams ?? {}, ['enabled'], 'organization.teams');
@@ -867,6 +873,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
        allowUserToCreateOrganization:typeof organizationOptions.allowUserToCreateOrganization==='boolean'?organizationOptions.allowUserToCreateOrganization:undefined,
        invitationExpiresIn:organizationOptions.invitationExpiresIn,invitationLimit:typeof organizationOptions.invitationLimit==='number'?organizationOptions.invitationLimit:undefined,cancelPendingInvitationsOnReInvite:organizationOptions.cancelPendingInvitationsOnReInvite,requireEmailVerificationOnInvitation:organizationOptions.requireEmailVerificationOnInvitation,
        organizationLimit:organizationOptions.organizationLimit,membershipLimit:organizationOptions.membershipLimit,creatorRole:organizationOptions.creatorRole,disableOrganizationDeletion:organizationOptions.disableOrganizationDeletion,
+       dynamicAccessControl:organizationOptions.dynamicAccessControl,acStatements:organizationOptions.ac?.statements,
        roles:organizationOptions.roles?Object.fromEntries(Object.entries(organizationOptions.roles).map(([name,role])=>[name,(role as any).statements])):undefined,
       }:undefined,
       organization_hooks:Object.keys(organizationOptions?.organizationHooks??{}),
@@ -1119,9 +1126,9 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   };
   const auth = {
     $context: Promise.resolve(context),
-    api: api as typeof api & { getFullOrganization(args?:FixtureOptions):Promise<({[key:string]:any;members:{[key:string]:any;user:{[key:string]:any;email:string}}[]})|null>; listUsers(args?:FixtureOptions):Promise<{users:UserWithRole[];total:number;limit?:number;offset?:number}>; signInEmail: FixtureResponseAPI; verifyTOTP: FixtureResponseAPI; verifyTwoFactorOTP: FixtureResponseAPI; enableTwoFactor: FixtureEnableTwoFactorAPI; signUpEmail: SignUpAPI<O>; getSession: SessionAPI<O>; getJwks(args?: FixtureOptions): Promise<JSONWebKeySet>; generateBackupCodes(args?: FixtureOptions): Promise<{status: boolean; backupCodes: string[]}>; viewBackupCodes(args?: FixtureOptions): Promise<{status: boolean; backupCodes: string[]}> },
+    api: api as typeof api & { addMember:OrganizationAPI<O,'addMember'>; updateOrgRole:OrganizationAPI<O,'updateOrgRole'>;listMembers:OrganizationAPI<O,'listMembers'>; listOrgRoles:OrganizationAPI<O,'listOrgRoles'>;getOrgRole:OrganizationAPI<O,'getOrgRole'>; getFullOrganization(args?:FixtureOptions):Promise<({[key:string]:any;members:{[key:string]:any;user:{[key:string]:any;email:string}}[]})|null>; listUsers(args?:FixtureOptions):Promise<{users:UserWithRole[];total:number;limit?:number;offset?:number}>; signInEmail: FixtureResponseAPI; verifyTOTP: FixtureResponseAPI; verifyTwoFactorOTP: FixtureResponseAPI; enableTwoFactor: FixtureEnableTwoFactorAPI; signUpEmail: SignUpAPI<O>; getSession: SessionAPI<O>; getJwks(args?: FixtureOptions): Promise<JSONWebKeySet>; generateBackupCodes(args?: FixtureOptions): Promise<{status: boolean; backupCodes: string[]}>; viewBackupCodes(args?: FixtureOptions): Promise<{status: boolean; backupCodes: string[]}> },
     handler: (request: Request) => dispatch(request),
-    options,
+    options:{...options,emailAndPassword:{...ep,enabled:ep.enabled??true}} as O & {emailAndPassword:{enabled:boolean}},
   };
   const clientOptions = {
     baseURL: baseURL + basePath,
@@ -1202,6 +1209,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   const db = {
     async create<T = Record<string, unknown>>(args: FixtureOptions): Promise<T> {
       assertKeys(args, ['model', 'data'], 'db.create');
+      if(['organization','member','invitation','organizationRole'].includes(args.model)){const reply=await bridge.send('internal',{method:'adapterCreateOrganizationModel',arguments_json:transportJSON([args.model,args.data])});return hydrate(JSON.parse(reply.value_json));}
       if (args.model !== 'twoFactor') throw new Error('Native fixture create requires twoFactor model');
       const reply = await bridge.send('internal', {method:'adapterCreateTwoFactor',arguments_json:transportJSON([args.data])});
       return hydrate(JSON.parse(reply.value_json));
@@ -1214,6 +1222,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     },
     async delete(args: FixtureOptions) {
       assertKeys(args, ['model', 'where'], 'db.delete');
+      if(['organization','member','invitation','organizationRole'].includes(args.model)){await bridge.send('internal',{method:'adapterDeleteOrganizationModel',arguments_json:transportJSON([args.model,args.where])});return;}
       if (args.model === 'account' && args.where?.length === 1 && args.where[0].field === 'id' && (!args.where[0].operator || args.where[0].operator === 'eq')) {
        await bridge.send('internal',{method:'deleteAccount',arguments_json:transportJSON([args.where[0].value])}); return;
       }

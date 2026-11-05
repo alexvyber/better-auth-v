@@ -207,11 +207,7 @@ fn organization_server_add_member(mut context EndpointContext, fields map[string
 	}
 
 	role := admin_role(fields['role'] or { json2.Any('member') }, AdminOptions{})!
-	options := context.auth.organization_options()!
-	known := options.effective_roles()
-	for name in role.split(',') {
-		if name !in known { return fail(400, 'ROLE_NOT_FOUND', 'Role not found') }
-	}
+	context.organization_validate_roles(id, role)!
 	additional := context.auth.organization_client_fields('member', fields, true)!
 	member := context.organization_add_member(org, user, role, additional, false)!
 	return admin_json_response(context.auth.organization_output('member', member)!)

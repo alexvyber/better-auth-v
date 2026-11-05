@@ -64,7 +64,8 @@ There is no dependency on a web framework.
   update/delete permissions, with protected review fields, lifecycle hooks and
   mapped PostgreSQL/MongoDB persistence, invitation delivery/acceptance/rejection,
   cancellation, resend and expiry policies; dynamic role CRUD, grant checks and
-  member-role updates with live authorization.
+  member-role updates with live authorization, member pagination/filtering/sorting,
+  removal and leaving with last-owner checks.
 - Generic OIDC discovery, signature/nonce verification, profile policy callbacks,
   verified-local-email linking gates, implicit-link switches and provisioned-user
   signup controls.

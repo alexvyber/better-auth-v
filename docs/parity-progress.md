@@ -781,7 +781,16 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   remains distinct from Better Auth's `ac` policy. Aggregate concurrency, functional
   role caps and full generic adapter/context behavior remain open.
 
-The latest full `make check` passes 2576 TypeScript cases across 123 files, all 111
+- Added member list pagination/filtering/sorting with complete user joins, active
+  role lookup, member removal and leaving. Removal hooks roll back on failure;
+  owner/tenant guards and active-cookie cleanup are verified. Organization deletion
+  returns the deleted record and clears current active selection. 22 unchanged
+  member source cases repeat on three backends (66 cases), including official-client
+  logout hook invalidation, plus nine owned integration contracts with 111-member
+  joins. Generic adapter instrumentation, aggregate owner races, functional limits
+  and forbidden-read active-selection cleanup remain open.
+
+The latest full `make check` passes 2651 TypeScript cases across 127 files, all 111
 native V test functions across 36 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
 Formatting and `git diff --check` pass. Repeated backend runs do not increase unique
@@ -790,7 +799,7 @@ upstream source coverage, and these results do not imply full upstream parity.
 The user resumed work and authorized incremental commits and pushes to
 `alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.
 The objective remains incomplete. The corpus currently records 32 completely
-imported files, fourteen partial imports and 390 unported files; imported status describes source
+imported files, fifteen partial imports and 389 unported files; imported status describes source
 preservation, not broad feature completion.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise
@@ -800,7 +809,7 @@ preservation, not broad feature completion.
 2. Complete remaining JWT/plugin integration details: schema/column mappings,
    remaining callback/type counterparts, and broader provider use. Verify combinations with deferred
    read-only session GET and other hooks; JWT header issuance can rotate keys.
-3. Complete remaining admin integration and complete remaining organization member operations and context integration, plus account-cookie behavior and remaining rotation combinations. The complete
+3. Complete remaining admin integration and complete remaining organization context/query integration, plus account-cookie behavior and remaining rotation combinations. The complete
    sign-up/session source runs do not establish full plugin or stateless parity.
    Preserve every original assertion when importing additional suites.
 4. Complete the PostgreSQL/MongoDB adapter contracts, query and plugin schemas, and add MySQL,

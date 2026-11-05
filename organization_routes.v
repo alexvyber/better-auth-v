@@ -107,6 +107,10 @@ fn (mut context EndpointContext) organization_expanded_members(id string, reques
 		'organizationId': id
 	})!
 	if rows.len > limit { rows = rows[..limit].clone() }
+	return context.organization_expand_members(rows)
+}
+
+fn (mut context EndpointContext) organization_expand_members(rows []string) ![]json2.Any {
 	mut result := []json2.Any{}
 	for row in rows {
 		fields := org_json_fields(row)!
@@ -278,12 +282,14 @@ fn organization_delete(mut context EndpointContext, current SessionResult, field
 		'user':         json2.decode[json2.Any](encode_user(current.user))!
 		'member':       json2.Any(member)
 	}
+	mut session := current.session
+	if organization_id(map[string]json2.Any{}, session) == id {
+		session = context.organization_set_active(session, none)!
+	}
 	context.organization_hook('beforeDeleteOrganization', payload)!
 	mut storage := context.auth.storage
 	if mut storage is OrganizationStorage { storage.organization_delete('organization', id)! }
 	context.organization_hook('afterDeleteOrganization', payload)!
-	return Response{
-		headers: [Header{'content-type', 'application/json'}]
-		body:    json2.Any(id).json_str()
-	}
+	return context.auth.set_session_cookies(admin_json_response(context.auth.organization_output('organization',
+		org)!), SessionResult{ session: session, user: current.user })
 }

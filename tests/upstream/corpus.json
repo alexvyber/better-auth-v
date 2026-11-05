@@ -34,7 +34,7 @@
     "plugins": {
       "files": 45,
       "declarations": 1315,
-      "importedFiles": 17
+      "importedFiles": 18
     },
     "adapters": {
       "files": 16,
@@ -25363,7 +25363,7 @@
       "path": "packages/better-auth/src/plugins/organization/routes/crud-members.test.ts",
       "sha256": "6cf2cdf33b5747b469237269c53c09bad31cb80e4074eeffd26fed9830d59173",
       "group": "plugins",
-      "status": "unported",
+      "status": "imported-partial-file",
       "kind": "runtime",
       "declarations": [
         {

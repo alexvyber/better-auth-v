@@ -1,0 +1,263 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/organization/routes/crud-members.test.ts",
+  "sha256": "6cf2cdf33b5747b469237269c53c09bad31cb80e4074eeffd26fed9830d59173",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "listMembers",
+      "suites": [
+        "listMembers"
+      ],
+      "test": "should return all members",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "listMembers",
+      "suites": [
+        "listMembers"
+      ],
+      "test": "should return all members by organization slug",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "listMembers",
+      "suites": [
+        "listMembers"
+      ],
+      "test": "should limit the number of members",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "listMembers",
+      "suites": [
+        "listMembers"
+      ],
+      "test": "should offset the members",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "listMembers",
+      "suites": [
+        "listMembers"
+      ],
+      "test": "should filter the members",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "listMembers",
+      "suites": [
+        "listMembers"
+      ],
+      "test": "should filter the members verifying the operator functionality",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "listMembers",
+      "suites": [
+        "listMembers"
+      ],
+      "test": "should filter the members with 'in' operator",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "listMembers",
+      "suites": [
+        "listMembers"
+      ],
+      "test": "should filter the members with 'not_in' operator",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "listMembers",
+      "suites": [
+        "listMembers"
+      ],
+      "test": "should filter the members with 'starts_with' operator",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "listMembers",
+      "suites": [
+        "listMembers"
+      ],
+      "test": "should sort the members",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "listMembers",
+      "suites": [
+        "listMembers"
+      ],
+      "test": "should list members by organization id",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "listMembers",
+      "suites": [
+        "listMembers"
+      ],
+      "test": "should not list members if not a member",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "listMembers with >100 members",
+      "suites": [
+        "listMembers with >100 members"
+      ],
+      "test": "should list all members when membershipLimit is above the adapter default",
+      "selected": false,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": "Generic adapter findMany interception used by the >100 member source suite remains unported"
+    },
+    {
+      "suite": "updateMemberRole",
+      "suites": [
+        "updateMemberRole"
+      ],
+      "test": "should update the member role",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateMemberRole",
+      "suites": [
+        "updateMemberRole"
+      ],
+      "test": "should not update the member role if the member updating is not a member",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateMemberRole",
+      "suites": [
+        "updateMemberRole"
+      ],
+      "test": "should not allow a comma-delimited role string",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateMemberRole",
+      "suites": [
+        "updateMemberRole"
+      ],
+      "test": "should reject updating a member to an unknown role",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "updateMemberRole",
+      "suites": [
+        "updateMemberRole"
+      ],
+      "test": "should reject updating a member to an empty role list",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "activeMemberRole",
+      "suites": [
+        "activeMemberRole"
+      ],
+      "test": "should return the active member role on active organization",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "activeMemberRole",
+      "suites": [
+        "activeMemberRole"
+      ],
+      "test": "should return active member role on organization",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "activeMemberRole",
+      "suites": [
+        "activeMemberRole"
+      ],
+      "test": "should clear active member role hook data after sign out",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "inviteMember role validation",
+      "suites": [
+        "inviteMember role validation"
+      ],
+      "test": "should fail when inviting with a non-existent role",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "inviteMember role validation",
+      "suites": [
+        "inviteMember role validation"
+      ],
+      "test": "should succeed when inviting with a valid default role",
+      "selected": true,
+      "executionSurface": "native-api-upstream-test-origin-defaults",
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

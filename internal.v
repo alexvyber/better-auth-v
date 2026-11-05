@@ -281,6 +281,25 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 			}, '/get-session', Payload{})!
 			return json.encode(response)
 		}
+		'adapterUpdateOrganizationModel' {
+			if args.len != 3 {
+				return error('organization model update requires model, record id and patch')
+			}
+			model := args[0].str()
+			organization_model(model)!
+			encoded := (c.organization_find(model, {
+				'id': args[1].str()
+			})!).value or { return 'null' }
+			mut data := org_json_fields(encoded)!
+			patch := args[2].as_map()
+			if 'id' in patch { return error('organization model update cannot change identity') }
+			for field, value in patch {
+				data[field] = value
+			}
+			proposed := c.auth.organization_defaults(model, data)!
+			actual := c.organization_update_record(model, proposed)!
+			return json2.Any(actual).json_str()
+		}
 		'adapterFindOne' {
 			if args.len != 1 { return error('adapterFindOne requires a query') }
 			query := args[0].as_map()
@@ -288,6 +307,20 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 			if filters.len != 1 { return error('unsupported adapter filter') }
 			filter := filters[0].as_map()
 			model := (query['model'] or { return error('missing model') }).str()
+			if model in organization_models {
+				if (filter['operator'] or { json2.Any('eq') }).str() != 'eq' {
+					return error('organization lookup supports equality only')
+				}
+				field := (filter['field'] or { return error('missing field') }).str()
+				if field !in postgres_core_fields[model]
+					&& field !in c.auth.config.model_fields[model] {
+					return error('unknown organization lookup field')
+				}
+				value := (filter['value'] or { return error('missing value') }).str()
+				return (c.organization_find(model, {
+					field: value
+				})!).value or { 'null' }
+			}
 			field := (filter['field'] or { return error('missing field') }).str()
 			value := (filter['value'] or { return error('missing value') }).str()
 			if model == 'session' && field == 'token' {

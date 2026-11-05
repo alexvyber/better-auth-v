@@ -216,7 +216,7 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
 - `AdminSchemaPlugin` and `OrganizationSchemaPlugin` supply creation defaults and
   protected authority fields. `AdminPlugin` now supplies native admin operations and
   ban enforcement as described below. `OrganizationPlugin` supplies the scoped
-  organization and membership foundation and invitation APIs described below; remaining member operations and teams remain open. The schema-only types do not register those endpoints. Custom synthetic-user callbacks support enumeration
+  organization and membership foundation and invitation APIs described below; teams and remaining integration contracts remain open. The schema-only types do not register those endpoints. Custom synthetic-user callbacks support enumeration
   protection with plugin fields and receive only user-defined additional inputs.
 - Secondary storage supports primary sessions, optional database copies, database
   fallback, preserved expired rows, TTLs, and atomic token consumption/counters in
@@ -739,7 +739,7 @@ invitation primary key for the upstream hook-supplied custom ID case. The
 source fixture explicitly translates upstream test-context defaults that skip
 origin/CSRF checks; production defaults and independent HTTP contracts stay strict.
 
-Remaining membership removal/list-query operations, teams, complete active-membership cleanup, generic hook composition and
+Teams, complete active-membership cleanup, generic hook composition and
 full organization source coverage remain open. Application databases are untouched.
 
 Mongo fixtures with simulated upstream dates disable the background TTL worker,
@@ -796,3 +796,21 @@ changed to make those endpoints succeed.
 Role-count, last-owner and role-assignment aggregate races are not serialized across
 all concurrent requests. Generic adapter queries/hooks, functional role caps, empty
 permission-map edge cases and complete error/context timing still need coverage.
+
+
+Organization member listing supports organization ID/slug, pagination, known-field
+filters, repeated query arrays and sorting, with totals computed before paging and
+complete user joins above 100 members. Active-member-role lookup checks the caller's
+membership before returning another member's role. Removal by ID/email, leaving,
+creator/last-owner guards and before/after removal hooks are native. Leaving clears
+the current session's active organization and cookies. Organization deletion now
+returns the deleted organization and clears the caller's active selection.
+
+22 unchanged member source cases run on each backend (66 cases), including the
+official client's role-hook invalidation after logout. The source's adapter-mock
+case above 100 members is explicitly excluded because generic JS adapter interception
+is not implemented. Nine independent native integration cases verify 111 complete
+user joins, paging/filter totals, tenant and owner guards, failed hook rollback and
+cached active-selection cleanup. Generic database filtering/coercion/collation,
+functional membership limits, aggregate owner races and cleanup after forbidden
+organization reads still require work; typed list scans are not a generic query API.

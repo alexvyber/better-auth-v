@@ -277,7 +277,14 @@ fn organization_update_member_role(mut context EndpointContext, current SessionR
 		return fail(403, 'YOU_ARE_NOT_ALLOWED_TO_UPDATE_THIS_MEMBER',
 			'You are not allowed to update this member')
 	}
-	role := admin_role(fields['role'] or { json2.Any('') }, AdminOptions{})!
+	raw_role := admin_role(fields['role'] or { json2.Any('') }, AdminOptions{})!
+	mut normalized := []string{}
+	for item in raw_role.split(',') {
+		name := item.trim_space()
+		if name != '' && name !in normalized { normalized << name }
+	}
+	if normalized.len == 0 { return fail(400, 'BAD_REQUEST', 'Invalid role') }
+	role := normalized.join(',')
 	options := context.auth.organization_options()!
 	actor_role := (actor['role'] or { json2.Any('') }).str()
 	previous_role := (target['role'] or { json2.Any('') }).str()

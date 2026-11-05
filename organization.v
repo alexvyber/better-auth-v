@@ -62,7 +62,7 @@ pub fn (_ OrganizationPlugin) endpoints() []Endpoint {
 	mut routes := []Endpoint{}
 	for path in ['create', 'update', 'delete', 'check-slug', 'set-active', 'invite-member',
 		'accept-invitation', 'reject-invitation', 'cancel-invitation', 'has-permission',
-		'update-member-role', 'create-role', 'update-role', 'delete-role'] {
+		'update-member-role', 'create-role', 'update-role', 'delete-role', 'remove-member', 'leave'] {
 		routes << Endpoint{
 			path:    '/organization/' + path
 			handler: organization_endpoint
@@ -70,7 +70,7 @@ pub fn (_ OrganizationPlugin) endpoints() []Endpoint {
 	}
 	for path in ['get-full-organization', 'get-organization', 'list', 'get-active-member',
 		'list-members', 'get-invitation', 'list-invitations', 'list-user-invitations', 'list-roles',
-		'get-role'] {
+		'get-role', 'get-active-member-role'] {
 		routes << Endpoint{
 			path:    '/organization/' + path
 			method:  'GET'
@@ -343,6 +343,16 @@ fn organization_endpoint(mut context EndpointContext, request Request) !Response
 	mut fields := map[string]json2.Any{}
 	if request.method == 'GET' {
 		for item in parsed.query().data {
+			if item.key == 'filterValue' {
+				if previous := fields[item.key] {
+					mut values := if previous is []json2.Any { previous.clone() } else { [
+							previous,
+						] }
+					values << json2.Any(item.value)
+					fields[item.key] = json2.Any(values)
+					continue
+				}
+			}
 			fields[item.key] = item.value
 		}
 	} else {
@@ -422,19 +432,13 @@ fn organization_endpoint(mut context EndpointContext, request Request) !Response
 				org_json_fields(encoded)!)!)
 		}
 		'list-members' {
-			id := organization_id(fields, current.session)
-			if (context.organization_find('member', {
-				'organizationId': id
-				'userId':         current.user.id
-			})!).value == none {
-				return fail(403, 'USER_IS_NOT_A_MEMBER_OF_THE_ORGANIZATION',
-					'User is not a member of the organization')
-			}
-			members := context.organization_expanded_members(id, 0)!
-			return admin_json_response({
-				'members': json2.Any(members)
-				'total':   json2.Any(members.len)
-			})
+			return organization_list_members(mut context, current, fields)
+		}
+		'get-active-member-role' {
+			return organization_active_member_role(mut context, current, fields)
+		}
+		'remove-member', 'leave' {
+			return organization_remove_member(mut context, current, fields, path == 'leave')
 		}
 		else {
 			return fail(404, 'NOT_FOUND', 'Not found')

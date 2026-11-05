@@ -71,7 +71,7 @@ interface FixtureInternalAdapter extends Record<string, (...args: any[]) => Prom
 interface FixtureTransactionAdapter {
   findOne<T = any>(query: FixtureOptions): Promise<T | null>;
  update<T = any>(query: FixtureOptions): Promise<T | null>;
-  create<I, O>(query: {model: string; data: I}): Promise<O>;
+  create<I=Record<string,unknown>, O=I & {id:string}>(query: {model: string; data: I}): Promise<O>;
   findMany<T>(query: {model: string;where?:FixtureOptions[]}): Promise<T[]>;
   nativeRunWithTransaction<T>(callback: () => Promise<T>): Promise<T>;
   options: {adapterConfig: {transaction: boolean}};
@@ -93,6 +93,7 @@ const routes: Record<string, [string, string]> = {
  getActiveMember:['GET','/organization/get-active-member'],listMembers:['GET','/organization/list-members'],addMember:['POST','/internal/organization/add-member'],
  createInvitation:['POST','/organization/invite-member'],acceptInvitation:['POST','/organization/accept-invitation'],rejectInvitation:['POST','/organization/reject-invitation'],cancelInvitation:['POST','/organization/cancel-invitation'],getInvitation:['GET','/organization/get-invitation'],listInvitations:['GET','/organization/list-invitations'],listUserInvitations:['GET','/organization/list-user-invitations'],
  hasPermission:['POST','/organization/has-permission'],updateMemberRole:['POST','/organization/update-member-role'],createOrgRole:['POST','/organization/create-role'],updateOrgRole:['POST','/organization/update-role'],deleteOrgRole:['POST','/organization/delete-role'],getOrgRole:['GET','/organization/get-role'],listOrgRoles:['GET','/organization/list-roles'],
+ removeMember:['POST','/organization/remove-member'],leaveOrganization:['POST','/organization/leave'],getActiveMemberRole:['GET','/organization/get-active-member-role'],
 
  impersonateUser:['POST','/admin/impersonate-user'],stopImpersonating:['POST','/admin/stop-impersonating'],
  getUser:['GET','/admin/get-user'],createUser:['POST','/admin/create-user'],
@@ -327,7 +328,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
         if(typeof input.dynamicAccessControl?.maximumRolesPerOrganization==='function')throw new Error('Dynamic role limit callbacks remain unported');
         assertKeys(input.schema??{},['organization','member','invitation','session','organizationRole'],'organization.schema');
         for(const model of Object.values(input.schema??{}) as any[]){assertKeys(model,['modelName','fields','additionalFields'],'organization.schema.model');}
-        assertKeys(input.organizationHooks??{},['beforeCreateOrganization','afterCreateOrganization','beforeAddMember','afterAddMember','beforeUpdateOrganization','afterUpdateOrganization','beforeDeleteOrganization','afterDeleteOrganization','beforeCreateInvitation','afterCreateInvitation','beforeAcceptInvitation','afterAcceptInvitation','beforeRejectInvitation','afterRejectInvitation','beforeCancelInvitation','afterCancelInvitation','beforeUpdateMemberRole','afterUpdateMemberRole'],'organization.hooks');
+        assertKeys(input.organizationHooks??{},['beforeCreateOrganization','afterCreateOrganization','beforeAddMember','afterAddMember','beforeUpdateOrganization','afterUpdateOrganization','beforeDeleteOrganization','afterDeleteOrganization','beforeCreateInvitation','afterCreateInvitation','beforeAcceptInvitation','afterAcceptInvitation','beforeRejectInvitation','afterRejectInvitation','beforeCancelInvitation','afterCancelInvitation','beforeUpdateMemberRole','afterUpdateMemberRole','beforeRemoveMember','afterRemoveMember'],'organization.hooks');
         for(const role of Object.values(input.roles??{}) as any[]){if(!role?.statements)throw new Error('Native organization roles require explicit permission statements');}
         if(input.teams?.enabled&&Object.keys(input).some(key=>key!=='teams'))throw new Error('Organization teams currently supply schema only');
         assertKeys(input.teams ?? {}, ['enabled'], 'organization.teams');
@@ -550,6 +551,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     },
     async update(query) {
      assertKeys(query, ['model','where','update'], 'adapter.update');
+     if(['organization','member','invitation','organizationRole'].includes(query.model)&&query.where?.length===1&&query.where[0].field==='id'&&(!query.where[0].operator||query.where[0].operator==='eq')){const reply=await bridge.send('internal',{method:'adapterUpdateOrganizationModel',arguments_json:transportJSON([query.model,query.where[0].value,query.update])});return hydrate(JSON.parse(reply.value_json));}
      if (query.model !== 'user' || query.where?.length !== 1 || !['id','email'].includes(query.where[0].field) || (query.where[0].operator && query.where[0].operator !== 'eq')) throw new Error('Native adapter.update requires user id/email equality');
      const reply = await bridge.send('internal',{method:'adapterUpdateUser',arguments_json:transportJSON([query.where[0].field,query.where[0].value,query.update])});
      return hydrate(JSON.parse(reply.value_json));

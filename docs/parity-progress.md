@@ -907,10 +907,18 @@ Each plugin must retain original upstream assertions and accurately report gaps.
 - Exposed native provider display names, including Nabu's configured label and
   exact omitted/empty-name semantics. One unchanged upstream case and an owned
   metadata case extend coverage; the focused generic-OAuth/Nabu matrix passes 61
-  cases, with type checking and six audits. This metadata-only follow-up is newer
-  than the complete verification run below; authentication/storage code is unchanged.
+  cases, with type checking and six audits; it is included in the complete run below.
 
-The latest full `make check` passes 2819 TypeScript cases across 142 files, all 120
+- Documented all 27 public organization routes, including writable/protected Brand
+  Map fields, nested role grants, queries and response containers. Disabled dynamic
+  role paths and trusted-only selectors stay hidden. Four owned schema/live HTTP
+  contracts cover all three adapters, with the unchanged upstream CRUD/dynamic-role
+  and OpenAPI suites in a 191-case focused matrix. These documentation assertions
+  are owned coverage, not new upstream OpenAPI declarations. The live tests exposed
+  eager organization default evaluation; supplied values now bypass factories and
+  missing values evaluate once. A native throwing-factory regression also passes.
+
+The latest full `make check` passes 2825 TypeScript cases across 143 files, all 121
 native V test functions across 38 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
 The six source-inventory audit tests also pass. Formatting and `git diff --check` pass. Repeated backend runs do not increase unique

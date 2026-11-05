@@ -58,23 +58,27 @@ pub fn (plugin OrganizationPlugin) validate() ! {
 	validate_organization_fields(plugin.options.additional_fields)!
 }
 
-pub fn (_ OrganizationPlugin) endpoints() []Endpoint {
+pub fn (plugin OrganizationPlugin) endpoints() []Endpoint {
 	mut routes := []Endpoint{}
 	for path in ['create', 'update', 'delete', 'check-slug', 'set-active', 'invite-member',
 		'accept-invitation', 'reject-invitation', 'cancel-invitation', 'has-permission',
 		'update-member-role', 'create-role', 'update-role', 'delete-role', 'remove-member', 'leave'] {
 		routes << Endpoint{
-			path:    '/organization/' + path
-			handler: organization_endpoint
+			path:           '/organization/' + path
+			hide_from_docs: !plugin.options.dynamic_access_control.enabled
+				&& path in ['create-role', 'update-role', 'delete-role']
+			handler:        organization_endpoint
 		}
 	}
 	for path in ['get-full-organization', 'get-organization', 'list', 'get-active-member',
 		'list-members', 'get-invitation', 'list-invitations', 'list-user-invitations', 'list-roles',
 		'get-role', 'get-active-member-role'] {
 		routes << Endpoint{
-			path:    '/organization/' + path
-			method:  'GET'
-			handler: organization_endpoint
+			path:           '/organization/' + path
+			hide_from_docs: !plugin.options.dynamic_access_control.enabled
+				&& path in ['get-role', 'list-roles']
+			method:         'GET'
+			handler:        organization_endpoint
 		}
 	}
 	routes << Endpoint{
@@ -207,10 +211,14 @@ fn (auth &Auth) organization_defaults(model string, data map[string]json2.Any) !
 		if value := data[field] {
 			validate_field(definition, value)!
 			result[field] = value
-		} else if fallback := (definition.resolve_default()!).value {
+			continue
+		}
+		if fallback := (definition.resolve_default()!).value {
 			validate_field(definition, fallback)!
 			result[field] = fallback
-		} else if definition.required {
+			continue
+		}
+		if definition.required {
 			return fail(400, 'MISSING_FIELD', field + ' is required')
 		}
 	}

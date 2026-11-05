@@ -1,5 +1,7 @@
 module better_auth
 
+import x.json2
+
 fn organization_test_user() User {
 	return User{
 		id:         'owner'
@@ -129,4 +131,45 @@ fn test_invitation_claim_prevents_stale_status_replay_and_rolls_back() ! {
 	exercise_invitation_claim(mut sqlite)!
 	sqlite.rollback()!
 	assert (sqlite.organization_rows('invitation', {})!).len == 0
+}
+
+fn supplied_org_default_must_not_run() !FieldInputResult {
+	return error('organization factory must only run for a missing field')
+}
+
+fn test_organization_defaults_skip_throwing_factories_for_supplied_values() ! {
+	mut auth := new(Config{
+		secret:  '12345678901234567890123456789012'
+		plugins: [
+			Plugin(OrganizationPlugin{
+				options: OrganizationOptions{
+					additional_fields: {
+						'organization': {
+							'label': AdditionalField{
+								field_type:      'string'
+								required:        true
+								default_factory: supplied_org_default_must_not_run
+							}
+						}
+					}
+				}
+			}),
+		]
+	}, open_memory())!
+	defer { auth.close() or {} }
+	result := auth.organization_defaults('organization', {
+		'name':  json2.Any('Explicit')
+		'slug':  json2.Any('explicit')
+		'label': json2.Any('supplied')
+	})!
+	assert result['label']!.str() == 'supplied'
+	if _ := auth.organization_defaults('organization', {
+		'name': json2.Any('Missing')
+		'slug': json2.Any('missing')
+	})
+	{
+		assert false
+	} else {
+		assert err.msg() == 'organization factory must only run for a missing field'
+	}
 }

@@ -76,7 +76,7 @@ There is no dependency on a web framework.
   provider interface, and a GitHub provider using verified email addresses. Form/JSON
   POST callbacks redirect to the cookie-bound GET. Explicit
   provider logout supports linked ID tokens, redirects, state, and provider fallback.
-- OpenAPI 3.1 model/core-route and email-OTP request schemas, declarative custom
+- OpenAPI 3.1 model/core-route, email-OTP and organization schemas, declarative custom
   endpoint input schemas, explicit metadata and an optional Scalar reference page with custom path, theme and nonce settings.
 - A public HTML error endpoint with escaped descriptions and validated error codes.
 - A JSON-lines test process and TypeScript facade that execute selected original

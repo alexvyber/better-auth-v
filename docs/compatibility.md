@@ -861,7 +861,7 @@ Trusted OTP creation/read APIs remain absent from HTTP documentation. A native
 integration contract also exercises the documented OTP signup flow.
 
 This is not full OpenAPI parity. The full upstream endpoint snapshot, automatic
-plugin request/response schemas, remaining schema kinds/constraints, complete
+remaining plugin request/response schemas, remaining schema kinds/constraints, complete
 security/tag metadata and the remaining source cases are open. Unknown plugin inputs are not fabricated: supply
 explicit native endpoint metadata to document their shapes. Native JSON fields use
 an unconstrained JSON Schema rather than the upstream model generator's `json` type.
@@ -1032,5 +1032,29 @@ falling back to the provider ID only when absent; Google/GitHub expose their nam
 Native provider context metadata carries the value. The unchanged custom-name source
 case, Nabu's configured label across its backend contracts and an owned omitted/empty
 name contract pass (61 focused cases, type checking and six inventory audits).
-This metadata-only follow-up does not change authentication or persistence behavior;
-the preceding full verification count remains the `make check` result recorded above.
+This provider-name change affects metadata rather than authentication or persistence.
+
+
+Organization OpenAPI metadata now covers all 16 public POST and 11 GET routes, with
+stable operation IDs, organization tags, request bodies, member-list query shapes,
+role permission records and response containers/model references. Protected Brand Map
+review fields stay read-only in models and are absent from writable bodies. Model
+metadata/permission fields describe their normalized JSON output. Body extra fields
+respect input/default flags without evaluating factories; nested role additional
+fields follow the same rule. Trusted member creation and server-only invitation email
+selection stay absent from HTTP docs. Disabled dynamic-role routes are hidden while
+static member-role operations remain documented.
+
+Four owned contracts inspect the schemas and execute documented role, member,
+invitation and acceptance requests across SQLite, PostgreSQL and MongoDB. They also
+check factory/lifecycle/email isolation during generation and exact default-factory
+calls during creation. The unchanged CRUD/dynamic-role/OpenAPI regressions are included
+in the 191-case focused matrix; the new organization documentation assertions are
+owned contracts, not newly imported upstream OpenAPI cases. Complete snapshots,
+all metadata/security/error details and exhaustive endpoint schema validation remain
+incomplete.
+
+The live contracts exposed an organization-default evaluation bug: an existing field
+still evaluated its fallback factory. Default resolution now short-circuits supplied
+values. Missing values evaluate a factory once, reads/docs leave it alone, and a native
+regression verifies a throwing factory cannot reject an explicit supplied value.

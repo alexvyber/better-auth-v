@@ -81,7 +81,10 @@ fn openapi_core_fields(model string) map[string]AdditionalField {
 			'token', 'userId', 'accountId', 'providerId', 'identifier', 'value', 'organizationId',
 			'role', 'slug', 'status', 'inviterId', 'permission']
 		result[name] = AdditionalField{
-			field_type: if date {
+			field_type: if (model == 'organization' && name == 'metadata')
+				|| (model == 'organizationRole' && name == 'permission') {
+				'json'
+			} else if date {
 				'date'
 			} else if name == 'emailVerified' {
 				'boolean'
@@ -114,7 +117,13 @@ fn openapi_model(model string, additional map[string]AdditionalField) json2.Any 
 		fields[name] = definition
 	}
 	for name, definition in fields {
-		properties[name] = json2.Any(openapi_type(definition, true))
+		properties[name] = if model == 'organization' && name == 'metadata' {
+			org_doc_type('object')
+		} else if model == 'organizationRole' && name == 'permission' {
+			org_doc_permissions()
+		} else {
+			json2.Any(openapi_type(definition, true))
+		}
 		if definition.required && definition.returned { required << json2.Any(name) }
 	}
 	return json2.Any({
@@ -387,6 +396,7 @@ fn (auth &Auth) openapi_core_operation(path string, method string) !map[string]j
 			})
 		})))
 	}
+	auth.openapi_organization_operation(mut operation, path, method)!
 	return operation
 }
 

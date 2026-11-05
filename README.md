@@ -69,7 +69,9 @@ There is no dependency on a web framework.
   mapped PostgreSQL/MongoDB persistence, invitation delivery/acceptance/rejection,
   cancellation, resend and expiry policies; dynamic role CRUD, grant checks and
   member-role updates with live authorization, member pagination/filtering/sorting,
-  removal and leaving with last-owner checks.
+  removal and leaving with last-owner checks. Transaction-enabled organization
+  mutations serialize aggregate limits, last-owner changes and role assignment
+  against deletion across independent database connections.
 - Generic OIDC discovery, signature/nonce verification, profile policy callbacks,
   verified-local-email linking gates, implicit-link switches and provisioned-user
   signup controls.

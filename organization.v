@@ -368,13 +368,25 @@ fn organization_endpoint(mut context EndpointContext, request Request) !Response
 			return fail(400, 'VALIDATION_ERROR', 'Invalid request body')
 		}
 	}
-	if path == 'add-member' { return organization_server_add_member(mut context, fields) }
+	if path == 'add-member' {
+		context.organization_lock_mutations()!
+		return organization_server_add_member(mut context, fields)
+	}
 	if path == 'list-user-invitations' {
 		return organization_list_user_invitations(mut context, fields)
 	}
 	actor := (context.organization_actor(path == 'create')!).value
-	if path == 'create' { return organization_create(mut context, actor, fields) }
+	if path == 'create' {
+		context.organization_lock_mutations()!
+		return organization_create(mut context, actor, fields)
+	}
 	current := actor or { return fail(401, 'UNAUTHORIZED', 'Unauthorized') }
+	// Acceptance invokes its before hook before claiming the invitation. Keep
+	// that ordering; the acceptance handler acquires the aggregate barrier and
+	// checks capacity again immediately before its atomic claim.
+	if request.method == 'POST' && path !in ['has-permission', 'check-slug', 'accept-invitation'] {
+		context.organization_lock_mutations()!
+	}
 	if path in ['invite-member', 'accept-invitation', 'reject-invitation', 'cancel-invitation',
 		'get-invitation', 'list-invitations'] {
 		return organization_invitation_endpoint(mut context, current, fields, path)

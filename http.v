@@ -358,11 +358,25 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 		}
 		a.check_redirect((u.query().get(field) or { '' }), field)!
 	}
+	if req.method == 'POST'
+		&& (path.starts_with('/organization/') || path == '/internal/organization/add-member') {
+		encoded := a.with_transaction_unlocked(fn [req, path, payload, body] (mut context EndpointContext) !string {
+			return json.encode(context.auth.dispatch_transaction(Request{ ...req, body: body },
+				path, payload)!)
+		})!
+		return json.decode(Response, encoded)!
+	}
 	a.begin_transaction(path == '/get-session' && req.method == 'GET'
 		&& a.config.defer_session_refresh)!
 	defer { a.rollback_transaction() }
+	result := a.dispatch_transaction(Request{ ...req, body: body }, path, payload)!
+	if a.transaction_active { a.commit_transaction()! }
+	return result
+}
+
+fn (mut a Auth) dispatch_transaction(req Request, path string, payload Payload) !Response {
 	a.anonymous_before_request(path)!
-	mut result := a.dispatch(Request{ ...req, body: body }, path, payload)!
+	mut result := a.dispatch(req, path, payload)!
 	a.anonymous_after_response(path, result)!
 	if path == '/get-session' && result.body != 'null' {
 		if options := a.jwt_options() {
@@ -374,7 +388,6 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 		}
 	}
 	result = a.one_time_token_new_session(result)!
-	if a.transaction_active { a.commit_transaction()! }
 	return result
 }
 

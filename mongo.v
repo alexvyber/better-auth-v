@@ -19,14 +19,15 @@ pub:
 // instances must open separate clients. Transactions require a replica set.
 pub struct MongoStorage {
 mut:
-	client         &MongoClient
-	options        MongoOptions
-	model_fields   map[string]map[string]AdditionalField
-	user_fields    map[string]AdditionalField
-	session_fields map[string]AdditionalField
-	snapshots      map[string]string
-	transaction    bool
-	managed        bool
+	client                  &MongoClient
+	options                 MongoOptions
+	model_fields            map[string]map[string]AdditionalField
+	user_fields             map[string]AdditionalField
+	session_fields          map[string]AdditionalField
+	snapshots               map[string]string
+	transaction             bool
+	managed                 bool
+	organization_lock_ready bool
 }
 
 fn mongo_name(value string) bool {

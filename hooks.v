@@ -172,10 +172,16 @@ fn (mut a Auth) with_transaction_unlocked(operation fn (mut EndpointContext) !st
 	mut storage := a.storage
 	if mut storage is ManagedTransactionStorage {
 		if a.transactions_enabled {
-			result := storage.run_managed_transaction(fn [mut a, operation] () !string {
+			saved_session := a.new_session
+			saved_anonymous := a.anonymous_link_session
+			saved_consumed := a.oauth_state_consumed
+			result := storage.run_managed_transaction(fn [mut a, operation, saved_session, saved_anonymous, saved_consumed] () !string {
 				// The driver has aborted/restarted the physical transaction before
 				// replay. Discard failed-attempt hooks and secondary-cache effects.
 				a.rollback_transaction()
+				a.new_session = saved_session
+				a.anonymous_link_session = saved_anonymous
+				a.oauth_state_consumed = saved_consumed
 				a.begin_transaction(false)!
 				mut context := EndpointContext{ auth: a }
 				value := operation(mut context) or {
@@ -188,6 +194,9 @@ fn (mut a Auth) with_transaction_unlocked(operation fn (mut EndpointContext) !st
 				}
 				return value
 			}) or {
+				a.new_session = saved_session
+				a.anonymous_link_session = saved_anonymous
+				a.oauth_state_consumed = saved_consumed
 				if err is MongoDriverError && err.cleanup_error != '' {
 					a.config.log('error',
 						'Failed to abort a MongoDB transaction whose commit did not complete: ' +

@@ -918,10 +918,12 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   eager organization default evaluation; supplied values now bypass factories and
   missing values evaluate once. A native throwing-factory regression also passes.
 
-The latest full `make check` passes 3434 TypeScript cases across 150 files, all 126
+The latest complete verification passes 3456 TypeScript cases across 151 files, all 126
 native V test functions across 40 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
-The ten source-preservation audit tests also pass. Formatting and `git diff --check` pass. Repeated backend runs do not increase unique
+The TypeScript suite ran in four disjoint shards after monolithic runs were
+terminated with signal 9; it covers every current test file. The ten
+source-preservation audit tests also pass. Formatting and `git diff --check` pass. Repeated backend runs do not increase unique
 upstream source coverage, and these results do not imply full upstream parity.
 
 The user resumed work and authorized incremental commits and pushes to
@@ -1048,6 +1050,43 @@ ten audits, type checking and HTTP smoke pass. This batch exposes retries throug
 explicit transaction API and callback contexts. Existing `with_internal` and HTTP
 transactions retain their current boundaries; organization HTTP integration is next.
 Callbacks in replayable transactions can execute more than once, as upstream does.
+
+## Organization aggregate concurrency
+
+Organization mutations now acquire a native per-store transaction barrier on
+PostgreSQL and MongoDB; SQLite already serializes writers through BEGIN IMMEDIATE.
+The barrier covers membership, user-wide organization and role caps, last-owner
+transitions and assignment versus role deletion. It requires transactions enabled
+and does not coordinate raw domain writes. The coarse scope trades throughput for
+portable aggregate correctness across independent Auth instances.
+
+MongoDB organization POST routes use the managed transaction runner, restoring
+request-local session/anonymous/OAuth state before replay. Session-read transient
+errors retain their retry label inside this scope. Other HTTP paths keep their
+existing boundaries, including intentional intermediate commits. Coordination data
+is installed by explicit native migrations; cold instances probe existing data
+without runtime collection creation and fail closed until migrated if it is absent.
+
+Twenty-one owned concurrency/rollback cases run across three backends, plus one
+MongoDB cold-instance/migration recovery case. Isolated binaries with the barrier
+removed reproduce two successful additions at a one-slot membership limit on both
+PostgreSQL and MongoDB. The original invitation concurrency contracts exposed a
+hook-order deadlock: acceptance now preserves beforeAcceptInvitation before the
+barrier, rechecks capacity under it and retains its atomic claim. Those unchanged
+contracts and the new cases pass together (33 cases). No upstream assertions were
+changed or exclusions counted as passes.
+
+Complete TypeScript verification: four disjoint shards pass 1061/701/1139/555 cases
+across 38/38/38/37 files (3456 cases / 151 files total). All 40 native test files
+and ten preservation audits pass; the organization native tests are rechecked
+after the invitation hook-order correction. Type checking and real HTTP migration,
+authentication, CSRF and restart smoke tests pass. The monolithic make-check
+attempt was interrupted, so these separately completed targets are the validation
+record for this batch. The shared basic suite still explicitly excludes nineteen
+arbitrary-plugin/custom-relation/guarded-increment entries; this is not full parity.
+The owned concurrency fixture uses the harness configuration type instead of
+propagating its precise plugin generic through every independent instance. This
+avoids excessive compiler work without changing runtime setup or assertions.
 
 ## Guardrails for continuing
 

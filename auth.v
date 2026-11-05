@@ -456,6 +456,10 @@ fn (mut a Auth) current_session(ctx RequestContext) !Lookup[SessionResult] {
 fn (mut a Auth) lookup_session(ctx RequestContext, delete_expired bool) !Lookup[SessionResult] {
 	token := a.context_token(ctx) or { return Lookup[SessionResult]{} }
 	found := a.find_session_record(token) or {
+		storage := a.storage
+		if storage is MongoStorage && storage.managed && err is MongoDriverError {
+			if 'TransientTransactionError' in err.labels { return err }
+		}
 		a.config.log('error', 'Failed to get session: ${err.msg()}')
 		return fail(500, 'FAILED_TO_GET_SESSION', 'Failed to get session')
 	}

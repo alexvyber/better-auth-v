@@ -244,6 +244,13 @@ fn organization_invitation_endpoint(mut context EndpointContext, current Session
 			'Organization membership limit reached')
 	}
 	context.organization_hook('beforeAcceptInvitation', payload)!
+	context.organization_lock_mutations()!
+	if (context.organization_rows('member', {
+		'organizationId': org_id
+	})!).len >= limit {
+		return fail(403, 'ORGANIZATION_MEMBERSHIP_LIMIT_REACHED',
+			'Organization membership limit reached')
+	}
 	context.invitation_claim(id, 'accepted')!
 	claimed := (context.organization_find('invitation', {
 		'id': id

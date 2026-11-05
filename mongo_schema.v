@@ -106,6 +106,7 @@ pub fn (mut storage MongoStorage) migrate() ! {
 			}
 		}
 	}
+	storage.initialize_organization_lock()!
 }
 
 fn bson_array(values ...BSONValue) BSONValue {

@@ -87,7 +87,7 @@ export class Bridge {
 
   constructor(args: string[] = [], mongo = false) {
     this.child = spawn(
-      fileURLToPath(new URL(mongo ? "../../build/mongo-auth-bridge" : "../../build/auth-bridge", import.meta.url)),
+      (mongo ? process.env.BETTER_AUTH_MONGO_BRIDGE_BIN : process.env.BETTER_AUTH_BRIDGE_BIN) ?? fileURLToPath(new URL(mongo ? "../../build/mongo-auth-bridge" : "../../build/auth-bridge", import.meta.url)),
       args,
       {
         stdio: "pipe",

@@ -796,8 +796,28 @@ APIs remain denied unless the configured role grants `ac`. App-provisioned nativ
 storage records can still contribute domain permissions. No application policy is
 changed to make those endpoints succeed.
 
-Role-count, last-owner and role-assignment aggregate races are not serialized across
-all concurrent requests. Generic adapter queries/hooks, functional role caps, empty
+With transactions enabled, native organization mutations serialize aggregate
+membership/organization/role limits, last-owner changes and role assignment against
+deletion across independent connections. PostgreSQL uses a transaction advisory
+lock per physical organization store; SQLite uses its existing immediate writer
+transaction. MongoDB updates a shared coordination document and replays conflicting
+organization POST transactions through the native driver's transaction runner.
+The barrier is deliberately coarse: unrelated organization mutations in the same
+physical store share it. Raw application writes must coordinate separately, and
+disabling transactions removes this cross-instance guarantee. Callbacks within a
+replayed MongoDB transaction can run again; external effects require application
+idempotency. Coordination data is created by explicit native MongoDB migrations;
+cold instances only probe it, and missing data fails the mutation until migrated.
+Invitation acceptance preserves its before-hook ordering, then acquires the barrier,
+checks capacity again and atomically claims the invitation. Two requests may enter
+the before hook even though only one can claim a given invitation.
+
+Twenty-one owned race/rollback cases cover seven scenarios on all three backends;
+a further owned MongoDB case covers cold initialization, missing coordination,
+rollback and explicit migration recovery. Removing the barrier in isolated native
+test binaries reproduces the membership-limit race on PostgreSQL and MongoDB.
+These cases supplement unchanged upstream organization suites and do not count as
+new upstream source coverage. Generic adapter hooks, functional role caps, empty
 permission-map edge cases and complete error/context timing still need coverage.
 
 
@@ -1121,10 +1141,11 @@ linking/session creation retain its ObjectId and application-owned data. PKCE,
 Basic authentication, the session lifetime and proof replay assertions remain.
 
 This does not import the full driver-specific MongoDB/Drizzle/Kysely test suites or
-the remaining shared basic-query/join/case-insensitive/UUID/serial-ID suites.
-Transient transaction retries, ambiguous commit handling and aggregate races remain
-open. Nested transactions share the enclosing transaction; no savepoint semantics
-are claimed for this facade.
+the remaining shared plugin-schema/case-insensitive/UUID/serial-ID suites. Subsequent
+batches below add core queries/joins, managed MongoDB retries and commit cleanup;
+organization mutations also use the aggregate barrier described above. Other HTTP
+transaction boundaries retain their existing behavior. Nested transactions share
+the enclosing transaction; no savepoint semantics are claimed for this facade.
 
 ### Core adapter query and join continuation
 

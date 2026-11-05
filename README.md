@@ -73,7 +73,8 @@ There is no dependency on a web framework.
 - Native Redis secondary storage with GETDEL/Lua atomics, fixed counter TTLs,
   prefix-safe scans and an authenticated RESP2 TCP client.
 - OAuth authorization-code orchestration with PKCE and browser-bound state, a
-  provider interface, and a GitHub provider using verified email addresses. Explicit
+  provider interface, and a GitHub provider using verified email addresses. Form/JSON
+  POST callbacks redirect to the cookie-bound GET. Explicit
   provider logout supports linked ID tokens, redirects, state, and provider fallback.
 - OpenAPI 3.1 model/core-route and email-OTP request schemas, declarative custom
   endpoint input schemas, explicit metadata and an optional Scalar reference page with custom path, theme and nonce settings.

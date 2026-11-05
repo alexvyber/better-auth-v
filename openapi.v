@@ -145,6 +145,9 @@ fn (auth &Auth) openapi_core_operation(path string, method string) !map[string]j
 	mut names := []string{}
 	mut mandatory := []string{}
 	match path {
+		'/callback/:id' {
+			if method == 'POST' { names = oauth_callback_fields.clone() }
+		}
 		'/sign-up/email' {
 			names = ['name', 'email', 'password', 'image', 'rememberMe', 'callbackURL']
 			mandatory = ['name', 'email', 'password']
@@ -308,6 +311,13 @@ fn (auth &Auth) openapi_core_operation(path string, method string) !map[string]j
 	if (core_routes()[path] or { []string{} }).len > 1 && method != 'GET' {
 		operation_id += method[..1].to_upper() + method[1..].to_lower()
 	}
+	if path == '/callback/:id' {
+		operation_id = if method == 'POST' {
+			'handleOAuthCallbackPost'
+		} else {
+			'handleOAuthCallback'
+		}
+	}
 
 	mut operation := {
 		'operationId': json2.Any(operation_id)
@@ -342,6 +352,31 @@ fn (auth &Auth) openapi_core_operation(path string, method string) !map[string]j
 		operation['requestBody'] = json2.Any(body)
 	}
 	if path == '/forget-password/email-otp' { operation['deprecated'] = true }
+	if path == '/callback/:id' {
+		operation['parameters'] = json2.Any([
+			json2.Any({
+				'name':     json2.Any('id')
+				'in':       json2.Any('path')
+				'required': json2.Any(true)
+				'schema':   json2.Any({
+					'type': json2.Any('string')
+				})
+			}),
+		])
+		operation['responses'] = json2.Any({
+			'302': json2.Any({
+				'description': json2.Any('OAuth callback redirect')
+			})
+		})
+		if method == 'POST' {
+			mut request_body := openapi_body(properties, required).as_map().clone()
+			mut content := request_body['content']!.as_map().clone()
+			content['application/x-www-form-urlencoded'] = content['application/json']!
+			request_body['content'] = json2.Any(content)
+			request_body['required'] = false
+			operation['requestBody'] = json2.Any(request_body)
+		}
+	}
 	if method == 'GET' && path == '/get-session' {
 		operation['parameters'] = json2.Any(['disableCookieCache', 'disableRefresh'].map(json2.Any({
 			'name':     json2.Any(it)
@@ -381,7 +416,8 @@ pub fn (auth &Auth) generate_openapi_schema() !string {
 			openapi_unique_id(mut operation, mut used_ids)
 			operations[method.to_lower()] = json2.Any(operation)
 		}
-		paths[path] = json2.Any(operations)
+		documented_path := if path == '/callback/:id' { '/callback/{id}' } else { path }
+		paths[documented_path] = json2.Any(operations)
 	}
 	for plugin in auth.config.plugins {
 		for endpoint in plugin.endpoints() {

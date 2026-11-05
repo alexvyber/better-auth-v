@@ -54,6 +54,7 @@ fn core_routes() map[string][]string {
 		'/reset-password':          ['POST']
 		'/send-verification-email': ['POST']
 		'/verify-email':            ['GET']
+		'/callback/:id':            ['GET', 'POST']
 	}
 }
 
@@ -284,7 +285,7 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 		}
 	}
 	if path.starts_with('/reset-password/') { methods = ['GET'] }
-	if path.starts_with('/callback/') { methods = ['GET'] }
+	if path.starts_with('/callback/') { methods = ['GET', 'POST'] }
 	if methods.len == 0 { return fail(404, 'NOT_FOUND', 'Not found') }
 	if req.method !in methods { return fail(405, 'METHOD_NOT_ALLOWED', 'Method not allowed') }
 	if !direct {
@@ -295,12 +296,18 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 	if req.method == 'POST' {
 		content_type := req.headers['content-type'].all_before(';').trim_space().to_lower()
 		if content_type == 'application/x-www-form-urlencoded'
-			&& path in ['/sign-up/email', '/sign-in/email'] {
+			&& (path in ['/sign-up/email', '/sign-in/email'] || path.starts_with('/callback/')) {
 			values := urllib.parse_query(body) or {
 				return fail(400, 'INVALID_BODY', 'Invalid body')
 			}
 			mut fields := map[string]string{}
 			for key, _ in values.to_map() {
+				if path.starts_with('/callback/') && key in oauth_callback_fields && (values.to_map()[key] or {
+					[]string{}
+				}).len != 1 {
+					return fail(400, 'VALIDATION_ERROR',
+						'OAuth callback parameters must be strings')
+				}
 				fields[key] = values.get(key) or { '' }
 			}
 			body = json.encode(fields)
@@ -311,6 +318,7 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 		fields := json2.decode[map[string]json2.Any](body) or {
 			return fail(400, 'BODY_MUST_BE_AN_OBJECT', 'Body must be an object')
 		}
+		if path.starts_with('/callback/') { return a.oauth_post_callback(req, fields) }
 		for field in ['callbackURL', 'redirectTo', 'errorCallbackURL', 'newUserCallbackURL'] {
 			if value := fields[field] {
 				if value !is string && value !is json2.Null {
@@ -361,6 +369,11 @@ fn (mut a Auth) process_checked(req Request, direct bool) !Response {
 
 fn (mut a Auth) check_csrf(req Request, path string) ! {
 	if req.method in ['GET', 'HEAD'] { return }
+	// Form-post providers arrive without SameSite=Lax cookies. This endpoint only
+	// redirects to a same-origin GET; that GET enforces the bound state cookie.
+	if req.method == 'POST' && path.starts_with('/callback/') && req.headers['cookie'] == '' {
+		return
+	}
 	if (a.config.disable_csrf_check or { false }) || a.skip_origin_check() {
 		if a.config.disable_origin_check && a.config.disable_csrf_check == none
 			&& !a.warned_origin_csrf {

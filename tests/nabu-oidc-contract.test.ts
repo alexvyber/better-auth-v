@@ -45,7 +45,7 @@ async function instance(overrides: Record<string, any> = {}, dependencies: {fact
  const user = await adapter.createUser({email: 'provisioned@example.com', name: 'Provisioned', emailVerified: true}, {method: 'test'});
  return {...ready, user};
 }
-async function authorize(ready: Awaited<ReturnType<typeof instance>>) {
+async function authorize(ready: Awaited<ReturnType<typeof instance>>, formPost=false) {
  const headers = new Headers();
  const response = await ready.auth.api.signInSocial({body: {provider: 'tinyauth', callbackURL: 'http://localhost:3000/nabu'}, asResponse: true});
  ready.cookieSetter(headers)({response});
@@ -53,11 +53,35 @@ async function authorize(ready: Awaited<ReturnType<typeof instance>>) {
  const authorization = new URL(url);
  const redirect = await fetch(url, {redirect: 'manual'});
  const callback = redirect.headers.get('location')!;
- const result = await ready.auth.handler(new Request(callback, {headers}));
+ let finalCallback=callback;
+ if(formPost){
+  const target=new URL(callback);
+  const post=await ready.auth.handler(new Request(target.origin+target.pathname,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded',origin:issuer,'sec-fetch-site':'cross-site'},body:target.searchParams}));
+  expect(post.status).toBe(302);expect(post.headers.getSetCookie()).toEqual([]);
+  finalCallback=post.headers.get('location')!;
+  const adapter=(await ready.auth.$context).internalAdapter;
+  expect(await adapter.findAccounts(ready.user.id)).toEqual([]);
+  expect((await ready.auth.handler(new Request(finalCallback))).status).toBe(403);
+ }
+ const result = await ready.auth.handler(new Request(finalCallback, {headers}));
  return {authorization, callback, headers, result};
 }
 
 describe('Nabu provisioned OIDC configuration', () => {
+ for(const [backend,factory] of [['sqlite',getTestInstance],['postgres',postgresInstance],['mongo',mongoInstance]] as const){
+  it(`completes a cookie-less OIDC form POST through a browser-bound GET on ${backend}`,async()=>{
+   email='provisioned@example.com';verified=true;
+   const ready=await instance({},{factory});
+   const {authorization,result,headers,callback}=await authorize(ready,true);
+   expect(result.status).toBe(302);expect(result.headers.get('location')).toBe('http://localhost:3000/nabu');
+   expect(createHash('sha256').update(tokenRequest.verifier!).digest('base64url')).toBe(authorization.searchParams.get('code_challenge'));
+   expect(tokenRequest.authorization).toBe('Basic '+Buffer.from('nabu-client:nabu-secret').toString('base64'));
+   const replay=new Headers(headers);ready.cookieSetter(headers)({response:result});
+   expect((await ready.auth.api.getSession({headers}))?.user.id).toBe(ready.user.id);
+   expect((await ready.auth.handler(new Request(callback,{headers:replay}))).status).toBe(400);
+  });
+ }
+
  it('executes Nabu provisioning and signed OIDC login against real MongoDB storage', async()=>{
   email='Provisioned@Example.com';verified=true;
   const configuration=await mongoOptions();

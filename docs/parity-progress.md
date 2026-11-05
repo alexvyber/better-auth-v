@@ -838,7 +838,7 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   titles cannot inflate coverage. Six audit cases cover complementary selections,
   repeats, ambiguous legacy records, stale checksums and invalid source metadata;
   `make check` now includes them. Source bodies/assertions are unchanged. The inventory
-  identifies 1,175 preserved declarations, distinct from runtime/backend case counts.
+  identifies 1,177 preserved declarations, distinct from runtime/backend case counts.
 
 - Added native OpenAPI request schemas for all nine public email-OTP POST endpoints,
   including required fields, purpose enums, extensible signup input and the deprecated
@@ -854,7 +854,15 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   The fixture translates Zod structure only. This documentation IR does not install
   runtime validators; remaining schema kinds and plugin route shapes remain open.
 
-The latest full `make check` passes 2730 TypeScript cases across 139 files, all 116
+- Added OAuth form/JSON POST callbacks that redirect to GET without consuming state
+  or exchanging codes. The eventual GET still requires the bound browser cookie and
+  rejects replay. Native validation retains cookie-bearing CSRF checks; one native
+  function, three signed Nabu OIDC backend contracts and an HTTP boundary contract
+  cover the flow. Two unchanged upstream OpenAPI cases verify both callback methods,
+  path parameters and separate operation objects. OAuth-proxy/SAML parity is not
+  implied by these core callback and documentation contracts.
+
+The latest full `make check` passes 2736 TypeScript cases across 140 files, all 117
 native V test functions across 38 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
 The six source-inventory audit tests also pass. Formatting and `git diff --check` pass. Repeated backend runs do not increase unique

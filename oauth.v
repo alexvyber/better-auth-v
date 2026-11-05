@@ -7,6 +7,47 @@ import json
 import net.urllib
 import x.json2
 
+const oauth_callback_fields = ['code', 'error', 'device_id', 'error_description', 'state', 'user',
+	'iss']
+
+// Match upstream's form-post bridge: do not exchange codes or consume state until
+// the browser follows this GET redirect with its SameSite state cookie.
+fn (a &Auth) oauth_post_callback(req Request, body map[string]json2.Any) !Response {
+	u := urllib.parse(req.url)!
+	provider_id := u.path.all_after(a.config.base_path + '/callback/')
+	if provider_id == '' || provider_id.contains('/') {
+		return fail(404, 'NOT_FOUND', 'Not found')
+	}
+	query := u.query().to_map()
+	mut parameters := []string{}
+	for name in oauth_callback_fields {
+		mut value := ''
+		mut present := false
+		if input := body[name] {
+			if input !is string {
+				return fail(400, 'VALIDATION_ERROR', 'OAuth callback parameters must be strings')
+			}
+			value = input.str()
+			present = true
+		}
+		if inputs := query[name] {
+			if inputs.len != 1 {
+				return fail(400, 'VALIDATION_ERROR', 'OAuth callback parameters must be strings')
+			}
+			value = inputs[0]
+			present = true
+		}
+		if present { parameters << urllib.query_escape(name) + '=' + urllib.query_escape(value) }
+	}
+	return Response{
+		status:  302
+		headers: [
+			Header{'location', a.base_url().trim_right('/') + a.config.base_path + '/callback/' +
+				urllib.query_escape(provider_id) + '?' + parameters.join('&')},
+		]
+	}
+}
+
 // Code exchanges obtain identity from the provider's authenticated token/profile
 // transport. Direct ID-token credentials need a separate issuer/audience/nonce/
 // signature/expiry verification path; they must not enter exchange().

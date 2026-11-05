@@ -33,6 +33,7 @@ The default base path is `/api/auth`.
 | GET    | `/verify-email`            | Consume token and verify email                            |
 | POST   | `/sign-in/social`          | Start configured OAuth provider flow                      |
 | GET    | `/callback/:provider`      | Complete bound OAuth code/PKCE flow                       |
+| POST   | `/callback/:provider`      | Redirect form/JSON provider callbacks to the bound GET    |
 | POST   | `/sign-in/magic-link`      | Plugin: email a link to an existing user                  |
 | GET    | `/magic-link/verify`       | Plugin: consume link and create session                   |
 | GET    | `/one-time-token/generate` | Plugin: issue a token bound to the authenticated session |
@@ -828,9 +829,10 @@ Native endpoints can provide JSON OpenAPI metadata and hide themselves from docs
 operation IDs remain unique. Internal endpoints and the reference page are omitted.
 Embedded schema/settings and nonce attributes are escaped without changing values.
 
-26 unchanged upstream cases verify model/request fields, nested social token input,
+28 unchanged upstream cases verify model/request fields, nested social token input,
 optional/default types, nullable sessions, operation IDs, serialization, custom body
-intersections/unions/records, query length constraints and wrapper requiredness.
+intersections/unions/records, query length constraints, wrapper requiredness, dynamic callback path parameters
+and independent operations across methods.
 Six owned contracts verify explicit metadata, hidden paths, ID collisions, safe
 reference embedding, custom path, disabled reference, live OTP signup and custom
 schema boundaries. Only the phone-number fixture remains omitted; original selected
@@ -859,9 +861,8 @@ Trusted OTP creation/read APIs remain absent from HTTP documentation. A native
 integration contract also exercises the documented OTP signup flow.
 
 This is not full OpenAPI parity. The full upstream endpoint snapshot, automatic
-plugin request/response schemas, remaining schema kinds/constraints, POST OAuth
-callbacks, complete security/tag metadata and the
-remaining source cases are open. Unknown plugin inputs are not fabricated: supply
+plugin request/response schemas, remaining schema kinds/constraints, complete
+security/tag metadata and the remaining source cases are open. Unknown plugin inputs are not fabricated: supply
 explicit native endpoint metadata to document their shapes. Native JSON fields use
 an unconstrained JSON Schema rather than the upstream model generator's `json` type.
 
@@ -925,6 +926,19 @@ The source inventory unions complementary imports by original AST position under
 matching source checksums. Backend repeats count once, duplicate titles retain
 separate identities and malformed source metadata fails the audit. Every manifest
 records original positions/lines. Six audit tests run through `make check`. The
-current 33 complete/16 partial/387 unported source-file counts and 1,175 preserved
+current 33 complete/16 partial/387 unported source-file counts and 1,177 preserved
 static declarations describe source coverage, including separately labelled SDK
 probes; they are not equivalent to native runtime or feature parity.
+
+
+OAuth callbacks accept form-urlencoded or JSON POSTs and redirect to a canonical
+same-origin GET. Known callback fields must be strings; query fields take precedence
+over body fields, unknown fields are discarded, and state is not consumed until GET.
+The POST sets no session/state cookies and performs no token exchange. Cookie-less
+provider POSTs can redirect across origins; cookie-bearing POSTs retain origin checks.
+A native test verifies durable proof retention, required browser binding, login and
+replay rejection. Three signed Nabu OIDC contracts repeat the flow on SQLite,
+PostgreSQL and MongoDB, checking Basic/PKCE and provisioned account linking. A separate
+HTTP contract covers malformed/type/duplicate/media inputs and CSRF boundaries.
+Two unchanged upstream OpenAPI cases now verify both callback methods/path parameters;
+they are documentation tests, not upstream OAuth-proxy or SAML conformance coverage.

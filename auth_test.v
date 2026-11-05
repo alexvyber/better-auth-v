@@ -544,3 +544,55 @@ fn test_typed_session_fields_update_and_list_round_trip() ! {
 	assert listed.len == 1
 	assert (listed[0].additional_fields['theme'] or { return error('missing theme') }).str() == 'dark'
 }
+
+fn test_oauth_post_callback_defers_exchange_until_cookie_bound_get() ! {
+	mut storage := open_sqlite(':memory:')!
+	storage.migrate()!
+	mut auth := new(Config{
+		secret:           '12345678901234567890123456789012'
+		password_hasher:  FastHasher{}
+		social_providers: [OAuthProvider(FakeProvider{})]
+	}, storage)!
+	defer { auth.close() or {} }
+	state, cookie := start_test_oauth(mut auth)!
+	response := auth.handle(Request{
+		method:  'POST'
+		url:     'http://localhost:3000/api/auth/callback/test?code=good-code'
+		headers: {
+			'content-type':   'application/x-www-form-urlencoded'
+			'origin':         'https://provider.example'
+			'sec-fetch-site': 'cross-site'
+		}
+		body:    'code=overridden&state=' + state +
+			'&user=%7B%22name%22%3A%22A%26B%22%7D&unknown=discarded'
+	})
+	assert response.status == 302
+	assert storage.db.q_int('SELECT count(*) FROM auth_user')! == 0
+	assert (auth.find_opaque_verification(state, 'oauth-state')!).value != none
+	mut location := ''
+	for header in response.headers {
+		if header.name == 'location' { location = header.value }
+		assert header.name != 'set-cookie'
+	}
+	parsed := urllib.parse(location)!
+	assert parsed.host == 'localhost:3000'
+	assert parsed.path == '/api/auth/callback/test'
+	assert (parsed.query().get('code') or { return error('missing code') }) == 'good-code'
+	assert (parsed.query().get('state') or { return error('missing state') }) == state
+	assert (parsed.query().get('user') or { return error('missing user') }) == '{"name":"A&B"}'
+	assert parsed.query().get('unknown') == none
+	assert auth.handle(Request{ url: location }).status == 403
+	assert auth.handle(Request{
+		url:     location
+		headers: {
+			'cookie': cookie
+		}
+	}).status == 302
+	assert storage.db.q_int('SELECT count(*) FROM auth_user')! == 1
+	assert auth.handle(Request{
+		url:     location
+		headers: {
+			'cookie': cookie
+		}
+	}).status == 400
+}

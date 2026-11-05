@@ -21,7 +21,7 @@
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, remaining endpoint schema kinds and POST OAuth callback documentation remain unported"
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, remaining endpoint schema kinds remain unported"
     },
     {
       "suite": "open-api",
@@ -112,7 +112,7 @@
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, remaining endpoint schema kinds and POST OAuth callback documentation remain unported"
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, remaining endpoint schema kinds remain unported"
     },
     {
       "suite": "open-api",
@@ -187,10 +187,10 @@
       "test": "should infer path parameters for routes with dynamic segments",
       "sourceStart": 18777,
       "sourceLine": 671,
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, remaining endpoint schema kinds and POST OAuth callback documentation remain unported"
+      "reason": null
     },
     {
       "suite": "open-api",
@@ -200,10 +200,10 @@
       "test": "should not share operation parameter or response objects across methods",
       "sourceStart": 19298,
       "sourceLine": 693,
-      "selected": false,
+      "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, remaining endpoint schema kinds and POST OAuth callback documentation remain unported"
+      "reason": null
     },
     {
       "suite": "open-api",
@@ -307,7 +307,7 @@
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, remaining endpoint schema kinds and POST OAuth callback documentation remain unported"
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, remaining endpoint schema kinds remain unported"
     },
     {
       "suite": "open-api",
@@ -320,7 +320,7 @@
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
-      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, remaining endpoint schema kinds and POST OAuth callback documentation remain unported"
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, remaining endpoint schema kinds remain unported"
     },
     {
       "suite": "open-api",

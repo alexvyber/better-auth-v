@@ -26,6 +26,8 @@ There is no dependency on a web framework.
   400-day cookie ceiling, and configurable session fields with update support.
 - Email verification, password reset/change, profile updates, opt-in account deletion
   with one-use verification links, and a server-only password-setting API.
+- Native MongoDB replica-set storage with ObjectId/UUID IDs, explicit indexes and
+  session TTL expiry; compile with `-d mongodb` after `pnpm mongo:setup`.
 - SQLite storage with versioned migrations, native PostgreSQL physical-column
   storage with explicit migrations, UUIDs and mapped schemas, plus a typed adapter interface.
 - Secondary session storage with database fallback, TTLs, and an in-memory
@@ -79,11 +81,17 @@ must be installed). PostgreSQL conformance tests start isolated temporary cluste
 provide PostgreSQL server tools on PATH or set `BETTER_AUTH_PG_BIN` to their directory.
 `pnpm postgres:setup` builds a checksum-pinned PostgreSQL 18.4 under ignored
 `build/deps`, requiring a C compiler and make. No global installation is performed.
+MongoDB support is optional in the native library. `pnpm mongo:setup` builds the
+checksum-pinned C driver 2.5.8 locally with CMake and OpenSSL 3, and prepares MongoDB
+8.0.6 on macOS arm64. On other platforms set `BETTER_AUTH_MONGO_BIN` to a local
+`mongod` executable. MongoDB conformance tests start a temporary replica set; they
+never connect to Brand Map or Nabu databases. The full suite requires this setup.
 The library itself has no V package dependencies.
 
 ```sh
 pnpm install --frozen-lockfile
 pnpm postgres:setup # optional when PostgreSQL server tools are already available
+pnpm mongo:setup
 make check
 ```
 

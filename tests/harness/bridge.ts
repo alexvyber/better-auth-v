@@ -73,9 +73,9 @@ export class Bridge {
 
   removeCallback(method: string) { this.callbacks.delete(method); }
 
-  constructor(args: string[] = []) {
+  constructor(args: string[] = [], mongo = false) {
     this.child = spawn(
-      fileURLToPath(new URL("../../build/auth-bridge", import.meta.url)),
+      fileURLToPath(new URL(mongo ? "../../build/mongo-auth-bridge" : "../../build/auth-bridge", import.meta.url)),
       args,
       {
         stdio: "pipe",

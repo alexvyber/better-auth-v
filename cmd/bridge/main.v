@@ -13,6 +13,7 @@ import x.json2
 
 struct Options {
 	postgres                          ?better_auth.PostgresOptions
+	mongo                             ?better_auth.MongoOptions
 	id_strategy                       string = 'random'
 	custom_id_generator               bool
 	redis_tcp                         ?better_auth.RedisTCPOptions
@@ -627,6 +628,16 @@ fn main() {
 			emit(Reply{ id: init.id, error: err.msg() })
 			return
 		}
+	} else if opts.storage == 'mongo' {
+		options := opts.mongo or {
+			emit(Reply{ id: init.id, error: 'MongoDB options are required' })
+			return
+		}
+
+		storage = better_auth.open_mongo(options) or {
+			emit(Reply{ id: init.id, error: err.msg() })
+			return
+		}
 	} else if opts.storage != 'memory' {
 		emit(Reply{ id: init.id, error: 'unsupported storage' })
 		return
@@ -1105,7 +1116,7 @@ fn main() {
 		return
 	}
 	defer { auth.close() or {} }
-	if opts.storage in ['postgres', 'sqlite'] && !opts.defer_migrations {
+	if opts.storage in ['postgres', 'sqlite', 'mongo'] && !opts.defer_migrations {
 		auth.migrate_storage() or {
 			emit(Reply{ id: init.id, error: err.msg() })
 			return

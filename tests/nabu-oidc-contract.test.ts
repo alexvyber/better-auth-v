@@ -5,6 +5,7 @@ import {afterAll, beforeAll, describe, expect, it} from 'vitest';
 import {genericOAuth} from './harness/plugins.js';
 import {getTestInstance} from './harness/test-instance.js';
 import {getTestInstance as postgresInstance,postgresOptions,postgresSQL} from './harness/postgres-fixture.js';
+import {getTestInstance as mongoInstance,mongoOptions,mongoCommand} from './harness/mongo-fixture.js';
 
 const provider = new OAuth2Server();
 let issuer = '';
@@ -57,6 +58,37 @@ async function authorize(ready: Awaited<ReturnType<typeof instance>>) {
 }
 
 describe('Nabu provisioned OIDC configuration', () => {
+ it('executes Nabu provisioning and signed OIDC login against real MongoDB storage', async()=>{
+  email='Provisioned@Example.com';verified=true;
+  const configuration=await mongoOptions();
+  const ready=await instance({session:{expiresIn:30*86400,updateAge:86400},rateLimit:{enabled:true,storage:'database'}},{factory:mongoInstance,config:{nativeMongo:configuration},provision:async normalized=>{
+   const result=await mongoCommand(configuration,{update:'user',updates:[{q:{email:normalized},u:{$set:{emailVerified:true},$currentDate:{updatedAt:true}}}]});
+   expect(result.n).toBe(1);
+  }});
+  const adapter=(await ready.auth.$context).internalAdapter;
+  await adapter.updateUser(ready.user.id,{emailVerified:false});
+  const {authorization,result,headers,callback}=await authorize(ready);
+  expect(result.headers.get('location')).toBe('http://localhost:3000/nabu');
+  expect(createHash('sha256').update(tokenRequest.verifier!).digest('base64url')).toBe(authorization.searchParams.get('code_challenge'));
+  expect(tokenRequest.authorization).toBe('Basic '+Buffer.from('nabu-client:nabu-secret').toString('base64'));
+  const replay=new Headers(headers);ready.cookieSetter(headers)({response:result});
+  const current=await ready.auth.api.getSession({headers});
+  expect(current?.user).toMatchObject({id:ready.user.id,emailVerified:true});
+  expect(new Date(current!.session.expiresAt).getTime()-new Date(current!.session.createdAt).getTime()).toBe(30*86400*1000);
+  const accounts=await mongoCommand(configuration,{find:'account',filter:{providerId:'tinyauth'}});
+  expect(accounts.cursor.firstBatch[0].userId.$oid).toBe(ready.user.id);
+  expect((await adapter.findAccounts(ready.user.id)).map((a:any)=>a.providerId)).toEqual(['tinyauth']);
+  expect((await ready.auth.handler(new Request(callback,{headers:replay}))).status).toBe(400);
+ });
+ it('rejects an unprovisioned signed SSO identity on MongoDB without creating a binding',async()=>{
+  email='outsider@example.com';verified=true;
+  const ready=await instance({},{factory:mongoInstance});
+  const {result,headers}=await authorize(ready);
+  expect(result.headers.get('location')).toContain('?error=');
+  expect(await ready.auth.api.getSession({headers})).toBeNull();
+  expect(await (await ready.auth.$context).internalAdapter.findAccounts(ready.user.id)).toEqual([]);
+ });
+
  it('allows the Nabu provisioning callback to verify the local row before implicit linking', async () => {
   email = 'provisioned@example.com'; verified = true;
   const configuration = await postgresOptions();

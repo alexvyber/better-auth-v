@@ -50,6 +50,9 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 		}
 	}
 	mut configured_storage := storage
+	if mut configured_storage is ConfigurableIDStorage {
+		configured_storage.configure_ids(config.id_strategy, config.generate_id != no_id_generator)!
+	}
 	if mut configured_storage is ConfigurableStorage {
 		configured_storage.configure_fields(config.user_fields, config.session_fields)!
 	}

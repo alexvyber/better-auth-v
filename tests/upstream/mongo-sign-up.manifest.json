@@ -1,0 +1,417 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/api/routes/sign-up.test.ts",
+  "sha256": "ea89ea0816820740c06d8415bd0307246f9ad320566c2b545840785282fffc36",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "sign-up with custom fields",
+      "suites": [
+        "sign-up with custom fields"
+      ],
+      "test": "should work with custom fields on account table",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up with custom fields",
+      "suites": [
+        "sign-up with custom fields"
+      ],
+      "test": "should succeed when passing empty name",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up with custom fields",
+      "suites": [
+        "sign-up with custom fields"
+      ],
+      "test": "should get the ipAddress and userAgent from headers",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up with custom fields",
+      "suites": [
+        "sign-up with custom fields"
+      ],
+      "test": "should rollback when session creation fails",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up with custom fields",
+      "suites": [
+        "sign-up with custom fields"
+      ],
+      "test": "should not allow user to set the field that is set to input: false",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up with custom fields",
+      "suites": [
+        "sign-up with custom fields"
+      ],
+      "test": "should return additionalFields in signUpEmail response",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up with custom fields",
+      "suites": [
+        "sign-up with custom fields"
+      ],
+      "test": "should throw status code 400 when passing invalid body",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up session caching",
+      "suites": [
+        "sign-up session caching"
+      ],
+      "test": "does not cache the session when the sign-up rolls back after creating it",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up session caching",
+      "suites": [
+        "sign-up session caching"
+      ],
+      "test": "rolls back the user when secondary storage cannot store the session",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up session caching",
+      "suites": [
+        "sign-up session caching"
+      ],
+      "test": "rolls back the user when a preserved session cannot be cached",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up session caching",
+      "suites": [
+        "sign-up session caching"
+      ],
+      "test": "keeps a session revoked by its create.after hook revoked",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up session caching",
+      "suites": [
+        "sign-up session caching"
+      ],
+      "test": "lists the session when its cached copy failed to write",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "validateUserInfo sign-up",
+      "suites": [
+        "validateUserInfo sign-up"
+      ],
+      "test": "should allow email/password sign-up when validateUserInfo returns void",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "validateUserInfo sign-up",
+      "suites": [
+        "validateUserInfo sign-up"
+      ],
+      "test": "should reject email/password sign-up when validateUserInfo returns error",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "validateUserInfo sign-up",
+      "suites": [
+        "validateUserInfo sign-up"
+      ],
+      "test": "hides gate rejections behind the generic-duplicate response",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up user enumeration protection",
+      "suites": [
+        "sign-up user enumeration protection"
+      ],
+      "test": "should return success for existing email when email verification is required",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up user enumeration protection",
+      "suites": [
+        "sign-up user enumeration protection"
+      ],
+      "test": "should call onExistingUserSignUp when requireEmailVerification is true",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up user enumeration protection",
+      "suites": [
+        "sign-up user enumeration protection"
+      ],
+      "test": "should call onExistingUserSignUp when autoSignIn is false and requireEmailVerification is true",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up user enumeration protection",
+      "suites": [
+        "sign-up user enumeration protection"
+      ],
+      "test": "should call onExistingUserSignUp when autoSignIn is false without requireEmailVerification",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up user enumeration protection",
+      "suites": [
+        "sign-up user enumeration protection"
+      ],
+      "test": "should not call onExistingUserSignUp when enumeration protection is inactive",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up user enumeration protection",
+      "suites": [
+        "sign-up user enumeration protection"
+      ],
+      "test": "should not call onExistingUserSignUp for new user sign-ups",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up user enumeration protection",
+      "suites": [
+        "sign-up user enumeration protection"
+      ],
+      "test": "should return synthetic user for existing email when autoSignIn is disabled without requireEmailVerification",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up user enumeration protection",
+      "suites": [
+        "sign-up user enumeration protection"
+      ],
+      "test": "should return token: null for new sign-up when autoSignIn is disabled",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up CSRF protection",
+      "suites": [
+        "sign-up CSRF protection"
+      ],
+      "test": "should block cross-site navigation sign-up attempts (no cookies)",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up CSRF protection",
+      "suites": [
+        "sign-up CSRF protection"
+      ],
+      "test": "should allow same-origin navigation sign-up attempts",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up CSRF protection",
+      "suites": [
+        "sign-up CSRF protection"
+      ],
+      "test": "should allow fetch/XHR sign-up requests (cors mode)",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up CSRF protection",
+      "suites": [
+        "sign-up CSRF protection"
+      ],
+      "test": "should use origin validation when cookies exist",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up with form data",
+      "suites": [
+        "sign-up with form data"
+      ],
+      "test": "should accept form-urlencoded content type",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up with form data",
+      "suites": [
+        "sign-up with form data"
+      ],
+      "test": "should block cross-site form submissions",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up with form data",
+      "suites": [
+        "sign-up with form data"
+      ],
+      "test": "should allow same-site form submissions from trusted origins",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up sendOnSignUp option behavior",
+      "suites": [
+        "sign-up sendOnSignUp option behavior"
+      ],
+      "test": "should not send verification email when sendOnSignUp is false, even with requireEmailVerification",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up sendOnSignUp option behavior",
+      "suites": [
+        "sign-up sendOnSignUp option behavior"
+      ],
+      "test": "should send verification email when sendOnSignUp is true",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up sendOnSignUp option behavior",
+      "suites": [
+        "sign-up sendOnSignUp option behavior"
+      ],
+      "test": "should send verification email when sendOnSignUp is not set but requireEmailVerification is true (default)",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up enumeration protection — indistinguishable response",
+      "suites": [
+        "sign-up enumeration protection — indistinguishable response"
+      ],
+      "test": "should have identical image key presence for real and synthetic user when image is omitted",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up enumeration protection — indistinguishable response",
+      "suites": [
+        "sign-up enumeration protection — indistinguishable response"
+      ],
+      "test": "should have identical image key presence in raw JSON response when image is omitted",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up enumeration protection — indistinguishable response",
+      "suites": [
+        "sign-up enumeration protection — indistinguishable response"
+      ],
+      "test": "should return same keys in same order for real and synthetic user",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "sign-up enumeration protection — customSyntheticUser with admin plugin",
+      "suites": [
+        "sign-up enumeration protection — customSyntheticUser with admin plugin"
+      ],
+      "test": "should return indistinguishable response with admin plugin fields",
+      "selected": true,
+      "executionSurface": "native-mongodb-objectid-replica-set",
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

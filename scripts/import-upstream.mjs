@@ -221,6 +221,13 @@ for (const name of ['one-time-token', 'email-otp', 'password-reset', 'session-ap
   imports: original.imports.replace('../harness/test-instance.js', '../harness/postgres-fixture.js'),
   executionSurface: 'native-postgres-uuid-mapped-physical-schema'});
 }
+// The same selected source cases run against a native MongoDB replica set.
+for (const name of ['sign-in','sign-up','session-api','one-time-token','email-otp','password-reset','two-factor']) {
+ const reference = plans.find(plan => plan.file === 'postgres-' + name);
+ plans.push({...reference, file:'mongo-'+name,
+  imports: reference.imports.replace('../harness/postgres-fixture.js','../harness/mongo-fixture.js'),
+  executionSurface:'native-mongodb-objectid-replica-set'});
+}
 for (const plan of plans) {
   const relativePath = plan.path ?? `packages/better-auth/src/${plan.directory ?? "api/routes"}/${plan.source_file ?? plan.file}.test.ts`;
   const source = readFileSync(resolve(repo, relativePath), "utf8");

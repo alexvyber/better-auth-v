@@ -45,6 +45,8 @@ fn (a &Auth) new_id(model string) !string {
 		a.config.generate_id(model)!
 	} else if a.config.id_strategy == 'uuid' {
 		generate_uuid()!
+	} else if a.storage is StorageIDGenerator {
+		a.storage.generate_storage_id(model)!
 	} else {
 		generate_auth_id(32)!
 	}

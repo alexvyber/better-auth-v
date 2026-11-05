@@ -711,12 +711,30 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   email-OTP and two-factor assertions remain unchanged. This changes proof-delete
   hook timing on replacement; exhaustive callback sequencing remains open.
 
-The latest verification passes 1753 TypeScript cases across 95 files, all 99 native
-V test functions across 33 files (including all 20,034 Unicode vectors), TypeScript
+- Added optional native MongoDB storage for Nabu using the checksummed C driver,
+  V BSON encoding, ObjectId/binary-UUID/custom string IDs, mapped collections/fields,
+  replica-set transactions, explicit migrations, scalar additional-field uniqueness,
+  indexed session lookup, atomic verification consumption/reservation and shared
+  database quotas. Session dates are BSON dates with a real TTL index. Existing
+  Nabu indexes are reused when their keys/options are equivalent.
+  284 unchanged upstream auth cases repeat on an isolated MongoDB replica set;
+  these copies do not increase unique corpus coverage. Nine owned contracts cover
+  physical types, metadata, rollback, pagination, aliases, uniqueness, shared quotas,
+  TTL and existing Nabu indexes. Two more Nabu contracts verify actual MongoDB
+  provisioning callbacks, signed OIDC/Basic/PKCE login and replay/unprovisioned
+  rejection. Three native BSON functions cover wire fixtures, literal JSON and
+  structural rejection. Generic MongoDB queries, driver-mock source tests, transient
+  transaction body retries, exhaustive commit/abort behavior, optional profile-sync
+  failure recovery and actual application migration remain open.
+
+The latest full `make check` passes 2047 TypeScript cases across 103 files, all 102 native
+V test functions across 34 files (including all 20,034 Unicode vectors), TypeScript
 checking, and real HTTP migration/auth/CSRF/restart checks. The complete session
 file contains 80 cases and the complete sign-up file contains 37. V formatting and
 `git diff --check` pass. These counts do not imply that the full upstream corpus
-passes.
+passes. A subsequent MongoDB migration compatibility contract brings the verified
+current set to 2048 cases; the updated MongoDB/Nabu matrix passes all 304 cases
+across nine files.
 
 The user resumed work and authorized incremental commits and pushes to
 `alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.
@@ -735,8 +753,8 @@ preservation, not broad feature completion.
    foundations, plus account-cookie behavior and remaining rotation combinations. The complete
    sign-up/session source runs do not establish full plugin or stateless parity.
    Preserve every original assertion when importing additional suites.
-4. Complete the PostgreSQL adapter contract/schema/plugin migrations, and add MySQL, MongoDB,
-   secondary stores, and plugin schemas. The existing SQLite payload schema is
+4. Complete the PostgreSQL/MongoDB adapter contracts, query and plugin schemas, and add MySQL,
+   remaining secondary stores, and plugin schemas. The existing SQLite payload schema is
    not the upstream physical schema.
 5. Implement the remaining provider, plugin, client-contract, browser integration,
    and tooling surfaces listed in the corpus and compatibility contract.

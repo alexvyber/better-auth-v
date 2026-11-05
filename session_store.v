@@ -137,7 +137,7 @@ fn (mut a Auth) find_stored_session(token string) !Lookup[SessionResult] {
 			value: decode_session_result(encoded)!
 		}
 	}
-	session := (a.storage.session(digest(token))!).value or { return Lookup[SessionResult]{} }
+	session := (a.stored_session_for_token(token)!).value or { return Lookup[SessionResult]{} }
 	user := (a.storage.user(session.user_id)!).value or { return Lookup[SessionResult]{} }
 	return Lookup[SessionResult]{
 		value: SessionResult{
@@ -290,4 +290,10 @@ fn (mut a Auth) refresh_cached_user(user User) ! {
 fn (a &Auth) plain_database_session_tokens() bool {
 	if a.storage is PlainSessionTokenStorage { return a.storage.stores_plain_session_tokens() }
 	return false
+}
+
+fn (mut a Auth) stored_session_for_token(token string) !Lookup[Session] {
+	mut storage := a.storage
+	if mut storage is TokenLookupStorage { return storage.session_by_token(token) }
+	return storage.session(digest(token))
 }

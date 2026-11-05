@@ -204,6 +204,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     [
       "deferMigrations",
       "nativePostgres",
+      "nativeMongo",
       "disableTestUser",
       "testUser",
       "port",
@@ -468,7 +469,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   if (options.baseURL !== undefined && typeof options.baseURL !== 'string') throw new Error('Live dynamic baseURL configuration remains unported');
   const baseURL = typeof options.baseURL === 'string' ? options.baseURL : `http://localhost:${config.port ?? 3000}`;
   const basePath = options.basePath ?? "/api/auth";
-  const bridge = new Bridge();
+  const bridge = new Bridge([], !!config.nativeMongo);
   instances.add(bridge);
   let jwtCallSequence = 0;
   const callbacks: Record<string, (payload: any) => unknown> = {...endpointCallbacks};
@@ -507,7 +508,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       return hydrate(JSON.parse(reply.value_json));
     },
     async findMany<T>(query: {model: string}): Promise<T[]> {
-      if (query.model === 'account') {
+      if (['account','verification'].includes(query.model)) {
        const reply = await bridge.send('inspect', {model:query.model,where_json:transportJSON((query as FixtureOptions).where ?? [])});
        return hydrate(JSON.parse(reply.records_json));
       }
@@ -784,7 +785,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     bridge.setCallback(method, callback);
   await bridge.send("init", {
     options: {
-      id_strategy: configuredId === 'uuid' || config.nativePostgres?.uuidIds ? 'uuid' : 'random',
+      id_strategy: configuredId === 'uuid' || config.nativePostgres?.uuidIds || config.nativeMongo?.uuidIds ? 'uuid' : 'random',
       custom_id_generator: typeof configuredId === 'function',
       generic_oauth: genericProviders.map(({getToken: _getToken, mapProfileToUser: _mapProfile, ...provider}) => provider),
       generic_callbacks: genericCallbacks,
@@ -837,8 +838,9 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
         audience: typeof jwtOptions.jwt?.audience === 'string' ? jwtOptions.jwt.audience : null,
         audiences: Array.isArray(jwtOptions.jwt?.audience) ? jwtOptions.jwt.audience : null,
       },
-      storage: config.nativePostgres ? 'postgres' : stateless || isNativeMemoryAdapter(options.database) ? 'memory' : 'sqlite',
+      storage: config.nativeMongo ? 'mongo' : config.nativePostgres ? 'postgres' : stateless || isNativeMemoryAdapter(options.database) ? 'memory' : 'sqlite',
       postgres: config.nativePostgres,
+      mongo: config.nativeMongo,
       stateless_sessions: stateless,
       secondary_storage: !!options.secondaryStorage,
       redis_tcp: nativeRedis?.tcp,

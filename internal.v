@@ -308,7 +308,7 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 		}
 		'adapterDeleteSession' {
 			if args.len != 1 { return error('adapterDeleteSession requires token') }
-			if session := (c.auth.storage.session(digest(args[0].str()))!).value {
+			if session := (c.auth.stored_session_for_token(args[0].str())!).value {
 				c.auth.storage.delete_session(session.id)!
 			}
 			return 'null'

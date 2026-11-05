@@ -156,8 +156,8 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   Public password signup can be disabled independently of provisioned login.
   The full ID-token verification suite and selected discovery/signup source cases
   run unchanged. Nabu integration tests cover verified pre-provisioned identity,
-  unprovisioned/unverified rejection, Basic/PKCE and replay prevention. MongoDB
-  integration, discovery retry/cache, provider refresh callbacks,
+  unprovisioned/unverified rejection, Basic/PKCE and replay prevention, including
+  a real MongoDB provisioning callback and login. Discovery retry/cache, provider refresh callbacks,
   full linking/options behavior and actual Nabu application integration remain open.
 - Rate limiting supports per-instance memory and atomic database backends. SQLite
   schema v5 persists rolling count/lastRequest values behind an immediate transaction
@@ -166,7 +166,7 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   boundaries and JSON 429/X-Retry-After responses are covered by upstream cases.
   Counters survive failed authentication transactions; trusted API calls bypass
   HTTP quotas. Static longest-window retention protects longer-lived database rows.
-  MongoDB, distributed secondary counters, dynamic/custom stores, environment
+  Distributed secondary counters, dynamic/custom stores, environment
   defaults and complete IP/proxy normalization/policy remain open.
 - The native one-time-token plugin supports precise expiry, custom generation,
   plain/SHA256/custom hashed token storage, client-request restrictions, optional
@@ -308,7 +308,7 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   already-written records on failure and after-write hooks run immediately,
   matching nontransactional adapter semantics. Secondary-cache changes still
   cannot be rolled back as distributed transactions.
-- Rate limiting supports per-instance memory and atomic SQLite/PostgreSQL storage;
+- Rate limiting supports per-instance memory and atomic SQLite/PostgreSQL/MongoDB storage;
   route keys include resolved client IP when supplied by the trusted integration.
   Authentication work is serialized per instance/connection. Body limits are opt-in
   (`max_body_bytes > 0`); the default zero imposes no library cap, matching upstream.
@@ -360,7 +360,7 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
 
 ## Remaining Better Auth scope
 
-Complete PostgreSQL query/plugin-schema support, MySQL/MongoDB adapters,
+Complete PostgreSQL/MongoDB query/plugin-schema support, a MySQL adapter,
 schema generation/introspection, full secondary
 storage parity, full stateless/account-cookie behavior, complete JWT/JWKS plugin parity,
 remaining output field transforms/validators and functional defaults,
@@ -503,7 +503,7 @@ This is a foundational adapter, not verified Brand Map database interchange. Ful
 Prisma schema/migration equivalence, arbitrary query/filter/join APIs, plugin-owned
 tables, introspection, pooling/reconnect policy, serial IDs and live TypeScript/V
 coexistence remain unverified or unimplemented. No tests connect to Brand Map or
-Nabu databases. MongoDB remains required for Nabu.
+Nabu databases. Native MongoDB coverage is described below.
 
 
 ## Two-factor authentication
@@ -604,8 +604,8 @@ text-ID schemas (those cases deliberately supply non-UUID IDs). Existing UUID
 PostgreSQL profile and two-factor matrices remain separate. Four new Nabu contracts
 cover rejection of an unverified provisioned local account, the explicit opt-out,
 the implicit-link switch and an application callback verifying the row in PostgreSQL
-before native linking. MongoDB storage/index/TTL
-integration remains required for Nabu deployment.
+before native linking. Native MongoDB provisioning and storage/index/TTL contracts
+are now covered as described below; deployment in the Nabu application is still open.
 
 
 OTP resends replace the earlier purpose/email or challenge proof before persisting
@@ -613,3 +613,49 @@ the new value, including when both requests share exactly the same millisecond.
 Frozen-clock SQLite and PostgreSQL contracts retain the latest delivered hashed
 code and reject its predecessor. Proof deletion hook timing therefore occurs on
 replacement; exhaustive source hook-sequencing parity remains open.
+
+
+## Native MongoDB adapter
+
+`open_mongo(MongoOptions{uri: ..., database: ...})` provides typed core storage
+using the official C driver. Build the optional backend with `-d mongodb` after
+`pnpm mongo:setup`. Its BSON encoder is written in V; arbitrary JSON objects that
+look like Extended JSON remain ordinary objects. ObjectIds, binary UUID subtype 04
+and BSON dates are introduced only at known model fields. Custom ID generators
+preserve string IDs, even if they look like ObjectIds. Mapped collection names,
+core field names and additional-field `field_name` aliases are supported; paths
+containing dots or starting with `$` are rejected. IDs always use `_id`.
+
+Call `auth.migrate_storage()` explicitly after configuring Auth. Migrations create
+core collections, unique email/token/provider-subject/rate-limit-key indexes,
+session expiry TTL and reference/identifier indexes. Scalar additional-field
+uniqueness uses partial indexes so absent values do not collide. Migrations can
+fail on existing duplicates and do not clean application data. No application DB
+was accessed during verification.
+
+Auth serializes each client. Replica-set transactions commit/roll back core
+writes and application callback failures; independent Auth instances need separate
+connections. Indexed plain-token lookups avoid scanning sessions. Consumption uses
+MongoDB `findAndModify` deletion; reservation insertion uses `$setOnInsert` so an
+existing reservation does not abort its transaction. The shared HTTP limiter uses
+an atomic guarded aggregation update. Cursor handles retain exact 64-bit values
+through the JSON bridge, including `getMore` pagination.
+
+284 unchanged selected upstream auth cases repeat on a temporary MongoDB replica
+set: sign-in, sign-up, core sessions, one-time tokens, email OTP, password reset and
+the main two-factor suite. These are repeated cases, not newly ported source files.
+Independent contracts check BSON types, mapped fields and uniqueness, preservation
+of application columns, rollback, shared quotas, TTL deletion, pagination and
+Nabu's provisioning callback plus signed OIDC login/replay rejection.
+
+This is not complete MongoDB adapter parity. The original MongoDB adapter source
+suite remains unported: generic queries/joins, configured compound-index factories,
+introspection, lazy index creation, driver/session mocks, transient transaction body
+retries and exhaustive ambiguous-commit/abort semantics need further work. The C
+driver handles its own protocol-level retries; Auth does not replay application
+callbacks on transaction conflicts. Conflicts fail closed. Optional OAuth profile
+sync has no MongoDB savepoint and can roll back the enclosing binding if a database
+error aborts the transaction. Two-factor contention relies on transactions; atomic
+guarded factor updates without transactions remain open. No general MongoDB
+pooling facade, nested field mapping, organization/plugin schema or actual Nabu
+application migration is claimed.

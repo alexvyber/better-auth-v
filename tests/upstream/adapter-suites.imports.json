@@ -1,8 +1,8 @@
 {
   "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
-  "changes": "Only createTestSuite import path changes; all test bodies, assertions and registrations preserved.",
+  "changes": "Import paths only; all test bodies/assertions preserved. The native registrar selects recorded entries without registering exclusions as passing tests.",
   "executionSurface": "native SQLite/PostgreSQL/MongoDB auth and transaction adapters; TS fixture registration/configuration/transport only",
-  "coverageNote": "Eight shared suite entries, outside the test/spec corpus denominator. Backend repetitions do not increase unique coverage.",
+  "coverageNote": "Shared suite entries are outside the test/spec corpus denominator. Basic exclusions are recorded individually; the joins wrapper repeats selected basic entries and does not increase unique coverage.",
   "files": [
     {
       "path": "packages/test-utils/src/adapter/suites/auth-flow.ts",
@@ -64,6 +64,695 @@
           "title": "transaction - should rollback failing transaction",
           "sourceStart": 335,
           "sourceLine": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "path": "packages/test-utils/src/adapter/suites/basic.ts",
+      "target": "tests/upstream/adapter-suites/basic.ts",
+      "snapshot": "tests/upstream/adapter-suites/sources/basic.ts.txt",
+      "sha256": "8b6d9ae24e054e72a9c48349035ef6ec15955253292a2a95efdab387b56604db",
+      "tests": [
+        {
+          "title": "init - tests",
+          "sourceStart": 680,
+          "sourceLine": 27,
+          "selected": true
+        },
+        {
+          "title": "create - should create a model",
+          "sourceStart": 1208,
+          "sourceLine": 51,
+          "selected": true
+        },
+        {
+          "title": "create - should always return an id",
+          "sourceStart": 1890,
+          "sourceLine": 73,
+          "selected": true
+        },
+        {
+          "title": "create - should use generateId if provided",
+          "sourceStart": 2171,
+          "sourceLine": 82,
+          "selected": true
+        },
+        {
+          "title": "create - should return null for nullable foreign keys",
+          "sourceStart": 2815,
+          "sourceLine": 106,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "create - should apply default values to fields",
+          "sourceStart": 3510,
+          "sourceLine": 137,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "findOne - should find a model",
+          "sourceStart": 5106,
+          "sourceLine": 204,
+          "selected": true
+        },
+        {
+          "title": "findOne - should not apply defaultValue if value not found",
+          "sourceStart": 5359,
+          "sourceLine": 212,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "findOne - should find a model using a reference field",
+          "sourceStart": 7594,
+          "sourceLine": 309,
+          "selected": true
+        },
+        {
+          "title": "findOne - should not throw on record not found",
+          "sourceStart": 7893,
+          "sourceLine": 317,
+          "selected": true
+        },
+        {
+          "title": "findOne - should find a model without id",
+          "sourceStart": 8274,
+          "sourceLine": 328,
+          "selected": true
+        },
+        {
+          "title": "findOne - should find a model with join",
+          "sourceStart": 8544,
+          "sourceLine": 336,
+          "selected": true
+        },
+        {
+          "title": "findOne - should find a model with modified field name",
+          "sourceStart": 9998,
+          "sourceLine": 390,
+          "selected": true
+        },
+        {
+          "title": "findOne - should find a model with modified model name",
+          "sourceStart": 10499,
+          "sourceLine": 410,
+          "selected": true
+        },
+        {
+          "title": "findOne - should find a model with additional fields",
+          "sourceStart": 11085,
+          "sourceLine": 431,
+          "selected": true
+        },
+        {
+          "title": "findOne - should select fields",
+          "sourceStart": 11878,
+          "sourceLine": 458,
+          "selected": true
+        },
+        {
+          "title": "findOne - should select fields with one-to-many join",
+          "sourceStart": 12221,
+          "sourceLine": 467,
+          "selected": true
+        },
+        {
+          "title": "findOne - should select fields with one-to-one join",
+          "sourceStart": 13187,
+          "sourceLine": 498,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "findOne - should select fields with multiple joins",
+          "sourceStart": 14530,
+          "sourceLine": 554,
+          "selected": true
+        },
+        {
+          "title": "findOne - should find model with date field",
+          "sourceStart": 15888,
+          "sourceLine": 595,
+          "selected": true
+        },
+        {
+          "title": "findOne - should perform backwards joins",
+          "sourceStart": 16290,
+          "sourceLine": 605,
+          "selected": true
+        },
+        {
+          "title": "findOne - should return an object for one-to-one joins",
+          "sourceStart": 16905,
+          "sourceLine": 626,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "findOne - should return an array for one-to-many joins",
+          "sourceStart": 18138,
+          "sourceLine": 676,
+          "selected": true
+        },
+        {
+          "title": "findOne - should work with both one-to-one and one-to-many joins",
+          "sourceStart": 18766,
+          "sourceLine": 697,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "findOne - should return null for failed base model lookup that has joins",
+          "sourceStart": 20575,
+          "sourceLine": 766,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "findOne - should join a model with modified field name",
+          "sourceStart": 21549,
+          "sourceLine": 803,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "findMany - should find many models",
+          "sourceStart": 22838,
+          "sourceLine": 862,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with date fields",
+          "sourceStart": 23097,
+          "sourceLine": 869,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with join",
+          "sourceStart": 23656,
+          "sourceLine": 886,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many with join and limit",
+          "sourceStart": 25735,
+          "sourceLine": 955,
+          "selected": true
+        },
+        {
+          "title": "findMany - should select fields",
+          "sourceStart": 26664,
+          "sourceLine": 989,
+          "selected": true
+        },
+        {
+          "title": "findMany - should select fields with one-to-many join",
+          "sourceStart": 27398,
+          "sourceLine": 1017,
+          "selected": true
+        },
+        {
+          "title": "findMany - should select fields with one-to-one join",
+          "sourceStart": 28368,
+          "sourceLine": 1048,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "findMany - should select fields with multiple joins",
+          "sourceStart": 29715,
+          "sourceLine": 1104,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many with join and offset",
+          "sourceStart": 31077,
+          "sourceLine": 1145,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many with join and sortBy",
+          "sourceStart": 31830,
+          "sourceLine": 1176,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many with join and where clause",
+          "sourceStart": 33072,
+          "sourceLine": 1227,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many with join, where, limit, and offset",
+          "sourceStart": 34054,
+          "sourceLine": 1264,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many with one-to-one join",
+          "sourceStart": 35027,
+          "sourceLine": 1301,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "findMany - should find many with both one-to-one and one-to-many joins",
+          "sourceStart": 36310,
+          "sourceLine": 1351,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "findMany - should return an empty array when no models are found",
+          "sourceStart": 37927,
+          "sourceLine": 1411,
+          "selected": true
+        },
+        {
+          "title": "findMany - should return empty array when base records don't exist with joins",
+          "sourceStart": 38341,
+          "sourceLine": 1423,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "findMany - should find many models with starts_with operator",
+          "sourceStart": 39280,
+          "sourceLine": 1458,
+          "selected": true
+        },
+        {
+          "title": "findMany - starts_with should not interpret regex patterns",
+          "sourceStart": 39647,
+          "sourceLine": 1467,
+          "selected": true
+        },
+        {
+          "title": "findMany - ends_with should not interpret regex patterns",
+          "sourceStart": 40505,
+          "sourceLine": 1492,
+          "selected": true
+        },
+        {
+          "title": "findMany - contains should not interpret regex patterns",
+          "sourceStart": 41353,
+          "sourceLine": 1517,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with ends_with operator",
+          "sourceStart": 42209,
+          "sourceLine": 1542,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with contains operator",
+          "sourceStart": 43474,
+          "sourceLine": 1580,
+          "selected": true
+        },
+        {
+          "title": "findMany - should handle multiple where conditions with different operators",
+          "sourceStart": 44089,
+          "sourceLine": 1599,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with contains operator (using symbol)",
+          "sourceStart": 46036,
+          "sourceLine": 1684,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with eq operator",
+          "sourceStart": 46410,
+          "sourceLine": 1693,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with ne operator",
+          "sourceStart": 46765,
+          "sourceLine": 1701,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with gt operator",
+          "sourceStart": 47123,
+          "sourceLine": 1709,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with gte operator",
+          "sourceStart": 47768,
+          "sourceLine": 1730,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with lte operator",
+          "sourceStart": 48416,
+          "sourceLine": 1751,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with lt operator",
+          "sourceStart": 48895,
+          "sourceLine": 1764,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with in operator",
+          "sourceStart": 49371,
+          "sourceLine": 1777,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with not_in operator",
+          "sourceStart": 49889,
+          "sourceLine": 1794,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with sortBy",
+          "sourceStart": 50285,
+          "sourceLine": 1808,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with sortBy id",
+          "sourceStart": 51498,
+          "sourceLine": 1851,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with limit",
+          "sourceStart": 51920,
+          "sourceLine": 1863,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with offset",
+          "sourceStart": 52252,
+          "sourceLine": 1872,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with limit and offset",
+          "sourceStart": 52670,
+          "sourceLine": 1883,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with sortBy and offset",
+          "sourceStart": 53303,
+          "sourceLine": 1901,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with sortBy and limit",
+          "sourceStart": 54032,
+          "sourceLine": 1931,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with sortBy and limit and offset",
+          "sourceStart": 54727,
+          "sourceLine": 1960,
+          "selected": true
+        },
+        {
+          "title": "findMany - should find many models with sortBy and limit and offset and where",
+          "sourceStart": 55515,
+          "sourceLine": 1992,
+          "selected": true
+        },
+        {
+          "title": "update - should update a model",
+          "sourceStart": 57845,
+          "sourceLine": 2074,
+          "selected": true
+        },
+        {
+          "title": "update - should return null when where is empty",
+          "sourceStart": 58610,
+          "sourceLine": 2096,
+          "selected": true
+        },
+        {
+          "title": "updateMany - should update all models when where is empty",
+          "sourceStart": 58837,
+          "sourceLine": 2106,
+          "selected": true
+        },
+        {
+          "title": "updateMany - should update many models with a specific where",
+          "sourceStart": 59351,
+          "sourceLine": 2124,
+          "selected": true
+        },
+        {
+          "title": "updateMany - should update many models with a multiple where",
+          "sourceStart": 59898,
+          "sourceLine": 2142,
+          "selected": true
+        },
+        {
+          "title": "incrementOne - guarded set transition returns the row on a matching guard and null on a guard miss",
+          "sourceStart": 60859,
+          "sourceLine": 2168,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "delete - should delete a model",
+          "sourceStart": 61906,
+          "sourceLine": 2202,
+          "selected": true
+        },
+        {
+          "title": "delete - should not throw on record not found",
+          "sourceStart": 62255,
+          "sourceLine": 2214,
+          "selected": true
+        },
+        {
+          "title": "delete - should delete by non-unique field",
+          "sourceStart": 62706,
+          "sourceLine": 2229,
+          "selected": true
+        },
+        {
+          "title": "deleteMany - should delete many models",
+          "sourceStart": 63169,
+          "sourceLine": 2241,
+          "selected": true
+        },
+        {
+          "title": "deleteMany - starts_with should not interpret regex patterns",
+          "sourceStart": 63637,
+          "sourceLine": 2255,
+          "selected": true
+        },
+        {
+          "title": "deleteMany - ends_with should not interpret regex patterns",
+          "sourceStart": 64775,
+          "sourceLine": 2292,
+          "selected": true
+        },
+        {
+          "title": "deleteMany - contains should not interpret regex patterns",
+          "sourceStart": 65724,
+          "sourceLine": 2325,
+          "selected": true
+        },
+        {
+          "title": "deleteMany - should delete many models with numeric values",
+          "sourceStart": 66679,
+          "sourceLine": 2358,
+          "selected": true
+        },
+        {
+          "title": "deleteMany - should delete many models with boolean values",
+          "sourceStart": 67675,
+          "sourceLine": 2402,
+          "selected": true
+        },
+        {
+          "title": "count - should count many models",
+          "sourceStart": 68835,
+          "sourceLine": 2432,
+          "selected": true
+        },
+        {
+          "title": "count - should return 0 with no rows to count",
+          "sourceStart": 69048,
+          "sourceLine": 2439,
+          "selected": true
+        },
+        {
+          "title": "count - should count with where clause",
+          "sourceStart": 69214,
+          "sourceLine": 2445,
+          "selected": true
+        },
+        {
+          "title": "update - should correctly return record when updating a field used in where clause",
+          "sourceStart": 69581,
+          "sourceLine": 2456,
+          "selected": true
+        },
+        {
+          "title": "update - should handle updating multiple fields including where clause field",
+          "sourceStart": 70852,
+          "sourceLine": 2491,
+          "selected": true
+        },
+        {
+          "title": "update - should work when updated field is not in where clause",
+          "sourceStart": 71477,
+          "sourceLine": 2512,
+          "selected": true
+        },
+        {
+          "title": "findOne - backwards join should only return single record not array",
+          "sourceStart": 72008,
+          "sourceLine": 2527,
+          "selected": true
+        },
+        {
+          "title": "findMany - backwards join should only return single record not array",
+          "sourceStart": 72735,
+          "sourceLine": 2550,
+          "selected": true
+        },
+        {
+          "title": "findOne - backwards join with modified field name (session base, users-table join)",
+          "sourceStart": 73493,
+          "sourceLine": 2575,
+          "selected": true
+        },
+        {
+          "title": "findOne - multiple joins should return result even when some joined tables have no matching rows",
+          "sourceStart": 74429,
+          "sourceLine": 2610,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "findOne - should be able to perform a limited join",
+          "sourceStart": 76813,
+          "sourceLine": 2697,
+          "selected": true
+        },
+        {
+          "title": "findOne - should be able to perform a complex limited join",
+          "sourceStart": 77587,
+          "sourceLine": 2725,
+          "selected": true
+        },
+        {
+          "title": "findMany - should be able to perform a limited join",
+          "sourceStart": 78614,
+          "sourceLine": 2761,
+          "selected": true
+        },
+        {
+          "title": "findMany - should be able to perform a complex limited join",
+          "sourceStart": 79698,
+          "sourceLine": 2796,
+          "selected": true
+        },
+        {
+          "title": "findOne - should return null for one-to-one join when joined record doesn't exist",
+          "sourceStart": 81330,
+          "sourceLine": 2845,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "findMany - should return null for one-to-one join when joined records don't exist",
+          "sourceStart": 82484,
+          "sourceLine": 2889,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "findMany - should return empty array for one-to-many join when joined records don't exist",
+          "sourceStart": 84441,
+          "sourceLine": 2957,
+          "selected": true
+        },
+        {
+          "title": "findMany - should handle mixed joins correctly when some are missing",
+          "sourceStart": 86412,
+          "sourceLine": 3015,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "create - should support arrays",
+          "sourceStart": 90269,
+          "sourceLine": 3135,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "create - should support json",
+          "sourceStart": 91418,
+          "sourceLine": 3181,
+          "selected": false,
+          "reason": "Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported"
+        },
+        {
+          "title": "update - should support multiple where conditions under AND connector with unique field",
+          "sourceStart": 92281,
+          "sourceLine": 3220,
+          "selected": true
+        },
+        {
+          "title": "findMany - eq operator with null value (single condition) should use IS NULL",
+          "sourceStart": 92976,
+          "sourceLine": 3239,
+          "selected": true
+        },
+        {
+          "title": "findMany - eq and ne operators with null value in AND group should use IS NULL / IS NOT NULL",
+          "sourceStart": 94040,
+          "sourceLine": 3272,
+          "selected": true
+        },
+        {
+          "title": "findMany - eq and ne operators with null value in OR group should use IS NULL / IS NOT NULL",
+          "sourceStart": 95828,
+          "sourceLine": 3329,
+          "selected": true
+        },
+        {
+          "title": "update - should return updated record when where condition uses null value",
+          "sourceStart": 97571,
+          "sourceLine": 3380,
+          "selected": true
+        },
+        {
+          "title": "update - should return null when a multi-predicate where matches no row",
+          "sourceStart": 99001,
+          "sourceLine": 3414,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "path": "packages/test-utils/src/adapter/suites/joins.ts",
+      "target": "tests/upstream/adapter-suites/joins.ts",
+      "snapshot": "tests/upstream/adapter-suites/sources/joins.ts.txt",
+      "sha256": "30c95455b5ed2ac13c3def4fbd3432e3c319f11e105a33a946775a29703d0af4",
+      "tests": [
+        {
+          "title": "init - tests",
+          "sourceStart": 502,
+          "sourceLine": 23,
           "selected": true
         }
       ]

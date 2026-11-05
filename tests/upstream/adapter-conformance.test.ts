@@ -3,3 +3,5 @@
 // separately from the static *.test.ts source corpus.
 import './adapter-suites/auth-flow.js';
 import './adapter-suites/transactions.js';
+import './adapter-suites/basic.js';
+import './adapter-suites/joins.js';

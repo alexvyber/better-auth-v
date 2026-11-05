@@ -31,6 +31,9 @@ There is no dependency on a web framework.
   session TTL expiry; compile with `-d mongodb` after `pnpm mongo:setup`.
 - SQLite storage with versioned migrations, native PostgreSQL physical-column
   storage with explicit migrations, UUIDs and mapped schemas, plus a typed adapter interface.
+- Trusted core-model adapter queries with validated predicates, sorting, pagination,
+  projections, user/session/account joins and raw mutation operations. Portable query
+  execution uses native storage scans, with indexed session-token authentication.
 - Secondary session storage with database fallback, TTLs, and an in-memory
   implementation; database mutation hooks and after-commit callbacks.
 - Sealed database session tokens and migration-aware account-column aliases.

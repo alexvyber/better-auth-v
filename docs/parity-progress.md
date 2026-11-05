@@ -918,10 +918,10 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   eager organization default evaluation; supplied values now bypass factories and
   missing values evaluate once. A native throwing-factory regression also passes.
 
-The latest full `make check` passes 2895 TypeScript cases across 149 files, all 122
-native V test functions across 38 files (including all 20,034 Unicode vectors),
+The latest full `make check` passes 3426 TypeScript cases across 149 files, all 125
+native V test functions across 39 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
-The eight source-preservation audit tests also pass. Formatting and `git diff --check` pass. Repeated backend runs do not increase unique
+The ten source-preservation audit tests also pass. Formatting and `git diff --check` pass. Repeated backend runs do not increase unique
 upstream source coverage, and these results do not imply full upstream parity.
 
 The user resumed work and authorized incremental commits and pushes to
@@ -994,6 +994,32 @@ data through the signature-verified verification/linking flow.
 Final `make check` passes 2895 runtime TypeScript cases across 149 files, 122 native
 V functions across 38 files, all eight source-preservation audits, type checking
 and the native HTTP migration/auth/restart smoke. Formatting and diff checks pass.
+
+## Core adapter queries and joins
+
+Native `adapterQuery` now evaluates validated core-model predicates, date/numeric
+comparisons, nulls, membership, literal string matching, comparison modes, AND/OR
+groups, stable sorting, pagination and projections. User/session/account joins
+support bounded forward arrays and backwards user objects. Raw creation covers all
+four core models; user updates, deletion and counts execute through native storage.
+General query execution is scan-based; session-token authentication remains an indexed
+lookup and user relations are scoped before decrypting session rows. The session
+interceptor now follows the flat joined DTO and retains private persistence metadata.
+
+The preserved basic suite selects 89 of 108 entries; nineteen arbitrary-plugin,
+custom-relation and increment entries remain excluded explicitly. The unchanged joins
+wrapper repeats applicable selections. The complete shared matrix runs 555 cases on
+SQLite/PostgreSQL/MongoDB, without altering test bodies/assertions. Its source-entry
+inventory remains separate from the static test/spec corpus. Per-test backend cleanup
+bounds temporary disk use. The owned Mongo cursor test now requests 200 rows explicitly
+to retain its 105-row getMore assertion under the upstream default 100-row page.
+
+Three native functions verify malformed-query deletion safety, empty-result validation,
+projection/tenant scoping, timezone-equivalent date matching and isolation from unrelated
+session encryption. Final `make check`: 3426 TypeScript cases / 149 files, 125 native
+functions / 39 files, ten source audits, type checking and native HTTP smoke all pass.
+Formatting and diff checks pass. Query pushdown, arbitrary plugin relations, guarded
+increments, MongoDB transaction retries and organization aggregate races remain open.
 
 ## Guardrails for continuing
 

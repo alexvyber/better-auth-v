@@ -137,11 +137,28 @@ fn (mut a Auth) find_session_record(token string) !Lookup[SessionResult] {
 }
 
 fn (mut a Auth) find_stored_session(token string) !Lookup[SessionResult] {
-	query := '{"model":"session","where":[{"field":"token","value":${json.encode(token)}}]}'
+	query := '{"model":"session","where":[{"field":"token","value":${json.encode(token)}}],"join":{"user":true}}'
 	if encoded := (a.intercept_internal('adapter.findOne', '[${query}]')!).value {
 		if encoded == 'null' { return Lookup[SessionResult]{} }
+		mut fields := json2.decode[map[string]json2.Any](encoded)!
+		user := fields['user'] or { return error('adapter session lookup requires a user join') }
+		if user is json2.Null { return Lookup[SessionResult]{} }
+		fields.delete('user')
+		decoded := decode_session(json2.Any(fields).json_str())!
+		stored := (a.storage.session_by_id(decoded.id)!).value
 		return Lookup[SessionResult]{
-			value: decode_session_result(encoded)!
+			value: SessionResult{
+				user:    decode_user(user.json_str())!
+				session: if row := stored {
+					Session{
+						...decoded
+						persistent:      row.persistent
+						encrypted_token: row.encrypted_token
+					}
+				} else {
+					decoded
+				}
+			}
 		}
 	}
 	session := (a.stored_session_for_token(token)!).value or { return Lookup[SessionResult]{} }

@@ -29,6 +29,10 @@ fn (mut a Auth) intercept_internal(name string, arguments_json string) !Lookup[s
 pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json string) !string {
 	args := json2.decode[[]json2.Any](arguments_json)!
 	match name {
+		'adapterQuery' {
+			if args.len != 2 { return error('adapterQuery requires operation and query') }
+			return c.adapter_query(args[0].str(), args[1].as_map())
+		}
 		'adapterCreateOrganizationModel' {
 			if args.len != 2 { return error('organization model create requires model and record') }
 			model := args[0].str()

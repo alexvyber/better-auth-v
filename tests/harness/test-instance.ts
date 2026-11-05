@@ -75,7 +75,11 @@ interface FixtureTransactionAdapter {
   findOne<T = any>(query: FixtureOptions): Promise<T | null>;
  update<T = any>(query: FixtureOptions): Promise<T | null>;
   create<I=Record<string,unknown>, O=I & {id:string}>(query: {model: string; data: I;forceAllowId?:boolean}): Promise<O>;
-  findMany<T>(query: {model: string;where?:FixtureOptions[]}): Promise<T[]>;
+  findMany<T>(query: FixtureOptions): Promise<T[]>;
+  updateMany(query: FixtureOptions): Promise<number>;
+  delete(query: FixtureOptions): Promise<void>;
+  deleteMany(query: FixtureOptions): Promise<number>;
+  count(query: FixtureOptions): Promise<number>;
   nativeRunWithTransaction<T>(callback: () => Promise<T>): Promise<T>;
   options: {adapterConfig: {transaction: boolean;adapterName?:string}};
   transaction(callback: (transaction: FixtureTransactionAdapter) => Promise<unknown>): Promise<unknown>;
@@ -434,7 +438,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     ["database", "generateId", "disableCSRFCheck", "disableOriginCheck", "trustedProxyHeaders", "cookies", "cookiePrefix", "useSecureCookies", "crossSubDomainCookies", "defaultCookieAttributes"],
     "advanced",
   );
-  assertKeys(advanced.database ?? {}, ['generateId'], 'advanced.database');
+  assertKeys(advanced.database ?? {}, ['generateId', 'joins'], 'advanced.database');
   const configuredId = advanced.generateId ?? advanced.database?.generateId;
   if (configuredId !== undefined && configuredId !== 'uuid' && typeof configuredId !== 'function') throw new Error('Persisted serial/database-generated IDs remain unported');
   assertKeys(advanced.crossSubDomainCookies ?? {}, ['enabled', 'domain'], 'advanced.crossSubDomainCookies');
@@ -523,40 +527,41 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       finally { bridge.removeCallback(method); }
       return result!;
     },
-    async create<I, O>(query: {model: string; data: I;forceAllowId?:boolean}): Promise<O> {
-      assertKeys(query,['model','data','forceAllowId'],'adapter.create');
-      if (query.model === 'user') {
-       const reply = await bridge.send('internal', {method:'adapterCreateUser',arguments_json:transportJSON([query.data,query.forceAllowId??false])});
-       return hydrate(JSON.parse(reply.value_json));
+    async create<I,O>(query:{model:string;data:I;forceAllowId?:boolean}):Promise<O>{
+      if(query.model==='jwks'){
+       const reply=await bridge.send('internal',{method:'adapterCreateJWK',arguments_json:transportJSON([query.data])});return hydrate(JSON.parse(reply.value_json));
       }
-      if (query.model !== 'jwks') throw new Error('Unsupported adapter create model');
-      const reply = await bridge.send('internal', {method: 'adapterCreateJWK', arguments_json: transportJSON([query.data])});
-      return hydrate(JSON.parse(reply.value_json));
+      return adapterQuery('create',query);
     },
-    async findMany<T>(query: {model: string;where?:FixtureOptions[]}): Promise<T[]> {
-      assertKeys(query,['model','where'],'adapter.findMany');
-      if (['user','account','verification'].includes(query.model)) {
-       const reply = await bridge.send('inspect', {model:query.model,where_json:transportJSON((query as FixtureOptions).where ?? [])});
-       return hydrate(JSON.parse(reply.records_json));
+    async findMany<T>(query:FixtureOptions):Promise<T[]>{
+      if(query.model==='jwks'){
+       const reply=await bridge.send('internal',{method:'jwkLookup',arguments_json:transportJSON(['getAllKeys','',''])});return hydrate(JSON.parse(reply.value_json));
       }
-      if (query.model !== 'jwks') throw new Error('Unsupported adapter findMany model');
-      const reply = await bridge.send('internal', {method: 'jwkLookup', arguments_json: transportJSON(['getAllKeys', '', ''])});
-      return hydrate(JSON.parse(reply.value_json));
+      return adapterQuery('findMany',query);
     },
-    async update(query) {
-     assertKeys(query, ['model','where','update'], 'adapter.update');
-     if(['organization','member','invitation','organizationRole'].includes(query.model)&&query.where?.length===1&&query.where[0].field==='id'&&(!query.where[0].operator||query.where[0].operator==='eq')){const reply=await bridge.send('internal',{method:'adapterUpdateOrganizationModel',arguments_json:transportJSON([query.model,query.where[0].value,query.update])});return hydrate(JSON.parse(reply.value_json));}
-     if (query.model !== 'user' || query.where?.length !== 1 || !['id','email'].includes(query.where[0].field) || (query.where[0].operator && query.where[0].operator !== 'eq')) throw new Error('Native adapter.update requires user id/email equality');
-     const reply = await bridge.send('internal',{method:'adapterUpdateUser',arguments_json:transportJSON([query.where[0].field,query.where[0].value,query.update])});
-     return hydrate(JSON.parse(reply.value_json));
+    async findOne<T>(query:FixtureOptions):Promise<T|null>{
+      if(['organization','member','invitation','organizationRole'].includes(query.model)){
+       const reply=await bridge.send('internal',{method:'adapterFindOne',arguments_json:transportJSON([query])});return hydrate(JSON.parse(reply.value_json));
+      }
+      return adapterQuery('findOne',query);
     },
-    async findOne(query) {
-      const reply = await bridge.send('internal', {method: 'adapterFindOne', arguments_json: transportJSON([query])});
-      return hydrate(JSON.parse(reply.value_json));
+    async update<T>(query:FixtureOptions):Promise<T|null>{
+      if(['organization','member','invitation','organizationRole'].includes(query.model)&&query.where?.length===1&&query.where[0].field==='id'&&(!query.where[0].operator||query.where[0].operator==='eq')){
+       const reply=await bridge.send('internal',{method:'adapterUpdateOrganizationModel',arguments_json:transportJSON([query.model,query.where[0].value,query.update])});return hydrate(JSON.parse(reply.value_json));
+      }
+      return adapterQuery('update',query);
     },
+    async updateMany(query){return adapterQuery('updateMany',query)},
+    async delete(query){await adapterQuery('delete',query)},
+    async deleteMany(query){return adapterQuery('deleteMany',query)},
+    async count(query){return adapterQuery('count',query)},
     options: {adapterConfig: {transaction: true}},
     async transaction(callback): Promise<unknown> { return adapter.nativeRunWithTransaction(()=>callback(adapter)); },
   };
+  async function adapterQuery<T=any>(operation:string,query:FixtureOptions):Promise<T>{
+    const reply=await bridge.send('internal',{method:'adapterQuery',arguments_json:transportJSON([operation,query])});
+    return hydrate(JSON.parse(reply.value_json));
+  }
   bridge.setTransactionsProvider(() => adapter.options.adapterConfig.transaction !== false);
   const password = {
     hash: ep.password?.hash ?? (async (value: string) => {

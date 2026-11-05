@@ -74,7 +74,7 @@ describe('MongoDB schema and type contracts',()=>{
   for(let i=0;i<105;i++)await adapter.createVerificationValue({identifier:'cursor:'+i,value:String(i),expiresAt:new Date(Date.now()+60000)});
   // Listing through the native bridge must issue getMore, not truncate at 100.
   const context=await instance.auth.$context;
-  const records=await context.adapter.findMany({model:'verification'});
+  const records=await context.adapter.findMany({model:'verification',limit:200});
   expect(records).toHaveLength(105);
  });
 });

@@ -2,7 +2,8 @@
 
 The target is observable Better Auth behavior with explicit V APIs. This release
 implements a subset, not a drop-in replacement for all Better Auth configurations.
-Neither shared databases nor shared cookies with a TypeScript server are supported.
+Disposable compatibility gates cover existing application rows and upstream-signed
+session cookies. Live mixed TypeScript/V deployments remain unverified.
 
 ## HTTP surface
 
@@ -1124,3 +1125,39 @@ the remaining shared basic-query/join/case-insensitive/UUID/serial-ID suites.
 Transient transaction retries, ambiguous commit handling and aggregate races remain
 open. Nested transactions share the enclosing transaction; no savepoint semantics
 are claimed for this facade.
+
+### Core adapter query and join continuation
+
+The trusted `adapterQuery` native operation now supports user, session, account and
+verification reads/creation, user updates, deletion and counts. Predicates cover
+equality/inequality, date and numeric comparisons, membership, literal string matching,
+case modes, nulls and AND/OR groups. Pagination, stable sorting and projections use
+logical schema fields. User-to-session/account joins return bounded arrays; backwards
+joins return a user object or null. Base pagination and relation limits are applied
+separately. Unknown fields/operators/options and malformed query objects fail closed,
+including empty-result and mutation cases.
+
+All query decisions execute in V. Physical I/O uses the existing native stores;
+general predicates currently use scans rather than SQL/Mongo query pushdown.
+Session authentication retains an indexed token lookup and scoped user relations,
+so unrelated encrypted session rows are not decrypted. The session adapter interceptor
+now follows the flat session-with-user-join contract, retaining internal persistence
+metadata outside the public DTO. Raw creation/mutation bypass application hooks;
+creation applies declared defaults. Generic guarded increments and arbitrary plugin
+schemas/relationships remain unimplemented, and ordinary updates are not promoted to
+atomic compare-and-set transitions.
+
+The unchanged shared basic source now selects 89 of 108 entries, including its init
+probe. Nineteen arbitrary-plugin/custom-relationship/increment entries remain explicitly
+excluded. The original joins wrapper repeats the applicable selections with joins
+enabled. Together with the prior auth/rollback suites, 555 cases pass across native
+SQLite/PostgreSQL/MongoDB. All source bodies and assertions remain unchanged; four
+source-preservation audits and the separate helper-entry inventory record selections.
+The static test/spec corpus denominator is unchanged.
+
+Three native functions cover malformed-query deletion safety, projection/tenant
+isolation, timezone-equivalent date equality and unrelated-session isolation. The
+owned Mongo cursor contract explicitly requests 200 rows to exercise `getMore`
+beyond the upstream default 100-row adapter page; its 105-row assertion is unchanged.
+Disposable backend databases are dropped after each shared-suite case to bound disk
+usage in the expanded matrix.

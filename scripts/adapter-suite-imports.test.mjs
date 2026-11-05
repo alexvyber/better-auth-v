@@ -10,8 +10,14 @@ for(const entry of metadata.files)test('preserves every original shared adapter 
  assert.equal(metadata.commit,lock.commit);
  const source=readFileSync(entry.snapshot,'utf8');
  assert.equal(createHash('sha256').update(source).digest('hex'),entry.sha256);
- assert.equal(readFileSync(entry.target,'utf8'),source.replace('"../create-test-suite"','"../../harness/adapter-suite.js"'));
+ assert.equal(readFileSync(entry.target,'utf8'),source.replace('"../create-test-suite"','"../../harness/adapter-suite.js"').replace('"./basic"','"./basic.js"'));
  const ast=ts.createSourceFile(entry.path,source,ts.ScriptTarget.Latest,true);const declarations=[];
- function visit(node){if(ts.isPropertyAssignment(node)&&ts.isStringLiteral(node.name)&&ts.isArrowFunction(node.initializer))declarations.push({title:node.name.text,sourceStart:node.getStart(ast),sourceLine:ast.getLineAndCharacterOfPosition(node.getStart(ast)).line+1,selected:true});ts.forEachChild(node,visit)}
+ function visit(node){
+  if(ts.isPropertyAssignment(node)&&ts.isStringLiteral(node.name)&&(ts.isArrowFunction(node.initializer)||ts.isObjectLiteralExpression(node.initializer))){
+   const excluded=entry.path.endsWith('/basic.ts')&&(!ts.isArrowFunction(node.initializer)||/plugins:|incrementOne|oneToOneTable/.test(node.getText(ast)));
+   declarations.push({title:node.name.text,sourceStart:node.getStart(ast),sourceLine:ast.getLineAndCharacterOfPosition(node.getStart(ast)).line+1,selected:!excluded,...(excluded?{reason:'Arbitrary plugin tables, custom relationships and atomic incrementOne remain unported'}:{})});
+  }
+  ts.forEachChild(node,visit);
+ }
  visit(ast);assert.deepEqual(entry.tests,declarations);assert.ok(declarations.length>0);
 });

@@ -442,7 +442,7 @@
       "sourceStart": 22156,
       "sourceLine": 906,
       "selected": true,
-      "executionSurface": "official-ts-client-types; native integration covered by tests/jwt-client-contract.test.ts",
+      "executionSurface": "official-ts-client-types; native integration covered by tests/contracts/jwt-client-contract.test.ts",
       "upstreamDisabled": false,
       "reason": null
     },
@@ -455,7 +455,7 @@
       "sourceStart": 22420,
       "sourceLine": 913,
       "selected": true,
-      "executionSurface": "official-ts-client-types; native integration covered by tests/jwt-client-contract.test.ts",
+      "executionSurface": "official-ts-client-types; native integration covered by tests/contracts/jwt-client-contract.test.ts",
       "upstreamDisabled": false,
       "reason": null
     },

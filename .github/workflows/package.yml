@@ -69,3 +69,5 @@ jobs:
           echo "PKG_CONFIG_PATH=$(brew --prefix openssl@3)/lib/pkgconfig:$(brew --prefix libpq)/lib/pkgconfig:$(brew --prefix sqlite)/lib/pkgconfig" >> "$GITHUB_ENV"
       - name: Check installed package consumers and optional SQL linking
         run: make check-package
+      - name: Check co-located native tests and external plugin contract
+        run: node scripts/test-native.mjs internal/runtime/transactions_test.v internal/features/organization/organization_test.v tests/contracts/extension_test.v

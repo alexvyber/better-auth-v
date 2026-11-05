@@ -161,7 +161,7 @@ const plans = [
   },
   {
     file: 'jwt-plugin', source_file: 'jwt', directory: 'plugins/jwt',
-    testSurfaces: {'jwtClient types': 'official-ts-client-types; native integration covered by tests/jwt-client-contract.test.ts'},
+    testSurfaces: {'jwtClient types': 'official-ts-client-types; native integration covered by tests/contracts/jwt-client-contract.test.ts'},
     suites: new Set(['jwt', 'signJWT - alg: $alg', 'jwt - custom adapter', 'jwt - custom jwksPath', 'jwt - signing algorithm comes from the key', 'jwt - remote signing', 'jwt - remote url', 'toExpJWT', 'jwt - unresolved issuer and audience', 'jwt - JWKS minting inside an active transaction', 'jwtClient types']),
     imports: 'import { betterAuth, getMigrations, DatabaseSync, NodeSqliteDialect, runWithTransaction } from "../harness/native-auth.js";\nimport { beforeEach, describe, expect, expectTypeOf, it, vi } from "vitest";\nimport { createAuthClient } from "better-auth/client";\nimport { jwtClient, inferAdditionalFields } from "better-auth/client/plugins";\nimport { createLocalJWKSet, jwtVerify, decodeJwt, exportJWK, generateKeyPair, SignJWT } from "jose";\nimport { parseCookies } from "better-auth/cookies";\nimport type { JWKOptions, JwtOptions, Jwk } from "better-auth/plugins/jwt";\nimport type { JSONWebKeySet } from "jose";\nimport type { BetterAuthClientPlugin, GenericEndpointContext } from "@better-auth/core";\nimport { generateExportedKeyPair, toExpJWT, createCookieCacheSigner, SESSION_COOKIE_JWT_TYPE } from "../harness/jwt.js";\nimport { getTestInstance } from "../harness/test-instance.js";\nimport { jwt } from "../harness/plugins.js";\n',
   },

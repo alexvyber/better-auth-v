@@ -86,7 +86,9 @@ single-attempt execution.
 
 ## Conformance harness
 
-`tests/harness/test-instance.ts` composes the fixture. Its extracted helpers own
+`tests/contracts` owns authored TypeScript integration cases; `tests/upstream`
+retains imported upstream files, preserved sources and manifests.
+`tests/harness/test-instance.ts` composes their shared fixture. Its extracted helpers own
 types, route metadata, option validation, async scopes, adapter transport, field
 conversion and plugin configuration. Async scopes are shared from one module so
 nested callback calls retain their native transaction and request association.

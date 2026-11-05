@@ -42,3 +42,11 @@ test('storage implementation methods stay with their backend',()=>{
   }
  }
 });
+
+test('owned integration tests stay under contracts and upstream tests retain their directory',()=>{
+ assert(!readdirSync(join(root,'tests')).some(path=>path.endsWith('.test.ts')||path.endsWith('_test.v')));
+ assert(sources('tests/contracts').some(path=>path.endsWith('_test.v')),'External native plugin contract missing');
+ const config=readFileSync(join(root,'vitest.config.ts'),'utf8');
+ assert(config.includes('tests/contracts/**/*.test.ts'));
+ assert(config.includes('tests/upstream/**/*.test.ts'));
+});

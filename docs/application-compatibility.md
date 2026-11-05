@@ -1,6 +1,6 @@
 # Application compatibility gate
 
-`tests/application-schema-contract.test.ts` runs the official Better Auth client
+`tests/contracts/application-schema-contract.test.ts` runs the official Better Auth client
 through a loopback HTTP server into native V authentication. The Node server only
 translates request/response bytes and headers. Authentication, session renewal,
 authorization, transactions and persistence execute in V.

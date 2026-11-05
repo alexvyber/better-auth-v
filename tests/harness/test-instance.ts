@@ -171,23 +171,6 @@ function assertKeys(value: FixtureOptions, allowed: string[], label: string) {
   }
 }
 
-function hydrate(value: any): any {
-  if (Array.isArray(value)) return value.map(hydrate);
-  if (value && typeof value === "object") {
-    const result = Object.fromEntries(
-      Object.entries(value).filter(([key]) => key !== "$vSession").map(([key, item]) => [
-        key,
-        ["createdAt", "updatedAt", "expiresAt", "accessTokenExpiresAt", "refreshTokenExpiresAt"].includes(key) &&
-        typeof item === "string"
-          ? new Date(item)
-          : hydrate(item),
-      ]),
-    );
-    if (value.$vSession) Object.defineProperty(result, recordMetadata, { value: value.$vSession });
-    return result;
-  }
-  return value;
-}
 
 export async function getTestInstance<const O extends ServerOptions = {}, C extends FixtureOptions = {}>(
   options: O & ServerOptions = {} as O & ServerOptions,
@@ -484,8 +467,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       assertKeys(field.validator ?? {}, ['input'], 'additionalField.validator');
       assertKeys(field.transform ?? {}, ['input'], 'additionalField.transform');
       if (field.validator?.input && typeof field.validator.input['~standard']?.validate !== 'function') throw new Error('Field validator requires Standard Schema');
-      if (typeof field.defaultValue === "function")
-        throw new Error("Functional field defaults are not bridged yet");
+
     }
   }
 
@@ -768,10 +750,30 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     if (provider.mapProfileToUser) { methods.push('map'); callbacks['generic.map.' + provider.providerId] = profile => provider.mapProfileToUser(profile); }
     genericCallbacks[provider.providerId] = methods;
   }
+  const fieldSchemas:Record<string,Record<string,FixtureOptions>>={user:{...options.user?.additionalFields},session:{...session.additionalFields},...Object.fromEntries(Object.entries(organizationOptions?.schema??{}).filter(([model])=>model!=='session').map(([model,schema])=>[model,{...(schema as any).additionalFields}]))};
+  for(const plugin of options.plugins??[]){for(const [model,definition] of Object.entries(plugin.schema??{}) as [string,any][]){const fields=fieldSchemas[model]??={};for(const [name,field] of Object.entries(definition.fields??{})){fields[name]??=field as FixtureOptions}}}
+  function hydrate(value:any):any {
+   if(value instanceof Date)return value;
+   if(Array.isArray(value))return value.map(hydrate);
+   if(!value||typeof value!=='object')return value;
+   const model='email' in value&&'name' in value&&'emailVerified' in value?'user':'userId' in value&&'token' in value&&'expiresAt' in value?'session':'organizationId' in value?('inviterId' in value?'invitation':'userId' in value?'member':'permission' in value?'organizationRole':''):'slug' in value&&'name' in value?'organization':'';
+   const schema=fieldSchemas[model]??{};
+   const result=Object.fromEntries(Object.entries(value).filter(([name])=>name!=='$vSession').map(([name,item])=>{
+    if(schema[name]?.type==='json'||model==='organization'&&name==='metadata')return [name,item];
+    if(typeof item==='string'&&(schema[name]?.type==='date'||['createdAt','updatedAt','expiresAt','accessTokenExpiresAt','refreshTokenExpiresAt'].includes(name)))return [name,new Date(item)];
+    return [name,hydrate(item)];
+   }));
+   if(value.$vSession)Object.defineProperty(result,recordMetadata,{value:value.$vSession});
+   return result;
+  }
   const fieldCallbackNames: string[] = [];
   const fieldValue = (value: unknown) => ({value: value ?? null, undefinedValue: value === undefined});
   for (const [model, fields] of Object.entries({user:options.user?.additionalFields ?? {},session:session.additionalFields ?? {},...Object.fromEntries(Object.entries(organizationOptions?.schema??{}).filter(([model])=>model!=='session').map(([model,schema])=>[model,(schema as any).additionalFields??{}]))})) {
    for (const [name, field] of Object.entries(fields) as Array<[string,FixtureOptions]>) {
+    if(typeof field.defaultValue==='function'){
+     const method='field.'+model+'.'+name+'.default';fieldCallbackNames.push(method);
+     callbacks[method]=()=>{const value=field.defaultValue();if(value instanceof Promise){void value.catch(()=>undefined);return {...fieldValue(undefined),asynchronous:true}}return fieldValue(value)};
+    }
     if (field.validator?.input) {
      const method = 'field.'+model+'.'+name+'.validate'; fieldCallbackNames.push(method);
      callbacks[method] = value => {

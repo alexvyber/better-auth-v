@@ -39,3 +39,43 @@ fn parse_field_value(field AdditionalField, input json2.Any) !FieldInputResult {
 	if !result.undefined_value { validate_field(field, result.value)! }
 	return result
 }
+
+fn no_field_default() !FieldInputResult {
+	return FieldInputResult{
+		undefined_value: true
+	}
+}
+
+fn (field AdditionalField) has_default() bool {
+	return field.default_value != none || field.default_factory != no_field_default
+}
+
+fn (field AdditionalField) resolve_default() !Lookup[json2.Any] {
+	if value := field.default_value { return Lookup[json2.Any]{
+			value: value
+		} }
+	if field.default_factory == no_field_default { return Lookup[json2.Any]{} }
+	result := field.default_factory()!
+	if result.asynchronous { return error('asynchronous field defaults are not supported') }
+	if result.invalid { return error('invalid field default') }
+	if result.undefined_value { return Lookup[json2.Any]{} }
+	validate_field(field, result.value)!
+	return Lookup[json2.Any]{
+		value: result.value
+	}
+}
+
+fn fill_field_defaults(schema map[string]AdditionalField, input map[string]json2.Any) !map[string]json2.Any {
+	mut result := input.clone()
+	for name, field in schema {
+		if value := result[name] {
+			if !field.required || value !is json2.Null { continue
+			 }
+		}
+		if fallback := (field.resolve_default()!).value {
+			validate_field(field, fallback)!
+			result[name] = fallback
+		}
+	}
+	return result
+}

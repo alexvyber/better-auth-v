@@ -228,7 +228,7 @@ fn (auth &Auth) openapi_core_operation(path string, method string) !map[string]j
 			if !field.input { continue
 			 }
 			properties[name] = json2.Any(openapi_type(field, false))
-			if path == '/sign-up/email' && field.required && field.default_value == none {
+			if path == '/sign-up/email' && field.required && !field.has_default() {
 				required << json2.Any(name)
 			}
 		}

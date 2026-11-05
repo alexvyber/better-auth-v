@@ -34,7 +34,7 @@
     "plugins": {
       "files": 45,
       "declarations": 1315,
-      "importedFiles": 19
+      "importedFiles": 20
     },
     "adapters": {
       "files": 16,
@@ -16275,7 +16275,7 @@
       "path": "packages/better-auth/src/plugins/additional-fields/additional-fields.test.ts",
       "sha256": "81a8731fb7e462ce0f2672a297f9aa5698d380555d1ed069a84299c7e089703e",
       "group": "plugins",
-      "status": "unported",
+      "status": "imported-partial-file",
       "kind": "runtime",
       "declarations": [
         {

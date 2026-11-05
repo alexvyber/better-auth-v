@@ -290,6 +290,13 @@ import type {OpenAPISchema,Path} from 'better-auth/plugins/open-api';
 import {getTestInstance} from '../harness/test-instance.js';
 `};
 plans.push(openAPIPlan);
+const runtimeDefaults={file:'additional-field-runtime-defaults',path:'packages/better-auth/src/plugins/additional-fields/additional-fields.test.ts',suites:new Set(['runtime']),executionSurface:'native-api-functional-field-defaults',unportedReason:'Remaining additional-field plugin, constructor, SDK and type cases remain unported',
+ imports:`import {describe,expect,it} from 'vitest';
+import {getTestInstance} from '../harness/test-instance.js';
+`};
+plans.push(runtimeDefaults);
+for(const [prefix,fixture] of [['postgres','postgres-fixture'],['mongo','mongo-fixture']]){plans.push({...runtimeDefaults,file:prefix+'-additional-field-runtime-defaults',imports:runtimeDefaults.imports.replace('../harness/test-instance.js','../harness/'+fixture+'.js'),executionSurface:'native-'+prefix+'-functional-field-defaults'})}
+
 const organizationMembers={file:'organization-members',includeHelpers:true,path:'packages/better-auth/src/plugins/organization/routes/crud-members.test.ts',
  suites:new Set(['listMembers','updateMemberRole','activeMemberRole','inviteMember role validation']),
  executionSurface:'native-api-upstream-test-origin-defaults',unportedReason:'Generic adapter findMany interception used by the >100 member source suite remains unported',

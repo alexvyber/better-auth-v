@@ -500,7 +500,7 @@ fn admin_create_user(mut context EndpointContext, actor ?SessionResult, fields m
 	for field, definition in context.auth.config.user_fields {
 		if value := additional[field] {
 			validate_field(definition, value)!
-		} else if fallback := definition.default_value {
+		} else if fallback := (definition.resolve_default()!).value {
 			validate_field(definition, fallback)!
 			additional[field] = fallback
 		} else if definition.required {

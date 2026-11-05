@@ -141,7 +141,7 @@ fn (a &Auth) synthetic_user(user User) !User {
 	for key, field in a.config.user_fields {
 		if value := proposed.additional_fields[key] {
 			fields[key] = value
-		} else if value := field.default_value {
+		} else if value := (field.resolve_default()!).value {
 			fields[key] = value
 		} else if !field.required {
 			fields[key] = json2.Null{}

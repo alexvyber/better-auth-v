@@ -805,8 +805,18 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   the three adapters alongside 72 unchanged CRUD source cases. Other failures
   retain normal rollback behavior.
 
-The latest full `make check` passes 2682 TypeScript cases across 130 files, all 111
-native V test functions across 36 files (including all 20,034 Unicode vectors),
+- Added synchronous functional additional-field creation defaults for users,
+  sessions and organization models, including trusted user/session creation.
+  OpenAPI generation omits runtime defaults and does not execute factories.
+  Explicit values/nulls and existing read/update values remain stable, and session
+  factory failures roll back all signup writes. The unchanged runtime source case
+  repeats on three adapters; nine owned contracts and two native functions verify
+  the boundaries. TypeScript date hydration follows configured record schemas while
+  JSON fields stay literal. Async/update factories and exhaustive transform/default
+  combinations remain open.
+
+The latest full `make check` passes 2694 TypeScript cases across 134 files, all 113
+native V test functions across 37 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
 Formatting and `git diff --check` pass. Repeated backend runs do not increase unique
 upstream source coverage, and these results do not imply full upstream parity.
@@ -814,7 +824,7 @@ upstream source coverage, and these results do not imply full upstream parity.
 The user resumed work and authorized incremental commits and pushes to
 `alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.
 The objective remains incomplete. The corpus currently records 32 completely
-imported files, sixteen partial imports and 388 unported files; imported status describes source
+imported files, seventeen partial imports and 387 unported files; imported status describes source
 preservation, not broad feature completion.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise

@@ -152,7 +152,11 @@ fn (mut a Auth) persist_user(user User) !User {
 		return fail(400, 'FAILED_TO_CREATE_USER', 'Failed to create user')
 	}
 
-	actual := decode_user(encoded)!
+	decoded := decode_user(encoded)!
+	actual := User{
+		...decoded
+		additional_fields: fill_field_defaults(a.config.user_fields, decoded.additional_fields)!
+	}
 	a.storage.create_user(actual)!
 	a.after_record('user', 'create', encode_user(actual))!
 	return actual

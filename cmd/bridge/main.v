@@ -1472,6 +1472,12 @@ fn field_schema(encoded string, model string, callbacks []string) !map[string]be
 		mut configured := field
 		validation := 'field.' + model + '.' + name + '.validate'
 		transformation := 'field.' + model + '.' + name + '.transform'
+		factory := 'field.' + model + '.' + name + '.default'
+		if factory in callbacks { configured = better_auth.AdditionalField{
+				...configured
+				default_factory: fn [factory] () !better_auth.FieldInputResult {
+					return json2.decode[better_auth.FieldInputResult](callback_rpc(factory, 'null')!)!}
+			} }
 		if validation in callbacks { configured = better_auth.AdditionalField{
 				...configured
 				validate_input: fn [validation] (value json2.Any) !better_auth.FieldInputResult {

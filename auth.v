@@ -328,7 +328,7 @@ fn (mut a Auth) make_session_overridden(user_id string, ctx RequestContext, reme
 				if key in ['userId', 'token', 'expiresAt', 'createdAt', 'updatedAt'] { continue
 				 }
 				if definition := a.config.session_fields[key] {
-					if definition.default_value != none { continue
+					if definition.has_default() { continue
 					 }
 				}
 			}

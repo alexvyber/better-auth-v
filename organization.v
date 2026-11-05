@@ -207,7 +207,7 @@ fn (auth &Auth) organization_defaults(model string, data map[string]json2.Any) !
 		if value := data[field] {
 			validate_field(definition, value)!
 			result[field] = value
-		} else if fallback := definition.default_value {
+		} else if fallback := (definition.resolve_default()!).value {
 			validate_field(definition, fallback)!
 			result[field] = fallback
 		} else if definition.required {

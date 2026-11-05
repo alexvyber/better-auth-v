@@ -413,9 +413,10 @@ pub:
 	transform_input fn (json2.Any) !FieldInputResult = passthrough_field_input @[skip]
 	field_type      string @[json: 'type']
 	required        bool
-	input           bool = true
-	returned        bool = true
-	default_value   ?json2.Any @[json: 'defaultValue']
+	input           bool                    = true
+	returned        bool                    = true
+	default_factory fn () !FieldInputResult = no_field_default @[skip]
+	default_value   ?json2.Any              @[json: 'defaultValue']
 }
 
 fn discard_email(_ EmailMessage) ! {

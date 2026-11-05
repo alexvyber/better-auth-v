@@ -363,7 +363,7 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
 Complete PostgreSQL/MongoDB query/plugin-schema support, a MySQL adapter,
 schema generation/introspection, full secondary
 storage parity, full stateless/account-cookie behavior, complete JWT/JWKS plugin parity,
-remaining output field transforms/validators and functional defaults,
+remaining output field transforms/validators and default/transform combinations,
 remaining database-column mapping options, richer hooks,
 username/phone authentication, remaining two-factor integration details, passkeys, remaining admin integration,
 remaining organization operations, teams, API keys, OAuth/OIDC server functionality,
@@ -851,3 +851,25 @@ cookies so cached selection agrees. Missing organization reads preserve an exist
 selection; missing-ID activation clears it before denying membership. Twelve owned
 cases across the three adapters verify persistent/cached state and unchanged
 membership. Other endpoint errors retain normal transaction rollback semantics.
+
+
+## Functional additional-field defaults
+
+`AdditionalField.default_factory` supplies synchronous native creation defaults;
+static `default_value` remains available and takes precedence if both are given.
+Factories run for missing create values, including trusted user/session creation
+and organization model defaults. Explicit optional nulls and supplied values survive;
+ordinary reads/updates do not regenerate existing values. Protected session defaults
+retain precedence unless a trusted caller requests full overrides. Factory failures
+roll back creation, including users/accounts already written before session creation.
+OpenAPI generation does not call factories or publish their runtime values, and
+function-defaulted request fields do not become required solely for having a factory.
+
+The unchanged upstream runtime-default case runs on three adapters. Nine owned
+contracts and two native functions verify per-create values, explicit values/nulls,
+trusted creates, session overrides, schema generation and failed-factory retries.
+The TypeScript boundary restores configured date fields to Date objects while
+preserving configured JSON fields as literal data. The original upstream SDK type
+requirements remain unchanged; omitted/null runtime inputs are independently tested
+through JSON HTTP. Asynchronous defaults, exhaustive undefined/legacy-row behavior,
+update-value factories and default/transform sequencing remain open.

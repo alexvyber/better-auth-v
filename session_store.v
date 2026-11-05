@@ -35,7 +35,8 @@ fn (mut a Auth) persist_session(session Session) !Session {
 	decoded := decode_session(encoded)!
 	mut actual := Session{
 		...decoded
-		persistent: session.persistent
+		additional_fields: fill_field_defaults(a.config.session_fields, decoded.additional_fields)!
+		persistent:        session.persistent
 	}
 	if a.database_sessions() {
 		actual = Session{

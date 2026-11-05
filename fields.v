@@ -222,7 +222,7 @@ fn parse_fields(schema map[string]AdditionalField, input map[string]json2.Any, e
 		if value := input[key] {
 			if !field.input {
 				if creating {
-					if fallback := field.default_value {
+					if fallback := (field.resolve_default()!).value {
 						result[key] = fallback
 						continue
 					}
@@ -235,7 +235,7 @@ fn parse_fields(schema map[string]AdditionalField, input map[string]json2.Any, e
 			parsed := parse_field_value(field, value)!
 			if !parsed.undefined_value { result[key] = parsed.value }
 		} else if creating {
-			if value := field.default_value {
+			if value := (field.resolve_default()!).value {
 				validate_field(field, value)!
 				result[key] = value
 			} else if field.required {

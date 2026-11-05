@@ -22,6 +22,12 @@ fn (a &Auth) database_fallback() bool {
 }
 
 fn (mut a Auth) persist_session(session Session) !Session {
+	mut context := EndpointContext{
+		auth: a
+	}
+	for plugin in a.config.plugins {
+		if plugin is SessionCreationPlugin { plugin.before_session(mut context, session)! }
+	}
 	encoded := (a.before_record('session', 'create', encode_session(session))!).value or {
 		return fail(400, 'FAILED_TO_CREATE_SESSION', 'Failed to create session')
 	}

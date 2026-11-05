@@ -40,6 +40,8 @@ struct Options {
 	ott_hash_callback                 bool
 	custom_jwk_store                  bool
 	admin_schema                      bool
+	admin                             ?better_auth.AdminOptions
+	admin_banned_callback             bool
 	admin_default_role                string = 'user'
 	organization_schema               bool
 	organization_teams                bool
@@ -692,9 +694,21 @@ fn main() {
 		}
 	}
 
-	if opts.admin_schema { plugins << better_auth.AdminSchemaPlugin{
+	if given := opts.admin {
+		mut settings := given
+		if opts.admin_banned_callback { settings = better_auth.AdminOptions{
+				...settings
+				banned_message: fn (mut context better_auth.EndpointContext, user better_auth.User) !string {
+					return json2.decode[string](otp_callback('admin.bannedMessage', better_auth.encode_user(user), mut context)!)!}
+			} }
+		plugins << better_auth.AdminPlugin{
+			options: settings
+		}
+	} else if opts.admin_schema {
+		plugins << better_auth.AdminSchemaPlugin{
 			default_role: opts.admin_default_role
-		} }
+		}
+	}
 	if opts.organization_schema { plugins << better_auth.OrganizationSchemaPlugin{
 			teams_enabled: opts.organization_teams
 		} }

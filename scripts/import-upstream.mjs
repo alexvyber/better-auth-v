@@ -204,6 +204,41 @@ const plans = [
     ]),
   },
 ];
+plans.push({file:'admin',helpers:new Set(['server','handlers','testIdToken']),setupCalls:new Set(['beforeAll','afterEach','afterAll']),path:'packages/better-auth/src/plugins/admin/admin.test.ts',
+ suites:new Set(['Admin plugin','access control','Admin plugin id-token sign-in','admin createUser validateUserInfo provisioning gate','admin create-user password length']),
+ skippedTests:new Set([
+ 'should not allow banned user to sign in with social provider',
+ 'should redirect banned social sign-in to a cross-origin errorCallbackURL',
+ 'should allow admins to impersonate user','should revalidate useSession after admin impersonation',
+ 'should not allow non-admin to impersonate user','should not allow to impersonate admins without impersonate-admins permission',
+ 'should allow impersonating admins with impersonate-admins permission','should allow impersonating admins with legacy allowImpersonatingAdmins option',
+ 'should filter impersonated sessions','should allow admin to stop impersonating','should allow admin to revoke user session',
+ 'should throw error when assigning non-existent admin roles','should validate on the client','should properly type custom roles in createUser',
+ ]),
+ unportedReason:'Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified',
+ imports:`import type {BetterAuthPlugin} from '@better-auth/core';
+import type {UserWithRole} from 'better-auth/plugins/admin';
+import {BetterAuthError} from '@better-auth/core/error';
+import {createAccessControl} from 'better-auth/plugins/access';
+import {ADMIN_ERROR_CODES} from 'better-auth/client/plugins';
+import {createAuthMiddleware} from 'better-auth/api';
+import {getSessionFromCtx} from '../harness/session.js';
+import type {GoogleProfile} from '@better-auth/core/social-providers';
+import {exportJWK,generateKeyPair,SignJWT} from 'jose';
+import {HttpResponse,http} from 'msw';
+import {setupServer} from 'msw/node';
+import {beforeAll,afterAll,afterEach,describe,it,expect,vi} from 'vitest';
+import {getTestInstance} from '../harness/test-instance.js';
+import {admin} from '../harness/plugins.js';
+import {createAuthClient} from 'better-auth/client';
+import {adminClient} from 'better-auth/client/plugins';
+import {signJWT} from '../harness/crypto.js';
+import {DEFAULT_SECRET} from '../harness/constants.js';
+`});
+const adminPlan=plans.find(plan=>plan.file==='admin');
+for(const [prefix,fixture,surface] of [['postgres','postgres-fixture','native-postgres-uuid-mapped-physical-schema'],['mongo','mongo-fixture','native-mongodb-objectid-replica-set']]) {
+ plans.push({...adminPlan,file:prefix+'-admin',imports:adminPlan.imports.replace('../harness/test-instance.js','../harness/'+fixture+'.js'),executionSurface:surface});
+}
 const policy = plans.find(plan => plan.file === 'oauth-link-policy');
 plans.push({...policy,file:'postgres-oauth-link-policy',imports:policy.imports.replace('../harness/test-instance.js','../harness/postgres-text-fixture.js'),executionSurface:'native-postgres-text-id-mapped-physical-schema'});
 const attemptPlan = plans.find(plan => plan.file === 'two-factor-attempt-cap');

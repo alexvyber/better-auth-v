@@ -34,7 +34,7 @@
     "plugins": {
       "files": 45,
       "declarations": 1315,
-      "importedFiles": 12
+      "importedFiles": 13
     },
     "adapters": {
       "files": 16,
@@ -16437,7 +16437,7 @@
       "path": "packages/better-auth/src/plugins/admin/admin.test.ts",
       "sha256": "9dc3f3bceeaf847a2285ebcadda4805387d4d2fee846771aa3609854ce4839de",
       "group": "plugins",
-      "status": "unported",
+      "status": "imported-partial-file",
       "kind": "runtime",
       "declarations": [
         {

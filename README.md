@@ -57,6 +57,8 @@ There is no dependency on a web framework.
 - Two-factor TOTP enrollment and verification, delivered OTPs, recovery codes,
   trusted-device rotation, per-challenge attempt caps and account lockout; native
   memory/SQLite/PostgreSQL factor storage and mapped PostgreSQL columns.
+- Admin user management, roles and permission checks, bans, password setting and
+  session revocation, with current-store authorization and mapped plugin fields.
 - Generic OIDC discovery, signature/nonce verification, profile policy callbacks,
   verified-local-email linking gates, implicit-link switches and provisioned-user
   signup controls.

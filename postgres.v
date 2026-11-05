@@ -271,7 +271,26 @@ pub fn (mut storage PostgresStorage) users() ![]User {
 	return rows.map(decode_user(it)!)
 }
 
+fn postgres_uuid_identifier(value string) bool {
+	if value.len != 36 { return false }
+	for index, byte in value.bytes() {
+		if index in [8, 13, 18, 23] {
+			if byte != `-` { return false }
+			continue
+		}
+		if !(byte >= `0` && byte <= `9`) && !(byte >= `a` && byte <= `f`) && !(byte >= `A`
+			&& byte <= `F`) {
+			return false
+		}
+	}
+	return true
+}
+
 pub fn (mut storage PostgresStorage) user(id string) !Lookup[User] {
+	if storage.sql_type('user', 'id')! == 'uuid' && !postgres_uuid_identifier(id) {
+		return Lookup[User]{}
+	}
+
 	rows := storage.select_rows('user', 'WHERE ${storage.column_sql('user', 'id')}=$1', [
 		id,
 	])!

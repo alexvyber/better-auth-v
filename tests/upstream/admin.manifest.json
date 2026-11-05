@@ -1,0 +1,990 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/admin/admin.test.ts",
+  "sha256": "9dc3f3bceeaf847a2285ebcadda4805387d4d2fee846771aa3609854ce4839de",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow admin to get user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow non-admin to get user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow admin to create users",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow admin to create users without password",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow admin to create user with multiple roles",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow non-admin to create users",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow admin to list users",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should list users with search query",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow non-admin to list users",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow admin to count users",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow to sort users by name",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow offset and limit",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow to search users by name",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow to filter users by role",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should apply filter when filterValue is defined",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should filter users by id with ne operator",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should filter users by _id with ne operator",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow to combine search and filter",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow to set user role",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow to set multiple user roles",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow non-admin to set user role",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow to ban user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow non-admin to ban user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow to ban user with reason and expiration",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow banned user to sign in",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow banned user to sign in with social provider",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should redirect banned social sign-in to a cross-origin errorCallbackURL",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should resolve async banned user message",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow banned user to sign in if ban expired",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should clear the expired expiration when banning again without a duration",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not create a session for a banned user outside an endpoint context",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow to unban user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow non-admin to unban user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow admin to list user sessions",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should return 404 from unbanUser when the target user does not exist",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should return 404 from banUser when the target user does not exist",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should return 404 from setRole when the target user does not exist",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should return 404 from admin.updateUser when the target user does not exist",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow non-admin to list user sessions",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow admins to impersonate user",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should revalidate useSession after admin impersonation",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow non-admin to impersonate user",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow to impersonate admins without impersonate-admins permission",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow impersonating admins with impersonate-admins permission",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow impersonating admins with legacy allowImpersonatingAdmins option",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should filter impersonated sessions",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow admin to stop impersonating",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow admin to revoke user session",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow non-admin to revoke user sessions",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow admin to revoke user sessions",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should list with me",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow admin to set user password",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow admin to set user password with empty userId",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow admin to set user password with empty new password",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow admin to set user password with a short new password",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow admin to set user password with a long new password",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow non-admin to set user password",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should create a credential account when setting password for a user without one",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should return USER_NOT_FOUND when setting password for a non-existent user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow admin to delete user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow non-admin to delete user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow creating users from server",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow admin to update user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow non-admin to update user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow updating password through update-user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow updating the user id through update-user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should revoke sessions when banning a user via update-user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should not allow admins to ban themselves via update-user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should reject email updates that collide with another user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "Admin plugin",
+      "suites": [
+        "Admin plugin"
+      ],
+      "test": "should allow admin to update user email and normalize it",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should not allow role updates via update-user without user:set-role",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should reject non-existent roles via update-user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should allow role updates via update-user for valid roles with user:set-role",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should require user:set-role to assign roles via create-user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should reject non-existent roles via create-user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should apply a validated data.role for callers with user:set-role",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should require user:ban to update ban fields via update-user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should require user:set-email to update email fields via update-user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should validate on the client",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should validate using userId",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should validate using role",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should prioritize role over userId when both are provided",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should check permissions correctly for banned user with role provided",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "shouldn't allow to list users",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should not allow to set multiple non existent user role",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should not allow to set non existent user role",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should throw error when assigning non-existent admin roles",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "access control",
+      "suites": [
+        "access control"
+      ],
+      "test": "should properly type custom roles in createUser",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "edge cases: userId validation",
+      "suites": [
+        "edge cases: userId validation"
+      ],
+      "test": "should allow admin to check permissions with useNumberId",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "edge cases: userId validation",
+      "suites": [
+        "edge cases: userId validation"
+      ],
+      "test": "should return correct error when userId is missing and not call DB with undefined",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "edge cases: userId validation",
+      "suites": [
+        "edge cases: userId validation"
+      ],
+      "test": "should return user not found when userId is empty string",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "edge cases: userId validation",
+      "suites": [
+        "edge cases: userId validation"
+      ],
+      "test": "should not crash if userId is 'NaN'",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "Admin plugin id-token sign-in",
+      "suites": [
+        "Admin plugin id-token sign-in"
+      ],
+      "test": "should return BANNED_USER 403 JSON for id-token sign-in by banned user",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "admin createUser validateUserInfo provisioning gate",
+      "suites": [
+        "admin createUser validateUserInfo provisioning gate"
+      ],
+      "test": "rejects an admin-created user when validateUserInfo returns error",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "admin createUser validateUserInfo provisioning gate",
+      "suites": [
+        "admin createUser validateUserInfo provisioning gate"
+      ],
+      "test": "allows an admin-created user that passes validation",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "admin authorization is revocation-aware with cookie cache",
+      "suites": [
+        "admin authorization is revocation-aware with cookie cache"
+      ],
+      "test": "should reject privileged calls from a demoted admin holding a cached admin snapshot",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "admin authorization is revocation-aware with cookie cache",
+      "suites": [
+        "admin authorization is revocation-aware with cookie cache"
+      ],
+      "test": "should reject a banned admin within the cookie-cache window",
+      "selected": false,
+      "upstreamDisabled": false,
+      "reason": "Remaining admin CRUD/filter/access-control/impersonation and driver/username integration source cases are not yet verified"
+    },
+    {
+      "suite": "admin create-user password length",
+      "suites": [
+        "admin create-user password length"
+      ],
+      "test": "should reject a password longer than maxPasswordLength before hashing",
+      "selected": true,
+      "upstreamDisabled": false,
+      "reason": null
+    }
+  ]
+}

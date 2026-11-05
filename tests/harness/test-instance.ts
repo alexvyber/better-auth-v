@@ -1,3 +1,4 @@
+import type {UserWithRole} from 'better-auth/plugins/admin';
 import type {DBFieldAttribute} from "@better-auth/core/db";
 import {nativeRedisConfiguration} from './redis-storage.js';
 import { APIError } from "@better-auth/core/error";
@@ -85,6 +86,14 @@ afterAll(async () => {
 });
 
 const routes: Record<string, [string, string]> = {
+ getUser:['GET','/admin/get-user'],createUser:['POST','/admin/create-user'],
+ listUsers:['GET','/admin/list-users'],setRole:['POST','/admin/set-role'],
+ banUser:['POST','/admin/ban-user'],unbanUser:['POST','/admin/unban-user'],
+ adminUpdateUser:['POST','/admin/update-user'],setUserPassword:['POST','/admin/set-user-password'],
+ removeUser:['POST','/admin/remove-user'],listUserSessions:['POST','/admin/list-user-sessions'],
+ revokeUserSession:['POST','/admin/revoke-user-session'],revokeUserSessions:['POST','/admin/revoke-user-sessions'],
+ userHasPermission:['POST','/admin/has-permission'],
+
  signInMagicLink: ['POST', '/sign-in/magic-link'],
  magicLinkVerify: ['GET', '/magic-link/verify'],
  sendTwoFactorOTP: ['POST', '/two-factor/send-otp'],
@@ -295,7 +304,10 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       const input = schemaPluginOptions(plugin);
       if (!input) throw new Error(`Native schema plugin ${plugin.id} requires its fixture descriptor`);
       if (plugin.id === 'admin') {
-        assertKeys(input, ['defaultRole'], 'admin');
+        assertKeys(input, ['defaultRole','adminRoles','adminUserIds','roles','ac','defaultBanReason','defaultBanExpiresIn','bannedUserMessage','schema'], 'admin');
+        assertKeys(input.schema??{},['user','session'],'admin.schema');
+        for(const value of Object.values(input.schema??{}) as any[]){assertKeys(value,['fields','modelName'],'admin.schema.model');for(const name of Object.values(value.fields??{})){if(typeof name!=='string')throw new Error('Admin schema field aliases must be strings');}}
+        for(const role of Object.values(input.roles ?? {}) as any[]) {if(!role?.statements)throw new Error('Native admin roles require explicit permission statements');}
         adminOptions = input;
       } else {
         assertKeys(input, ['teams'], 'organization');
@@ -783,6 +795,17 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   if (typeof ottOptions?.storeToken === 'object') callbacks['ott.hash'] = token => ottOptions.storeToken.hash(token);
   for (const [method, callback] of Object.entries(callbacks))
     bridge.setCallback(method, callback);
+  if(typeof adminOptions?.bannedUserMessage==='function') callbacks['admin.bannedMessage']=payload=>adminOptions!.bannedUserMessage(hydrate(payload.data));
+  for(const [method,callback] of Object.entries(callbacks)) bridge.setCallback(method,callback);
+  const mappedAdminSchema=(configuration:any)=>{
+   if(!configuration)return configuration;
+   const result={...configuration,tables:{...configuration.tables},fields:{...configuration.fields}};
+   for(const [model,definition] of Object.entries(adminOptions?.schema??{}) as [string,any][]){
+    if(definition.modelName)result.tables[model]=definition.modelName;
+    result.fields[model]={...result.fields[model],...definition.fields};
+   }
+   return result;
+  };
   await bridge.send("init", {
     options: {
       id_strategy: configuredId === 'uuid' || config.nativePostgres?.uuidIds || config.nativeMongo?.uuidIds ? 'uuid' : 'random',
@@ -813,6 +836,13 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       ott_generate_callback: !!ottOptions?.generateToken,
       ott_hash_callback: typeof ottOptions?.storeToken === 'object',
       admin_schema: !!adminOptions,
+      admin: adminOptions ? {...adminOptions,ac:undefined,schema:undefined,
+       userFieldNames:adminOptions.schema?.user?.fields,sessionFieldNames:adminOptions.schema?.session?.fields,
+       adminRoles: typeof adminOptions.adminRoles==='string' ? adminOptions.adminRoles.split(',') : adminOptions.adminRoles,
+       roles:adminOptions.roles ? Object.fromEntries(Object.entries(adminOptions.roles).map(([name,role])=>[name,(role as any).statements])) : undefined,
+       bannedUserMessage:typeof adminOptions.bannedUserMessage==='string'?adminOptions.bannedUserMessage:undefined,
+      } : undefined,
+      admin_banned_callback: typeof adminOptions?.bannedUserMessage==='function',
       admin_default_role: adminOptions?.defaultRole ?? 'user',
       organization_schema: !!organizationOptions,
       organization_teams: organizationOptions?.teams?.enabled ?? false,
@@ -839,8 +869,8 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
         audiences: Array.isArray(jwtOptions.jwt?.audience) ? jwtOptions.jwt.audience : null,
       },
       storage: config.nativeMongo ? 'mongo' : config.nativePostgres ? 'postgres' : stateless || isNativeMemoryAdapter(options.database) ? 'memory' : 'sqlite',
-      postgres: config.nativePostgres,
-      mongo: config.nativeMongo,
+      postgres: mappedAdminSchema(config.nativePostgres),
+      mongo: mappedAdminSchema(config.nativeMongo),
       stateless_sessions: stateless,
       secondary_storage: !!options.secondaryStorage,
       redis_tcp: nativeRedis?.tcp,
@@ -1060,7 +1090,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   };
   const auth = {
     $context: Promise.resolve(context),
-    api: api as typeof api & { signInEmail: FixtureResponseAPI; verifyTOTP: FixtureResponseAPI; verifyTwoFactorOTP: FixtureResponseAPI; enableTwoFactor: FixtureEnableTwoFactorAPI; signUpEmail: SignUpAPI<O>; getSession: SessionAPI<O>; getJwks(args?: FixtureOptions): Promise<JSONWebKeySet>; generateBackupCodes(args?: FixtureOptions): Promise<{status: boolean; backupCodes: string[]}>; viewBackupCodes(args?: FixtureOptions): Promise<{status: boolean; backupCodes: string[]}> },
+    api: api as typeof api & { listUsers(args?:FixtureOptions):Promise<{users:UserWithRole[];total:number;limit?:number;offset?:number}>; signInEmail: FixtureResponseAPI; verifyTOTP: FixtureResponseAPI; verifyTwoFactorOTP: FixtureResponseAPI; enableTwoFactor: FixtureEnableTwoFactorAPI; signUpEmail: SignUpAPI<O>; getSession: SessionAPI<O>; getJwks(args?: FixtureOptions): Promise<JSONWebKeySet>; generateBackupCodes(args?: FixtureOptions): Promise<{status: boolean; backupCodes: string[]}>; viewBackupCodes(args?: FixtureOptions): Promise<{status: boolean; backupCodes: string[]}> },
     handler: (request: Request) => dispatch(request),
     options,
   };

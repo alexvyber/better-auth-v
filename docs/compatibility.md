@@ -214,9 +214,9 @@ credential-aware. Forwarded origin and IP headers are independently opt-in.
   Exact partial-update payloads, full hook context, arbitrary JS plugins, new-model
   schemas, request hooks, and inferred client extensions remain incomplete.
 - `AdminSchemaPlugin` and `OrganizationSchemaPlugin` supply creation defaults and
-  protected authority fields. Admin operations, ban enforcement, organization/team
-  operations, memberships, and RBAC remain unimplemented. The schema types do not
-  register those endpoints. Custom synthetic-user callbacks support enumeration
+  protected authority fields. `AdminPlugin` now supplies native admin operations and
+  ban enforcement as described below; organization/team operations and memberships
+  remain open. The schema-only types do not register those endpoints. Custom synthetic-user callbacks support enumeration
   protection with plugin fields and receive only user-defined additional inputs.
 - Secondary storage supports primary sessions, optional database copies, database
   fallback, preserved expired rows, TTLs, and atomic token consumption/counters in
@@ -365,7 +365,7 @@ schema generation/introspection, full secondary
 storage parity, full stateless/account-cookie behavior, complete JWT/JWKS plugin parity,
 remaining output field transforms/validators and functional defaults,
 remaining database-column mapping options, richer hooks,
-username/phone authentication, remaining two-factor integration details, passkeys, admin,
+username/phone authentication, remaining two-factor integration details, passkeys, remaining admin integration,
 organizations/teams/RBAC, API keys, OAuth/OIDC server functionality,
 SSO/SAML/SCIM, and payment/integration plugins remain unimplemented.
 
@@ -659,3 +659,43 @@ error aborts the transaction. Two-factor contention relies on transactions; atom
 guarded factor updates without transactions remain open. No general MongoDB
 pooling facade, nested field mapping, organization/plugin schema or actual Nabu
 application migration is claimed.
+
+
+## Native admin operations (partial)
+
+`AdminPlugin{options: AdminOptions{...}}` supplies user creation/get/update/removal,
+role changes, banning/unbanning, password setting, user/session listing, individual
+and bulk session revocation and permission checks. The existing `AdminSchemaPlugin`
+continues to supply only schema/default contributions. Default admin/user grants,
+custom role permission statements, comma-separated roles, configured admin IDs,
+custom ban messages, default ban reasons/durations and millisecond expiry are
+supported. Role/ban/email changes require their separate permissions; passwords and
+primary IDs cannot be written through profile updates. Protected plugin fields
+support explicit column aliases. Uniqueness/type constraints still belong to the
+configured storage adapter and its migration.
+
+Privileged requests check the current stored session and user rather than trusting
+a cached role. Primary secondary-storage sessions are checked for revocation too.
+HTTP callers need a valid session; trusted headerless creation and permission
+checks can provision/inspect users without one. The native trusted API distinguishes
+such calls from HTTP requests; full upstream header-presence/error precedence and
+stateless admin behavior remain incomplete. Bans revoke sessions through native
+storage/cache paths. Session creation also checks bans outside HTTP contexts,
+clearing expired bans before proceeding. Admin-created users run the provisioning
+gate and receive configured scalar additional-field defaults.
+
+78 unchanged upstream cases pass on SQLite, PostgreSQL UUID columns and MongoDB
+ObjectIds (234 repeated runtime cases). Thirteen independent contracts cover Brand
+Map's `platform-admin`/curator grants, stale cookie snapshots, primary secondary
+revocation, trusted provisioning versus HTTP access, empty role/action tables,
+individual session revocation, password provisioning, mapped ban columns and precise
+default ban durations. Three native test functions cover permission composition,
+constructor/schema checks and ban enforcement on internal session creation.
+
+Impersonation, banned OAuth callback redirects, general endpoint hook composition,
+original hook-preloaded revocation tests, numeric-ID/username variants and the
+remaining source cases are still unported. Native list filtering/sorting currently
+uses typed adapter scans rather than a complete database query API; collation,
+array/number filter coercion, arbitrary additional-field transform sequencing and
+complete validation/error timing still need work. No organization membership/RBAC
+or application migration is implied by the admin feature set.

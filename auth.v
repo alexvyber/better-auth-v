@@ -49,6 +49,9 @@ pub fn new(input_config Config, storage Storage) !&Auth {
 			trusted_origins: origins
 		}
 	}
+	for plugin in config.plugins {
+		if plugin is ValidatingPlugin { plugin.validate()! }
+	}
 	mut configured_storage := storage
 	if mut configured_storage is ConfigurableIDStorage {
 		configured_storage.configure_ids(config.id_strategy, config.generate_id != no_id_generator)!

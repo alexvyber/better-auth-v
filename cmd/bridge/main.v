@@ -43,6 +43,7 @@ struct Options {
 	admin                             ?better_auth.AdminOptions
 	admin_banned_callback             bool
 	admin_default_role                string = 'user'
+	open_api                          ?better_auth.OpenAPIOptions
 	organization_schema               bool
 	organization                      ?better_auth.OrganizationOptions
 	organization_fields_json          map[string]string
@@ -143,11 +144,13 @@ fn (mut store RemoteJWKStore) create_key(key better_auth.Jwk, mut context better
 }
 
 struct RemoteEndpoint {
-	name            string
-	path            string
-	method          string
-	require_session bool
-	fresh_session   bool
+	openapi_metadata string
+	hide_from_docs   bool
+	name             string
+	path             string
+	method           string
+	require_session  bool
+	fresh_session    bool
 }
 
 @[heap]
@@ -165,11 +168,13 @@ fn (p RemoteEndpointPlugin) endpoints() []better_auth.Endpoint {
 	for route in p.routes {
 		callback_name := 'plugin.' + p.name + '.' + route.name
 		endpoints << better_auth.Endpoint{
-			path:            route.path
-			method:          route.method
-			require_session: route.require_session
-			fresh_session:   route.fresh_session
-			handler:         fn [callback_name] (mut context better_auth.EndpointContext, req better_auth.Request) !better_auth.Response {
+			openapi_metadata: route.openapi_metadata
+			hide_from_docs:   route.hide_from_docs
+			path:             route.path
+			method:           route.method
+			require_session:  route.require_session
+			fresh_session:    route.fresh_session
+			handler:          fn [callback_name] (mut context better_auth.EndpointContext, req better_auth.Request) !better_auth.Response {
 				session_json := if current := context.session {
 					'{"session":${better_auth.encode_session(current.session)},"user":${better_auth.encode_user(current.user)}}'
 				} else {
@@ -715,6 +720,9 @@ fn main() {
 			default_role: opts.admin_default_role
 		}
 	}
+	if given := opts.open_api { plugins << better_auth.OpenAPIPlugin{
+			options: given
+		} }
 	if given := opts.organization {
 		mut fields := map[string]map[string]better_auth.AdditionalField{}
 		for model, encoded in opts.organization_fields_json {

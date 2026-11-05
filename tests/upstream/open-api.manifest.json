@@ -1,0 +1,374 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/plugins/open-api/open-api.test.ts",
+  "sha256": "09359c742cd3dd86dff4c1b503f45f29834b5910534f409383658226244be0d2",
+  "changes": "Imports, native fixture and omission of unselected standalone fixture bindings; selected test bodies and assertions unchanged",
+  "omittedUnselectedFixtureBindings": [
+    "authWithEmailOTP",
+    "authWithPhoneNumber",
+    "authWithNullableIntersection",
+    "authWithDefaultBody",
+    "authWithUnionIntersection",
+    "authWithRecordIntersection",
+    "authWithQueryConstraints",
+    "authWithDefaultFactoryBody",
+    "authWithWrapperSemantics"
+  ],
+  "setupChanges": "Only standalone fixtures used exclusively by unselected tests are omitted; selected test bodies and assertions are unchanged",
+  "tests": [
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should generate OpenAPI schema",
+      "selected": false,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should mark model id fields as required and read-only",
+      "selected": true,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should include additionalFields in the User schema",
+      "selected": true,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should map array additionalFields to OpenAPI array schemas",
+      "selected": true,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should allow every JSON value in additional field request bodies",
+      "selected": true,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should include additionalFields on sign-up and update-user request bodies",
+      "selected": true,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should mark explicitly required additionalFields as required on sign-up",
+      "selected": true,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should include username plugin fields on sign-up and update-user request bodies",
+      "selected": false,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should omit runtime-generated defaults from model schemas",
+      "selected": true,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should properly handle nested objects in request body schema",
+      "selected": true,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should keep optional primitive types non-nullable",
+      "selected": true,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should use OpenAPI 3.1 nullable format for get-session response",
+      "selected": true,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should emit unique operationIds across multi-method endpoints",
+      "selected": true,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should infer path parameters for routes with dynamic segments",
+      "selected": false,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should not share operation parameter or response objects across methods",
+      "selected": false,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should serialize the generated schema without circular response refs",
+      "selected": true,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should keep optional object types non-nullable",
+      "selected": true,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should generate OpenAPI 3.1 compliant schemas from Zod types",
+      "selected": true,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should not require token/user in /sign-in/social response and allow redirect to be true or false",
+      "selected": true,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should correctly unwrap ZodDefault and infer inner type",
+      "selected": true,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should include request bodies for all email OTP POST endpoints",
+      "selected": false,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should merge object and record intersections for email OTP sign-in request bodies",
+      "selected": false,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "emits a request body for %s",
+      "selected": false,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "emits the phone-number verification request body",
+      "selected": false,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should keep plain email OTP request bodies as object schemas",
+      "selected": false,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should preserve nullable object intersections when merging schemas",
+      "selected": false,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should mark default-wrapped request bodies as optional",
+      "selected": false,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should represent object intersections with union branches",
+      "selected": false,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should preserve record key schemas when merging object intersections",
+      "selected": false,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should preserve string length constraints for wrapped query parameters",
+      "selected": false,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should not evaluate request body default factories",
+      "selected": false,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+    },
+    {
+      "suite": "open-api",
+      "suites": [
+        "open-api"
+      ],
+      "test": "should compute required fields through Zod wrapper schemas",
+      "selected": false,
+      "executionSurface": "native-api-model-and-core-route-documentation",
+      "upstreamDisabled": false,
+      "reason": "Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported"
+    }
+  ]
+}

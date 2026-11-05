@@ -87,6 +87,7 @@ afterAll(async () => {
 });
 
 const routes: Record<string, [string, string]> = {
+ generateOpenAPISchema:['GET','/open-api/generate-schema'],openAPIReference:['GET','/reference'],
  createOrganization:['POST','/organization/create'],updateOrganization:['POST','/organization/update'],deleteOrganization:['POST','/organization/delete'],
  checkOrganizationSlug:['POST','/organization/check-slug'],setActiveOrganization:['POST','/organization/set-active'],
  listOrganizations:['GET','/organization/list'],getFullOrganization:['GET','/organization/get-full-organization'],getOrganization:['GET','/organization/get-organization'],
@@ -258,6 +259,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   let jwtOptions: FixtureOptions | undefined;
   let adminOptions: FixtureOptions | undefined;
   let organizationOptions: FixtureOptions | undefined;
+  let openAPIOptions:FixtureOptions|undefined;
   const genericProviders: FixtureOptions[] = [];
   const logoutProviders: FixtureOptions[] = [];
   const requestHooks: Array<(request: Request, context: FixtureOptions) => unknown> = [];
@@ -286,6 +288,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       assertKeys(anonymousOptions, ['emailDomainName', 'disableDeleteAnonymousUser', 'generateName', 'generateRandomEmail', 'onLinkAccount', 'schema'], 'anonymous');
       continue;
     }
+    if(plugin.id==='open-api'){openAPIOptions=plugin.options??{};assertKeys(openAPIOptions,['path','disableDefaultReference','theme','nonce'],'openAPI');continue;}
     if (plugin.id === 'bearer') { continue; }
     if (plugin.id === 'email-otp') {
       otpOptions = schemaPluginOptions(plugin);
@@ -344,12 +347,13 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       for (const [name, endpoint] of Object.entries(plugin.endpoints ?? {})) {
         const descriptor = nativeEndpoint(endpoint);
         if (!descriptor) throw new Error(`Plugin endpoint ${plugin.id}.${name} needs a native fixture descriptor`);
-        assertKeys(descriptor.options, ['method', 'use', 'query'], `plugin.${plugin.id}.${name}`);
+        assertKeys(descriptor.options, ['method', 'use', 'query','metadata'], `plugin.${plugin.id}.${name}`);
+        assertKeys(descriptor.options.metadata??{},['openapi','scope'],'endpoint.metadata');
         const use = descriptor.options.use ?? [];
         if (use.some(middleware => middleware !== freshSessionMiddleware && !nativeOriginSelector(middleware))) throw new Error('Unsupported native middleware descriptor');
         const method = descriptor.options.method ?? 'GET';
         if (typeof method !== 'string') throw new Error('Endpoint method arrays are not bridged yet');
-        routes.push({name, path: descriptor.path, method, fresh_session: use.includes(freshSessionMiddleware)});
+        routes.push({name,openapi_metadata:descriptor.options.metadata?.openapi?transportJSON(descriptor.options.metadata.openapi):undefined,hide_from_docs:descriptor.options.metadata?.scope==='server', path: descriptor.path, method, fresh_session: use.includes(freshSessionMiddleware)});
         endpointCallbacks[`plugin.${plugin.id}.${name}`] = async payload => {
           const request = new Request(payload.request.url, {method: payload.request.method, headers: payload.request.headers, body: payload.request.method === 'POST' ? payload.request.body : undefined});
           const responseHeaders = new Headers();
@@ -870,6 +874,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       } : undefined,
       admin_banned_callback: typeof adminOptions?.bannedUserMessage==='function',
       admin_default_role: adminOptions?.defaultRole ?? 'user',
+      open_api:openAPIOptions,
       organization_schema: !!organizationOptions,
       organization:organizationOptions&&!organizationOptions.teams?.enabled?{
        allowUserToCreateOrganization:typeof organizationOptions.allowUserToCreateOrganization==='boolean'?organizationOptions.allowUserToCreateOrganization:undefined,
@@ -1055,6 +1060,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
 
   const api: Record<string, (args?: FixtureOptions) => Promise<any>> = {};
   const instanceRoutes = {...routes};
+  if(openAPIOptions)instanceRoutes.openAPIReference=['GET',openAPIOptions.path??'/reference'];
   if (jwtOptions) {
     instanceRoutes.getJwks = ['GET', jwtOptions.jwks?.jwksPath ?? '/jwks'];
     instanceRoutes.getToken = ['GET', '/token'];

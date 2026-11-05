@@ -276,6 +276,20 @@ plans.push(dynamicRoles);
 for(const [prefix,fixture] of [['postgres','postgres-fixture'],['mongo','mongo-fixture']]){
  plans.push({...dynamicRoles,file:prefix+'-organization-dynamic-roles',imports:dynamicRoles.imports.replace('../harness/organization-fixture.js','../harness/organization-'+fixture+'.js'),executionSurface:'native-'+prefix+'-dynamic-organization-roles'});
 }
+const openAPIPlan={file:'open-api',path:'packages/better-auth/src/plugins/open-api/open-api.test.ts',suites:new Set(['open-api']),includeHelpers:true,
+ onlyTests:new Set(['should mark model id fields as required and read-only','should include additionalFields in the User schema','should map array additionalFields to OpenAPI array schemas','should allow every JSON value in additional field request bodies','should include additionalFields on sign-up and update-user request bodies','should mark explicitly required additionalFields as required on sign-up','should omit runtime-generated defaults from model schemas','should properly handle nested objects in request body schema','should keep optional primitive types non-nullable','should use OpenAPI 3.1 nullable format for get-session response','should emit unique operationIds across multi-method endpoints','should serialize the generated schema without circular response refs','should keep optional object types non-nullable','should generate OpenAPI 3.1 compliant schemas from Zod types','should not require token/user in /sign-in/social response and allow redirect to be true or false','should correctly unwrap ZodDefault and infer inner type']),
+ skippedSetupBindings:new Set(['authWithEmailOTP','authWithPhoneNumber','authWithNullableIntersection','authWithDefaultBody','authWithUnionIntersection','authWithRecordIntersection','authWithQueryConstraints','authWithDefaultFactoryBody','authWithWrapperSemantics']),
+ executionSurface:'native-api-model-and-core-route-documentation',unportedReason:'Full upstream endpoint snapshot, unsupported auth plugins, arbitrary endpoint/Zod schema composition and POST OAuth callback documentation remain unported',
+ imports:`import type {BetterAuthPlugin} from '@better-auth/core';
+import {describe,expect,it} from 'vitest';
+import * as z from 'zod';
+import {createAuthEndpoint} from 'better-auth/api';
+import {openAPI,phoneNumber,username} from 'better-auth/plugins';
+import {emailOTP} from '../harness/plugins.js';
+import type {OpenAPISchema,Path} from 'better-auth/plugins/open-api';
+import {getTestInstance} from '../harness/test-instance.js';
+`};
+plans.push(openAPIPlan);
 const organizationMembers={file:'organization-members',includeHelpers:true,path:'packages/better-auth/src/plugins/organization/routes/crud-members.test.ts',
  suites:new Set(['listMembers','updateMemberRole','activeMemberRole','inviteMember role validation']),
  executionSurface:'native-api-upstream-test-origin-defaults',unportedReason:'Generic adapter findMany interception used by the >100 member source suite remains unported',
@@ -400,6 +414,12 @@ for (const plan of plans) {
     const selected = !extractedSuites.length && (plan.suites === null || plan.suites.has(name));
     const removals = [];
     function collect(node, path = [name]) {
+      if (ts.isVariableStatement(node) && plan.skippedSetupBindings) {
+       let omitted=false;
+       function inspectBinding(binding){if(ts.isIdentifier(binding)&&plan.skippedSetupBindings.has(binding.text))omitted=true;ts.forEachChild(binding,inspectBinding)}
+       for(const declaration of node.declarationList.declarations)inspectBinding(declaration.name);
+       if(omitted){removals.push([node.getFullStart(),node.end]);return;}
+      }
       if (ts.isCallExpression(node)) {
         let expression = node.expression;
         while (ts.isCallExpression(expression))
@@ -426,7 +446,7 @@ for (const plan of plans) {
             node.arguments[0]?.text ??
             node.arguments[0]?.getText(sourceFile) ??
             "<dynamic>";
-          const include = (extractedSuites.length ? path.some(title => extractedSuites.includes(title)) : selected) && !plan.skippedTests?.has(title) && !path.some(title => plan.skippedSuites?.has(title)) && (!plan.nestedSuites || path.some(title => plan.nestedSuites.has(title)) || plan.includeTests?.has(title));
+          const include = (extractedSuites.length ? path.some(title => extractedSuites.includes(title)) : selected) && (!plan.onlyTests || plan.onlyTests.has(title)) && !plan.skippedTests?.has(title) && !path.some(title => plan.skippedSuites?.has(title)) && (!plan.nestedSuites || path.some(title => plan.nestedSuites.has(title)) || plan.includeTests?.has(title));
           inventory.push({
             suite: name,
             suites: path,
@@ -488,7 +508,8 @@ for (const plan of plans) {
         path: relativePath,
         sha256: createHash("sha256").update(source).digest("hex"),
         changes:
-          "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+          plan.skippedSetupBindings ? 'Imports, native fixture and omission of unselected standalone fixture bindings; selected test bodies and assertions unchanged' : 'Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged',
+        ...(plan.skippedSetupBindings ? {omittedUnselectedFixtureBindings:[...plan.skippedSetupBindings],setupChanges:'Only standalone fixtures used exclusively by unselected tests are omitted; selected test bodies and assertions are unchanged'} : {}),
         tests: inventory,
       },
       null,

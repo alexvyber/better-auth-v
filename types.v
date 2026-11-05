@@ -451,11 +451,13 @@ pub interface Plugin {
 
 pub struct Endpoint {
 pub:
-	require_session bool
-	fresh_session   bool
-	path            string
-	method          string = 'POST'
-	handler         fn (mut EndpointContext, Request) !Response = empty_endpoint
+	openapi_metadata string
+	hide_from_docs   bool
+	require_session  bool
+	fresh_session    bool
+	path             string
+	method           string = 'POST'
+	handler          fn (mut EndpointContext, Request) !Response = empty_endpoint
 }
 
 fn empty_endpoint(mut _ EndpointContext, _ Request) !Response {

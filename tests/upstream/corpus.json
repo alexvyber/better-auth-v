@@ -34,7 +34,7 @@
     "plugins": {
       "files": 45,
       "declarations": 1315,
-      "importedFiles": 18
+      "importedFiles": 19
     },
     "adapters": {
       "files": 16,
@@ -23653,7 +23653,7 @@
       "path": "packages/better-auth/src/plugins/open-api/open-api.test.ts",
       "sha256": "09359c742cd3dd86dff4c1b503f45f29834b5910534f409383658226244be0d2",
       "group": "plugins",
-      "status": "unported",
+      "status": "imported-partial-file",
       "kind": "runtime",
       "declarations": [
         {

@@ -1,7 +1,7 @@
 import type { originCheck as upstreamOriginCheck } from 'better-auth/api';
 import type { createAuthEndpoint as upstreamCreateAuthEndpoint } from '@better-auth/core/api';
 
-type Descriptor = { path: string; options: {method?: string; use?: unknown[]; query?: {parse(input: unknown): unknown}}; handler: (context: any) => unknown };
+type Descriptor = { path: string; options: {metadata?: {openapi?:Record<string,unknown>;scope?:string}; method?: string; use?: unknown[]; query?: {parse(input: unknown): unknown}}; handler: (context: any) => unknown };
 const descriptors = new WeakMap<Function, Descriptor>();
 // Middleware descriptors are interpreted by V and never executed in JS.
 export const freshSessionMiddleware: any = Object.freeze({nativeMiddleware: 'fresh-session'});

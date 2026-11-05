@@ -814,3 +814,32 @@ user joins, paging/filter totals, tenant and owner guards, failed hook rollback 
 cached active-selection cleanup. Generic database filtering/coercion/collation,
 functional membership limits, aggregate owner races and cleanup after forbidden
 organization reads still require work; typed list scans are not a generic query API.
+
+
+## Initial OpenAPI support
+
+`OpenAPIPlugin` supplies `/open-api/generate-schema` and a configurable Scalar
+reference page, including disabling the page, theme and nonce options. Generation
+uses native configuration/model/endpoint definitions and invokes no auth handler,
+storage query or user callback. It documents known model fields, protected/read-only
+fields, scalar/array/date/JSON types, static defaults, required fields, writable user
+request fields and selected core request/response shapes. Logical schema names stay
+independent of physical database aliases. Runtime credentials and users are absent.
+Native endpoints can provide JSON OpenAPI metadata and hide themselves from docs;
+operation IDs remain unique. Internal endpoints and the reference page are omitted.
+Embedded schema/settings and nonce attributes are escaped without changing values.
+
+16 unchanged upstream cases verify model/request fields, nested social token input,
+optional/default types, nullable sessions, operation IDs and serialization. Three
+owned contracts verify explicit metadata, hidden paths, ID collisions, safe reference
+embedding, custom path and disabled reference. The import manifest identifies nine
+standalone fixture bindings omitted because their tests remain unselected. Original
+selected test bodies/assertions are preserved. Those omitted fixtures require phone
+or arbitrary endpoint/Zod-schema composition; they are not reported as implemented.
+
+This is not full OpenAPI parity. The full upstream endpoint snapshot, automatic
+plugin request/response schemas, arbitrary Zod composition, schema constraints,
+functional defaults, POST OAuth callbacks, complete security/tag metadata and the
+remaining source cases are open. Unknown plugin inputs are not fabricated: supply
+explicit native endpoint metadata to document their shapes. Native JSON fields use
+an unconstrained JSON Schema rather than the upstream model generator's `json` type.

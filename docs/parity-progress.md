@@ -790,7 +790,15 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   joins. Generic adapter instrumentation, aggregate owner races, functional limits
   and forbidden-read active-selection cleanup remain open.
 
-The latest full `make check` passes 2651 TypeScript cases across 127 files, all 111
+- Added the initial native OpenAPI generator and configurable Scalar reference
+  page. Known models/core routes, user request fields, nullable session and social
+  token shapes, unique operation IDs, explicit native endpoint metadata and hidden
+  paths are supported. Reference values/nonce attributes are escaped. 16 unchanged
+  source cases and three owned contracts pass; the manifest explicitly identifies
+  omitted standalone fixtures for unselected tests. Complete endpoint snapshots,
+  automatic plugin schemas and arbitrary Zod composition remain open.
+
+The latest full `make check` passes 2670 TypeScript cases across 129 files, all 111
 native V test functions across 36 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
 Formatting and `git diff --check` pass. Repeated backend runs do not increase unique
@@ -799,7 +807,7 @@ upstream source coverage, and these results do not imply full upstream parity.
 The user resumed work and authorized incremental commits and pushes to
 `alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.
 The objective remains incomplete. The corpus currently records 32 completely
-imported files, fifteen partial imports and 389 unported files; imported status describes source
+imported files, sixteen partial imports and 388 unported files; imported status describes source
 preservation, not broad feature completion.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise

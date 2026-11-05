@@ -14557,8 +14557,8 @@
       "sha256": "e4d05e4c04ec7bc6402f0ddee41599a74cdff3eb097e0d14d825cdc7980951be",
       "group": "utilities-and-tooling",
       "status": "imported-partial-file",
-      "importedDeclarations": 22,
-      "unportedDeclarations": 48,
+      "importedDeclarations": 36,
+      "unportedDeclarations": 34,
       "kind": "runtime",
       "declarations": [
         {

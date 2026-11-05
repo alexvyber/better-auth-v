@@ -12,6 +12,7 @@ import time
 import x.json2
 
 struct Options {
+	sqlite_path                       string = ':memory:'
 	postgres                          ?better_auth.PostgresOptions
 	mongo                             ?better_auth.MongoOptions
 	id_strategy                       string = 'random'
@@ -622,7 +623,7 @@ fn main() {
 	}
 	mut storage := better_auth.Storage(better_auth.open_memory())
 	if opts.storage == 'sqlite' {
-		mut sqlite_storage := better_auth.open_sqlite_with_options(':memory:', better_auth.SQLiteOptions{
+		mut sqlite_storage := better_auth.open_sqlite_with_options(opts.sqlite_path, better_auth.SQLiteOptions{
 			account_fields: account_fields
 		}) or {
 			emit(Reply{ id: init.id, error: err.msg() })

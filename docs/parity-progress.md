@@ -838,7 +838,7 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   titles cannot inflate coverage. Six audit cases cover complementary selections,
   repeats, ambiguous legacy records, stale checksums and invalid source metadata;
   `make check` now includes them. Source bodies/assertions are unchanged. The inventory
-  identifies 1,177 preserved declarations, distinct from runtime/backend case counts.
+  identifies 1,191 preserved declarations, distinct from runtime/backend case counts.
 
 - Added native OpenAPI request schemas for all nine public email-OTP POST endpoints,
   including required fields, purpose enums, extensible signup input and the deprecated
@@ -861,6 +861,13 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   cover the flow. Two unchanged upstream OpenAPI cases verify both callback methods,
   path parameters and separate operation objects. OAuth-proxy/SAML parity is not
   implied by these core callback and documentation contracts.
+
+- Imported fourteen additional unchanged verification storage cases: hashing/prefix
+  overrides, legacy plain-token fallback after changing configuration, secondary-only
+  and dual persistence, database fallback, deletion, TTLs and pre-parsed date revival.
+  Native fixture instances sharing a descriptor now use the same real temporary SQLite
+  file. The focused matrix passes 38 cases; type checking and six inventory audit tests
+  pass. This fixture/coverage batch changes no native authentication implementation.
 
 The latest full `make check` passes 2736 TypeScript cases across 140 files, all 117
 native V test functions across 38 files (including all 20,034 Unicode vectors),

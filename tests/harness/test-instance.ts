@@ -207,7 +207,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
     config,
     [
       "deferMigrations",
-      "nativePostgres",
+      "nativePostgres", "nativeSqlite",
       "nativeMongo",
       "disableTestUser",
       "testUser",
@@ -915,6 +915,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
         audiences: Array.isArray(jwtOptions.jwt?.audience) ? jwtOptions.jwt.audience : null,
       },
       storage: config.nativeMongo ? 'mongo' : config.nativePostgres ? 'postgres' : stateless || isNativeMemoryAdapter(options.database) ? 'memory' : 'sqlite',
+	  sqlite_path: config.nativeSqlite ?? ':memory:',
       postgres: mappedPluginSchema(config.nativePostgres),
       mongo: mappedPluginSchema(config.nativeMongo),
       stateless_sessions: stateless,

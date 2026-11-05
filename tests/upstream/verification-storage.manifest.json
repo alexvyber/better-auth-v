@@ -1,0 +1,959 @@
+{
+  "repository": "https://github.com/better-auth/better-auth",
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "packageVersion": "1.7.15",
+  "path": "packages/better-auth/src/db/internal-adapter.test.ts",
+  "sha256": "e4d05e4c04ec7bc6402f0ddee41599a74cdff3eb097e0d14d825cdc7980951be",
+  "changes": "Import paths and fixture only; suite selections recorded below; selected test bodies and assertions unchanged",
+  "tests": [
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should create oauth user with custom generate id",
+      "sourceStart": 4185,
+      "sourceLine": 167,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should abort oauth account creation when user creation is vetoed",
+      "sourceStart": 5362,
+      "sourceLine": 211,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "rejects createUser outside an endpoint context when validateUserInfo is configured",
+      "sourceStart": 6345,
+      "sourceLine": 254,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "requires a provisioning source when validateUserInfo is configured",
+      "sourceStart": 7003,
+      "sourceLine": 284,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "forces create-user as the createUser validation action",
+      "sourceStart": 7887,
+      "sourceLine": 322,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should find session with custom userId",
+      "sourceStart": 8735,
+      "sourceLine": 356,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should delete expired verification values on find",
+      "sourceStart": 9122,
+      "sourceLine": 373,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should delete verification by value with hooks",
+      "sourceStart": 10279,
+      "sourceLine": 406,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should delete verification by identifier with hooks",
+      "sourceStart": 10698,
+      "sourceLine": 418,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should not call adapter.delete for missing verification record (prevents Prisma P2025)",
+      "sourceStart": 11163,
+      "sourceLine": 432,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification token storage"
+      ],
+      "test": "should hash identifier when storeIdentifier is 'hashed'",
+      "sourceStart": 12165,
+      "sourceLine": 459,
+      "selected": true,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification token storage"
+      ],
+      "test": "should use overrides for specific prefixes",
+      "sourceStart": 13432,
+      "sourceLine": 497,
+      "selected": true,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification token storage"
+      ],
+      "test": "should fallback to plain lookup for old tokens",
+      "sourceStart": 14564,
+      "sourceLine": 533,
+      "selected": true,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "runs the after hook after adding user to db",
+      "sourceStart": 15612,
+      "sourceLine": 568,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should calculate TTL correctly with Math.floor for secondary storage",
+      "sourceStart": 17076,
+      "sourceLine": 626,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should create on secondary storage",
+      "sourceStart": 21694,
+      "sourceLine": 787,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should delete on secondary storage",
+      "sourceStart": 23798,
+      "sourceLine": 846,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should delete a single account",
+      "sourceStart": 26163,
+      "sourceLine": 907,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "rejects ambiguous account keys with joins=%s",
+      "sourceStart": 26928,
+      "sourceLine": 937,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "finds an account owner by the exact account key",
+      "sourceStart": 27890,
+      "sourceLine": 966,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "reports an account whose owner is missing",
+      "sourceStart": 29300,
+      "sourceLine": 1020,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "finds the same credential account after the user email changes",
+      "sourceStart": 30016,
+      "sourceLine": 1046,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should delete multiple accounts for a user",
+      "sourceStart": 30812,
+      "sourceLine": 1072,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "listSessions should skip missing sessions without blanking the list",
+      "sourceStart": 31560,
+      "sourceLine": 1102,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "defers secondary session deletion until commit and discards it on rollback",
+      "sourceStart": 32901,
+      "sourceLine": 1143,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "defers secondary session creation until commit and discards it on rollback",
+      "sourceStart": 34220,
+      "sourceLine": 1178,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "rejects deferred secondary-only session creation when persistence fails",
+      "sourceStart": 35802,
+      "sourceLine": 1229,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "keeps a secondary-only session write inside the transaction even when deferral is requested",
+      "sourceStart": 36886,
+      "sourceLine": 1267,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "preserves sessions created after user session deletion is requested",
+      "sourceStart": 38119,
+      "sourceLine": 1308,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "keeps stored sessions when the revocation snapshot cannot be read",
+      "sourceStart": 39532,
+      "sourceLine": 1351,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "listSessions should skip malformed session data (valid JSON but wrong structure)",
+      "sourceStart": 40927,
+      "sourceLine": 1397,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "listSessions should skip corrupt/unparsable sessions without blanking the list",
+      "sourceStart": 42240,
+      "sourceLine": 1434,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "listSessions should return empty array when all sessions are missing/corrupt",
+      "sourceStart": 43441,
+      "sourceLine": 1471,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "findSessions skips $caseName without discarding valid sessions",
+      "sourceStart": 44502,
+      "sourceLine": 1504,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should update session and active-sessions list in secondary storage",
+      "sourceStart": 45738,
+      "sourceLine": 1550,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test"
+      ],
+      "test": "should deduplicate sessions when active-sessions list contains duplicates",
+      "sourceStart": 48934,
+      "sourceLine": 1647,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification secondary storage"
+      ],
+      "test": "should store verification in secondary storage by default",
+      "sourceStart": 51021,
+      "sourceLine": 1712,
+      "selected": true,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification secondary storage"
+      ],
+      "test": "should find verification from secondary storage",
+      "sourceStart": 51771,
+      "sourceLine": 1733,
+      "selected": true,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification secondary storage"
+      ],
+      "test": "should NOT store in database when secondary-only mode",
+      "sourceStart": 52518,
+      "sourceLine": 1757,
+      "selected": true,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification secondary storage"
+      ],
+      "test": "should delete verification from secondary storage",
+      "sourceStart": 53328,
+      "sourceLine": 1783,
+      "selected": true,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification secondary storage"
+      ],
+      "test": "should store in both when storeInDatabase is true",
+      "sourceStart": 54087,
+      "sourceLine": 1807,
+      "selected": true,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification secondary storage"
+      ],
+      "test": "should fallback to database when not in secondary storage",
+      "sourceStart": 54928,
+      "sourceLine": 1836,
+      "selected": true,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "verification secondary storage"
+      ],
+      "test": "should set correct TTL based on expiresAt",
+      "sourceStart": 55732,
+      "sourceLine": 1864,
+      "selected": true,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "safeJSONParse date revival in secondary storage"
+      ],
+      "test": "should return Date objects from findVerificationValue when storage returns pre-parsed objects",
+      "sourceStart": 57807,
+      "sourceLine": 1933,
+      "selected": true,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "safeJSONParse date revival in secondary storage"
+      ],
+      "test": "should correctly detect expired verification when storage returns pre-parsed objects",
+      "sourceStart": 58624,
+      "sourceLine": 1958,
+      "selected": true,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "safeJSONParse date revival in secondary storage"
+      ],
+      "test": "should return Date objects for all date fields across multiple reads",
+      "sourceStart": 59549,
+      "sourceLine": 1984,
+      "selected": true,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "safeJSONParse date revival in secondary storage"
+      ],
+      "test": "should preserve non-date string fields when reviving dates",
+      "sourceStart": 60768,
+      "sourceLine": 2018,
+      "selected": true,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": null
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "returns the row to the first caller and null to subsequent reads",
+      "sourceStart": 62122,
+      "sourceLine": 2059,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "yields exactly one winner under concurrent consume",
+      "sourceStart": 62663,
+      "sourceLine": 2075,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "returns null for an unknown identifier",
+      "sourceStart": 63277,
+      "sourceLine": 2094,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "returns null when the row exists but has already expired",
+      "sourceStart": 63492,
+      "sourceLine": 2100,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "aborts the consume when a delete.before hook returns false",
+      "sourceStart": 64100,
+      "sourceLine": 2117,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "fires delete.after only for the winning racer",
+      "sourceStart": 64795,
+      "sourceLine": 2142,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "consumes via the original identifier when storeIdentifier is hashed",
+      "sourceStart": 65485,
+      "sourceLine": 2168,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "consumes the latest row and invalidates stale rows for the identifier",
+      "sourceStart": 66087,
+      "sourceLine": 2186,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "uses secondary storage getAndDelete when verification values are storage-only",
+      "sourceStart": 66846,
+      "sourceLine": 2208,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "returns null when the secondary storage row has already expired",
+      "sourceStart": 68213,
+      "sourceLine": 2254,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "rehydrates string `expiresAt` from secondary storage JSON",
+      "sourceStart": 69307,
+      "sourceLine": 2285,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "consumeVerificationValue"
+      ],
+      "test": "returns null when secondary storage `expiresAt` cannot be parsed",
+      "sourceStart": 70055,
+      "sourceLine": 2306,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "returns true the first time and the row is findable",
+      "sourceStart": 71116,
+      "sourceLine": 2343,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "returns false the second time for the same identifier",
+      "sourceStart": 71581,
+      "sourceLine": 2358,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "yields exactly one winner under concurrent reserve",
+      "sourceStart": 72100,
+      "sourceLine": 2376,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "reserves independently across different identifiers",
+      "sourceStart": 72689,
+      "sourceLine": 2396,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "fails closed when verification reservation is secondary-storage-only",
+      "sourceStart": 73216,
+      "sourceLine": 2414,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue",
+        "with configured id strategies"
+      ],
+      "test": "yields exactly one winner when ids are uuids",
+      "sourceStart": 73855,
+      "sourceLine": 2433,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue",
+        "with configured id strategies"
+      ],
+      "test": "keeps reserving when ids are database-generated numbers",
+      "sourceStart": 74398,
+      "sourceLine": 2449,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "returns true the first time and the row is findable",
+      "sourceStart": 75158,
+      "sourceLine": 2476,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "returns false the second time for the same identifier",
+      "sourceStart": 75623,
+      "sourceLine": 2491,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "yields exactly one winner under concurrent reserve",
+      "sourceStart": 76142,
+      "sourceLine": 2509,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    },
+    {
+      "suite": "internal adapter test",
+      "suites": [
+        "internal adapter test",
+        "reserveVerificationValue"
+      ],
+      "test": "reserves independently across different identifiers",
+      "sourceStart": 76731,
+      "sourceLine": 2529,
+      "selected": false,
+      "executionSurface": "native-verification-storage-and-configuration-migration",
+      "upstreamDisabled": false,
+      "reason": "Remaining generic adapter, session, hooks and persisted serial ID contracts remain unported"
+    }
+  ]
+}

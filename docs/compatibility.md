@@ -926,7 +926,7 @@ The source inventory unions complementary imports by original AST position under
 matching source checksums. Backend repeats count once, duplicate titles retain
 separate identities and malformed source metadata fails the audit. Every manifest
 records original positions/lines. Six audit tests run through `make check`. The
-current 33 complete/16 partial/387 unported source-file counts and 1,177 preserved
+current 33 complete/16 partial/387 unported source-file counts and 1,191 preserved
 static declarations describe source coverage, including separately labelled SDK
 probes; they are not equivalent to native runtime or feature parity.
 
@@ -942,3 +942,14 @@ PostgreSQL and MongoDB, checking Basic/PKCE and provisioned account linking. A s
 HTTP contract covers malformed/type/duplicate/media inputs and CSRF boundaries.
 Two unchanged upstream OpenAPI cases now verify both callback methods/path parameters;
 they are documentation tests, not upstream OAuth-proxy or SAML conformance coverage.
+
+
+Fourteen additional unchanged internal-adapter tests now exercise native verification
+identifier hashing/prefix overrides, legacy plain-token fallback after switching to
+hashed storage, secondary-only/dual persistence, database fallback, cache deletion,
+TTLs and pre-parsed cache date revival. The fixture uses native SQLite files in managed
+temporary directories; reusing a database descriptor shares actual rows across separate
+V auth instances/configurations. It does not open a JavaScript database. The focused
+38-case verification/reservation/consumption matrix, type checking and inventory audit
+pass. These additions verify existing native behavior; general adapter/session/hook
+conformance and database-owned numeric IDs remain incomplete.

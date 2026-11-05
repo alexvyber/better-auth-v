@@ -22,7 +22,7 @@ beforeAll(async () => {
 });
 afterAll(async () => {await provider.stop();});
 
-async function instance(overrides: Record<string, any> = {}, dependencies: {factory?:typeof getTestInstance;config?:Record<string,any>;provision?:(email:string)=>Promise<void>} = {}) {
+async function instance(overrides: Record<string, any> = {}, dependencies: {factory?:typeof getTestInstance;config?:Record<string,any>;provision?:(email:string)=>Promise<void>;seedUser?:()=>Promise<{id:string;email:string;name:string;emailVerified:boolean}>} = {}) {
  const configuration = genericOAuth({config: [{
   providerId: 'tinyauth', name: 'Code & Money', discoveryUrl: `${issuer}/.well-known/openid-configuration`,
   clientId: 'nabu-client', clientSecret: 'nabu-secret', requireIdTokenVerification: true,
@@ -36,6 +36,7 @@ async function instance(overrides: Record<string, any> = {}, dependencies: {fact
    return {email: normalized, emailVerified: true};
   },
  }]});
+ const seeded=await dependencies.seedUser?.();
  const ready = await (dependencies.factory ?? getTestInstance)({
   plugins: [configuration], account: {accountLinking: {enabled: true, trustedProviders: ['tinyauth'], allowDifferentEmails: false}},
   emailAndPassword: {enabled: false, disableSignUp: true, minPasswordLength: 12},
@@ -43,7 +44,7 @@ async function instance(overrides: Record<string, any> = {}, dependencies: {fact
  }, {disableTestUser: true,...dependencies.config});
  const adapter = (await ready.auth.$context).internalAdapter;
  expect((await ready.auth.$context).socialProviders.find(provider=>provider.id==='tinyauth')?.name).toBe('Code & Money');
- const user = await adapter.createUser({email: 'provisioned@example.com', name: 'Provisioned', emailVerified: true}, {method: 'test'});
+ const user = seeded ?? await adapter.createUser({email: 'provisioned@example.com', name: 'Provisioned', emailVerified: true}, {method: 'test'});
  return {...ready, user};
 }
 async function authorize(ready: Awaited<ReturnType<typeof instance>>, formPost=false, callbackFields:Record<string,string>={}) {
@@ -135,15 +136,27 @@ describe('Nabu provisioned OIDC configuration', () => {
   });
  }
 
- it('executes Nabu provisioning and signed OIDC login against real MongoDB storage', async()=>{
+ it('executes Nabu provisioning and signed OIDC login against pre-existing MongoDB documents without native migrations', async()=>{
   email='Provisioned@Example.com';verified=true;
   const configuration=await mongoOptions();
-  const ready=await instance({session:{expiresIn:30*86400,updateAge:86400},rateLimit:{enabled:true,storage:'database'}},{factory:mongoInstance,config:{nativeMongo:configuration},provision:async normalized=>{
+  const ready=await instance({session:{expiresIn:30*86400,updateAge:86400},rateLimit:{enabled:true,storage:'database'}},{factory:mongoInstance,config:{nativeMongo:configuration,deferMigrations:true},provision:async normalized=>{
    const result=await mongoCommand(configuration,{update:'user',updates:[{q:{email:normalized},u:{$set:{emailVerified:true},$currentDate:{updatedAt:true}}}]});
    expect(result.n).toBe(1);
+  },seedUser:async()=>{
+   // Install Nabu's exact index definitions and provision outside the auth adapter,
+   // before V connects. MongoDB itself creates ObjectId and BSON date values.
+   for(const [collection,key,options] of [
+    ['user',{email:1},{unique:true}],['session',{token:1},{unique:true}],
+    ['session',{expiresAt:1},{expireAfterSeconds:0}],['account',{providerId:1,accountId:1},{unique:true}],
+    ['verification',{identifier:1},{}],['rateLimit',{key:1},{unique:true}],
+   ] as const)await mongoCommand(configuration,{createIndexes:collection,indexes:[{key,name:Object.keys(key).join('_')+'_1',...options}]});
+   await mongoCommand(configuration,{update:'user',updates:[{q:{email:'provisioned@example.com'},upsert:true,u:{$set:{name:'Provisioned',emailVerified:false,applicationOwned:{provisioned:true}},$currentDate:{createdAt:true,updatedAt:true}}}]});
+   const row=(await mongoCommand(configuration,{find:'user',filter:{email:'provisioned@example.com'}})).cursor.firstBatch[0];
+   expect(row._id.$oid).toMatch(/^[0-9a-f]{24}$/);expect(row.createdAt.$date).toBeTypeOf('string');
+   return {id:row._id.$oid,email:row.email,name:row.name,emailVerified:false};
   }});
   const adapter=(await ready.auth.$context).internalAdapter;
-  await adapter.updateUser(ready.user.id,{emailVerified:false});
+  expect((await mongoCommand(configuration,{find:'user',filter:{email:'provisioned@example.com'}})).cursor.firstBatch[0].emailVerified).toBe(false);
   const {authorization,result,headers,callback}=await authorize(ready);
   expect(result.headers.get('location')).toBe('http://localhost:3000/nabu');
   expect(createHash('sha256').update(tokenRequest.verifier!).digest('base64url')).toBe(authorization.searchParams.get('code_challenge'));
@@ -155,6 +168,7 @@ describe('Nabu provisioned OIDC configuration', () => {
   const accounts=await mongoCommand(configuration,{find:'account',filter:{providerId:'tinyauth'}});
   expect(accounts.cursor.firstBatch[0].userId.$oid).toBe(ready.user.id);
   expect((await adapter.findAccounts(ready.user.id)).map((a:any)=>a.providerId)).toEqual(['tinyauth']);
+  expect((await mongoCommand(configuration,{find:'user',filter:{email:'provisioned@example.com'}})).cursor.firstBatch[0]).toMatchObject({_id:{$oid:ready.user.id},emailVerified:true,applicationOwned:{provisioned:true}});
   expect((await ready.auth.handler(new Request(callback,{headers:replay}))).status).toBe(400);
  });
  it('rejects an unprovisioned signed SSO identity on MongoDB without creating a binding',async()=>{

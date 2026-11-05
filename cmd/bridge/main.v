@@ -362,7 +362,7 @@ fn invoke_bridge_internal(mut context better_auth.EndpointContext, command Comma
 
 fn callback_with_context(method string, payload string, mut context better_auth.EndpointContext) !string {
 	callback_id := hex.encode(rand.bytes(8)!)
-	println('{"callback":${json.encode(method)},"callback_id":${json.encode(callback_id)},"context":true,"payload":${payload}}')
+	println('{"callback":${json.encode(method)},"callback_id":${json.encode(callback_id)},"context":true,"transaction":${context.has_active_transaction()},"payload":${payload}}')
 	flush_stdout()
 	for {
 		line := os.get_raw_line()
@@ -390,21 +390,30 @@ fn callback_with_context(method string, payload string, mut context better_auth.
 				continue
 			}
 			emit(Reply{ id: command.id, value_json: value })
+		} else if command.op == 'transaction' {
+			value := context.with_transaction(fn [command] (mut nested better_auth.EndpointContext) !string {
+				return callback_with_context(command.method, '{}', mut nested)
+			}) or {
+				emit(Reply{ id: command.id, error: err.msg() })
+				continue
+			}
+			emit(Reply{ id: command.id, value_json: value })
 		} else if command.op == 'inspect' {
+			mut encoded := ''
 			if command.model == 'user' {
 				users := context.users()!
-				emit(Reply{
-					id:           command.id
-					records_json: '[' + users.map(better_auth.encode_user(it)).join(',') + ']'
-				})
+				encoded = '[' + users.map(better_auth.encode_user(it)).join(',') + ']'
 			} else if command.model == 'account' {
-				emit(Reply{
-					id:           command.id
-					records_json: better_auth.encode_accounts(context.accounts('')!)
-				})
+				encoded = better_auth.encode_accounts(context.accounts('')!)
 			} else {
 				emit(Reply{ id: command.id, error: 'unsupported inspection model' })
+				continue
 			}
+			filtered := filter_inspection(encoded, command.where_json) or {
+				emit(Reply{ id: command.id, error: err.msg() })
+				continue
+			}
+			emit(Reply{ id: command.id, records_json: filtered })
 		} else {
 			emit(Reply{ id: command.id, error: 'unsupported nested operation' })
 		}

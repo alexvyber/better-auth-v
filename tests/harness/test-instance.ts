@@ -74,10 +74,10 @@ interface FixtureInternalAdapter extends Record<string, (...args: any[]) => Prom
 interface FixtureTransactionAdapter {
   findOne<T = any>(query: FixtureOptions): Promise<T | null>;
  update<T = any>(query: FixtureOptions): Promise<T | null>;
-  create<I=Record<string,unknown>, O=I & {id:string}>(query: {model: string; data: I}): Promise<O>;
+  create<I=Record<string,unknown>, O=I & {id:string}>(query: {model: string; data: I;forceAllowId?:boolean}): Promise<O>;
   findMany<T>(query: {model: string;where?:FixtureOptions[]}): Promise<T[]>;
   nativeRunWithTransaction<T>(callback: () => Promise<T>): Promise<T>;
-  options: {adapterConfig: {transaction: boolean}};
+  options: {adapterConfig: {transaction: boolean;adapterName?:string}};
   transaction(callback: (transaction: FixtureTransactionAdapter) => Promise<unknown>): Promise<unknown>;
 }
 const instances = new Set<Bridge>();
@@ -509,7 +509,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
   }
   const adapter: FixtureTransactionAdapter = {
     async nativeRunWithTransaction<T>(callback: () => Promise<T>): Promise<T> {
-      if (nativeTransactionScope.getStore()) return callback();
+      if (bridge.inCallback ? bridge.inNativeTransaction : nativeTransactionScope.getStore()) return callback();
       const method = 'transaction.' + crypto.randomUUID();
       let result: T;
       let cause: unknown;
@@ -523,17 +523,19 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       finally { bridge.removeCallback(method); }
       return result!;
     },
-    async create<I, O>(query: {model: string; data: I}): Promise<O> {
+    async create<I, O>(query: {model: string; data: I;forceAllowId?:boolean}): Promise<O> {
+      assertKeys(query,['model','data','forceAllowId'],'adapter.create');
       if (query.model === 'user') {
-       const reply = await bridge.send('internal', {method:'createUser',arguments_json:transportJSON([query.data])});
+       const reply = await bridge.send('internal', {method:'adapterCreateUser',arguments_json:transportJSON([query.data,query.forceAllowId??false])});
        return hydrate(JSON.parse(reply.value_json));
       }
       if (query.model !== 'jwks') throw new Error('Unsupported adapter create model');
       const reply = await bridge.send('internal', {method: 'adapterCreateJWK', arguments_json: transportJSON([query.data])});
       return hydrate(JSON.parse(reply.value_json));
     },
-    async findMany<T>(query: {model: string}): Promise<T[]> {
-      if (['account','verification'].includes(query.model)) {
+    async findMany<T>(query: {model: string;where?:FixtureOptions[]}): Promise<T[]> {
+      assertKeys(query,['model','where'],'adapter.findMany');
+      if (['user','account','verification'].includes(query.model)) {
        const reply = await bridge.send('inspect', {model:query.model,where_json:transportJSON((query as FixtureOptions).where ?? [])});
        return hydrate(JSON.parse(reply.records_json));
       }
@@ -553,7 +555,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       return hydrate(JSON.parse(reply.value_json));
     },
     options: {adapterConfig: {transaction: true}},
-    async transaction(callback): Promise<unknown> { return callback(adapter); },
+    async transaction(callback): Promise<unknown> { return adapter.nativeRunWithTransaction(()=>callback(adapter)); },
   };
   bridge.setTransactionsProvider(() => adapter.options.adapterConfig.transaction !== false);
   const password = {

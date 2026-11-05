@@ -47,6 +47,7 @@ export class Bridge {
   private sequence = 0;
   private transactionsProvider: () => boolean = () => true;
   get inCallback() { return this.callbackContext.getStore() !== undefined; }
+  get inNativeTransaction() { return this.callbackTransaction.getStore() === true; }
   setTransactionsProvider(provider: () => boolean) { this.transactionsProvider = provider; }
   private pending = new Map<
     number,
@@ -61,6 +62,7 @@ export class Bridge {
   private closed = false;
   private queue: Promise<unknown> = Promise.resolve();
   private callbackContext = new AsyncLocalStorage<boolean>();
+  private callbackTransaction = new AsyncLocalStorage<boolean>();
   private callbackScope: <T>(callback: () => T) => T = (callback) => callback();
   private callbacks = new Map<
     string,
@@ -91,7 +93,7 @@ export class Bridge {
       try {
         const frame = JSON.parse(line);
         if (typeof frame.callback === "string") {
-          void this.replyToCallback(frame.callback, frame.payload, frame.callback_id, frame.context === true);
+          void this.replyToCallback(frame.callback, frame.payload, frame.callback_id, frame.context === true, frame.transaction === true);
           return;
         }
         const reply = frame as Reply;
@@ -124,11 +126,11 @@ export class Bridge {
     });
   }
 
-  private async replyToCallback(method: string, payload: unknown, callbackId: string, context: boolean) {
+  private async replyToCallback(method: string, payload: unknown, callbackId: string, context: boolean, transaction: boolean) {
     try {
       const callback = this.callbacks.get(method);
       if (!callback) throw new Error(`Unsupported callback: ${method}`);
-      const value = await this.callbackScope(() => this.callbackContext.run(context, () => callback(payload)));
+      const value = await this.callbackScope(() => this.callbackContext.run(context, () => this.callbackTransaction.run(transaction,()=>callback(payload))));
       this.child.stdin.write(
         JSON.stringify({
           op: "callback-result",
@@ -163,7 +165,7 @@ export class Bridge {
   send(op: string, data: Record<string, unknown> = {}): Promise<Reply> {
     const callback = this.callbackContext.getStore();
     if (callback !== undefined) {
-      if (!callback || !["internal", "inspect"].includes(op)) return Promise.reject(new Error("This callback cannot reenter public auth; database hooks can use their internal adapter"));
+      if (!callback || !["internal", "inspect", "transaction"].includes(op)) return Promise.reject(new Error("This callback cannot reenter public auth; database hooks can use their internal adapter"));
       return this.sendCommand(op, data);
     }
     const result = this.queue.then(() => this.sendCommand(op, data));

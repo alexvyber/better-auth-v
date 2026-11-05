@@ -60,7 +60,10 @@ The official client verifies upstream cookies/credentials, renewal, independent
 clients, restart, revocation, disabled public signup and preservation of
 application-owned document fields. The separate `nabu-oidc-contract.test.ts` matrix
 covers signed OIDC, Basic client authentication, PKCE, provisioning policy,
-linking, rollback and proof replay.
+linking, rollback and proof replay. Its MongoDB provisioning case also installs
+application indexes and directly seeds an unverified user before native
+initialization, with native migrations disabled. The verified IdP callback updates
+that existing row and retains its ObjectId and application-owned fields.
 
 ## Limits
 

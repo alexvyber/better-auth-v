@@ -500,11 +500,12 @@ original sign-in, sign-up, core-session, one-time-token, email-OTP and reset tes
 preserve their assertions and record their execution surface in manifests. These
 copies add backend coverage, not unique imported upstream files.
 
-This is a foundational adapter, not verified Brand Map database interchange. Full
-Prisma schema/migration equivalence, arbitrary query/filter/join APIs, plugin-owned
-tables, introspection, pooling/reconnect policy, serial IDs and live TypeScript/V
-coexistence remain unverified or unimplemented. No tests connect to Brand Map or
-Nabu databases. Native MongoDB coverage is described below.
+The existing-application schema gate below now verifies a disposable snapshot of
+Brand Map's auth tables with native migrations disabled. Full Prisma migration
+equivalence, arbitrary query/filter/join APIs, introspection, pooling/reconnect
+policy, serial IDs and live TypeScript/V process coexistence remain unverified or
+unimplemented. No tests connect to deployed Brand Map or Nabu databases. Native
+MongoDB coverage is described below.
 
 
 ## Two-factor authentication
@@ -1087,3 +1088,39 @@ decoded signatures and valid cookies when a signed bearer value is invalid.
 exposed to browser clients, matching upstream. All seven original bearer declarations
 (eleven runtime cases) are imported unchanged and run on each of three backends;
 backend copies add seven unique source declarations, not twenty-one.
+
+### Shared upstream adapter suites
+
+The original shared `auth-flow.ts` and `transactions.ts` suites now run in full on
+native SQLite, PostgreSQL and MongoDB: eight entries, twenty-four runtime cases.
+They verify signup/signin, single-use password reset, sessions, timezone/date fields
+and rollback. Their source registration and assertions are preserved; only the
+`createTestSuite` import changes. Checksummed source snapshots and entry inventories
+are recorded in `tests/upstream/adapter-suites.imports.json`, with two audits in
+`make check`. These helper-registered object entries sit outside the static test/spec
+corpus and are counted separately rather than inflating its unique declaration count.
+
+The TS adapter facade now opens a real native transaction and reuses an existing
+native callback/transaction context for nested calls. Raw user creation is distinct
+from internal user provisioning: it writes through V storage without application
+creation hooks, fills schema defaults and only honors a supplied ID with
+`forceAllowId`. Equality inspection inside native callbacks applies the requested
+filters. Nine independent contracts verify commits, nesting, error identity, outer
+rollback, connection recovery, defaults, ID handling and hook isolation.
+Callback frames distinguish a held native context from an active transaction.
+`EndpointContext.with_transaction` shares an active transaction and opens an
+independent transaction after commit without re-locking Auth. After-commit contracts
+verify a committed effect survives while a second failed effect rolls back, without
+undoing the originating user creation.
+
+Nabu's signed-OIDC MongoDB contract now seeds the provisioned user directly and
+installs Nabu's indexes before V connects, with native migrations disabled. The
+signature-verified provisioning callback updates that existing unverified row;
+linking/session creation retain its ObjectId and application-owned data. PKCE,
+Basic authentication, the session lifetime and proof replay assertions remain.
+
+This does not import the full driver-specific MongoDB/Drizzle/Kysely test suites or
+the remaining shared basic-query/join/case-insensitive/UUID/serial-ID suites.
+Transient transaction retries, ambiguous commit handling and aggregate races remain
+open. Nested transactions share the enclosing transaction; no savepoint semantics
+are claimed for this facade.

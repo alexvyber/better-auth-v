@@ -1,0 +1,72 @@
+{
+  "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
+  "changes": "Only createTestSuite import path changes; all test bodies, assertions and registrations preserved.",
+  "executionSurface": "native SQLite/PostgreSQL/MongoDB auth and transaction adapters; TS fixture registration/configuration/transport only",
+  "coverageNote": "Eight shared suite entries, outside the test/spec corpus denominator. Backend repetitions do not increase unique coverage.",
+  "files": [
+    {
+      "path": "packages/test-utils/src/adapter/suites/auth-flow.ts",
+      "target": "tests/upstream/adapter-suites/auth-flow.ts",
+      "snapshot": "tests/upstream/adapter-suites/sources/auth-flow.ts.txt",
+      "sha256": "0784e9204c11422fa38115636dec3792bd5d12f13f2965d028bba824f939c3c8",
+      "tests": [
+        {
+          "title": "should successfully sign up",
+          "sourceStart": 748,
+          "sourceLine": 34,
+          "selected": true
+        },
+        {
+          "title": "should successfully sign in",
+          "sourceStart": 1514,
+          "sourceLine": 56,
+          "selected": true
+        },
+        {
+          "title": "should reset password with a single-use token",
+          "sourceStart": 2264,
+          "sourceLine": 80,
+          "selected": true
+        },
+        {
+          "title": "should successfully get session",
+          "sourceStart": 3968,
+          "sourceLine": 144,
+          "selected": true
+        },
+        {
+          "title": "should not sign in with invalid email",
+          "sourceStart": 4969,
+          "sourceLine": 175,
+          "selected": true
+        },
+        {
+          "title": "should store and retrieve timestamps correctly across timezones",
+          "sourceStart": 5313,
+          "sourceLine": 186,
+          "selected": true
+        },
+        {
+          "title": "should sign up with additional fields",
+          "sourceStart": 6148,
+          "sourceLine": 213,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "path": "packages/test-utils/src/adapter/suites/transactions.ts",
+      "target": "tests/upstream/adapter-suites/transactions.ts",
+      "snapshot": "tests/upstream/adapter-suites/sources/transactions.ts.txt",
+      "sha256": "1c802454f8e44c8cbfe5ecc960433fa8f93598fb9a8a74834acba79fd5e60016",
+      "tests": [
+        {
+          "title": "transaction - should rollback failing transaction",
+          "sourceStart": 335,
+          "sourceLine": 12,
+          "selected": true
+        }
+      ]
+    }
+  ]
+}

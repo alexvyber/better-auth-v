@@ -918,10 +918,10 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   eager organization default evaluation; supplied values now bypass factories and
   missing values evaluate once. A native throwing-factory regression also passes.
 
-The latest full `make check` passes 2862 TypeScript cases across 147 files, all 122
+The latest full `make check` passes 2895 TypeScript cases across 149 files, all 122
 native V test functions across 38 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
-The six source-inventory audit tests also pass. Formatting and `git diff --check` pass. Repeated backend runs do not increase unique
+The eight source-preservation audit tests also pass. Formatting and `git diff --check` pass. Repeated backend runs do not increase unique
 upstream source coverage, and these results do not imply full upstream parity.
 
 The user resumed work and authorized incremental commits and pushes to
@@ -964,6 +964,36 @@ signed-header cookie fallback follow upstream. The full original bearer suite pa
 on SQLite, PostgreSQL and MongoDB: 33 runtime cases, seven unique source declarations.
 The corpus now preserves 1211 unique declarations. A native signature regression also
 passes. Generic adapter query/join/transaction-failure contracts remain incomplete.
+
+## Shared adapter conformance continuation
+
+The complete upstream shared `auth-flow.ts` and `transactions.ts` suites are now
+preserved and registered against native SQLite/PostgreSQL/MongoDB. Their eight
+object entries run twenty-four cases, tracked separately from the test/spec corpus
+in `adapter-suites.imports.json`; no test bodies/assertions are changed. Two source
+audits validate snapshots, checksums and registrations without requiring an upstream
+checkout during ordinary `make check` runs.
+
+The adapter facade now delegates `transaction()` to native transactions, borrowing
+an active native callback context for nested calls. Raw user writes honor
+`forceAllowId` and schema defaults without application creation hooks. Equality
+inspection is applied inside callback transactions. Nine owned contracts verify
+commits, nesting, rollback/error identity, connection recovery, ID/default semantics,
+hook isolation and filtered reads. The focused adapter/member/profile/JWT regressions
+and type checking pass. Driver-specific generic queries/joins and transient or
+ambiguous-commit cases remain incomplete.
+
+Native context frames now distinguish active transactions from after-commit hooks.
+`EndpointContext.with_transaction` opens a fresh atomic transaction after commit,
+sharing an existing one while active. The after-commit contracts verify independent
+commit and rollback without reversing the original user creation. Nabu's MongoDB
+OIDC gate now starts from directly provisioned BSON documents and app-created indexes
+before native initialization, with migrations disabled, and preserves application
+data through the signature-verified verification/linking flow.
+
+Final `make check` passes 2895 runtime TypeScript cases across 149 files, 122 native
+V functions across 38 files, all eight source-preservation audits, type checking
+and the native HTTP migration/auth/restart smoke. Formatting and diff checks pass.
 
 ## Guardrails for continuing
 

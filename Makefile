@@ -8,7 +8,7 @@ check: test-audit test-v test-ts integration
 test: test-audit test-v test-ts
 
 test-audit:
-	node --test scripts/upstream-coverage.test.mjs
+	node --test scripts/upstream-coverage.test.mjs scripts/adapter-suite-imports.test.mjs
 
 test-v:
 	$(V) test .

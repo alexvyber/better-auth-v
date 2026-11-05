@@ -210,6 +210,7 @@ test inventory, and exclusions are checked in under `tests/upstream`.
 ```sh
 pnpm upstream:fetch
 pnpm upstream:import
+node scripts/import-adapter-suites.mjs
 pnpm upstream:inventory
 pnpm test
 ```
@@ -224,6 +225,10 @@ type checks are identified separately and backed by native HTTP client integrati
 coverage. Per-file manifests record these boundaries.
 Selected test bodies and assertions remain unchanged. `tests/upstream/corpus.json`
 inventories the full pinned source test corpus, including currently unported files.
+The shared `auth-flow.ts` and `transactions.ts` adapter suites are also preserved
+in full and run against native SQLite, PostgreSQL and MongoDB. Their eight object
+entries are tracked separately in `adapter-suites.imports.json`, outside the
+test/spec corpus denominator. Source-preservation audits run as part of `make check`.
 The separately pinned npm package `better-auth@1.7.15` supplies the real client,
 error classes, cookie utilities, and server used in differential tests. The source
 commit and published package are distinct baselines; version equality alone does

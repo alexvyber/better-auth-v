@@ -143,6 +143,21 @@ pub fn (mut a Auth) with_internal(operation fn (mut EndpointContext) !string) !s
 	return result
 }
 
+// EndpointContext already owns Auth's lock. Nested work shares an active
+// transaction; after-commit work starts a new one without re-locking Auth.
+pub fn (c &EndpointContext) has_active_transaction() bool {
+	return c.auth.transaction_active
+}
+
+pub fn (mut c EndpointContext) with_transaction(operation fn (mut EndpointContext) !string) !string {
+	if c.auth.transaction_active { return operation(mut c) }
+	c.auth.begin_transaction(false)!
+	defer { c.auth.rollback_transaction() }
+	result := operation(mut c)!
+	c.auth.commit_transaction()!
+	return result
+}
+
 fn (mut a Auth) persist_user(user User) !User {
 	mut prepared := user
 	for plugin in a.config.plugins {

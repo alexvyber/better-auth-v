@@ -61,6 +61,22 @@ fn decode_account(encoded string) !Account {
 	}
 }
 
+// Database account DTOs expose nullable token fields consistently across adapters.
+// This normalizes output only; sparse hook input and storage patches stay sparse.
+pub fn encode_account(account Account) string {
+	mut fields := map[string]json2.Any{}
+	if account.access_token == none { fields['accessToken'] = json2.Null{} }
+	if account.refresh_token == none { fields['refreshToken'] = json2.Null{} }
+	if account.access_token_expires_at == none { fields['accessTokenExpiresAt'] = json2.Null{} }
+	if account.refresh_token_expires_at == none { fields['refreshTokenExpiresAt'] = json2.Null{} }
+	if account.scope == none { fields['scope'] = json2.Null{} }
+	return merge_fields(json.encode(account), fields)
+}
+
+pub fn encode_accounts(accounts []Account) string {
+	return '[' + accounts.map(encode_account(it)).join(',') + ']'
+}
+
 fn decode_auth_result(encoded string) !AuthResult {
 	result := json.decode(AuthResult, encoded)!
 	fields := json2.decode[map[string]json2.Any](encoded)!

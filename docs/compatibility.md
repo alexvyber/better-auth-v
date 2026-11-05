@@ -926,7 +926,7 @@ The source inventory unions complementary imports by original AST position under
 matching source checksums. Backend repeats count once, duplicate titles retain
 separate identities and malformed source metadata fails the audit. Every manifest
 records original positions/lines. Six audit tests run through `make check`. The
-current 33 complete/16 partial/387 unported source-file counts and 1,196 preserved
+current 33 complete/16 partial/387 unported source-file counts and 1,201 preserved
 static declarations describe source coverage, including separately labelled SDK
 probes; they are not equivalent to native runtime or feature parity.
 
@@ -982,3 +982,24 @@ native function independently checks rollback, replay and marker privacy on ordi
 HTTP signup errors. Post-commit hooks cannot roll back already committed writes;
 external application side effects and nontransactional stores retain their existing
 limits.
+
+
+OAuth now issues the canonical `state` cookie with the default root path and clears
+it on completion. Earlier native `oauth_state` cookies at the old auth-base path
+remain readable and are cleared too. A present canonical cookie takes precedence,
+including an invalid/empty one; it never downgrades to a legacy cookie. Factory
+prefixes, secure naming and cookie overrides apply. Native OAuth continues to use
+its server-side opaque verification record; this is not cookie-only/JWE state-format
+compatibility.
+
+Account linking is enabled by default, matching upstream. It still requires the
+configured local-email and incoming-provider verification/trust checks; explicit
+`enabled: false` prevents new implicit bindings. The fixture and public V configuration
+share that default. Trusted account JSON output now emits null for missing nullable
+token/scope fields without expanding sparse hook input or storage patches. Five
+additional unchanged upstream generic-OAuth cases verify state-cookie cleanup,
+complete sign-in/session data, new-user account data, linked sign-in and provider
+failure. Three Nabu-style backend cases verify default verified linking, explicit
+opt-out and null expiry output. A native function verifies legacy cookie acceptance,
+canonical precedence, proof retention and replay; direct Google ID-token coverage
+also asserts that neither state-cookie name is issued.

@@ -60,6 +60,7 @@ describe('native Google ID-token credentials', () => {
     expect(cookies.has('better-auth.session_data')).toBe(true);
     expect(cookies.has('better-auth.account_data')).toBe(true);
     expect(cookies.has('better-auth.oauth_state')).toBe(false);
+    expect(cookies.has('better-auth.state')).toBe(false);
     expect((await auth.api.getSession({headers}))?.user.id).toBe(result.user.id);
     const account = (await db.findMany<any>({model: 'account', where: [{field: 'providerId', value: 'google'}]}))[0];
     expect(account.accessToken).toBe('access');

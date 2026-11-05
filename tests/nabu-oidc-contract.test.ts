@@ -70,6 +70,17 @@ async function authorize(ready: Awaited<ReturnType<typeof instance>>, formPost=f
 
 describe('Nabu provisioned OIDC configuration', () => {
  for(const [backend,factory] of [['sqlite',getTestInstance],['postgres',postgresInstance],['mongo',mongoInstance]] as const){
+  it(`uses verified default linking and respects an explicit opt-out on ${backend}`,async()=>{
+   email='provisioned@example.com';verified=true;
+   const allowed=await instance({account:undefined},{factory});
+   expect((await authorize(allowed)).result.headers.get('location')).toBe('http://localhost:3000/nabu');
+   const linked=await (await allowed.auth.$context).internalAdapter.findAccounts(allowed.user.id);
+   expect(linked).toHaveLength(1);expect(linked[0].refreshTokenExpiresAt).toBeNull();
+   const denied=await instance({account:{accountLinking:{enabled:false}}},{factory});
+   expect((await authorize(denied)).result.headers.get('location')).toContain('error=account_not_linked');
+   expect(await (await denied.auth.$context).internalAdapter.findAccounts(denied.user.id)).toEqual([]);
+   expect((await (await denied.auth.$context).internalAdapter.findUserById(denied.user.id)).emailVerified).toBe(true);
+  });
   it(`rejects an issuer mismatch before exchanging a code on ${backend}`,async()=>{
    email='provisioned@example.com';verified=true;
    const ready=await instance({},{factory});tokenRequest={};

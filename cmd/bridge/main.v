@@ -21,7 +21,7 @@ struct Options {
 	redis_key_prefix                  string = 'better-auth:'
 	generic_oauth                     []better_auth.GenericOAuthConfig
 	generic_callbacks                 map[string][]string
-	account_linking_enabled           bool
+	account_linking_enabled           bool = true
 	update_user_info_on_link          bool
 	require_local_email_verified      bool = true
 	disable_implicit_linking          bool
@@ -395,7 +395,10 @@ fn callback_with_context(method string, payload string, mut context better_auth.
 					records_json: '[' + users.map(better_auth.encode_user(it)).join(',') + ']'
 				})
 			} else if command.model == 'account' {
-				emit(Reply{ id: command.id, records_json: json.encode(context.accounts('')!) })
+				emit(Reply{
+					id:           command.id
+					records_json: better_auth.encode_accounts(context.accounts('')!)
+				})
 			} else {
 				emit(Reply{ id: command.id, error: 'unsupported inspection model' })
 			}

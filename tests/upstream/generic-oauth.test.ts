@@ -1,4 +1,5 @@
 // Generated from pinned upstream source; do not edit assertions here.
+import {parseSetCookieHeader} from "better-auth/cookies";
 import {APIError} from "@better-auth/core/error";
 import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
@@ -137,7 +138,181 @@ describe("oauth2", async () => {
 		});
 
 		return { callbackURL, headers: newHeaders, setCookieHeader };
-	};;;;;;;;;;;;;;;
+	};
+
+	it("should delete state cookie with path attribute", async () => {
+		const headers = new Headers();
+		const signInRes = await authClient.signIn.social({
+			provider: "test",
+			callbackURL: "http://localhost:3000/dashboard",
+			fetchOptions: {
+				onSuccess: cookieSetter(headers),
+			},
+		});
+
+		const { setCookieHeader } = await simulateOAuthFlow(
+			signInRes.data?.url || "",
+			headers,
+		);
+
+		const cookies = parseSetCookieHeader(setCookieHeader);
+		const stateCookie = cookies.get("better-auth.state");
+
+		expect(stateCookie?.["max-age"]).toBe(0);
+		expect(stateCookie?.path).toBe("/");
+	});
+
+	it("should complete full sign-in flow and return correct session data", async () => {
+		const headers = new Headers();
+		const signInRes = await authClient.signIn.social({
+			provider: "test",
+			callbackURL: "http://localhost:3000/dashboard",
+			newUserCallbackURL: "http://localhost:3000/new_user",
+			fetchOptions: {
+				onSuccess: cookieSetter(headers),
+			},
+		});
+		expect(signInRes.data).toMatchObject({
+			url: expect.stringContaining(`http://localhost:${port}/authorize`),
+			redirect: true,
+		});
+		const { callbackURL, headers: sessionHeaders } = await simulateOAuthFlow(
+			signInRes.data?.url || "",
+			headers,
+		);
+		expect(callbackURL).toBe("http://localhost:3000/dashboard");
+
+		const session = await authClient.getSession({
+			fetchOptions: { headers: sessionHeaders },
+		});
+		expect(session.data).not.toBeNull();
+		expect(session.data?.user.email).toBe("oauth2@test.com");
+		expect(session.data?.user.name).toBe("OAuth2 Test");
+		expect(session.data?.session.userId).toBe(session.data?.user.id);
+
+		const ctx = await auth.$context;
+		const accounts = await ctx.internalAdapter.findAccounts(
+			session.data?.user.id!,
+		);
+		expect(accounts).toHaveLength(1);
+		expect(accounts[0]).toMatchObject({
+			providerId: "test",
+			accountId: "oauth2",
+		});
+	});
+
+	it("should redirect to the provider and handle the response for a new user", async () => {
+		server.service.once("beforeUserinfo", (userInfoResponse) => {
+			userInfoResponse.body = {
+				email: "oauth2-2@test.com",
+				name: "OAuth2 Test 2",
+				sub: "oauth2-2",
+				picture: "https://test.com/picture.png",
+				email_verified: true,
+			};
+			userInfoResponse.statusCode = 200;
+		});
+
+		const headers = new Headers();
+		const signInRes = await authClient.signIn.social({
+			provider: "test",
+			callbackURL: "http://localhost:3000/dashboard",
+			newUserCallbackURL: "http://localhost:3000/new_user",
+			fetchOptions: {
+				onSuccess: cookieSetter(headers),
+			},
+		});
+		expect(signInRes.data).toMatchObject({
+			url: expect.stringContaining(`http://localhost:${port}/authorize`),
+			redirect: true,
+		});
+		const { callbackURL, headers: newHeaders } = await simulateOAuthFlow(
+			signInRes.data?.url || "",
+			headers,
+		);
+		expect(callbackURL).toBe("http://localhost:3000/new_user");
+		const session = await authClient.getSession({
+			fetchOptions: {
+				headers: newHeaders,
+			},
+		});
+		const ctx = await auth.$context;
+		const accounts = await ctx.internalAdapter.findAccounts(
+			session.data?.user.id!,
+		);
+		const account = accounts[0];
+		expect(account).toMatchObject({
+			providerId,
+			accountId: "oauth2-2",
+			userId: session.data?.user.id,
+			accessToken: expect.any(String),
+			refreshToken: expect.any(String),
+			accessTokenExpiresAt: expect.any(Date),
+			refreshTokenExpiresAt: null,
+			scope: expect.any(String),
+			idToken: expect.any(String),
+		});
+	});;;;;;;;
+
+	it("should redirect to the provider and handle the response after linked", async () => {
+		const headers = new Headers();
+		const res = await authClient.signIn.social({
+			provider: "test",
+			callbackURL: "http://localhost:3000/dashboard",
+			newUserCallbackURL: "http://localhost:3000/new_user",
+			fetchOptions: {
+				onSuccess: cookieSetter(headers),
+			},
+		});
+		const { callbackURL } = await simulateOAuthFlow(
+			res.data?.url || "",
+			headers,
+		);
+		expect(callbackURL).toBe("http://localhost:3000/dashboard");
+	});;
+
+	it("should handle server error during OAuth flow", async () => {
+		server.service.once("beforeUserinfo", (userInfoResponse) => {
+			userInfoResponse.body = {
+				email: "oauth2@test.com",
+				name: "OAuth2 Test",
+				sub: "oauth2",
+				picture: "https://test.com/picture.png",
+				email_verified: true,
+			};
+			userInfoResponse.statusCode = 500;
+		});
+
+		const headers = new Headers();
+		const res = await authClient.signIn.social(
+			{
+				provider: "test",
+				callbackURL: "http://localhost:3000/dashboard",
+				newUserCallbackURL: "http://localhost:3000/new_user",
+			},
+			{
+				onSuccess(context) {
+					const parsedSetCookie = parseSetCookieHeader(
+						context.response.headers.get("Set-Cookie") || "",
+					);
+					headers.set(
+						"cookie",
+						`better-auth.state=${
+							parsedSetCookie.get("better-auth.state")?.value
+						}; better-auth.pk_code_verifier=${
+							parsedSetCookie.get("better-auth.pk_code_verifier")?.value
+						}`,
+					);
+				},
+			},
+		);
+
+		const { callbackURL } = await simulateOAuthFlow(
+			res.data?.url || "",
+			headers,
+		);
+		expect(callbackURL).toContain("?error=");
+	});;
 
 	it("should not create user when sign ups are disabled", async () => {
 		server.service.once("beforeUserinfo", (userInfoResponse) => {

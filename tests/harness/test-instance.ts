@@ -845,7 +845,7 @@ export async function getTestInstance<const O extends ServerOptions = {}, C exte
       custom_id_generator: typeof configuredId === 'function',
       generic_oauth: genericProviders.map(({getToken: _getToken, mapProfileToUser: _mapProfile, ...provider}) => provider),
       generic_callbacks: genericCallbacks,
-      account_linking_enabled: options.account?.accountLinking?.enabled ?? false,
+      account_linking_enabled: options.account?.accountLinking?.enabled ?? true,
       update_user_info_on_link: options.account?.accountLinking?.updateUserInfoOnLink ?? false,
       require_local_email_verified: options.account?.accountLinking?.requireLocalEmailVerified ?? true,
       disable_implicit_linking: options.account?.accountLinking?.disableImplicitLinking ?? false,

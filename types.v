@@ -223,7 +223,7 @@ pub:
 	disable_email_sign_up             bool
 	generic_oauth                     []GenericOAuthConfig
 	trusted_linking_providers         []string
-	account_linking_enabled           bool
+	account_linking_enabled           bool = true
 	update_user_info_on_link          bool
 	require_local_email_verified      bool = true
 	disable_implicit_linking          bool

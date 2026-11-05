@@ -122,14 +122,24 @@ fn (a &Auth) oauth_provider(id string) !OAuthProvider {
 }
 
 fn (a &Auth) oauth_cookie_name() string {
-	return a.cookie_name_for('oauth_state')
+	return a.cookie_name_for('state')
 }
 
 fn (a &Auth) oauth_cookie(r Response, state string, clear bool) Response {
 	age := if clear { i64(0) } else { i64(600) }
 	value := if clear { '' } else { urllib.query_escape(a.sign_cookie(state)) }
-	return with_header(r, 'set-cookie', a.cookie_header(a.oauth_cookie_name(), value,
-		a.config.base_path, age))
+	mut response := with_header(r, 'set-cookie',
+		a.cookie_header(a.oauth_cookie_name(), value, '/', age))
+	if clear {
+		// Remove cookies issued by earlier native versions at the old base path.
+		mut attributes := a.auth_cookie_factory().create_cookie('oauth_state', {
+			'path': json2.Any(a.config.base_path)
+		}).attributes.clone()
+		attributes['maxAge'] = 0
+		response = with_header(response, 'set-cookie', serialize_auth_cookie(a.cookie_name_for('oauth_state'),
+			'', attributes))
+	}
+	return response
 }
 
 fn (mut a Auth) start_oauth(p Payload) !Response {
@@ -247,15 +257,19 @@ fn (mut a Auth) finish_oauth(req Request, provider_id string) !Response {
 	if state == '' { return a.oauth_default_error('state_not_found') }
 	provider := a.oauth_provider(provider_id)!
 	if state.len != 64 { return fail(400, 'INVALID_STATE', 'Invalid OAuth state') }
-	mut bound := false
+	mut canonical := ?string(none)
+	mut legacy := ?string(none)
 	for item in req.headers['cookie'].split(';') {
 		name, raw := item.trim_space().split_once('=') or { continue }
-		if name == a.oauth_cookie_name() {
-			value := urllib.path_unescape(raw) or { continue }
-			cookie_state := a.verify_cookie(value) or { continue }
-			bound = hmac.equal(cookie_state.bytes(), state.bytes())
-		}
+		if name == a.oauth_cookie_name() { canonical = raw }
+		if name == a.cookie_name_for('oauth_state') { legacy = raw }
 	}
+	// A present canonical cookie always wins, including an invalid/empty one.
+	// A stale legacy cookie cannot override it or provide a downgrade fallback.
+	raw := canonical or { legacy or { '' } }
+	value := urllib.path_unescape(raw) or { '' }
+	cookie_state := a.verify_cookie(value) or { '' }
+	bound := hmac.equal(cookie_state.bytes(), state.bytes())
 	if !bound { return fail(403, 'STATE_MISMATCH', 'OAuth state does not match this browser') }
 	record := (a.consume_opaque_verification(state, 'oauth-state')!).value or {
 		return fail(400, 'INVALID_STATE', 'Invalid OAuth state')

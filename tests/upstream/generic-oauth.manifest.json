@@ -26,9 +26,9 @@
       "test": "should delete state cookie with path attribute",
       "sourceStart": 5989,
       "sourceLine": 225,
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+      "reason": null
     },
     {
       "suite": "oauth2",
@@ -38,9 +38,9 @@
       "test": "should complete full sign-in flow and return correct session data",
       "sourceStart": 6591,
       "sourceLine": 247,
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+      "reason": null
     },
     {
       "suite": "oauth2",
@@ -50,9 +50,9 @@
       "test": "should redirect to the provider and handle the response for a new user",
       "sourceStart": 7868,
       "sourceLine": 286,
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+      "reason": null
     },
     {
       "suite": "oauth2",
@@ -146,9 +146,9 @@
       "test": "should redirect to the provider and handle the response after linked",
       "sourceStart": 34900,
       "sourceLine": 1147,
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+      "reason": null
     },
     {
       "suite": "oauth2",
@@ -170,9 +170,9 @@
       "test": "should handle server error during OAuth flow",
       "sourceStart": 35723,
       "sourceLine": 1173,
-      "selected": false,
+      "selected": true,
       "upstreamDisabled": false,
-      "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
+      "reason": null
     },
     {
       "suite": "oauth2",

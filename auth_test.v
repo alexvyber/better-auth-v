@@ -712,3 +712,53 @@ fn test_oauth_rejected_account_creation_rolls_back_user_and_preserves_applicatio
 	assert !ordinary.body.contains('application_error')
 	assert storage.db.q_int('SELECT count(*) FROM auth_user')! == 0
 }
+
+fn test_oauth_canonical_state_cookie_accepts_legacy_without_downgrade() ! {
+	mut storage := open_sqlite(':memory:')!
+	storage.migrate()!
+	mut auth := new(Config{
+		secret:           '12345678901234567890123456789012'
+		password_hasher:  FastHasher{}
+		social_providers: [OAuthProvider(FakeProvider{})]
+	}, storage)!
+	defer { auth.close() or {} }
+	state, cookie := start_test_oauth(mut auth)!
+	assert cookie.starts_with('better-auth.state=')
+	legacy := cookie.replace('better-auth.state=', 'better-auth.oauth_state=')
+	url := 'http://localhost:3000/api/auth/callback/test?code=good-code&state=' + state
+	response := auth.handle(Request{
+		url:     url
+		headers: {
+			'cookie': legacy
+		}
+	})
+	assert response.status == 302
+	assert response.headers.any(it.name == 'set-cookie'
+		&& it.value.starts_with('better-auth.state=') && it.value.contains('Path=/;')
+		&& it.value.contains('Max-Age=0'))
+	assert response.headers.any(it.name == 'set-cookie'
+		&& it.value.starts_with('better-auth.oauth_state=') && it.value.contains('Path=/api/auth;')
+		&& it.value.contains('Max-Age=0'))
+	state2, cookie2 := start_test_oauth(mut auth)!
+	url2 := 'http://localhost:3000/api/auth/callback/test?code=good-code&state=' + state2
+	legacy2 := cookie2.replace('better-auth.state=', 'better-auth.oauth_state=')
+	assert auth.handle(Request{
+		url:     url2
+		headers: {
+			'cookie': 'better-auth.state=invalid; ' + legacy2
+		}
+	}).status == 403
+	assert (auth.find_opaque_verification(state2, 'oauth-state')!).value != none
+	assert auth.handle(Request{
+		url:     url2
+		headers: {
+			'cookie': cookie2 + '; better-auth.oauth_state=invalid'
+		}
+	}).status == 302
+	assert auth.handle(Request{
+		url:     url2
+		headers: {
+			'cookie': cookie2
+		}
+	}).status == 400
+}

@@ -838,7 +838,7 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   titles cannot inflate coverage. Six audit cases cover complementary selections,
   repeats, ambiguous legacy records, stale checksums and invalid source metadata;
   `make check` now includes them. Source bodies/assertions are unchanged. The inventory
-  identifies 1,196 preserved declarations, distinct from runtime/backend case counts.
+  identifies 1,201 preserved declarations, distinct from runtime/backend case counts.
 
 - Added native OpenAPI request schemas for all nine public email-OTP POST endpoints,
   including required fields, purpose enums, extensible signup input and the deprecated
@@ -885,7 +885,16 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   hook failures, stateless rejection, replay and ordinary HTTP error privacy.
   Post-commit hooks/external effects remain outside rollback guarantees.
 
-The latest full `make check` passes 2770 TypeScript cases across 142 files, all 119
+- Aligned OAuth state-cookie naming/root path and cleanup with upstream, while
+  accepting earlier native cookies only when the canonical cookie is absent.
+  Account linking now defaults to enabled under the existing verification/trust
+  gates, with explicit opt-out preserved; account JSON outputs materialize nullable
+  token/scope fields. Five more unchanged generic-OAuth cases verify full flows,
+  account/session data and provider failures. Three backend contracts verify linking
+  defaults/opt-out and null expiry; a native function covers cookie migration,
+  canonical precedence and replay. Cookie-only/JWE state formats remain unported.
+
+The latest full `make check` passes 2778 TypeScript cases across 142 files, all 120
 native V test functions across 38 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
 The six source-inventory audit tests also pass. Formatting and `git diff --check` pass. Repeated backend runs do not increase unique

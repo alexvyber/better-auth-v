@@ -414,7 +414,7 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 			return 'null'
 		}
 		'findAccounts' {
-			return json.encode(c.auth.storage.accounts(args[0].str())!)
+			return encode_accounts(c.auth.storage.accounts(args[0].str())!)
 		}
 		'adapterUpdateUser' {
 			if args.len != 3 { return error('adapterUpdateUser requires field, value and patch') }
@@ -462,7 +462,7 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 			if args.len < 1 { return error('findUserByEmail requires an email') }
 			if user := (c.auth.storage.user_by_email(args[0].str())!).value {
 				return '{"user":' + encode_user(user) + ',"accounts":' +
-					json.encode(c.auth.storage.accounts(user.id)!) + '}'
+					encode_accounts(c.auth.storage.accounts(user.id)!) + '}'
 			}
 			return 'null'
 		}
@@ -485,7 +485,7 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 		'findCredentialAccount' {
 			if args.len < 1 { return error('findCredentialAccount requires a user id') }
 			if account := (c.auth.storage.account(args[0].str(), 'credential')!).value {
-				return json.encode(account)
+				return encode_account(account)
 			}
 			return 'null'
 		}
@@ -499,7 +499,7 @@ pub fn (mut c EndpointContext) invoke_internal(name string, arguments_json strin
 			mut fields := args[0].as_map()
 			if 'id' !in fields { fields['id'] = c.auth.new_id('account')! }
 			account := c.auth.persist_account(decode_account(json2.Any(fields).json_str())!)!
-			return json.encode(account)
+			return encode_account(account)
 		}
 		else {
 			return error('unsupported internal operation: ${name}')

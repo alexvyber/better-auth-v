@@ -95,8 +95,8 @@ fn (a &Auth) cookie_name_for(kind string) string {
 
 fn (a &Auth) cookie_header(name string, value string, path string, max_age ?i64) string {
 	mut kind := ''
-	for candidate in ['session_token', 'session_data', 'account_data', 'dont_remember', 'oauth_state',
-		'admin_session'] {
+	for candidate in ['session_token', 'session_data', 'account_data', 'dont_remember', 'state',
+		'oauth_state', 'admin_session'] {
 		base := a.cookie_name_for(candidate)
 		if name == base || cache_chunk_index(name, base) != none {
 			kind = candidate

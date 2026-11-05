@@ -12,6 +12,8 @@
         "two factor"
       ],
       "test": "should return uri and backup codes and shouldn't enable twoFactor yet",
+      "sourceStart": 1608,
+      "sourceLine": 57,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -23,6 +25,8 @@
         "two factor"
       ],
       "test": "should use custom issuer from request parameter",
+      "sourceStart": 2547,
+      "sourceLine": 92,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -34,6 +38,8 @@
         "two factor"
       ],
       "test": "should fallback to appName when no issuer provided",
+      "sourceStart": 3105,
+      "sourceLine": 111,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -45,6 +51,8 @@
         "two factor"
       ],
       "test": "should enable twoFactor",
+      "sourceStart": 3553,
+      "sourceLine": 126,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -56,6 +64,8 @@
         "two factor"
       ],
       "test": "should require two factor",
+      "sourceStart": 4184,
+      "sourceLine": 156,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -67,6 +77,8 @@
         "two factor"
       ],
       "test": "should fail if two factor cookie is missing",
+      "sourceStart": 5889,
+      "sourceLine": 213,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -78,6 +90,8 @@
         "two factor"
       ],
       "test": "should fail when passing invalid TOTP code with expected error code",
+      "sourceStart": 7382,
+      "sourceLine": 264,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -89,6 +103,8 @@
         "two factor"
       ],
       "test": "should generate backup codes",
+      "sourceStart": 7717,
+      "sourceLine": 277,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -100,6 +116,8 @@
         "two factor"
       ],
       "test": "should allow sign in with backup code",
+      "sourceStart": 8033,
+      "sourceLine": 288,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -111,6 +129,8 @@
         "two factor"
       ],
       "test": "should trust device",
+      "sourceStart": 10238,
+      "sourceLine": 369,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -122,6 +142,8 @@
         "two factor"
       ],
       "test": "should limit OTP verification attempts",
+      "sourceStart": 12868,
+      "sourceLine": 470,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -133,6 +155,8 @@
         "two factor"
       ],
       "test": "should disable two factor",
+      "sourceStart": 13954,
+      "sourceLine": 517,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -144,6 +168,8 @@
         "OTP-only enablement"
       ],
       "test": "should enable 2FA with OTP method",
+      "sourceStart": 14835,
+      "sourceLine": 558,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -155,6 +181,8 @@
         "OTP-only enablement"
       ],
       "test": "should only report OTP in twoFactorMethods at sign-in",
+      "sourceStart": 15295,
+      "sourceLine": 573,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -166,6 +194,8 @@
         "OTP-only enablement"
       ],
       "test": "should reject OTP enable when sendOTP is not configured",
+      "sourceStart": 15663,
+      "sourceLine": 586,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -177,6 +207,8 @@
         "OTP-only enablement"
       ],
       "test": "should reject TOTP enable when totpOptions.disable is set",
+      "sourceStart": 16213,
+      "sourceLine": 606,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -188,6 +220,8 @@
         "OTP-only enablement"
       ],
       "test": "should preserve existing TOTP row when enabling OTP",
+      "sourceStart": 16776,
+      "sourceLine": 629,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -199,6 +233,8 @@
         "two factor auth API"
       ],
       "test": "should enable two factor with OTP method",
+      "sourceStart": 18901,
+      "sourceLine": 711,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -210,6 +246,8 @@
         "two factor auth API"
       ],
       "test": "should request second factor",
+      "sourceStart": 19385,
+      "sourceLine": 730,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -221,6 +259,8 @@
         "two factor auth API"
       ],
       "test": "should send otp",
+      "sourceStart": 20039,
+      "sourceLine": 752,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -232,6 +272,8 @@
         "two factor auth API"
       ],
       "test": "should verify otp",
+      "sourceStart": 20252,
+      "sourceLine": 763,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -243,6 +285,8 @@
         "two factor auth API"
       ],
       "test": "should disable two factor",
+      "sourceStart": 20556,
+      "sourceLine": 776,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -254,6 +298,8 @@
         "view backup codes"
       ],
       "test": "should return parsed array of backup codes, not JSON string",
+      "sourceStart": 21841,
+      "sourceLine": 829,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -265,6 +311,8 @@
         "view backup codes"
       ],
       "test": "should return array after generating new backup codes",
+      "sourceStart": 22664,
+      "sourceLine": 852,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -276,6 +324,8 @@
         "view backup codes"
       ],
       "test": "should successfully regenerate backup codes multiple times",
+      "sourceStart": 23470,
+      "sourceLine": 876,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -287,6 +337,8 @@
         "view backup codes"
       ],
       "test": "should correctly update backup codes after verification",
+      "sourceStart": 24859,
+      "sourceLine": 916,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -298,6 +350,8 @@
         "view backup codes"
       ],
       "test": "should not expose viewBackupCodes to client",
+      "sourceStart": 26719,
+      "sourceLine": 979,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -309,6 +363,8 @@
         "trust device server-side validation"
       ],
       "test": "should force 2FA when server-side trust record is expired",
+      "sourceStart": 27423,
+      "sourceLine": 1011,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -320,6 +376,8 @@
         "trust device server-side validation"
       ],
       "test": "should preserve trust device after sign-out",
+      "sourceStart": 30349,
+      "sourceLine": 1111,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -331,6 +389,8 @@
         "trust device server-side validation"
       ],
       "test": "should revoke trust device when disabling 2FA",
+      "sourceStart": 33376,
+      "sourceLine": 1217,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -342,6 +402,8 @@
         "trustDeviceMaxAge"
       ],
       "test": "should use custom trustDeviceMaxAge for the trust device cookie",
+      "sourceStart": 36170,
+      "sourceLine": 1322,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -353,6 +415,8 @@
         "trustDeviceMaxAge"
       ],
       "test": "should use default 30 days when trustDeviceMaxAge is not specified",
+      "sourceStart": 38456,
+      "sourceLine": 1391,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -364,6 +428,8 @@
         "twoFactorCookieMaxAge"
       ],
       "test": "should use custom twoFactorCookieMaxAge for the two-factor cookie",
+      "sourceStart": 40463,
+      "sourceLine": 1467,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -375,6 +441,8 @@
         "twoFactorCookieMaxAge"
       ],
       "test": "should use default 10 minutes when twoFactorCookieMaxAge is not specified",
+      "sourceStart": 41299,
+      "sourceLine": 1494,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -386,6 +454,8 @@
         "twoFactorTable option"
       ],
       "test": "should use custom table name for two factor data",
+      "sourceStart": 42820,
+      "sourceLine": 1550,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -398,6 +468,8 @@
         "hashed OTP storage"
       ],
       "test": "should verify OTP when stored as hashed",
+      "sourceStart": 43714,
+      "sourceLine": 1589,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -410,6 +482,8 @@
         "hashed OTP storage"
       ],
       "test": "should reject invalid OTP when stored as hashed",
+      "sourceStart": 44644,
+      "sourceLine": 1626,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -422,6 +496,8 @@
         "encrypted OTP storage"
       ],
       "test": "should verify OTP when stored as encrypted",
+      "sourceStart": 45831,
+      "sourceLine": 1675,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -434,6 +510,8 @@
         "custom hash function OTP storage"
       ],
       "test": "should verify OTP with custom hash function",
+      "sourceStart": 47317,
+      "sourceLine": 1736,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -445,6 +523,8 @@
         "pre-migration twoFactor rows (verified absent)"
       ],
       "test": "should complete enrollment when verified is null",
+      "sourceStart": 48310,
+      "sourceLine": 1776,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -456,6 +536,8 @@
         "imported Base32 TOTP secrets"
       ],
       "test": "returns the normalized secret in the TOTP URI ($form)",
+      "sourceStart": 50844,
+      "sourceLine": 1866,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -467,6 +549,8 @@
         "imported Base32 TOTP secrets"
       ],
       "test": "verifies codes from an imported secret ($form)",
+      "sourceStart": 51214,
+      "sourceLine": 1878,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -478,6 +562,8 @@
         "imported Base32 TOTP secrets"
       ],
       "test": "completes sign-in with an imported secret",
+      "sourceStart": 51593,
+      "sourceLine": 1892,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -489,6 +575,8 @@
         "TOTP enrollment verification"
       ],
       "test": "should create twoFactor row with verified=false on enableTwoFactor",
+      "sourceStart": 52989,
+      "sourceLine": 1947,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -500,6 +588,8 @@
         "TOTP enrollment verification"
       ],
       "test": "should mark TOTP as verified after verifyTOTP during enrollment",
+      "sourceStart": 53815,
+      "sourceLine": 1977,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -511,6 +601,8 @@
         "TOTP enrollment verification"
       ],
       "test": "rejects re-enrollment while a $state TOTP is active",
+      "sourceStart": 55081,
+      "sourceLine": 2024,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -522,6 +614,8 @@
         "TOTP enrollment verification"
       ],
       "test": "allows restarting an unverified TOTP enrollment",
+      "sourceStart": 57226,
+      "sourceLine": 2096,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -533,6 +627,8 @@
         "TOTP enrollment verification"
       ],
       "test": "should reject unverified TOTP during sign-in and allow OTP fallback",
+      "sourceStart": 58434,
+      "sourceLine": 2136,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -544,6 +640,8 @@
         "two factor passwordless"
       ],
       "test": "allows enabling without password for users without credentials",
+      "sourceStart": 61232,
+      "sourceLine": 2226,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -555,6 +653,8 @@
         "two factor passwordless"
       ],
       "test": "allows getting totp uri without password",
+      "sourceStart": 62185,
+      "sourceLine": 2268,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -566,6 +666,8 @@
         "two factor passwordless"
       ],
       "test": "allows generating backup codes without password",
+      "sourceStart": 62363,
+      "sourceLine": 2276,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -577,6 +679,8 @@
         "two factor passwordless"
       ],
       "test": "allows disabling without password",
+      "sourceStart": 62563,
+      "sourceLine": 2284,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -588,6 +692,8 @@
         "two factor password still required for credential accounts"
       ],
       "test": "rejects enabling without password for credential users",
+      "sourceStart": 63042,
+      "sourceLine": 2302,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -599,6 +705,8 @@
         "checkPassword must not leak credential presence via error codes"
       ],
       "test": "uses INVALID_PASSWORD for wrong password and when credential row is missing",
+      "sourceStart": 63887,
+      "sourceLine": 2335,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -611,6 +719,8 @@
         "totp enabled in config, otp disabled"
       ],
       "test": "should not redirect when user has not verified totp",
+      "sourceStart": 65462,
+      "sourceLine": 2392,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -623,6 +733,8 @@
         "totp enabled in config, otp disabled"
       ],
       "test": "should return twoFactorMethods: ['totp'] when user has verified totp",
+      "sourceStart": 65787,
+      "sourceLine": 2403,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -635,6 +747,8 @@
         "totp enabled in config, otp enabled"
       ],
       "test": "should return twoFactorMethods: ['otp'] when user has 2fa enabled but no totp row",
+      "sourceStart": 67218,
+      "sourceLine": 2460,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -647,6 +761,8 @@
         "totp enabled in config, otp enabled"
       ],
       "test": "should exclude unverified totp from twoFactorMethods",
+      "sourceStart": 67726,
+      "sourceLine": 2477,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -659,6 +775,8 @@
         "totp enabled in config, otp enabled"
       ],
       "test": "should return twoFactorMethods: ['totp', 'otp'] when user has verified totp",
+      "sourceStart": 68905,
+      "sourceLine": 2518,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -671,6 +789,8 @@
         "totp disabled in config, otp enabled"
       ],
       "test": "should return twoFactorMethods: ['otp'] when totp is disabled in config",
+      "sourceStart": 70558,
+      "sourceLine": 2583,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -682,6 +802,8 @@
         "2FA enforcement scope"
       ],
       "test": "should not challenge 2FA on magic-link sign-in",
+      "sourceStart": 72016,
+      "sourceLine": 2641,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -693,6 +815,8 @@
         "2FA enforcement scope"
       ],
       "test": "should not challenge 2FA on authenticated non-sign-in endpoints",
+      "sourceStart": 72666,
+      "sourceLine": 2667,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -704,6 +828,8 @@
         "backup codes storage configurations"
       ],
       "test": "`should preserve ${mode.name} storage format after backup code verification`",
+      "sourceStart": 74761,
+      "sourceLine": 2745,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -715,6 +841,8 @@
         "two-factor password length"
       ],
       "test": "enable should ignore an overlong optional password for a passwordless user",
+      "sourceStart": 77906,
+      "sourceLine": 2848,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -726,6 +854,8 @@
         "two-factor password length"
       ],
       "test": "enable should reject a password longer than maxPasswordLength before hashing",
+      "sourceStart": 78519,
+      "sourceLine": 2869,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -737,6 +867,8 @@
         "two-factor password length"
       ],
       "test": "get-totp-uri should reject a password longer than maxPasswordLength before hashing",
+      "sourceStart": 78954,
+      "sourceLine": 2887,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,

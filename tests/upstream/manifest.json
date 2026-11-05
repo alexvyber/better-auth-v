@@ -12,6 +12,8 @@
         "sign-in"
       ],
       "test": "should return a response with a set-cookie header",
+      "sourceStart": 400,
+      "sourceLine": 12,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "sign-in"
       ],
       "test": "should read the ip address and user agent from the headers",
+      "sourceStart": 808,
+      "sourceLine": 25,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "sign-in"
       ],
       "test": "verification email will be sent if sendOnSignIn is enabled",
+      "sourceStart": 1449,
+      "sourceLine": 49,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "sign-in"
       ],
       "test": "verification email will not be sent if sendOnSignIn is disabled",
+      "sourceStart": 2148,
+      "sourceLine": 78,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "sign-in"
       ],
       "test": "logs expected auth validation failures below error level",
+      "sourceStart": 2853,
+      "sourceLine": 107,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "url checks"
       ],
       "test": "should reject untrusted origins",
+      "sourceStart": 4709,
+      "sourceLine": 186,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "sign-in CSRF protection"
       ],
       "test": "should block cross-site navigation login attempts (no cookies)",
+      "sourceStart": 5865,
+      "sourceLine": 228,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "sign-in CSRF protection"
       ],
       "test": "should allow same-origin navigation login attempts",
+      "sourceStart": 6617,
+      "sourceLine": 255,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "sign-in CSRF protection"
       ],
       "test": "should allow fetch/XHR requests (cors mode)",
+      "sourceStart": 7229,
+      "sourceLine": 278,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -102,6 +120,8 @@
         "sign-in CSRF protection"
       ],
       "test": "should use origin validation when cookies exist",
+      "sourceStart": 7817,
+      "sourceLine": 301,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +132,8 @@
         "sign-in with additionalFields"
       ],
       "test": "should return additionalFields in signInEmail response",
+      "sourceStart": 8881,
+      "sourceLine": 348,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -122,6 +144,8 @@
         "sign-in with form data"
       ],
       "test": "should accept form-urlencoded content type",
+      "sourceStart": 10240,
+      "sourceLine": 403,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -132,6 +156,8 @@
         "sign-in with form data"
       ],
       "test": "accepts a null Origin when Fetch Metadata confirms a trusted target",
+      "sourceStart": 10972,
+      "sourceLine": 429,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -142,6 +168,8 @@
         "sign-in with form data"
       ],
       "test": "accepts a null Origin through a trusted reverse proxy",
+      "sourceStart": 11413,
+      "sourceLine": 443,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -152,6 +180,8 @@
         "sign-in with form data"
       ],
       "test": "ignores forwarded origins when proxy headers are not trusted",
+      "sourceStart": 12249,
+      "sourceLine": 472,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -162,6 +192,8 @@
         "sign-in with form data"
       ],
       "test": "rejects a null Origin when the same-origin target is not trusted",
+      "sourceStart": 12787,
+      "sourceLine": 489,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -172,6 +204,8 @@
         "sign-in with form data"
       ],
       "test": "rejects a null Origin for a %s form submission",
+      "sourceStart": 13254,
+      "sourceLine": 504,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -182,6 +216,8 @@
         "sign-in with form data"
       ],
       "test": "rejects a null Origin without Fetch Metadata",
+      "sourceStart": 13764,
+      "sourceLine": 522,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -192,6 +228,8 @@
         "sign-in with form data"
       ],
       "test": "rejects a missing Origin even when Fetch Metadata says same-origin",
+      "sourceStart": 14186,
+      "sourceLine": 536,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -202,6 +240,8 @@
         "sign-in with form data"
       ],
       "test": "should block cross-site form submissions",
+      "sourceStart": 14647,
+      "sourceLine": 550,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -212,6 +252,8 @@
         "sign-in with form data"
       ],
       "test": "should allow same-site form submissions from trusted origins",
+      "sourceStart": 15407,
+      "sourceLine": 577,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -222,6 +264,8 @@
         "email case insensitivity"
       ],
       "test": "should sign in with different email casing than sign-up",
+      "sourceStart": 16266,
+      "sourceLine": 607,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -232,6 +276,8 @@
         "email case insensitivity"
       ],
       "test": "should store email as lowercase regardless of input casing",
+      "sourceStart": 17344,
+      "sourceLine": 648,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -242,6 +288,8 @@
         "email case insensitivity"
       ],
       "test": "should not allow duplicate sign-ups with different email casing",
+      "sourceStart": 17774,
+      "sourceLine": 664,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -252,6 +300,8 @@
         "sign-in password length"
       ],
       "test": "should reject a password longer than maxPasswordLength before hashing",
+      "sourceStart": 18740,
+      "sourceLine": 705,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -262,6 +312,8 @@
         "sign-in password length"
       ],
       "test": "should reject the same length for an unknown email",
+      "sourceStart": 19189,
+      "sourceLine": 725,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

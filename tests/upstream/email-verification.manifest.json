@@ -12,6 +12,8 @@
         "Email Verification - Request body consumption bug"
       ],
       "test": "should not fail sign-up when callback request cloning throws",
+      "sourceStart": 398,
+      "sourceLine": 12,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "Email Verification - Request body consumption bug"
       ],
       "test": "should not throw 'body already consumed' error when sendVerificationEmail callback reads the request",
+      "sourceStart": 1818,
+      "sourceLine": 76,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "Email Verification - Request body consumption bug"
       ],
       "test": "should not throw 'body already consumed' error when sendVerificationEmail is called during sign-up",
+      "sourceStart": 2686,
+      "sourceLine": 112,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "Email Verification - Request body consumption bug"
       ],
       "test": "should not throw 'body already consumed' error when sendVerificationEmail is called during sign-in",
+      "sourceStart": 3603,
+      "sourceLine": 149,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "Email Verification"
       ],
       "test": "should send a verification email when enabled",
+      "sourceStart": 4695,
+      "sourceLine": 195,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "Email Verification"
       ],
       "test": "should return APIError status when sendVerificationEmail throws (e.g. rate limit)",
+      "sourceStart": 5411,
+      "sourceLine": 225,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "Email Verification"
       ],
       "test": "should send a verification email if verification is required and user is not verified",
+      "sourceStart": 6351,
+      "sourceLine": 261,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "Email Verification"
       ],
       "test": "should verify email",
+      "sourceStart": 7076,
+      "sourceLine": 284,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "Email Verification"
       ],
       "test": "should redirect to callback",
+      "sourceStart": 7657,
+      "sourceLine": 312,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -102,6 +120,8 @@
         "Email Verification"
       ],
       "test": "should sign after verification",
+      "sourceStart": 8381,
+      "sourceLine": 348,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +132,8 @@
         "Email Verification"
       ],
       "test": "should use custom expiresIn",
+      "sourceStart": 9872,
+      "sourceLine": 404,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -122,6 +144,8 @@
         "Email Verification"
       ],
       "test": "should call afterEmailVerification callback when email is verified",
+      "sourceStart": 10559,
+      "sourceLine": 434,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -132,6 +156,8 @@
         "Email Verification"
       ],
       "test": "should call beforeEmailVerification callback when email is verified",
+      "sourceStart": 11433,
+      "sourceLine": 470,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -142,6 +168,8 @@
         "Email Verification"
       ],
       "test": "should call afterEmailVerification callback when email is verified",
+      "sourceStart": 12312,
+      "sourceLine": 506,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -152,6 +180,8 @@
         "Email Verification"
       ],
       "test": "should preserve encoded characters in callback URL",
+      "sourceStart": 13207,
+      "sourceLine": 542,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -162,6 +192,8 @@
         "Email Verification"
       ],
       "test": "should properly encode callbackURL with query parameters when sending verification email",
+      "sourceStart": 14263,
+      "sourceLine": 583,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -172,6 +204,8 @@
         "Email Verification"
       ],
       "test": "should not send verification email when a third party requests for an already verified user",
+      "sourceStart": 15227,
+      "sourceLine": 616,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -182,6 +216,8 @@
         "Email Verification - Timing-safe unauthenticated path"
       ],
       "test": "should enforce a constant-time floor for both existing and non-existing emails",
+      "sourceStart": 16409,
+      "sourceLine": 659,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -192,6 +228,8 @@
         "Email Verification - Timing-safe unauthenticated path"
       ],
       "test": "should still surface errors from sendVerificationEmail after the minimum delay",
+      "sourceStart": 17410,
+      "sourceLine": 692,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -202,6 +240,8 @@
         "Email Verification Secondary Storage"
       ],
       "test": "should verify email",
+      "sourceStart": 19420,
+      "sourceLine": 777,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -212,6 +252,8 @@
         "Email Verification Secondary Storage"
       ],
       "test": "should change email",
+      "sourceStart": 19918,
+      "sourceLine": 801,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -222,6 +264,8 @@
         "Email Verification Secondary Storage"
       ],
       "test": "should set emailVerified on all sessions",
+      "sourceStart": 21231,
+      "sourceLine": 853,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -232,6 +276,8 @@
         "Email Verification Secondary Storage"
       ],
       "test": "should set emailVerified on all sessions",
+      "sourceStart": 22471,
+      "sourceLine": 912,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -242,6 +288,8 @@
         "Email Verification Secondary Storage"
       ],
       "test": "should call hooks when verifying email change (change-email-verification)",
+      "sourceStart": 23713,
+      "sourceLine": 971,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -252,6 +300,8 @@
         "Email Verification Secondary Storage"
       ],
       "test": "should handle email case insensitivity when sending verification email while signed in",
+      "sourceStart": 25139,
+      "sourceLine": 1030,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

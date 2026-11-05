@@ -13,6 +13,8 @@
         "trusted origins list support"
       ],
       "test": "should always allow the app's origin",
+      "sourceStart": 1688,
+      "sourceLine": 68,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -24,6 +26,8 @@
         "trusted origins list support"
       ],
       "test": "should always allow the app's origin (inferred from baseURL)",
+      "sourceStart": 2007,
+      "sourceLine": 80,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -35,6 +39,8 @@
         "trusted origins list support"
       ],
       "test": "should always allow the app's origin (even if context is updated)",
+      "sourceStart": 2380,
+      "sourceLine": 94,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -46,6 +52,8 @@
         "trusted origins list support"
       ],
       "test": "should reject origins that start with a trusted origin",
+      "sourceStart": 2896,
+      "sourceLine": 118,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -57,6 +65,8 @@
         "trusted origins list support"
       ],
       "test": "should reject untrusted origin subdomains",
+      "sourceStart": 3197,
+      "sourceLine": 128,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -68,6 +78,8 @@
         "trusted origins list support"
       ],
       "test": "should allow origins that directly match a trusted origin",
+      "sourceStart": 3481,
+      "sourceLine": 138,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -79,6 +91,8 @@
         "relative paths support"
       ],
       "test": "should reject relative paths by default",
+      "sourceStart": 3907,
+      "sourceLine": 152,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -90,6 +104,8 @@
         "relative paths support"
       ],
       "test": "should allow relative paths",
+      "sourceStart": 4177,
+      "sourceLine": 159,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -101,6 +117,8 @@
         "relative paths support"
       ],
       "test": "should allow relative paths with query params",
+      "sourceStart": 4627,
+      "sourceLine": 176,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +130,8 @@
         "relative paths support"
       ],
       "test": "should allow relative paths with plus signs",
+      "sourceStart": 4904,
+      "sourceLine": 186,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -123,6 +143,8 @@
         "relative paths support"
       ],
       "test": "should reject relative paths with tildes when relative paths are disabled",
+      "sourceStart": 5255,
+      "sourceLine": 199,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -134,6 +156,8 @@
         "relative paths support"
       ],
       "test": "should allow relative paths with tildes",
+      "sourceStart": 5731,
+      "sourceLine": 215,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -145,6 +169,8 @@
         "relative paths support"
       ],
       "test": "should allow standards-compliant relative URLs",
+      "sourceStart": 6210,
+      "sourceLine": 234,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -156,6 +182,8 @@
         "relative paths support"
       ],
       "test": "should reject URLs with ambiguous path prefixes",
+      "sourceStart": 6714,
+      "sourceLine": 252,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -167,6 +195,8 @@
         "relative paths support"
       ],
       "test": "should reject urls with encoded malicious content",
+      "sourceStart": 7072,
+      "sourceLine": 263,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -178,6 +208,8 @@
         "wildcards support"
       ],
       "test": "should allow origins that match a wildcard trusted origin",
+      "sourceStart": 7934,
+      "sourceLine": 297,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -189,6 +221,8 @@
         "wildcards support"
       ],
       "test": "should reject urls with malicious domain with wildcard trusted origins",
+      "sourceStart": 8545,
+      "sourceLine": 319,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -200,6 +234,8 @@
         "wildcards support"
       ],
       "test": "should work with protocol specific wildcard trusted origins",
+      "sourceStart": 8851,
+      "sourceLine": 328,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -211,6 +247,8 @@
         "wildcards support"
       ],
       "test": "should work with custom scheme wildcards (e.g. exp:// for Expo)",
+      "sourceStart": 9375,
+      "sourceLine": 344,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -222,6 +260,8 @@
         "custom-scheme origin matching"
       ],
       "test": "should reject URLs where the host extends the trusted pattern",
+      "sourceStart": 10296,
+      "sourceLine": 376,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -233,6 +273,8 @@
         "custom-scheme origin matching"
       ],
       "test": "should allow exact custom-scheme origin match",
+      "sourceStart": 10701,
+      "sourceLine": 390,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -244,6 +286,8 @@
         "custom-scheme origin matching"
       ],
       "test": "should reject control characters in custom-scheme URLs",
+      "sourceStart": 11425,
+      "sourceLine": 410,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -255,6 +299,8 @@
         "custom-scheme origin matching"
       ],
       "test": "should match custom-scheme with empty host (myapp:/)",
+      "sourceStart": 11732,
+      "sourceLine": 420,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -266,6 +312,8 @@
         "custom-scheme origin matching"
       ],
       "test": "should reject different custom schemes",
+      "sourceStart": 12126,
+      "sourceLine": 430,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -277,6 +325,8 @@
         "custom-scheme origin matching"
       ],
       "test": "should still support wildcard matching for custom schemes",
+      "sourceStart": 12384,
+      "sourceLine": 438,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -288,6 +338,8 @@
         "custom-scheme origin matching"
       ],
       "test": "should trust any host for a host-less custom-scheme pattern",
+      "sourceStart": 12777,
+      "sourceLine": 452,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -299,6 +351,8 @@
         "custom-scheme origin matching"
       ],
       "test": "should match custom-scheme host case-insensitively",
+      "sourceStart": 13620,
+      "sourceLine": 473,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -310,6 +364,8 @@
         "custom-scheme origin matching"
       ],
       "test": "should pin the path when the pattern includes one",
+      "sourceStart": 13960,
+      "sourceLine": 482,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -321,6 +377,8 @@
         "custom-scheme origin matching"
       ],
       "test": "should not let a path-pinned pattern be bypassed with traversal",
+      "sourceStart": 14464,
+      "sourceLine": 495,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -332,6 +390,8 @@
         "dynamic trusted origins"
       ],
       "test": "should allow dynamically computed trusted origins",
+      "sourceStart": 15002,
+      "sourceLine": 513,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -343,6 +403,8 @@
         "dynamic trusted origins"
       ],
       "test": "should not allow dynamically computed trusted origins",
+      "sourceStart": 15473,
+      "sourceLine": 529,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -354,6 +416,8 @@
         "dynamic baseURL protocol option"
       ],
       "test": "should add http:// origins when protocol is 'http'",
+      "sourceStart": 15954,
+      "sourceLine": 546,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -365,6 +429,8 @@
         "dynamic baseURL protocol option"
       ],
       "test": "should add only https:// origins when protocol is 'https'",
+      "sourceStart": 16541,
+      "sourceLine": 561,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -376,6 +442,8 @@
         "dynamic baseURL protocol option"
       ],
       "test": "should add both http:// and https:// origins when protocol is 'auto'",
+      "sourceStart": 17031,
+      "sourceLine": 574,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -387,6 +455,8 @@
         "dynamic baseURL protocol option"
       ],
       "test": "should default to https:// with http:// for loopback when protocol is undefined",
+      "sourceStart": 17391,
+      "sourceLine": 585,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -398,6 +468,8 @@
         "dynamic baseURL protocol option"
       ],
       "test": "should still allow hosts with explicit protocol in the host string",
+      "sourceStart": 17872,
+      "sourceLine": 597,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -409,6 +481,8 @@
         "dynamic baseURL protocol option"
       ],
       "test": "should add http:// for loopback hosts even when protocol is 'https'",
+      "sourceStart": 18299,
+      "sourceLine": 611,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -419,6 +493,8 @@
         "trusted origins"
       ],
       "test": "should merge trustedOrigins from plugins using init() with user config",
+      "sourceStart": 18777,
+      "sourceLine": 625,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

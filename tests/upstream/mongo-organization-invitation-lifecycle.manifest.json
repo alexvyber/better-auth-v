@@ -12,6 +12,8 @@
         "organization type"
       ],
       "test": "empty org type should works",
+      "sourceStart": 1250,
+      "sourceLine": 39,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -23,6 +25,8 @@
         "organization type"
       ],
       "test": "allows dynamic roles in create invitation input",
+      "sourceStart": 1485,
+      "sourceLine": 47,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -34,6 +38,8 @@
         "organization"
       ],
       "test": "should have correct schema order when dynamicAccessControl is enabled",
+      "sourceStart": 3561,
+      "sourceLine": 142,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -45,6 +51,8 @@
         "organization"
       ],
       "test": "should include activeTeamId when both dynamicAccessControl and teams are enabled",
+      "sourceStart": 4169,
+      "sourceLine": 161,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -56,6 +64,8 @@
         "organization"
       ],
       "test": "create organization",
+      "sourceStart": 5905,
+      "sourceLine": 234,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -67,6 +77,8 @@
         "organization"
       ],
       "test": "should check if organization slug is available",
+      "sourceStart": 6359,
+      "sourceLine": 246,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -78,6 +90,8 @@
         "organization"
       ],
       "test": "should prevent creating organization with empty slug",
+      "sourceStart": 6946,
+      "sourceLine": 269,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -89,6 +103,8 @@
         "organization"
       ],
       "test": "should prevent creating organization with empty name",
+      "sourceStart": 7267,
+      "sourceLine": 281,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -100,6 +116,8 @@
         "organization"
       ],
       "test": "should create organization directly in the server without cookie",
+      "sourceStart": 7588,
+      "sourceLine": 293,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -111,6 +129,8 @@
         "organization"
       ],
       "test": "should allow listing organizations",
+      "sourceStart": 7851,
+      "sourceLine": 298,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -122,6 +142,8 @@
         "organization"
       ],
       "test": "should allow updating organization",
+      "sourceStart": 8060,
+      "sourceLine": 307,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -133,6 +155,8 @@
         "organization"
       ],
       "test": "should prevent updating organization to duplicate slug",
+      "sourceStart": 8378,
+      "sourceLine": 321,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -144,6 +168,8 @@
         "organization"
       ],
       "test": "should allow updating organization metadata",
+      "sourceStart": 8984,
+      "sourceLine": 342,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -155,6 +181,8 @@
         "organization"
       ],
       "test": "should allow updating organization metadata with a constructor key",
+      "sourceStart": 9345,
+      "sourceLine": 358,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -166,6 +194,8 @@
         "organization"
       ],
       "test": "should prevent updating organization to empty slug",
+      "sourceStart": 9741,
+      "sourceLine": 374,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -177,6 +207,8 @@
         "organization"
       ],
       "test": "should prevent updating organization to empty name",
+      "sourceStart": 10069,
+      "sourceLine": 388,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -188,6 +220,8 @@
         "organization"
       ],
       "test": "should allow activating organization and set session",
+      "sourceStart": 10397,
+      "sourceLine": 402,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -199,6 +233,8 @@
         "organization"
       ],
       "test": "should allow activating organization by slug",
+      "sourceStart": 10818,
+      "sourceLine": 418,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -210,6 +246,8 @@
         "organization"
       ],
       "test": "should allow getting full org on server",
+      "sourceStart": 11218,
+      "sourceLine": 434,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -221,6 +259,8 @@
         "organization"
       ],
       "test": "should allow getting full org on server using slug",
+      "sourceStart": 11393,
+      "sourceLine": 441,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -232,6 +272,8 @@
         "organization"
       ],
       "test": "invites user to organization with role",
+      "sourceStart": 11627,
+      "sourceLine": 451,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -243,6 +285,8 @@
         "organization"
       ],
       "test": "should create invitation with multiple roles",
+      "sourceStart": 13519,
+      "sourceLine": 532,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -254,6 +298,8 @@
         "organization"
       ],
       "test": "should not allow inviting a user twice regardless of email casing",
+      "sourceStart": 13836,
+      "sourceLine": 544,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -265,6 +311,8 @@
         "organization"
       ],
       "test": "should allow accepting invitation when user signs up with different email casing",
+      "sourceStart": 16340,
+      "sourceLine": 640,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -276,6 +324,8 @@
         "organization"
       ],
       "test": "should allow getting a member",
+      "sourceStart": 18015,
+      "sourceLine": 701,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -287,6 +337,8 @@
         "organization"
       ],
       "test": "should allow updating member",
+      "sourceStart": 18392,
+      "sourceLine": 719,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -298,6 +350,8 @@
         "organization"
       ],
       "test": "should allow setting multiple roles",
+      "sourceStart": 19059,
+      "sourceLine": 743,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -309,6 +363,8 @@
         "organization"
       ],
       "test": "should allow setting multiple roles when you have multiple yourself",
+      "sourceStart": 19594,
+      "sourceLine": 764,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -320,6 +376,8 @@
         "organization"
       ],
       "test": "should not allow inviting member with a creator role unless they are creator",
+      "sourceStart": 20862,
+      "sourceLine": 817,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -331,6 +389,8 @@
         "organization"
       ],
       "test": "should allow multi-role owner to invite with owner role",
+      "sourceStart": 21449,
+      "sourceLine": 839,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -342,6 +402,8 @@
         "organization"
       ],
       "test": "should allow leaving organization",
+      "sourceStart": 22381,
+      "sourceLine": 871,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -353,6 +415,8 @@
         "organization"
       ],
       "test": "shouldn't allow updating owner role if you're not owner",
+      "sourceStart": 22985,
+      "sourceLine": 901,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -364,6 +428,8 @@
         "organization"
       ],
       "test": "should allow removing member from organization",
+      "sourceStart": 23662,
+      "sourceLine": 928,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -375,6 +441,8 @@
         "organization"
       ],
       "test": "shouldn't allow removing last owner from organization",
+      "sourceStart": 24334,
+      "sourceLine": 958,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -386,6 +454,8 @@
         "organization"
       ],
       "test": "should validate permissions",
+      "sourceStart": 25470,
+      "sourceLine": 1000,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -397,6 +467,8 @@
         "organization"
       ],
       "test": "should return BAD_REQUEST when non-member tries to delete organization",
+      "sourceStart": 26091,
+      "sourceLine": 1029,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -408,6 +480,8 @@
         "organization"
       ],
       "test": "should allow deleting organization",
+      "sourceStart": 27125,
+      "sourceLine": 1066,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -419,6 +493,8 @@
         "organization"
       ],
       "test": "should have server side methods",
+      "sourceStart": 27605,
+      "sourceLine": 1089,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -430,6 +506,8 @@
         "organization"
       ],
       "test": "should add member on the server directly",
+      "sourceStart": 27779,
+      "sourceLine": 1094,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -441,6 +519,8 @@
         "organization"
       ],
       "test": "should add member on the server with multiple roles",
+      "sourceStart": 28441,
+      "sourceLine": 1124,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -452,6 +532,8 @@
         "organization"
       ],
       "test": "should respect membershipLimit when adding members to organization",
+      "sourceStart": 29139,
+      "sourceLine": 1154,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -463,6 +545,8 @@
         "organization"
       ],
       "test": "should respect membershipLimit function when adding members to organization",
+      "sourceStart": 32142,
+      "sourceLine": 1283,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -474,6 +558,8 @@
         "organization"
       ],
       "test": "should allow listing invitations for an org",
+      "sourceStart": 34730,
+      "sourceLine": 1391,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -485,6 +571,8 @@
         "organization"
       ],
       "test": "should allow listing invitations for a user using authClient",
+      "sourceStart": 35018,
+      "sourceLine": 1403,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -496,6 +584,8 @@
         "organization"
       ],
       "test": "should allow listing invitations for a user using server",
+      "sourceStart": 36345,
+      "sourceLine": 1456,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -507,6 +597,8 @@
         "invitation expiration and filtering"
       ],
       "test": "should allow rejecting expired invitations",
+      "sourceStart": 37847,
+      "sourceLine": 1520,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -518,6 +610,8 @@
         "invitation expiration and filtering"
       ],
       "test": "should only list pending invitations for a user",
+      "sourceStart": 39303,
+      "sourceLine": 1573,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -529,6 +623,8 @@
         "invitation expiration and filtering"
       ],
       "test": "should not list rejected invitations",
+      "sourceStart": 41302,
+      "sourceLine": 1641,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -540,6 +636,8 @@
         "access control"
       ],
       "test": "should return success",
+      "sourceStart": 44312,
+      "sourceLine": 1775,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -551,6 +649,8 @@
         "access control"
       ],
       "test": "should return not success",
+      "sourceStart": 44978,
+      "sourceLine": 1804,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -562,6 +662,8 @@
         "access control"
       ],
       "test": "should return not success",
+      "sourceStart": 45199,
+      "sourceLine": 1814,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -573,6 +675,8 @@
         "dynamic access control should merge DB permissions with built-in roles"
       ],
       "test": "should merge DB permissions with built-in role permissions",
+      "sourceStart": 46267,
+      "sourceLine": 1862,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -584,6 +688,8 @@
         "dynamic access control should merge DB permissions with built-in roles"
       ],
       "test": "should not lose built-in actions when DB defines partial actions for the same resource",
+      "sourceStart": 47258,
+      "sourceLine": 1901,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -595,6 +701,8 @@
         "invitation limit"
       ],
       "test": "should invite member to organization",
+      "sourceStart": 48912,
+      "sourceLine": 1973,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -606,6 +714,8 @@
         "invitation limit"
       ],
       "test": "should throw error when invitation limit is reached",
+      "sourceStart": 49215,
+      "sourceLine": 1985,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -617,6 +727,8 @@
         "invitation limit"
       ],
       "test": "should throw error with custom invitation limit",
+      "sourceStart": 49633,
+      "sourceLine": 2000,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -628,6 +740,8 @@
         "cancel pending invitations on re-invite"
       ],
       "test": "should cancel pending invitations on re-invite",
+      "sourceStart": 50933,
+      "sourceLine": 2061,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -639,6 +753,8 @@
         "cancel pending invitations on re-invite"
       ],
       "test": "should cancel pending invitation and create a new one when re-inviting without resend",
+      "sourceStart": 51798,
+      "sourceLine": 2099,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -650,6 +766,8 @@
         "re-invite without cancelPendingInvitationsOnReInvite still throws"
       ],
       "test": "should still throw USER_IS_ALREADY_INVITED when option is disabled",
+      "sourceStart": 53520,
+      "sourceLine": 2170,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -661,6 +779,8 @@
         "resend invitation should reuse existing"
       ],
       "test": "should reuse existing invitation when resend is true",
+      "sourceStart": 54744,
+      "sourceLine": 2226,
       "selected": true,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -672,6 +792,8 @@
         "owner can update roles"
       ],
       "test": "allows setting custom role to a user",
+      "sourceStart": 56910,
+      "sourceLine": 2334,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -683,6 +805,8 @@
         "owner can update roles"
       ],
       "test": "allows org owner to set a custom role for themselves",
+      "sourceStart": 58167,
+      "sourceLine": 2393,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -694,6 +818,8 @@
         "owner can update roles"
       ],
       "test": "allows an org owner to remove their own creator role if not sole owner",
+      "sourceStart": 58707,
+      "sourceLine": 2417,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -705,6 +831,8 @@
         "types"
       ],
       "test": "should infer active organization",
+      "sourceStart": 59872,
+      "sourceLine": 2466,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -716,6 +844,8 @@
         "Additional Fields"
       ],
       "test": "Expect team endpoints to still be defined",
+      "sourceStart": 63308,
+      "sourceLine": 2632,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -727,6 +857,8 @@
         "Additional Fields"
       ],
       "test": "Should infer the organization schema",
+      "sourceStart": 63519,
+      "sourceLine": 2638,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -738,6 +870,8 @@
         "Additional Fields"
       ],
       "test": "create organization",
+      "sourceStart": 65464,
+      "sourceLine": 2707,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -749,6 +883,8 @@
         "Additional Fields"
       ],
       "test": "update organization",
+      "sourceStart": 65807,
+      "sourceLine": 2717,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -760,6 +896,8 @@
         "Additional Fields"
       ],
       "test": "list user organizations",
+      "sourceStart": 66162,
+      "sourceLine": 2732,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -771,6 +909,8 @@
         "Additional Fields"
       ],
       "test": "useListOrganizations hook",
+      "sourceStart": 66826,
+      "sourceLine": 2757,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -782,6 +922,8 @@
         "Additional Fields"
       ],
       "test": "set active organization",
+      "sourceStart": 67553,
+      "sourceLine": 2783,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -793,6 +935,8 @@
         "Additional Fields"
       ],
       "test": "should infer team additional fields on $Infer.Team",
+      "sourceStart": 68573,
+      "sourceLine": 2824,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -804,6 +948,8 @@
         "Additional Fields"
       ],
       "test": "should infer organization additional fields on $Infer.Organization",
+      "sourceStart": 68957,
+      "sourceLine": 2838,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -815,6 +961,8 @@
         "Additional Fields"
       ],
       "test": "should infer member additional fields on $Infer.Member",
+      "sourceStart": 69394,
+      "sourceLine": 2853,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -826,6 +974,8 @@
         "Additional Fields"
       ],
       "test": "useActiveOrganization hook",
+      "sourceStart": 69936,
+      "sourceLine": 2874,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -838,6 +988,8 @@
         "active organization hook refresh"
       ],
       "test": "updates active member when setActive changes organization",
+      "sourceStart": 72378,
+      "sourceLine": 2969,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -850,6 +1002,8 @@
         "active organization hook refresh"
       ],
       "test": "updates session and active member when create switches active organization",
+      "sourceStart": 73626,
+      "sourceLine": 3018,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -861,6 +1015,8 @@
         "Additional Fields"
       ],
       "test": "getFullOrganization",
+      "sourceStart": 75376,
+      "sourceLine": 3082,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -872,6 +1028,8 @@
         "Additional Fields"
       ],
       "test": "add member",
+      "sourceStart": 77996,
+      "sourceLine": 3177,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -883,6 +1041,8 @@
         "Additional Fields"
       ],
       "test": "list members",
+      "sourceStart": 78809,
+      "sourceLine": 3201,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -894,6 +1054,8 @@
         "Additional Fields"
       ],
       "test": "get active member",
+      "sourceStart": 79770,
+      "sourceLine": 3241,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -905,6 +1067,8 @@
         "Additional Fields"
       ],
       "test": "remove member",
+      "sourceStart": 80760,
+      "sourceLine": 3269,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -916,6 +1080,8 @@
         "Additional Fields"
       ],
       "test": "create invitation",
+      "sourceStart": 83476,
+      "sourceLine": 3360,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -927,6 +1093,8 @@
         "Additional Fields"
       ],
       "test": "get invitation",
+      "sourceStart": 84491,
+      "sourceLine": 3391,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -938,6 +1106,8 @@
         "Additional Fields"
       ],
       "test": "accept invitation",
+      "sourceStart": 85581,
+      "sourceLine": 3424,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -949,6 +1119,8 @@
         "Additional Fields"
       ],
       "test": "list invitations",
+      "sourceStart": 87008,
+      "sourceLine": 3468,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -960,6 +1132,8 @@
         "Additional Fields"
       ],
       "test": "create team",
+      "sourceStart": 88044,
+      "sourceLine": 3507,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -971,6 +1145,8 @@
         "Additional Fields"
       ],
       "test": "update team",
+      "sourceStart": 88531,
+      "sourceLine": 3526,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -982,6 +1158,8 @@
         "organization hooks"
       ],
       "test": "should call organization creation hooks",
+      "sourceStart": 91627,
+      "sourceLine": 3641,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -993,6 +1171,8 @@
         "organization hooks"
       ],
       "test": "should call invitation hooks",
+      "sourceStart": 92058,
+      "sourceLine": 3654,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -1004,6 +1184,8 @@
         "organization delete hooks receive endpoint context"
       ],
       "test": "passes endpoint context to beforeDeleteOrganization and afterDeleteOrganization",
+      "sourceStart": 93417,
+      "sourceLine": 3708,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -1015,6 +1197,8 @@
         "organization additionalFields with returned: false"
       ],
       "test": "inferOrgAdditionalFields should filter out schema keys without additionalFields",
+      "sourceStart": 95723,
+      "sourceLine": 3811,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -1026,6 +1210,8 @@
         "organization additionalFields with returned: false"
       ],
       "test": "should save field with returned: false but not return it in response",
+      "sourceStart": 96799,
+      "sourceLine": 3850,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -1037,6 +1223,8 @@
         "organization additionalFields with returned: false"
       ],
       "test": "should not return secret field when getting organization by slug",
+      "sourceStart": 97582,
+      "sourceLine": 3870,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -1048,6 +1236,8 @@
         "organization additionalFields with returned: false"
       ],
       "test": "should not return secret field when listing organizations",
+      "sourceStart": 98232,
+      "sourceLine": 3889,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -1059,6 +1249,8 @@
         "organization additionalFields with returned: false"
       ],
       "test": "should not return member secret field in full organization response",
+      "sourceStart": 98593,
+      "sourceLine": 3901,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -1070,6 +1262,8 @@
         "organization additionalFields with returned: false"
       ],
       "test": "should not return invitation secret field",
+      "sourceStart": 100033,
+      "sourceLine": 3948,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -1081,6 +1275,8 @@
         "organization additionalFields with returned: false"
       ],
       "test": "should not return secret field after updating organization",
+      "sourceStart": 101237,
+      "sourceLine": 3982,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -1092,6 +1288,8 @@
         "delete cascade rollback"
       ],
       "test": "rolls back deleteOrganization when an intermediate step throws",
+      "sourceStart": 102083,
+      "sourceLine": 4010,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,
@@ -1103,6 +1301,8 @@
         "delete cascade rollback"
       ],
       "test": "rolls back removeMember when an intermediate step throws",
+      "sourceStart": 104546,
+      "sourceLine": 4105,
       "selected": false,
       "executionSurface": "native-mongodb-objectid-replica-set",
       "upstreamDisabled": false,

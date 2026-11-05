@@ -12,6 +12,8 @@
         "organization invitation recipient ownership gates"
       ],
       "test": "accepts an invitation by ID from an unverified matching session by default",
+      "sourceStart": 2745,
+      "sourceLine": 98,
       "selected": true,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
@@ -23,6 +25,8 @@
         "organization invitation recipient ownership gates"
       ],
       "test": "marks an invitation rejected by ID from an unverified matching session by default",
+      "sourceStart": 3479,
+      "sourceLine": 121,
       "selected": true,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
@@ -34,6 +38,8 @@
         "organization invitation recipient ownership gates"
       ],
       "test": "gets an invitation by ID from an unverified matching session by default",
+      "sourceStart": 3925,
+      "sourceLine": 136,
       "selected": true,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
@@ -45,6 +51,8 @@
         "organization invitation recipient ownership gates"
       ],
       "test": "rejects listUserInvitations from an unverified session",
+      "sourceStart": 4413,
+      "sourceLine": 152,
       "selected": true,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
@@ -56,6 +64,8 @@
         "organization invitation recipient ownership gates"
       ],
       "test": "keeps listUserInvitations gated when invitation ID verification is disabled",
+      "sourceStart": 4939,
+      "sourceLine": 170,
       "selected": true,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
@@ -67,6 +77,8 @@
         "organization invitation recipient ownership gates"
       ],
       "test": "requires verified email for invitation ID calls when explicitly enabled",
+      "sourceStart": 5470,
+      "sourceLine": 189,
       "selected": true,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
@@ -78,6 +90,8 @@
         "organization invitation recipient ownership gates"
       ],
       "test": "requires verified email for invitation ID calls when the database owns IDs",
+      "sourceStart": 7003,
+      "sourceLine": 239,
       "selected": false,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
@@ -89,6 +103,8 @@
         "organization invitation recipient ownership gates"
       ],
       "test": "requires verified email for invitation ID calls when advanced generateId is custom",
+      "sourceStart": 8431,
+      "sourceLine": 283,
       "selected": true,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
@@ -100,6 +116,8 @@
         "organization invitation recipient ownership gates"
       ],
       "test": "accepts an invitation by ID with database-owned IDs when verification is explicitly disabled",
+      "sourceStart": 8969,
+      "sourceLine": 301,
       "selected": false,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
@@ -111,6 +129,8 @@
         "organization invitation recipient ownership gates"
       ],
       "test": "accepts the invitation once the recipient verifies their email when verification is required",
+      "sourceStart": 9856,
+      "sourceLine": 329,
       "selected": true,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
@@ -122,6 +142,8 @@
         "invitation teamId must belong to the invitation's organization"
       ],
       "test": "rejects creating an invitation with a teamId from another organization",
+      "sourceStart": 12161,
+      "sourceLine": 412,
       "selected": false,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
@@ -133,6 +155,8 @@
         "invitation teamId must belong to the invitation's organization"
       ],
       "test": "rejects accepting an invitation whose teamId points at another org",
+      "sourceStart": 13731,
+      "sourceLine": 465,
       "selected": false,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
@@ -144,6 +168,8 @@
         "invitation teamId must belong to the invitation's organization"
       ],
       "test": "uses the accepted invitation team ids if they change after the initial read",
+      "sourceStart": 16325,
+      "sourceLine": 553,
       "selected": false,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
@@ -155,6 +181,8 @@
         "invitation teamId must belong to the invitation's organization"
       ],
       "test": "keeps the invitation pending when a referenced team no longer exists",
+      "sourceStart": 19031,
+      "sourceLine": 651,
       "selected": false,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
@@ -166,6 +194,8 @@
         "invitation teamId must belong to the invitation's organization"
       ],
       "test": "clears the removed team from a pending invitation so it degrades to an organization-level invitation",
+      "sourceStart": 20730,
+      "sourceLine": 712,
       "selected": false,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
@@ -177,6 +207,8 @@
         "invitation teamId must belong to the invitation's organization"
       ],
       "test": "keeps the remaining teams on a multi-team invitation when one team is removed",
+      "sourceStart": 22869,
+      "sourceLine": 786,
       "selected": false,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,
@@ -188,6 +220,8 @@
         "invitation teamId must belong to the invitation's organization"
       ],
       "test": "does not list another organization's team members from a mismatched teamMember row",
+      "sourceStart": 25008,
+      "sourceLine": 859,
       "selected": false,
       "executionSurface": "native-api-upstream-test-origin-defaults",
       "upstreamDisabled": false,

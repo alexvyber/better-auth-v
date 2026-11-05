@@ -12,6 +12,8 @@
         "jwt"
       ],
       "test": "Client gets a token from session",
+      "sourceStart": 1632,
+      "sourceLine": 51,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "jwt"
       ],
       "test": "Client gets a token",
+      "sourceStart": 1924,
+      "sourceLine": 65,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "jwt"
       ],
       "test": "Get JWKS",
+      "sourceStart": 2096,
+      "sourceLine": 75,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "jwt"
       ],
       "test": "Signed tokens can be validated with the JWKS",
+      "sourceStart": 2511,
+      "sourceLine": 92,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "jwt"
       ],
       "test": "should set subject to user id by default",
+      "sourceStart": 2853,
+      "sourceLine": 107,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "jwt"
       ],
       "test": "`${alg} algorithm${enc} can be used to generate JWKS`",
+      "sourceStart": 4929,
+      "sourceLine": 215,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "jwt"
       ],
       "test": "`${alg} algorithm${enc}: Client can sign in`",
+      "sourceStart": 6365,
+      "sourceLine": 251,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "jwt"
       ],
       "test": "`${alg} algorithm${enc}: Client gets a token`",
+      "sourceStart": 6655,
+      "sourceLine": 262,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "jwt"
       ],
       "test": "`${alg} algorithm${enc}: Client gets a token from session`",
+      "sourceStart": 6875,
+      "sourceLine": 272,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -102,6 +120,8 @@
         "jwt"
       ],
       "test": "`${alg} algorithm${enc}: Signed tokens can be validated with the JWKS`",
+      "sourceStart": 7227,
+      "sourceLine": 286,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +132,8 @@
         "jwt"
       ],
       "test": "`${alg} algorithm${enc}: Should set subject to user id by default`",
+      "sourceStart": 7626,
+      "sourceLine": 301,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -122,6 +144,8 @@
         "signJWT - alg: $alg"
       ],
       "test": "should sign a JWT",
+      "sourceStart": 8547,
+      "sourceLine": 354,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -132,6 +156,8 @@
         "signJWT - alg: $alg"
       ],
       "test": "should be a valid JWT",
+      "sourceStart": 8850,
+      "sourceLine": 370,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -142,6 +168,8 @@
         "signJWT - alg: $alg"
       ],
       "test": "shouldn't let you sign from a client",
+      "sourceStart": 9832,
+      "sourceLine": 408,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -152,6 +180,8 @@
         "jwt - remote signing"
       ],
       "test": "should fail if sign is defined and remoteUrl is not",
+      "sourceStart": 10347,
+      "sourceLine": 429,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -162,6 +192,8 @@
         "jwt - remote url"
       ],
       "test": "should require specifying the alg when using remoteUrl",
+      "sourceStart": 10725,
+      "sourceLine": 449,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -172,6 +204,8 @@
         "jwt - remote url"
       ],
       "test": "should accept remoteUrl with alg specified",
+      "sourceStart": 11112,
+      "sourceLine": 465,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -182,6 +216,8 @@
         "jwt - remote url"
       ],
       "test": "should disable /jwks endpoint when remoteUrl is configured",
+      "sourceStart": 11435,
+      "sourceLine": 481,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -192,6 +228,8 @@
         "jwt - remote url"
       ],
       "test": "should work with different algorithms when remoteUrl is set",
+      "sourceStart": 12095,
+      "sourceLine": 509,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -202,6 +240,8 @@
         "jwt - remote url"
       ],
       "test": "should still allow token generation when remoteUrl is set",
+      "sourceStart": 12565,
+      "sourceLine": 529,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -212,6 +252,8 @@
         "jwt - remote url"
       ],
       "test": "should work with custom sign function and remoteUrl",
+      "sourceStart": 13391,
+      "sourceLine": 565,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -222,6 +264,8 @@
         "jwt - remote url"
       ],
       "test": "should validate that remoteUrl is a valid URL format",
+      "sourceStart": 14641,
+      "sourceLine": 615,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -232,6 +276,8 @@
         "jwt - remote url"
       ],
       "test": "should work with remoteUrl pointing to different paths",
+      "sourceStart": 15275,
+      "sourceLine": 643,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -242,6 +288,8 @@
         "jwt - remote url"
       ],
       "test": "should handle remoteUrl with query parameters",
+      "sourceStart": 15813,
+      "sourceLine": 668,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -252,6 +300,8 @@
         "jwt - remote url"
       ],
       "test": "should not interfere with other JWT endpoints when remoteUrl is set",
+      "sourceStart": 16144,
+      "sourceLine": 684,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -262,6 +312,8 @@
         "jwt - custom adapter"
       ],
       "test": "should use custom adapter",
+      "sourceStart": 17441,
+      "sourceLine": 737,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -272,6 +324,8 @@
         "jwt - custom jwksPath"
       ],
       "test": "should use custom jwksPath when specified",
+      "sourceStart": 18123,
+      "sourceLine": 772,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -282,6 +336,8 @@
         "jwt - JWKS minting inside an active transaction"
       ],
       "test": "mints the first signing key through the transaction-scoped adapter instead of deadlocking on the connection",
+      "sourceStart": 19025,
+      "sourceLine": 805,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -293,6 +349,8 @@
         "with number input"
       ],
       "test": "should return the number as-is",
+      "sourceStart": 20191,
+      "sourceLine": 849,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -304,6 +362,8 @@
         "with Date input"
       ],
       "test": "should convert Date to seconds timestamp",
+      "sourceStart": 20416,
+      "sourceLine": 857,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -315,6 +375,8 @@
         "with Date input"
       ],
       "test": "should floor milliseconds",
+      "sourceStart": 20650,
+      "sourceLine": 863,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -326,6 +388,8 @@
         "with valid TimeString input"
       ],
       "test": "should parse short format and add to iat",
+      "sourceStart": 20843,
+      "sourceLine": 870,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -337,6 +401,8 @@
         "with valid TimeString input"
       ],
       "test": "should parse long format and add to iat",
+      "sourceStart": 21103,
+      "sourceLine": 877,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -348,6 +414,8 @@
         "with valid TimeString input"
       ],
       "test": "should handle negative values",
+      "sourceStart": 21331,
+      "sourceLine": 883,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -359,6 +427,8 @@
         "with invalid string input"
       ],
       "test": "should throw TypeError for invalid format",
+      "sourceStart": 21539,
+      "sourceLine": 890,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -369,6 +439,8 @@
         "jwtClient types"
       ],
       "test": "should be assignable to BetterAuthClientPlugin",
+      "sourceStart": 22156,
+      "sourceLine": 906,
       "selected": true,
       "executionSurface": "official-ts-client-types; native integration covered by tests/jwt-client-contract.test.ts",
       "upstreamDisabled": false,
@@ -380,6 +452,8 @@
         "jwtClient types"
       ],
       "test": "should preserve additional user fields when combined with inferAdditionalFields",
+      "sourceStart": 22420,
+      "sourceLine": 913,
       "selected": true,
       "executionSurface": "official-ts-client-types; native integration covered by tests/jwt-client-contract.test.ts",
       "upstreamDisabled": false,
@@ -391,6 +465,8 @@
         "jwt - signing algorithm comes from the key"
       ],
       "test": "verifyJWT rejects a token whose header names another algorithm for the key",
+      "sourceStart": 24073,
+      "sourceLine": 969,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -401,6 +477,8 @@
         "jwt - signing algorithm comes from the key"
       ],
       "test": "does not take the cookie-cache algorithm from the token header",
+      "sourceStart": 24634,
+      "sourceLine": 985,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -411,6 +489,8 @@
         "jwt - unresolved issuer and audience"
       ],
       "test": "warns when it signs a token without an issuer or audience",
+      "sourceStart": 25849,
+      "sourceLine": 1028,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -421,6 +501,8 @@
         "jwt - unresolved issuer and audience"
       ],
       "test": "warns when it accepts a token without checking its issuer or audience",
+      "sourceStart": 26302,
+      "sourceLine": 1042,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

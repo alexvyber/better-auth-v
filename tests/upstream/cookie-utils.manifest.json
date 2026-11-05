@@ -12,6 +12,8 @@
         "cookies"
       ],
       "test": "should set cookies with default options",
+      "sourceStart": 1544,
+      "sourceLine": 50,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "cookies"
       ],
       "test": "should set multiple cookies",
+      "sourceStart": 2054,
+      "sourceLine": 69,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "cookies"
       ],
       "test": "should use secure cookies",
+      "sourceStart": 2671,
+      "sourceLine": 94,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "cookies"
       ],
       "test": "should use secure cookies when the base url is https",
+      "sourceStart": 3086,
+      "sourceLine": 112,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -53,6 +61,8 @@
         "production environment"
       ],
       "test": "should use secure cookies when baseURL is not configured",
+      "sourceStart": 3640,
+      "sourceLine": 137,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -63,6 +73,8 @@
         "crossSubdomainCookies"
       ],
       "test": "should update cookies with custom domain",
+      "sourceStart": 4447,
+      "sourceLine": 170,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -73,6 +85,8 @@
         "crossSubdomainCookies"
       ],
       "test": "should use default domain from baseURL if not provided",
+      "sourceStart": 5004,
+      "sourceLine": 195,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -83,6 +97,8 @@
         "cookie configuration"
       ],
       "test": "should return correct cookie options based on configuration",
+      "sourceStart": 5577,
+      "sourceLine": 221,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -93,6 +109,8 @@
         "cookie-utils parseSetCookieHeader"
       ],
       "test": "handles Expires with commas and multiple cookies",
+      "sourceStart": 6336,
+      "sourceLine": 245,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -103,6 +121,8 @@
         "cookie-utils parseSetCookieHeader"
       ],
       "test": "decodes URI-encoded cookie values",
+      "sourceStart": 6842,
+      "sourceLine": 259,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -113,6 +133,8 @@
         "cookie-utils parseSetCookieHeader"
       ],
       "test": "handles cookie with Expires followed by cookie without Expires",
+      "sourceStart": 7054,
+      "sourceLine": 265,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -123,6 +145,8 @@
         "cookie-utils parseSetCookieHeader"
       ],
       "test": "handles Expires when cookie value contains gmt substring",
+      "sourceStart": 7494,
+      "sourceLine": 277,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -133,6 +157,8 @@
         "cookie-utils parseSetCookieHeader"
       ],
       "test": "handles non-standard Expires=0",
+      "sourceStart": 7910,
+      "sourceLine": 288,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -143,6 +169,8 @@
         "cookie-utils parseSetCookieHeader"
       ],
       "test": "handles RFC 850 date format",
+      "sourceStart": 8103,
+      "sourceLine": 294,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -153,6 +181,8 @@
         "cookie-utils parseSetCookieHeader"
       ],
       "test": "handles asctime date format (no comma in date)",
+      "sourceStart": 8330,
+      "sourceLine": 302,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -163,6 +193,8 @@
         "cookie-utils parseSetCookieHeader"
       ],
       "test": "handles mixed cookies with and without Expires",
+      "sourceStart": 8569,
+      "sourceLine": 310,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -173,6 +205,8 @@
         "cookie-utils parseSetCookieHeader"
       ],
       "test": "parses partitioned as a boolean cookie attribute",
+      "sourceStart": 8992,
+      "sourceLine": 322,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -183,6 +217,8 @@
         "cookie-utils parseSetCookieHeader"
       ],
       "test": "converts parsed cookie attributes into cookie options",
+      "sourceStart": 9432,
+      "sourceLine": 334,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -193,6 +229,8 @@
         "cookie-utils stripSecureCookiePrefix"
       ],
       "test": "should strip __Secure- prefix from cookie name",
+      "sourceStart": 10019,
+      "sourceLine": 353,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -203,6 +241,8 @@
         "cookie-utils stripSecureCookiePrefix"
       ],
       "test": "should strip __Host- prefix from cookie name",
+      "sourceStart": 10242,
+      "sourceLine": 359,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -213,6 +253,8 @@
         "cookie-utils stripSecureCookiePrefix"
       ],
       "test": "should return cookie name unchanged if no prefix",
+      "sourceStart": 10461,
+      "sourceLine": 365,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -223,6 +265,8 @@
         "cookie-utils stripSecureCookiePrefix"
       ],
       "test": "should handle cookie names with prefix-like strings in the middle",
+      "sourceStart": 10663,
+      "sourceLine": 371,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -233,6 +277,8 @@
         "cookie-utils stripSecureCookiePrefix"
       ],
       "test": "should handle empty string",
+      "sourceStart": 10890,
+      "sourceLine": 377,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -243,6 +289,8 @@
         "cookie-utils stripSecureCookiePrefix"
       ],
       "test": "should handle cookie names that are exactly the prefix",
+      "sourceStart": 11011,
+      "sourceLine": 382,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -253,6 +301,8 @@
         "cookie-utils stripSecureCookiePrefix"
       ],
       "test": "should prioritize __Secure- prefix over __Host- prefix",
+      "sourceStart": 11288,
+      "sourceLine": 390,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -263,6 +313,8 @@
         "cookie-utils stripSecureCookiePrefix"
       ],
       "test": "should handle cookie names with dots and special characters",
+      "sourceStart": 11613,
+      "sourceLine": 397,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -273,6 +325,8 @@
         "cookie-utils setRequestCookie"
       ],
       "test": "writes a cookie when the header is empty",
+      "sourceStart": 12057,
+      "sourceLine": 409,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -283,6 +337,8 @@
         "cookie-utils setRequestCookie"
       ],
       "test": "preserves existing cookies and joins with `; ` per RFC 6265",
+      "sourceStart": 12288,
+      "sourceLine": 415,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -293,6 +349,8 @@
         "cookie-utils setRequestCookie"
       ],
       "test": "replaces an existing cookie of the same name rather than duplicating it",
+      "sourceStart": 12614,
+      "sourceLine": 423,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -303,6 +361,8 @@
         "cookie-utils setRequestCookie"
       ],
       "test": "ignores malformed pairs in the existing header",
+      "sourceStart": 12961,
+      "sourceLine": 433,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -313,6 +373,8 @@
         "cookie-utils setRequestCookie"
       ],
       "test": "percent-encodes reserved cookie-octet bytes when serializing",
+      "sourceStart": 13269,
+      "sourceLine": 441,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -323,6 +385,8 @@
         "cookie-utils setRequestCookie"
       ],
       "test": "treats input as semantic and percent-encodes literal double-quotes",
+      "sourceStart": 13538,
+      "sourceLine": 447,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -333,6 +397,8 @@
         "getSessionCookie"
       ],
       "test": "should return the correct session cookie",
+      "sourceStart": 13810,
+      "sourceLine": 455,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -343,6 +409,8 @@
         "getSessionCookie"
       ],
       "test": "should work with Headers object directly",
+      "sourceStart": 14190,
+      "sourceLine": 466,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -353,6 +421,8 @@
         "getSessionCookie"
       ],
       "test": "should work with Headers-like object that has inherited 'headers' property",
+      "sourceStart": 14573,
+      "sourceLine": 476,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -363,6 +433,8 @@
         "getSessionCookie"
       ],
       "test": "should work with cross-realm Headers-like object (instanceof fails)",
+      "sourceStart": 15310,
+      "sourceLine": 499,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -373,6 +445,8 @@
         "getSessionCookie"
       ],
       "test": "should return the correct session cookie on production",
+      "sourceStart": 15899,
+      "sourceLine": 515,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -385,6 +459,8 @@
         "with %s prefix (%s)"
       ],
       "test": "finds cookie with config %j",
+      "sourceStart": 16672,
+      "sourceLine": 542,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -395,6 +471,8 @@
         "getSessionCookie"
       ],
       "test": "prefers the __Secure- cookie when a non-secure leftover is also present",
+      "sourceStart": 17340,
+      "sourceLine": 567,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -405,6 +483,8 @@
         "getSessionCookie"
       ],
       "test": "does not fall back to a non-secure cookie when the __Secure- value is empty",
+      "sourceStart": 17724,
+      "sourceLine": 579,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -415,6 +495,8 @@
         "getSessionCookie"
       ],
       "test": "should allow override cookie prefix with secure cookies",
+      "sourceStart": 18100,
+      "sourceLine": 591,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -425,6 +507,8 @@
         "getSessionCookie"
       ],
       "test": "should allow override cookie name",
+      "sourceStart": 18727,
+      "sourceLine": 615,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -435,6 +519,8 @@
         "getSessionCookie"
       ],
       "test": "should return cookie cache",
+      "sourceStart": 19444,
+      "sourceLine": 647,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -445,6 +531,8 @@
         "getSessionCookie"
       ],
       "test": "should respect dontRememberMe when storing session in cookie cache",
+      "sourceStart": 20187,
+      "sourceLine": 681,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -455,6 +543,8 @@
         "getSessionCookie"
       ],
       "test": "should return null if the cookie is invalid",
+      "sourceStart": 21169,
+      "sourceLine": 717,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -465,6 +555,8 @@
         "getSessionCookie"
       ],
       "test": "should throw an error if the secret is not provided",
+      "sourceStart": 21693,
+      "sourceLine": 739,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -475,6 +567,8 @@
         "getSessionCookie"
       ],
       "test": "should chunk large cookies instead of logging error",
+      "sourceStart": 22249,
+      "sourceLine": 763,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -485,6 +579,8 @@
         "sensitive session middleware cookie cache"
       ],
       "test": "should not let request query re-enable cookie cache on sensitive endpoints",
+      "sourceStart": 24360,
+      "sourceLine": 838,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -495,6 +591,8 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should exclude user fields with returned: false from cookie cache",
+      "sourceStart": 25646,
+      "sourceLine": 886,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -505,6 +603,8 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should correctly filter multiple user fields based on returned config",
+      "sourceStart": 26567,
+      "sourceLine": 930,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -515,6 +615,8 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should reduce cookie size when large fields are excluded",
+      "sourceStart": 28026,
+      "sourceLine": 992,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -525,6 +627,8 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should maintain session field filtering (regression check)",
+      "sourceStart": 29234,
+      "sourceLine": 1046,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -535,6 +639,8 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should include unknown user fields for backward compatibility",
+      "sourceStart": 30456,
+      "sourceLine": 1097,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -545,6 +651,8 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should work with JWT strategy",
+      "sourceStart": 31562,
+      "sourceLine": 1144,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -555,6 +663,8 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should work with JWT strategy backed by JWKS keys",
+      "sourceStart": 32350,
+      "sourceLine": 1180,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -565,6 +675,8 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should work with compact strategy",
+      "sourceStart": 33989,
+      "sourceLine": 1241,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -575,6 +687,8 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should use the configured logger for an invalid signed compact cookie",
+      "sourceStart": 34864,
+      "sourceLine": 1280,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -585,6 +699,8 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should return null for invalid JWT token",
+      "sourceStart": 36852,
+      "sourceLine": 1350,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -595,6 +711,8 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should require a secret when helper verification has no JWKS",
+      "sourceStart": 37290,
+      "sourceLine": 1366,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -605,6 +723,8 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should reject JWT plugin tokens that are not cookie-cache JWTs",
+      "sourceStart": 37707,
+      "sourceLine": 1381,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -615,6 +735,8 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should return null when JWKS verification uses the wrong key set",
+      "sourceStart": 38337,
+      "sourceLine": 1410,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -625,6 +747,8 @@
         "Cookie Cache Field Filtering"
       ],
       "test": "should default to compact strategy when not specified",
+      "sourceStart": 39150,
+      "sourceLine": 1450,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -635,6 +759,8 @@
         "Cookie Chunking"
       ],
       "test": "should chunk cookies when they exceed 4KB",
+      "sourceStart": 40076,
+      "sourceLine": 1488,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -645,6 +771,8 @@
         "Cookie Chunking"
       ],
       "test": "should chunk JWKS-backed JWT cookies when they exceed 4KB",
+      "sourceStart": 41920,
+      "sourceLine": 1567,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -655,6 +783,8 @@
         "Cookie Chunking"
       ],
       "test": "should reconstruct chunked cookies correctly",
+      "sourceStart": 43552,
+      "sourceLine": 1640,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -665,6 +795,8 @@
         "Cookie Chunking"
       ],
       "test": "should clean up all chunks when deleting session",
+      "sourceStart": 44554,
+      "sourceLine": 1687,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -675,6 +807,8 @@
         "Cookie Chunking"
       ],
       "test": "should NOT chunk cookies when they are under 4KB",
+      "sourceStart": 46166,
+      "sourceLine": 1760,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -685,6 +819,8 @@
         "Cookie Chunking"
       ],
       "test": "should chunk session cache when attributes push the line over the limit",
+      "sourceStart": 47645,
+      "sourceLine": 1824,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -695,6 +831,8 @@
         "Cookie Chunking"
       ],
       "test": "skips the session cache and warns when it is too large to chunk",
+      "sourceStart": 49769,
+      "sourceLine": 1890,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -705,6 +843,8 @@
         "Cookie Chunking"
       ],
       "test": "skips the session cache and warns when the prefix alone overflows",
+      "sourceStart": 51522,
+      "sourceLine": 1943,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -715,6 +855,8 @@
         "parse cookies"
       ],
       "test": "should parse cookies into key-value map",
+      "sourceStart": 53097,
+      "sourceLine": 1992,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -725,6 +867,8 @@
         "parse cookies"
       ],
       "test": "should securely parse the signed cookies with padding",
+      "sourceStart": 53534,
+      "sourceLine": 2006,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -735,6 +879,8 @@
         "Cookie header without whitespace after semicolon"
       ],
       "test": "parseCookies returns each pair when separator is `;` only",
+      "sourceStart": 54133,
+      "sourceLine": 2025,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -745,6 +891,8 @@
         "Cookie header without whitespace after semicolon"
       ],
       "test": "parseCookies tolerates mixed `;`, `; `, and `;\\t` separators",
+      "sourceStart": 54566,
+      "sourceLine": 2039,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -755,6 +903,8 @@
         "Cookie header without whitespace after semicolon"
       ],
       "test": "getSessionCookie finds the session cookie when separator is `;` only",
+      "sourceStart": 54889,
+      "sourceLine": 2050,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -765,6 +915,8 @@
         "Cookie header without whitespace after semicolon"
       ],
       "test": "getChunkedCookie reconstructs chunks across `;`-only separators",
+      "sourceStart": 55249,
+      "sourceLine": 2063,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -775,6 +927,8 @@
         "getChunkedCookie"
       ],
       "test": "ignores non-canonical chunk name %s",
+      "sourceStart": 55795,
+      "sourceLine": 2084,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -785,6 +939,8 @@
         "parseCookies validation"
       ],
       "test": "returns empty map for empty header",
+      "sourceStart": 56306,
+      "sourceLine": 2101,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -795,6 +951,8 @@
         "parseCookies validation"
       ],
       "test": "rejects names containing characters outside RFC 7230 token",
+      "sourceStart": 56403,
+      "sourceLine": 2105,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -805,6 +963,8 @@
         "parseCookies validation"
       ],
       "test": "rejects values containing control chars, double-quote, or backslash",
+      "sourceStart": 56724,
+      "sourceLine": 2113,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -815,6 +975,8 @@
         "parseCookies validation"
       ],
       "test": "accepts values with space and comma (real-world deviation)",
+      "sourceStart": 57030,
+      "sourceLine": 2121,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -825,6 +987,8 @@
         "parseCookies validation"
       ],
       "test": "splits on first `=` only, preserving subsequent `=` in value",
+      "sourceStart": 57246,
+      "sourceLine": 2127,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -835,6 +999,8 @@
         "parseCookies validation"
       ],
       "test": "rejects entries with CR/LF in raw key or value (no trim escape)",
+      "sourceStart": 57405,
+      "sourceLine": 2132,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -845,6 +1011,8 @@
         "parseCookies validation"
       ],
       "test": "strips double-quoted values per RFC 6265 §4.1.1",
+      "sourceStart": 57692,
+      "sourceLine": 2140,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -855,6 +1023,8 @@
         "applySetCookies"
       ],
       "test": "merges into empty Cookie header",
+      "sourceStart": 57986,
+      "sourceLine": 2149,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -865,6 +1035,8 @@
         "applySetCookies"
       ],
       "test": "strips Set-Cookie attributes (only name=value lands)",
+      "sourceStart": 58162,
+      "sourceLine": 2155,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -875,6 +1047,8 @@
         "applySetCookies"
       ],
       "test": "merges multiple Set-Cookie values",
+      "sourceStart": 58413,
+      "sourceLine": 2163,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -885,6 +1059,8 @@
         "applySetCookies"
       ],
       "test": "last-wins on duplicate cookie name (existing + new)",
+      "sourceStart": 58611,
+      "sourceLine": 2169,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -895,6 +1071,8 @@
         "applySetCookies"
       ],
       "test": "re-encodes Set-Cookie values containing reserved bytes on wire join",
+      "sourceStart": 58846,
+      "sourceLine": 2175,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -905,6 +1083,8 @@
         "applySetCookies"
       ],
       "test": "strips RFC 6265 quoted-string wrapping from Set-Cookie values",
+      "sourceStart": 59134,
+      "sourceLine": 2181,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -915,6 +1095,8 @@
         "expireCookie"
       ],
       "test": "preserves attributes",
+      "sourceStart": 59391,
+      "sourceLine": 2189,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -925,6 +1107,8 @@
         "expireCookie"
       ],
       "test": "scrubs collapsed Set-Cookie headers when getSetCookie is unavailable",
+      "sourceStart": 59702,
+      "sourceLine": 2205,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -935,6 +1119,8 @@
         "account cookie sync on user switch"
       ],
       "test": "keeps the fresh account cookie issued for the new user when the request carries another user's stale account cookie",
+      "sourceStart": 62159,
+      "sourceLine": 2305,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -945,6 +1131,8 @@
         "account cookie sync on user switch"
       ],
       "test": "still expires another user's stale account cookie when the response issues no fresh one",
+      "sourceStart": 64572,
+      "sourceLine": 2377,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -955,6 +1143,8 @@
         "getCookieCache expiry (compact strategy)"
       ],
       "test": "returns the session for a fresh snapshot",
+      "sourceStart": 67358,
+      "sourceLine": 2477,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -965,6 +1155,8 @@
         "getCookieCache expiry (compact strategy)"
       ],
       "test": "returns null when the embedded session has expired",
+      "sourceStart": 67679,
+      "sourceLine": 2486,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -975,6 +1167,8 @@
         "getCookieCache expiry (compact strategy)"
       ],
       "test": "returns null when the cache window has elapsed",
+      "sourceStart": 67980,
+      "sourceLine": 2495,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

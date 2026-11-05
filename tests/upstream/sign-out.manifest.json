@@ -12,6 +12,8 @@
         "sign-out"
       ],
       "test": "should sign out",
+      "sourceStart": 545,
+      "sourceLine": 19,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "sign-out"
       ],
       "test": "should clear local session cookie when reading the session fails",
+      "sourceStart": 835,
+      "sourceLine": 31,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "sign-out"
       ],
       "test": "should return provider logout url with id_token_hint",
+      "sourceStart": 2698,
+      "sourceLine": 99,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "sign-out"
       ],
       "test": "should keep local-only sign out when provider has no logout endpoint",
+      "sourceStart": 3412,
+      "sourceLine": 125,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "sign-out"
       ],
       "test": "should keep local-only sign out when provider logout is disabled",
+      "sourceStart": 3708,
+      "sourceLine": 139,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "sign-out"
       ],
       "test": "should include callbackURL as post_logout_redirect_uri with state",
+      "sourceStart": 4094,
+      "sourceLine": 156,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "sign-out"
       ],
       "test": "should reject untrusted callbackURL",
+      "sourceStart": 4745,
+      "sourceLine": 177,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "sign-out"
       ],
       "test": "should return provider logout url without redirect when disabled",
+      "sourceStart": 5334,
+      "sourceLine": 204,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "sign-out"
       ],
       "test": "should use the most recently updated provider when multiple linked accounts exist",
+      "sourceStart": 5984,
+      "sourceLine": 228,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

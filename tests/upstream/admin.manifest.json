@@ -12,6 +12,8 @@
         "Admin plugin"
       ],
       "test": "should allow admin to get user",
+      "sourceStart": 3204,
+      "sourceLine": 139,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "Admin plugin"
       ],
       "test": "should not allow non-admin to get user",
+      "sourceStart": 3465,
+      "sourceLine": 154,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "Admin plugin"
       ],
       "test": "should allow admin to create users",
+      "sourceStart": 3782,
+      "sourceLine": 169,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "Admin plugin"
       ],
       "test": "should allow admin to create users without password",
+      "sourceStart": 4101,
+      "sourceLine": 185,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "Admin plugin"
       ],
       "test": "should allow admin to create user with multiple roles",
+      "sourceStart": 4921,
+      "sourceLine": 218,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "Admin plugin"
       ],
       "test": "should not allow non-admin to create users",
+      "sourceStart": 5634,
+      "sourceLine": 252,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "Admin plugin"
       ],
       "test": "should allow admin to list users",
+      "sourceStart": 5932,
+      "sourceLine": 266,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "Admin plugin"
       ],
       "test": "should list users with search query",
+      "sourceStart": 6169,
+      "sourceLine": 278,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "Admin plugin"
       ],
       "test": "should not allow non-admin to list users",
+      "sourceStart": 6465,
+      "sourceLine": 292,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -102,6 +120,8 @@
         "Admin plugin"
       ],
       "test": "should allow admin to count users",
+      "sourceStart": 6706,
+      "sourceLine": 304,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +132,8 @@
         "Admin plugin"
       ],
       "test": "should allow to sort users by name",
+      "sourceStart": 6979,
+      "sourceLine": 317,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -122,6 +144,8 @@
         "Admin plugin"
       ],
       "test": "should allow offset and limit",
+      "sourceStart": 7484,
+      "sourceLine": 342,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -132,6 +156,8 @@
         "Admin plugin"
       ],
       "test": "should allow to search users by name",
+      "sourceStart": 7787,
+      "sourceLine": 356,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -142,6 +168,8 @@
         "Admin plugin"
       ],
       "test": "should allow to filter users by role",
+      "sourceStart": 8097,
+      "sourceLine": 370,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -152,6 +180,8 @@
         "Admin plugin"
       ],
       "test": "should apply filter when filterValue is defined",
+      "sourceStart": 8421,
+      "sourceLine": 386,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -162,6 +192,8 @@
         "Admin plugin"
       ],
       "test": "should filter users by id with ne operator",
+      "sourceStart": 9660,
+      "sourceLine": 429,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -172,6 +204,8 @@
         "Admin plugin"
       ],
       "test": "should filter users by _id with ne operator",
+      "sourceStart": 10243,
+      "sourceLine": 453,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -182,6 +216,8 @@
         "Admin plugin"
       ],
       "test": "should allow to combine search and filter",
+      "sourceStart": 10828,
+      "sourceLine": 477,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -192,6 +228,8 @@
         "Admin plugin"
       ],
       "test": "should allow to set user role",
+      "sourceStart": 11279,
+      "sourceLine": 495,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -202,6 +240,8 @@
         "Admin plugin"
       ],
       "test": "should allow to set multiple user roles",
+      "sourceStart": 11528,
+      "sourceLine": 508,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -212,6 +252,8 @@
         "Admin plugin"
       ],
       "test": "should not allow non-admin to set user role",
+      "sourceStart": 12203,
+      "sourceLine": 541,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -222,6 +264,8 @@
         "Admin plugin"
       ],
       "test": "should allow to ban user",
+      "sourceStart": 12458,
+      "sourceLine": 554,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -232,6 +276,8 @@
         "Admin plugin"
       ],
       "test": "should not allow non-admin to ban user",
+      "sourceStart": 12682,
+      "sourceLine": 566,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -242,6 +288,8 @@
         "Admin plugin"
       ],
       "test": "should allow to ban user with reason and expiration",
+      "sourceStart": 12913,
+      "sourceLine": 578,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -252,6 +300,8 @@
         "Admin plugin"
       ],
       "test": "should not allow banned user to sign in",
+      "sourceStart": 13335,
+      "sourceLine": 594,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -262,6 +312,8 @@
         "Admin plugin"
       ],
       "test": "should not allow banned user to sign in with social provider",
+      "sourceStart": 13589,
+      "sourceLine": 603,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -272,6 +324,8 @@
         "Admin plugin"
       ],
       "test": "should redirect banned social sign-in to a cross-origin errorCallbackURL",
+      "sourceStart": 14352,
+      "sourceLine": 633,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -282,6 +336,8 @@
         "Admin plugin"
       ],
       "test": "should resolve async banned user message",
+      "sourceStart": 15444,
+      "sourceLine": 670,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -292,6 +348,8 @@
         "Admin plugin"
       ],
       "test": "should allow banned user to sign in if ban expired",
+      "sourceStart": 15671,
+      "sourceLine": 678,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -302,6 +360,8 @@
         "Admin plugin"
       ],
       "test": "should clear the expired expiration when banning again without a duration",
+      "sourceStart": 16045,
+      "sourceLine": 691,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -312,6 +372,8 @@
         "Admin plugin"
       ],
       "test": "should not create a session for a banned user outside an endpoint context",
+      "sourceStart": 16936,
+      "sourceLine": 732,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -322,6 +384,8 @@
         "Admin plugin"
       ],
       "test": "should allow to unban user",
+      "sourceStart": 17567,
+      "sourceLine": 763,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -332,6 +396,8 @@
         "Admin plugin"
       ],
       "test": "should not allow non-admin to unban user",
+      "sourceStart": 17894,
+      "sourceLine": 778,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -342,6 +408,8 @@
         "Admin plugin"
       ],
       "test": "should allow admin to list user sessions",
+      "sourceStart": 18129,
+      "sourceLine": 790,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -352,6 +420,8 @@
         "Admin plugin"
       ],
       "test": "should return 404 from unbanUser when the target user does not exist",
+      "sourceStart": 18378,
+      "sourceLine": 802,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -362,6 +432,8 @@
         "Admin plugin"
       ],
       "test": "should return 404 from banUser when the target user does not exist",
+      "sourceStart": 18696,
+      "sourceLine": 815,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -372,6 +444,8 @@
         "Admin plugin"
       ],
       "test": "should return 404 from setRole when the target user does not exist",
+      "sourceStart": 19010,
+      "sourceLine": 828,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -382,6 +456,8 @@
         "Admin plugin"
       ],
       "test": "should return 404 from admin.updateUser when the target user does not exist",
+      "sourceStart": 19343,
+      "sourceLine": 842,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -392,6 +468,8 @@
         "Admin plugin"
       ],
       "test": "should not allow non-admin to list user sessions",
+      "sourceStart": 19711,
+      "sourceLine": 858,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -402,6 +480,8 @@
         "Admin plugin"
       ],
       "test": "should allow admins to impersonate user",
+      "sourceStart": 20110,
+      "sourceLine": 877,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -412,6 +492,8 @@
         "Admin plugin"
       ],
       "test": "should revalidate useSession after admin impersonation",
+      "sourceStart": 20808,
+      "sourceLine": 904,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -422,6 +504,8 @@
         "Admin plugin"
       ],
       "test": "should not allow non-admin to impersonate user",
+      "sourceStart": 23728,
+      "sourceLine": 1010,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -432,6 +516,8 @@
         "Admin plugin"
       ],
       "test": "should not allow to impersonate admins without impersonate-admins permission",
+      "sourceStart": 23975,
+      "sourceLine": 1022,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -442,6 +528,8 @@
         "Admin plugin"
       ],
       "test": "should allow impersonating admins with impersonate-admins permission",
+      "sourceStart": 24563,
+      "sourceLine": 1046,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -452,6 +540,8 @@
         "Admin plugin"
       ],
       "test": "should allow impersonating admins with legacy allowImpersonatingAdmins option",
+      "sourceStart": 27650,
+      "sourceLine": 1182,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -462,6 +552,8 @@
         "Admin plugin"
       ],
       "test": "should filter impersonated sessions",
+      "sourceStart": 28915,
+      "sourceLine": 1230,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -472,6 +564,8 @@
         "Admin plugin"
       ],
       "test": "should allow admin to stop impersonating",
+      "sourceStart": 29171,
+      "sourceLine": 1240,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -482,6 +576,8 @@
         "Admin plugin"
       ],
       "test": "should allow admin to revoke user session",
+      "sourceStart": 29769,
+      "sourceLine": 1265,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -492,6 +588,8 @@
         "Admin plugin"
       ],
       "test": "should not allow non-admin to revoke user sessions",
+      "sourceStart": 30465,
+      "sourceLine": 1290,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -502,6 +600,8 @@
         "Admin plugin"
       ],
       "test": "should allow admin to revoke user sessions",
+      "sourceStart": 30703,
+      "sourceLine": 1298,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -512,6 +612,8 @@
         "Admin plugin"
       ],
       "test": "should list with me",
+      "sourceStart": 31112,
+      "sourceLine": 1311,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -522,6 +624,8 @@
         "Admin plugin"
       ],
       "test": "should allow admin to set user password",
+      "sourceStart": 31574,
+      "sourceLine": 1329,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -532,6 +636,8 @@
         "Admin plugin"
       ],
       "test": "should not allow admin to set user password with empty userId",
+      "sourceStart": 31996,
+      "sourceLine": 1346,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -542,6 +648,8 @@
         "Admin plugin"
       ],
       "test": "should not allow admin to set user password with empty new password",
+      "sourceStart": 32276,
+      "sourceLine": 1359,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -552,6 +660,8 @@
         "Admin plugin"
       ],
       "test": "should not allow admin to set user password with a short new password",
+      "sourceStart": 32566,
+      "sourceLine": 1372,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -562,6 +672,8 @@
         "Admin plugin"
       ],
       "test": "should not allow admin to set user password with a long new password",
+      "sourceStart": 32970,
+      "sourceLine": 1387,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -572,6 +684,8 @@
         "Admin plugin"
       ],
       "test": "should not allow non-admin to set user password",
+      "sourceStart": 33434,
+      "sourceLine": 1403,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -582,6 +696,8 @@
         "Admin plugin"
       ],
       "test": "should create a credential account when setting password for a user without one",
+      "sourceStart": 33788,
+      "sourceLine": 1419,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -592,6 +708,8 @@
         "Admin plugin"
       ],
       "test": "should return USER_NOT_FOUND when setting password for a non-existent user",
+      "sourceStart": 34986,
+      "sourceLine": 1467,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -602,6 +720,8 @@
         "Admin plugin"
       ],
       "test": "should allow admin to delete user",
+      "sourceStart": 35349,
+      "sourceLine": 1481,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -612,6 +732,8 @@
         "Admin plugin"
       ],
       "test": "should not allow non-admin to delete user",
+      "sourceStart": 35581,
+      "sourceLine": 1494,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -622,6 +744,8 @@
         "Admin plugin"
       ],
       "test": "should allow creating users from server",
+      "sourceStart": 35802,
+      "sourceLine": 1502,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -632,6 +756,8 @@
         "Admin plugin"
       ],
       "test": "should allow admin to update user",
+      "sourceStart": 36120,
+      "sourceLine": 1517,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -642,6 +768,8 @@
         "Admin plugin"
       ],
       "test": "should not allow non-admin to update user",
+      "sourceStart": 36517,
+      "sourceLine": 1535,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -652,6 +780,8 @@
         "Admin plugin"
       ],
       "test": "should not allow updating password through update-user",
+      "sourceStart": 36880,
+      "sourceLine": 1551,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -662,6 +792,8 @@
         "Admin plugin"
       ],
       "test": "should not allow updating the user id through update-user",
+      "sourceStart": 37261,
+      "sourceLine": 1567,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -672,6 +804,8 @@
         "Admin plugin"
       ],
       "test": "should revoke sessions when banning a user via update-user",
+      "sourceStart": 37779,
+      "sourceLine": 1587,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -682,6 +816,8 @@
         "Admin plugin"
       ],
       "test": "should not allow admins to ban themselves via update-user",
+      "sourceStart": 38574,
+      "sourceLine": 1626,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -692,6 +828,8 @@
         "Admin plugin"
       ],
       "test": "should reject email updates that collide with another user",
+      "sourceStart": 39042,
+      "sourceLine": 1647,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -702,6 +840,8 @@
         "Admin plugin"
       ],
       "test": "should allow admin to update user email and normalize it",
+      "sourceStart": 39430,
+      "sourceLine": 1663,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -712,6 +852,8 @@
         "access control"
       ],
       "test": "should not allow role updates via update-user without user:set-role",
+      "sourceStart": 41729,
+      "sourceLine": 1786,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -722,6 +864,8 @@
         "access control"
       ],
       "test": "should reject non-existent roles via update-user",
+      "sourceStart": 42711,
+      "sourceLine": 1829,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -732,6 +876,8 @@
         "access control"
       ],
       "test": "should allow role updates via update-user for valid roles with user:set-role",
+      "sourceStart": 43260,
+      "sourceLine": 1856,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -742,6 +888,8 @@
         "access control"
       ],
       "test": "should require user:set-role to assign roles via create-user",
+      "sourceStart": 43874,
+      "sourceLine": 1884,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -752,6 +900,8 @@
         "access control"
       ],
       "test": "should reject non-existent roles via create-user",
+      "sourceStart": 45270,
+      "sourceLine": 1943,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -762,6 +912,8 @@
         "access control"
       ],
       "test": "should apply a validated data.role for callers with user:set-role",
+      "sourceStart": 45606,
+      "sourceLine": 1960,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -772,6 +924,8 @@
         "access control"
       ],
       "test": "should require user:ban to update ban fields via update-user",
+      "sourceStart": 45959,
+      "sourceLine": 1977,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -782,6 +936,8 @@
         "access control"
       ],
       "test": "should require user:set-email to update email fields via update-user",
+      "sourceStart": 46663,
+      "sourceLine": 2007,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -792,6 +948,8 @@
         "access control"
       ],
       "test": "should validate on the client",
+      "sourceStart": 47394,
+      "sourceLine": 2037,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
@@ -802,6 +960,8 @@
         "access control"
       ],
       "test": "should validate using userId",
+      "sourceStart": 48476,
+      "sourceLine": 2083,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -812,6 +972,8 @@
         "access control"
       ],
       "test": "should validate using role",
+      "sourceStart": 49478,
+      "sourceLine": 2128,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -822,6 +984,8 @@
         "access control"
       ],
       "test": "should prioritize role over userId when both are provided",
+      "sourceStart": 50418,
+      "sourceLine": 2172,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -832,6 +996,8 @@
         "access control"
       ],
       "test": "should check permissions correctly for banned user with role provided",
+      "sourceStart": 51210,
+      "sourceLine": 2203,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -842,6 +1008,8 @@
         "access control"
       ],
       "test": "shouldn't allow to list users",
+      "sourceStart": 52297,
+      "sourceLine": 2252,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -852,6 +1020,8 @@
         "access control"
       ],
       "test": "should not allow to set multiple non existent user role",
+      "sourceStart": 53132,
+      "sourceLine": 2288,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -862,6 +1032,8 @@
         "access control"
       ],
       "test": "should not allow to set non existent user role",
+      "sourceStart": 53931,
+      "sourceLine": 2319,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -872,6 +1044,8 @@
         "access control"
       ],
       "test": "should throw error when assigning non-existent admin roles",
+      "sourceStart": 54707,
+      "sourceLine": 2350,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
@@ -882,6 +1056,8 @@
         "access control"
       ],
       "test": "should properly type custom roles in createUser",
+      "sourceStart": 54900,
+      "sourceLine": 2358,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -892,6 +1068,8 @@
         "edge cases: userId validation"
       ],
       "test": "should allow admin to check permissions with useNumberId",
+      "sourceStart": 56240,
+      "sourceLine": 2421,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
@@ -902,6 +1080,8 @@
         "edge cases: userId validation"
       ],
       "test": "should return correct error when userId is missing and not call DB with undefined",
+      "sourceStart": 56534,
+      "sourceLine": 2436,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
@@ -912,6 +1092,8 @@
         "edge cases: userId validation"
       ],
       "test": "should return user not found when userId is empty string",
+      "sourceStart": 56819,
+      "sourceLine": 2448,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
@@ -922,6 +1104,8 @@
         "edge cases: userId validation"
       ],
       "test": "should not crash if userId is 'NaN'",
+      "sourceStart": 57096,
+      "sourceLine": 2461,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
@@ -932,6 +1116,8 @@
         "Admin plugin id-token sign-in"
       ],
       "test": "should return BANNED_USER 403 JSON for id-token sign-in by banned user",
+      "sourceStart": 58235,
+      "sourceLine": 2507,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -942,6 +1128,8 @@
         "admin createUser validateUserInfo provisioning gate"
       ],
       "test": "rejects an admin-created user when validateUserInfo returns error",
+      "sourceStart": 60259,
+      "sourceLine": 2587,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -952,6 +1140,8 @@
         "admin createUser validateUserInfo provisioning gate"
       ],
       "test": "allows an admin-created user that passes validation",
+      "sourceStart": 60638,
+      "sourceLine": 2601,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -962,6 +1152,8 @@
         "admin authorization is revocation-aware with cookie cache"
       ],
       "test": "should reject privileged calls from a demoted admin holding a cached admin snapshot",
+      "sourceStart": 62591,
+      "sourceLine": 2686,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
@@ -972,6 +1164,8 @@
         "admin authorization is revocation-aware with cookie cache"
       ],
       "test": "should reject a banned admin within the cookie-cache window",
+      "sourceStart": 64724,
+      "sourceLine": 2749,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Generic endpoint hooks/cache probes, numeric-ID/username and constructor/client-only source cases remain unported"
@@ -982,6 +1176,8 @@
         "admin create-user password length"
       ],
       "test": "should reject a password longer than maxPasswordLength before hashing",
+      "sourceStart": 66140,
+      "sourceLine": 2797,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

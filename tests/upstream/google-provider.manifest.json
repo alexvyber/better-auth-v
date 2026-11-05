@@ -13,6 +13,8 @@
         "idToken.verifyClaims"
       ],
       "test": "accepts a token whose hd claim matches the configured hd",
+      "sourceStart": 1793,
+      "sourceLine": 64,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -24,6 +26,8 @@
         "idToken.verifyClaims"
       ],
       "test": "rejects a token whose hd claim does not match",
+      "sourceStart": 2080,
+      "sourceLine": 76,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -35,6 +39,8 @@
         "idToken.verifyClaims"
       ],
       "test": "rejects a token missing the hd claim when hd is configured",
+      "sourceStart": 2345,
+      "sourceLine": 86,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -46,6 +52,8 @@
         "idToken.verifyClaims"
       ],
       "test": "accepts any Workspace hd when hd is configured as a wildcard",
+      "sourceStart": 2606,
+      "sourceLine": 96,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -57,6 +65,8 @@
         "idToken.verifyClaims"
       ],
       "test": "rejects a token missing the hd claim when hd is configured as a wildcard",
+      "sourceStart": 2887,
+      "sourceLine": 108,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -68,6 +78,8 @@
         "idToken.verifyClaims"
       ],
       "test": "does not define an hd claim verifier when hd is not configured",
+      "sourceStart": 3152,
+      "sourceLine": 118,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -79,6 +91,8 @@
         "getUserInfo"
       ],
       "test": "returns the user when the hd claim matches",
+      "sourceStart": 3430,
+      "sourceLine": 129,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -90,6 +104,8 @@
         "getUserInfo"
       ],
       "test": "returns null when the hd claim does not match",
+      "sourceStart": 3837,
+      "sourceLine": 144,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -101,6 +117,8 @@
         "getUserInfo"
       ],
       "test": "returns null when the hd claim is missing and hd is configured",
+      "sourceStart": 4219,
+      "sourceLine": 159,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +130,8 @@
         "getUserInfo"
       ],
       "test": "returns the user for any Workspace hd when hd is configured as a wildcard",
+      "sourceStart": 4601,
+      "sourceLine": 174,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -123,6 +143,8 @@
         "getUserInfo"
       ],
       "test": "returns null when the hd claim is missing and hd is configured as a wildcard",
+      "sourceStart": 5029,
+      "sourceLine": 189,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -134,6 +156,8 @@
         "getUserInfo"
       ],
       "test": "returns the user regardless of hd when hd is not configured",
+      "sourceStart": 5415,
+      "sourceLine": 204,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -144,6 +168,8 @@
         "verifyGoogleIdToken"
       ],
       "test": "verifies an id token without requiring a kid header",
+      "sourceStart": 5924,
+      "sourceLine": 225,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -154,6 +180,8 @@
         "verifyGoogleIdToken"
       ],
       "test": "accepts a token whose nbf is a few seconds ahead of the server clock",
+      "sourceStart": 6397,
+      "sourceLine": 245,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -164,6 +192,8 @@
         "verifyGoogleIdToken"
       ],
       "test": "rejects tokens signed with symmetric algorithms before fetching Google keys",
+      "sourceStart": 6823,
+      "sourceLine": 258,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

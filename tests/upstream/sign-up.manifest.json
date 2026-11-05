@@ -12,6 +12,8 @@
         "sign-up with custom fields"
       ],
       "test": "should work with custom fields on account table",
+      "sourceStart": 1020,
+      "sourceLine": 52,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "sign-up with custom fields"
       ],
       "test": "should succeed when passing empty name",
+      "sourceStart": 1806,
+      "sourceLine": 84,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "sign-up with custom fields"
       ],
       "test": "should get the ipAddress and userAgent from headers",
+      "sourceStart": 2207,
+      "sourceLine": 101,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "sign-up with custom fields"
       ],
       "test": "should rollback when session creation fails",
+      "sourceStart": 2806,
+      "sourceLine": 125,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "sign-up with custom fields"
       ],
       "test": "should not allow user to set the field that is set to input: false",
+      "sourceStart": 3595,
+      "sourceLine": 154,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "sign-up with custom fields"
       ],
       "test": "should return additionalFields in signUpEmail response",
+      "sourceStart": 3949,
+      "sourceLine": 168,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "sign-up with custom fields"
       ],
       "test": "should throw status code 400 when passing invalid body",
+      "sourceStart": 4465,
+      "sourceLine": 185,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "sign-up session caching"
       ],
       "test": "does not cache the session when the sign-up rolls back after creating it",
+      "sourceStart": 5647,
+      "sourceLine": 238,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "sign-up session caching"
       ],
       "test": "rolls back the user when secondary storage cannot store the session",
+      "sourceStart": 6484,
+      "sourceLine": 263,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -102,6 +120,8 @@
         "sign-up session caching"
       ],
       "test": "rolls back the user when a preserved session cannot be cached",
+      "sourceStart": 6972,
+      "sourceLine": 276,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +132,8 @@
         "sign-up session caching"
       ],
       "test": "keeps a session revoked by its create.after hook revoked",
+      "sourceStart": 7557,
+      "sourceLine": 295,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -122,6 +144,8 @@
         "sign-up session caching"
       ],
       "test": "lists the session when its cached copy failed to write",
+      "sourceStart": 8339,
+      "sourceLine": 323,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -132,6 +156,8 @@
         "validateUserInfo sign-up"
       ],
       "test": "should allow email/password sign-up when validateUserInfo returns void",
+      "sourceStart": 9001,
+      "sourceLine": 344,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -142,6 +168,8 @@
         "validateUserInfo sign-up"
       ],
       "test": "should reject email/password sign-up when validateUserInfo returns error",
+      "sourceStart": 9842,
+      "sourceLine": 378,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -152,6 +180,8 @@
         "validateUserInfo sign-up"
       ],
       "test": "hides gate rejections behind the generic-duplicate response",
+      "sourceStart": 11111,
+      "sourceLine": 428,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -162,6 +192,8 @@
         "sign-up user enumeration protection"
       ],
       "test": "should return success for existing email when email verification is required",
+      "sourceStart": 12101,
+      "sourceLine": 472,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -172,6 +204,8 @@
         "sign-up user enumeration protection"
       ],
       "test": "should call onExistingUserSignUp when requireEmailVerification is true",
+      "sourceStart": 12712,
+      "sourceLine": 499,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -182,6 +216,8 @@
         "sign-up user enumeration protection"
       ],
       "test": "should call onExistingUserSignUp when autoSignIn is false and requireEmailVerification is true",
+      "sourceStart": 13533,
+      "sourceLine": 533,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -192,6 +228,8 @@
         "sign-up user enumeration protection"
       ],
       "test": "should call onExistingUserSignUp when autoSignIn is false without requireEmailVerification",
+      "sourceStart": 14194,
+      "sourceLine": 561,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -202,6 +240,8 @@
         "sign-up user enumeration protection"
       ],
       "test": "should not call onExistingUserSignUp when enumeration protection is inactive",
+      "sourceStart": 14926,
+      "sourceLine": 589,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -212,6 +252,8 @@
         "sign-up user enumeration protection"
       ],
       "test": "should not call onExistingUserSignUp for new user sign-ups",
+      "sourceStart": 15516,
+      "sourceLine": 615,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -222,6 +264,8 @@
         "sign-up user enumeration protection"
       ],
       "test": "should return synthetic user for existing email when autoSignIn is disabled without requireEmailVerification",
+      "sourceStart": 16054,
+      "sourceLine": 641,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -232,6 +276,8 @@
         "sign-up user enumeration protection"
       ],
       "test": "should return token: null for new sign-up when autoSignIn is disabled",
+      "sourceStart": 16724,
+      "sourceLine": 667,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -242,6 +288,8 @@
         "sign-up CSRF protection"
       ],
       "test": "should block cross-site navigation sign-up attempts (no cookies)",
+      "sourceStart": 17529,
+      "sourceLine": 709,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -252,6 +300,8 @@
         "sign-up CSRF protection"
       ],
       "test": "should allow same-origin navigation sign-up attempts",
+      "sourceStart": 18305,
+      "sourceLine": 737,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -262,6 +312,8 @@
         "sign-up CSRF protection"
       ],
       "test": "should allow fetch/XHR sign-up requests (cors mode)",
+      "sourceStart": 18945,
+      "sourceLine": 761,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -272,6 +324,8 @@
         "sign-up CSRF protection"
       ],
       "test": "should use origin validation when cookies exist",
+      "sourceStart": 19571,
+      "sourceLine": 785,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -282,6 +336,8 @@
         "sign-up with form data"
       ],
       "test": "should accept form-urlencoded content type",
+      "sourceStart": 20593,
+      "sourceLine": 827,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -292,6 +348,8 @@
         "sign-up with form data"
       ],
       "test": "should block cross-site form submissions",
+      "sourceStart": 21361,
+      "sourceLine": 854,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -302,6 +360,8 @@
         "sign-up with form data"
       ],
       "test": "should allow same-site form submissions from trusted origins",
+      "sourceStart": 22143,
+      "sourceLine": 882,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -312,6 +372,8 @@
         "sign-up sendOnSignUp option behavior"
       ],
       "test": "should not send verification email when sendOnSignUp is false, even with requireEmailVerification",
+      "sourceStart": 22873,
+      "sourceLine": 908,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -322,6 +384,8 @@
         "sign-up sendOnSignUp option behavior"
       ],
       "test": "should send verification email when sendOnSignUp is true",
+      "sourceStart": 23518,
+      "sourceLine": 937,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -332,6 +396,8 @@
         "sign-up sendOnSignUp option behavior"
       ],
       "test": "should send verification email when sendOnSignUp is not set but requireEmailVerification is true (default)",
+      "sourceStart": 24127,
+      "sourceLine": 966,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -342,6 +408,8 @@
         "sign-up enumeration protection — indistinguishable response"
       ],
       "test": "should have identical image key presence for real and synthetic user when image is omitted",
+      "sourceStart": 25386,
+      "sourceLine": 1027,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -352,6 +420,8 @@
         "sign-up enumeration protection — indistinguishable response"
       ],
       "test": "should have identical image key presence in raw JSON response when image is omitted",
+      "sourceStart": 25919,
+      "sourceLine": 1044,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -362,6 +432,8 @@
         "sign-up enumeration protection — indistinguishable response"
       ],
       "test": "should return same keys in same order for real and synthetic user",
+      "sourceStart": 27010,
+      "sourceLine": 1086,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -372,6 +444,8 @@
         "sign-up enumeration protection — customSyntheticUser with admin plugin"
       ],
       "test": "should return indistinguishable response with admin plugin fields",
+      "sourceStart": 28693,
+      "sourceLine": 1149,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

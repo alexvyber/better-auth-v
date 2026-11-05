@@ -897,3 +897,12 @@ session updates through this constructor and additional-field sign-in data throu
 the official React client. React and its type package are pinned to versions in the
 upstream lockfile for these client tests. This is a test fixture, not a production
 TypeScript server facade or a claim of complete constructor/client parity.
+
+
+The source inventory unions complementary imports by original AST position under
+matching source checksums. Backend repeats count once, duplicate titles retain
+separate identities and malformed source metadata fails the audit. Every manifest
+records original positions/lines. Six audit tests run through `make check`. The
+current 33 complete/16 partial/387 unported source-file counts and 1,165 preserved
+static declarations describe source coverage, including separately labelled SDK
+probes; they are not equivalent to native runtime or feature parity.

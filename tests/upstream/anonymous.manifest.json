@@ -12,6 +12,8 @@
         "anonymous"
       ],
       "test": "should sign in anonymously",
+      "sourceStart": 2990,
+      "sourceLine": 126,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "anonymous"
       ],
       "test": "uses a namespaced placeholder email by default",
+      "sourceStart": 3336,
+      "sourceLine": 141,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "anonymous"
       ],
       "test": "should reject anonymous sign-in when validateUserInfo returns error",
+      "sourceStart": 3555,
+      "sourceLine": 149,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "anonymous"
       ],
       "test": "link anonymous user account",
+      "sourceStart": 4307,
+      "sourceLine": 179,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "anonymous"
       ],
       "test": "should link in social sign on",
+      "sourceStart": 4565,
+      "sourceLine": 188,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "anonymous"
       ],
       "test": "should link the anonymous account on social sign-in when the callback has no session cookie (Expo)",
+      "sourceStart": 5331,
+      "sourceLine": 223,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "anonymous"
       ],
       "test": "should ignore a client-supplied anonymousUserId on the OAuth callback",
+      "sourceStart": 6536,
+      "sourceLine": 256,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "anonymous"
       ],
       "test": "should call onLinkAccount when anonymous user verifies email",
+      "sourceStart": 7870,
+      "sourceLine": 293,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "anonymous"
       ],
       "test": "should work with generateName",
+      "sourceStart": 9216,
+      "sourceLine": 354,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -102,6 +120,8 @@
         "anonymous"
       ],
       "test": "should work with generateRandomEmail",
+      "sourceStart": 9704,
+      "sourceLine": 379,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +132,8 @@
         "anonymous"
       ],
       "test": "should work with async generateRandomEmail",
+      "sourceStart": 10318,
+      "sourceLine": 406,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -122,6 +144,8 @@
         "anonymous"
       ],
       "test": "should throw error if generateRandomEmail returns invalid email",
+      "sourceStart": 10942,
+      "sourceLine": 433,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -132,6 +156,8 @@
         "anonymous"
       ],
       "test": "should throw error if async generateRandomEmail returns invalid email",
+      "sourceStart": 11612,
+      "sourceLine": 465,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -142,6 +168,8 @@
         "anonymous"
       ],
       "test": "should not reject first-time anonymous sign-in",
+      "sourceStart": 12300,
+      "sourceLine": 497,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -152,6 +180,8 @@
         "anonymous"
       ],
       "test": "should reject subsequent anonymous sign-in attempts once signed in",
+      "sourceStart": 13119,
+      "sourceLine": 530,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -163,6 +193,8 @@
         "anonymous cleanup safeguards"
       ],
       "test": "does not delete when the new session is still anonymous",
+      "sourceStart": 15395,
+      "sourceLine": 626,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported direct middleware-object injection; all HTTP anonymous and OAuth integration cases selected"
@@ -174,6 +206,8 @@
         "anonymous cleanup safeguards"
       ],
       "test": "deletes the previous anonymous user when linking a new account",
+      "sourceStart": 15999,
+      "sourceLine": 653,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported direct middleware-object injection; all HTTP anonymous and OAuth integration cases selected"
@@ -184,6 +218,8 @@
         "anonymous linking through generic oauth (Expo)"
       ],
       "test": "links the anonymous account when the callback lacks the session cookie",
+      "sourceStart": 18153,
+      "sourceLine": 743,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

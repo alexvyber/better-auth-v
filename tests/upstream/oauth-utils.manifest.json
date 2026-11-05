@@ -12,6 +12,8 @@
         "decryptOAuthToken"
       ],
       "test": "should return empty token as-is",
+      "sourceStart": 556,
+      "sourceLine": 20,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "decryptOAuthToken"
       ],
       "test": "should return token as-is when encryption is disabled",
+      "sourceStart": 732,
+      "sourceLine": 26,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "decryptOAuthToken"
       ],
       "test": "should decrypt encrypted token when encryption is enabled",
+      "sourceStart": 1004,
+      "sourceLine": 33,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "decryptOAuthToken"
       ],
       "test": "should handle migration: return unencrypted token as-is when encryption is enabled",
+      "sourceStart": 1441,
+      "sourceLine": 48,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "decryptOAuthToken"
       ],
       "test": "should handle migration: JWT-style tokens should be returned as-is",
+      "sourceStart": 1979,
+      "sourceLine": 60,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "decryptOAuthToken"
       ],
       "test": "should handle migration: token with odd length should be returned as-is",
+      "sourceStart": 2368,
+      "sourceLine": 71,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "migration scenario - issue #6018"
       ],
       "test": "should handle Google OAuth token stored before encryption was enabled",
+      "sourceStart": 2833,
+      "sourceLine": 86,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "migration scenario - issue #6018"
       ],
       "test": "should handle refresh token that was stored unencrypted",
+      "sourceStart": 3823,
+      "sourceLine": 106,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "migration scenario - issue #6018"
       ],
       "test": "should still decrypt properly encrypted tokens",
+      "sourceStart": 4207,
+      "sourceLine": 117,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -102,6 +120,8 @@
         "setTokenUtil"
       ],
       "test": "should return null/undefined as-is",
+      "sourceStart": 4698,
+      "sourceLine": 131,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +132,8 @@
         "setTokenUtil"
       ],
       "test": "should return token as-is when encryption is disabled",
+      "sourceStart": 4913,
+      "sourceLine": 137,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -122,6 +144,8 @@
         "setTokenUtil"
       ],
       "test": "should encrypt token when encryption is enabled",
+      "sourceStart": 5143,
+      "sourceLine": 144,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -132,6 +156,8 @@
         "setTokenUtil"
       ],
       "test": "should produce tokens that can be decrypted",
+      "sourceStart": 5511,
+      "sourceLine": 155,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

@@ -12,6 +12,8 @@
         "verifyProviderIdToken"
       ],
       "test": "accepts a correctly signed token with matching issuer, audience, and nonce",
+      "sourceStart": 1733,
+      "sourceLine": 53,
       "selected": true,
       "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
       "upstreamDisabled": false,
@@ -23,6 +25,8 @@
         "verifyProviderIdToken"
       ],
       "test": "accepts a signed token without a kid header when the JWKS resolves it",
+      "sourceStart": 2088,
+      "sourceLine": 60,
       "selected": true,
       "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
       "upstreamDisabled": false,
@@ -34,6 +38,8 @@
         "verifyProviderIdToken"
       ],
       "test": "rejects a token signed by a different key (forgery)",
+      "sourceStart": 2588,
+      "sourceLine": 73,
       "selected": true,
       "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
       "upstreamDisabled": false,
@@ -45,6 +51,8 @@
         "verifyProviderIdToken"
       ],
       "test": "rejects an unsigned alg:none token",
+      "sourceStart": 3165,
+      "sourceLine": 87,
       "selected": true,
       "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
       "upstreamDisabled": false,
@@ -56,6 +64,8 @@
         "verifyProviderIdToken"
       ],
       "test": "requires the exp and iat claims every ID token carries",
+      "sourceStart": 3625,
+      "sourceLine": 100,
       "selected": true,
       "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
       "upstreamDisabled": false,
@@ -67,6 +77,8 @@
         "verifyProviderIdToken"
       ],
       "test": "rejects a wrong issuer or audience",
+      "sourceStart": 4394,
+      "sourceLine": 120,
       "selected": true,
       "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
       "upstreamDisabled": false,
@@ -78,6 +90,8 @@
         "verifyProviderIdToken"
       ],
       "test": "enforces nonce and supports exact-or-sha256 comparison",
+      "sourceStart": 4843,
+      "sourceLine": 137,
       "selected": true,
       "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
       "upstreamDisabled": false,
@@ -89,6 +103,8 @@
         "verifyProviderIdToken"
       ],
       "test": "is fail-closed when no config and no override are present",
+      "sourceStart": 5524,
+      "sourceLine": 155,
       "selected": true,
       "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
       "upstreamDisabled": false,
@@ -100,6 +116,8 @@
         "verifyProviderIdToken"
       ],
       "test": "honors an options.verifyIdToken override",
+      "sourceStart": 5843,
+      "sourceLine": 164,
       "selected": true,
       "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
       "upstreamDisabled": false,
@@ -111,6 +129,8 @@
         "verifyProviderIdToken"
       ],
       "test": "honors disableIdTokenSignIn even with a valid config",
+      "sourceStart": 6124,
+      "sourceLine": 172,
       "selected": true,
       "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
       "upstreamDisabled": false,
@@ -122,6 +142,8 @@
         "verifyProviderIdToken"
       ],
       "test": "is fail-closed when a custom verifier throws",
+      "sourceStart": 6522,
+      "sourceLine": 184,
       "selected": true,
       "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
       "upstreamDisabled": false,
@@ -133,6 +155,8 @@
         "verifyProviderIdToken"
       ],
       "test": "gates opaque (non-JWS) tokens behind allowOpaqueToken",
+      "sourceStart": 7009,
+      "sourceLine": 202,
       "selected": true,
       "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
       "upstreamDisabled": false,
@@ -145,6 +169,8 @@
         "clock skew"
       ],
       "test": "%s %is from now verifies: %s",
+      "sourceStart": 7684,
+      "sourceLine": 229,
       "selected": true,
       "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
       "upstreamDisabled": false,
@@ -157,6 +183,8 @@
         "without a configured audience"
       ],
       "test": "rejects a token when the audience is %s",
+      "sourceStart": 8673,
+      "sourceLine": 263,
       "selected": true,
       "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
       "upstreamDisabled": false,
@@ -169,6 +197,8 @@
         "provider regressions"
       ],
       "test": "PayPal no longer accepts client id_token sign-in",
+      "sourceStart": 9325,
+      "sourceLine": 284,
       "selected": true,
       "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
       "upstreamDisabled": false,
@@ -181,6 +211,8 @@
         "provider regressions"
       ],
       "test": "Facebook supports id_token sign-in and still accepts opaque Graph tokens",
+      "sourceStart": 9754,
+      "sourceLine": 292,
       "selected": true,
       "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
       "upstreamDisabled": false,
@@ -193,6 +225,8 @@
         "provider regressions"
       ],
       "test": "pins the signing algorithms of every provider that verifies against a JWKS",
+      "sourceStart": 10079,
+      "sourceLine": 300,
       "selected": true,
       "executionSurface": "native-provider-policy; provider regressions use native ID-token verification profiles, not full OAuth flows",
       "upstreamDisabled": false,

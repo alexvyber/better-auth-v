@@ -12,6 +12,8 @@
         "two-factor: account-level lockout across challenges"
       ],
       "test": "enforces account lockout through legacy adapter fallbacks",
+      "sourceStart": 4660,
+      "sourceLine": 170,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported legacy JS adapter injection, username/phone entry points and JS middleware newSession probes"
@@ -22,6 +24,8 @@
         "two-factor: account-level lockout across challenges"
       ],
       "test": "consumes an email OTP once through legacy adapter fallbacks",
+      "sourceStart": 5339,
+      "sourceLine": 189,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported legacy JS adapter injection, username/phone entry points and JS middleware newSession probes"
@@ -32,6 +36,8 @@
         "two-factor: account-level lockout across challenges"
       ],
       "test": "allows a backup code to be consumed once through legacy adapter fallbacks",
+      "sourceStart": 6142,
+      "sourceLine": 217,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported legacy JS adapter injection, username/phone entry points and JS middleware newSession probes"
@@ -42,6 +48,8 @@
         "two-factor: account-level lockout across challenges"
       ],
       "test": "locks the account after failures accumulate across separate challenges",
+      "sourceStart": 6650,
+      "sourceLine": 230,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "two-factor: account-level lockout across challenges"
       ],
       "test": "counts failures from all factors toward one account lock",
+      "sourceStart": 7634,
+      "sourceLine": 257,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "two-factor: account-level lockout across challenges"
       ],
       "test": "counts email-OTP failures toward the same account lock",
+      "sourceStart": 8450,
+      "sourceLine": 280,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "two-factor: account-level lockout across challenges"
       ],
       "test": "resets the counter on a successful verification",
+      "sourceStart": 9084,
+      "sourceLine": 300,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "two-factor: account-level lockout across challenges"
       ],
       "test": "releases the lock once its window elapses",
+      "sourceStart": 9924,
+      "sourceLine": 328,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "two-factor: account-level lockout across challenges"
       ],
       "test": "does not lock when account lockout is disabled",
+      "sourceStart": 10741,
+      "sourceLine": 359,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -102,6 +120,8 @@
         "two-factor: account-level lockout across challenges"
       ],
       "test": "counts a row with no prior failure count without locking on the first failure",
+      "sourceStart": 11169,
+      "sourceLine": 374,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +132,8 @@
         "two-factor: account-level lockout across challenges"
       ],
       "test": "sets the lock with a guarded counter transition",
+      "sourceStart": 11891,
+      "sourceLine": 395,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported legacy JS adapter injection, username/phone entry points and JS middleware newSession probes"

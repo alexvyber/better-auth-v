@@ -12,6 +12,8 @@
         "One-time token"
       ],
       "test": "should work",
+      "sourceStart": 583,
+      "sourceLine": 24,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "One-time token"
       ],
       "test": "should expire",
+      "sourceStart": 1106,
+      "sourceLine": 46,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "One-time token"
       ],
       "test": "should only redeem a token once under concurrent verification",
+      "sourceStart": 1737,
+      "sourceLine": 67,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "One-time token"
       ],
       "test": "should work with client",
+      "sourceStart": 2479,
+      "sourceLine": 88,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "One-time token"
       ],
       "test": "should reject token when underlying session has expired",
+      "sourceStart": 2869,
+      "sourceLine": 103,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -64,6 +74,8 @@
         "hashed"
       ],
       "test": "should work with hashed",
+      "sourceStart": 4230,
+      "sourceLine": 164,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -76,6 +88,8 @@
         "custom hasher"
       ],
       "test": "should work with custom hasher",
+      "sourceStart": 5348,
+      "sourceLine": 205,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -87,6 +101,8 @@
         "disableClientRequest option"
       ],
       "test": "should allow server-side requests",
+      "sourceStart": 6297,
+      "sourceLine": 245,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -98,6 +114,8 @@
         "disableClientRequest option"
       ],
       "test": "should reject client requests when disableClientRequest is true",
+      "sourceStart": 6530,
+      "sourceLine": 253,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -109,6 +127,8 @@
         "disableSetSessionCookie option"
       ],
       "test": "should not set session cookie when disableSetSessionCookie is true",
+      "sourceStart": 7072,
+      "sourceLine": 273,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -120,6 +140,8 @@
         "disableSetSessionCookie option"
       ],
       "test": "should set session cookie by default",
+      "sourceStart": 7586,
+      "sourceLine": 291,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -131,6 +153,8 @@
         "setOttHeaderOnNewSession option"
       ],
       "test": "should set OTT header on new session when enabled",
+      "sourceStart": 8301,
+      "sourceLine": 315,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -142,6 +166,8 @@
         "setOttHeaderOnNewSession option"
       ],
       "test": "should not set OTT header on new session by default",
+      "sourceStart": 9003,
+      "sourceLine": 343,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -153,6 +179,8 @@
         "setOttHeaderOnNewSession option"
       ],
       "test": "should set OTT header on sign in when enabled",
+      "sourceStart": 9485,
+      "sourceLine": 361,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

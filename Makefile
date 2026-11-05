@@ -1,11 +1,14 @@
 V ?= v
 export V_C_ERROR_BUG_REPORT_DISABLED = 1
 
-.PHONY: check test test-v test-ts integration fmt
+.PHONY: check test test-v test-ts test-audit integration fmt
 
-check: test-v test-ts integration
+check: test-audit test-v test-ts integration
 
-test: test-v test-ts
+test: test-audit test-v test-ts
+
+test-audit:
+	node --test scripts/upstream-coverage.test.mjs
 
 test-v:
 	$(V) test .

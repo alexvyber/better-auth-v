@@ -12,6 +12,8 @@
         "disabled cookie cache fallback"
       ],
       "test": "ignores retired session_data when caching is disabled $mode",
+      "sourceStart": 466,
+      "sourceLine": 13,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "disabled cookie cache fallback"
       ],
       "test": "clears retired session_data when session_token is $state",
+      "sourceStart": 2365,
+      "sourceLine": 84,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "cookieCache HMAC verification failure fallback"
       ],
       "test": "should fall through to session_token DB validation when session_data HMAC fails",
+      "sourceStart": 4477,
+      "sourceLine": 157,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "cookieCache HMAC verification failure fallback"
       ],
       "test": "should expire malformed compact session_data and fall through to session_token DB validation",
+      "sourceStart": 6814,
+      "sourceLine": 230,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "cookieCache HMAC verification failure fallback"
       ],
       "test": "should still return null when both session_data and session_token are invalid",
+      "sourceStart": 8061,
+      "sourceLine": 276,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "cookieCache HMAC verification failure fallback"
       ],
       "test": "should work with JWT strategy when HMAC verification fails",
+      "sourceStart": 9306,
+      "sourceLine": 325,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "cookieCache HMAC verification failure fallback"
       ],
       "test": "should work with JWE strategy when decryption fails",
+      "sourceStart": 10363,
+      "sourceLine": 367,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "cookieCache HMAC verification failure fallback"
       ],
       "test": "should handle cross-subdomain cookie migration without silent logout",
+      "sourceStart": 12195,
+      "sourceLine": 425,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "cookieCache HMAC verification failure fallback"
       ],
       "test": "should work during cookieCache window even with stale session_data",
+      "sourceStart": 15341,
+      "sourceLine": 524,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

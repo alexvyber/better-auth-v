@@ -12,6 +12,8 @@
         "additionalFields"
       ],
       "test": "should extends fields",
+      "sourceStart": 843,
+      "sourceLine": 28,
       "selected": true,
       "executionSurface": "native-postgres-additional-field-integration",
       "upstreamDisabled": false,
@@ -23,6 +25,8 @@
         "additionalFields"
       ],
       "test": "should require additional fields on signUp",
+      "sourceStart": 1095,
+      "sourceLine": 37,
       "selected": true,
       "executionSurface": "native-postgres-additional-field-integration",
       "upstreamDisabled": false,
@@ -34,6 +38,8 @@
         "additionalFields"
       ],
       "test": "should infer additional fields on update",
+      "sourceStart": 2110,
+      "sourceLine": 89,
       "selected": true,
       "executionSurface": "native-postgres-additional-field-integration",
       "upstreamDisabled": false,
@@ -45,6 +51,8 @@
         "additionalFields"
       ],
       "test": "should work with other plugins",
+      "sourceStart": 2944,
+      "sourceLine": 133,
       "selected": true,
       "executionSurface": "native-postgres-additional-field-integration",
       "upstreamDisabled": false,
@@ -56,6 +64,8 @@
         "additionalFields"
       ],
       "test": "should infer it on the client",
+      "sourceStart": 3705,
+      "sourceLine": 176,
       "selected": false,
       "executionSurface": "native-postgres-additional-field-integration",
       "upstreamDisabled": false,
@@ -67,6 +77,8 @@
         "additionalFields"
       ],
       "test": "should infer session additional fields on updateSession",
+      "sourceStart": 4303,
+      "sourceLine": 200,
       "selected": false,
       "executionSurface": "native-postgres-additional-field-integration",
       "upstreamDisabled": false,
@@ -78,6 +90,8 @@
         "additionalFields"
       ],
       "test": "should infer it on the client without direct import",
+      "sourceStart": 5193,
+      "sourceLine": 239,
       "selected": false,
       "executionSurface": "native-postgres-additional-field-integration",
       "upstreamDisabled": false,
@@ -89,6 +103,8 @@
         "additionalFields"
       ],
       "test": "should infer additional fields on signIn response with manual schema",
+      "sourceStart": 5845,
+      "sourceLine": 270,
       "selected": false,
       "executionSurface": "native-postgres-additional-field-integration",
       "upstreamDisabled": false,
@@ -100,6 +116,8 @@
         "additionalFields"
       ],
       "test": "should apply default values",
+      "sourceStart": 6578,
+      "sourceLine": 300,
       "selected": true,
       "executionSurface": "native-postgres-additional-field-integration",
       "upstreamDisabled": false,
@@ -111,6 +129,8 @@
         "additionalFields"
       ],
       "test": "should apply default values with secondary storage",
+      "sourceStart": 7253,
+      "sourceLine": 334,
       "selected": true,
       "executionSurface": "native-postgres-additional-field-integration",
       "upstreamDisabled": false,
@@ -122,6 +142,8 @@
         "runtime"
       ],
       "test": "should apply default value function on runtime",
+      "sourceStart": 8478,
+      "sourceLine": 393,
       "selected": false,
       "executionSurface": "native-postgres-additional-field-integration",
       "upstreamDisabled": false,

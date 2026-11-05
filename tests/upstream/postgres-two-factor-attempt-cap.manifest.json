@@ -12,6 +12,8 @@
         "two-factor security: TOTP enforces a per-challenge attempt cap"
       ],
       "test": "locks out after the limit and cancels the challenge",
+      "sourceStart": 2539,
+      "sourceLine": 82,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -23,6 +25,8 @@
         "two-factor security: TOTP enforces a per-challenge attempt cap"
       ],
       "test": "a concurrent burst cannot exceed the attempt budget",
+      "sourceStart": 3745,
+      "sourceLine": 113,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -34,6 +38,8 @@
         "two-factor security: TOTP enforces a per-challenge attempt cap"
       ],
       "test": "a server error during verification does not spend an attempt slot",
+      "sourceStart": 4625,
+      "sourceLine": 135,
       "selected": false,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -45,6 +51,8 @@
         "two-factor security: backup codes enforce a per-challenge attempt cap"
       ],
       "test": "counts wrong backup codes up to the limit then locks out",
+      "sourceStart": 6255,
+      "sourceLine": 183,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,

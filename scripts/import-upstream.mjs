@@ -484,6 +484,8 @@ for (const plan of plans) {
             suite: name,
             suites: path,
             test: title,
+            sourceStart:node.getStart(sourceFile),
+            sourceLine:sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile)).line+1,
             selected: include,
             ...(plan.executionSurface || plan.testSurfaces?.[name] ? {executionSurface: plan.executionSurface ?? plan.testSurfaces[name]} : {}),
             upstreamDisabled: /\.(skip|todo|fails)(\.|$)/.test(callee),

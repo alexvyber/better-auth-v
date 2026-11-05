@@ -12,6 +12,8 @@
         "refreshAccessToken"
       ],
       "test": "should set accessTokenExpiresAt when expires_in is returned",
+      "sourceStart": 452,
+      "sourceLine": 18,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "refreshAccessToken"
       ],
       "test": "should set refreshTokenExpiresAt when refresh_token_expires_in is returned",
+      "sourceStart": 1390,
+      "sourceLine": 48,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "refreshAccessToken"
       ],
       "test": "should not set refreshTokenExpiresAt when refresh_token_expires_in is not returned",
+      "sourceStart": 2313,
+      "sourceLine": 76,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "refreshAccessToken"
       ],
       "test": "normalizes scope returned from refresh token responses",
+      "sourceStart": 2895,
+      "sourceLine": 96,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "refreshAccessToken"
       ],
       "test": "passes resource indicators through refresh token requests",
+      "sourceStart": 3414,
+      "sourceLine": 115,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "refreshAccessToken"
       ],
       "test": "drops refresh params owned by the refresh flow or unsafe object keys",
+      "sourceStart": 4179,
+      "sourceLine": 142,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "parseScopeField"
       ],
       "test": "accepts strings, arrays, empty values, and malformed provider output",
+      "sourceStart": 5443,
+      "sourceLine": 178,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "mergeScopes"
       ],
       "test": "normalizes stored and incoming scopes before merging",
+      "sourceStart": 5897,
+      "sourceLine": 191,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

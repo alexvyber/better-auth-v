@@ -12,6 +12,8 @@
         "createAuthorizationURL"
       ],
       "test": "appends additionalParams as query string entries",
+      "sourceStart": 451,
+      "sourceLine": 17,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "createAuthorizationURL"
       ],
       "test": "omits scope when the resolved scope list is empty",
+      "sourceStart": 806,
+      "sourceLine": 29,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "createAuthorizationURL"
       ],
       "test": "silently drops reserved OAuth params supplied via additionalParams",
+      "sourceStart": 1020,
+      "sourceLine": 38,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "createAuthorizationURL"
       ],
       "test": "exposes the reserved param list for downstream consumers",
+      "sourceStart": 2059,
+      "sourceLine": 66,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

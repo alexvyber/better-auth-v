@@ -1,5 +1,6 @@
 import ts from "typescript";
 import { testFunctionNames } from './upstream-test-discovery.mjs';
+import {sourceCoverage} from './upstream-coverage.mjs';
 import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
@@ -71,6 +72,7 @@ for (const directory of ["."]) {
             name.endsWith(".todo"))
         ) {
           declarations.push({
+            sourceStart:node.getStart(source),
             suites,
             title: label(node, source),
             line:
@@ -86,15 +88,9 @@ for (const directory of ["."]) {
     }
     visit(source);
     const name = relative(root, path).replaceAll("\\", "/");
-    // Backend matrices may repeat a source file with narrower selections. Prefer
-    // its broadest import for the unique-file inventory.
-    const manifest = manifests.filter(entry => entry.path === name).sort((a, b) =>
-      b.tests.filter(test => test.selected).length - a.tests.filter(test => test.selected).length)[0];
-    if (
-      manifest &&
-      createHash("sha256").update(contents).digest("hex") !== manifest.sha256
-    )
-      throw new Error("Imported source file checksum mismatch");
+    const matching=manifests.filter(entry=>entry.path===name);
+    const checksum=createHash('sha256').update(contents).digest('hex');
+    const coverage=sourceCoverage(checksum,declarations,matching);
     const group = name.includes("/plugins/")
       ? "plugins"
       : name.includes("/adapters/") ||
@@ -113,13 +109,9 @@ for (const directory of ["."]) {
       path: name,
       sha256: createHash("sha256").update(contents).digest("hex"),
       group,
-      status: manifest
-        ? manifest.tests.every((test) => test.selected)
-          ? "imported-complete-file"
-          : "imported-partial-file"
-        : "unported",
+      ...coverage,
       kind: /\.(test|spec)-d\./.test(name) ? "type-only" : "runtime",
-      declarations,
+      declarations:declarations.map(({sourceStart,...entry})=>entry),
     });
   }
 }
@@ -137,7 +129,7 @@ for (const file of files) {
 const inventory = {
   commit: lock.commit,
   methodology:
-    "Static AST inventory of test/spec files across the entire pinned repository, including demos, tooling, and type-only files. Declarations are not runtime case counts: parameterization, loops, conditions, and helper registration can change case counts. Imported indicates preserved test source, not a passing test result.",
+    "Static AST inventory of test/spec files across the entire pinned repository, including demos, tooling, and type-only files. Declarations are not runtime case counts: parameterization, loops, conditions, and helper registration can change case counts. Selections are unioned across checksum-matched manifests by AST source position; backend repeats do not increase unique declaration coverage. Imported indicates preserved test source, not a passing test result.",
   totals: {
     files: files.length,
     declarations: files.reduce(

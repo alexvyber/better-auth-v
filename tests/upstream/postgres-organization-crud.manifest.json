@@ -12,6 +12,8 @@
         "get-full-organization"
       ],
       "test": "should get organization by organizationId",
+      "sourceStart": 1116,
+      "sourceLine": 43,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -23,6 +25,8 @@
         "get-full-organization"
       ],
       "test": "should get organization by organizationSlug",
+      "sourceStart": 1642,
+      "sourceLine": 65,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -34,6 +38,8 @@
         "get-full-organization"
       ],
       "test": "should return null when no active organization and no query params",
+      "sourceStart": 1968,
+      "sourceLine": 78,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -45,6 +51,8 @@
         "get-full-organization"
       ],
       "test": "should throw FORBIDDEN when user is not a member of the organization",
+      "sourceStart": 2358,
+      "sourceLine": 94,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -56,6 +64,8 @@
         "get-full-organization"
       ],
       "test": "should throw BAD_REQUEST when organization doesn't exist",
+      "sourceStart": 3006,
+      "sourceLine": 120,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -67,6 +77,8 @@
         "get-full-organization"
       ],
       "test": "should include invitations in the response",
+      "sourceStart": 3404,
+      "sourceLine": 135,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -78,6 +90,8 @@
         "get-full-organization"
       ],
       "test": "should prioritize organizationSlug over organizationId when both are provided",
+      "sourceStart": 4178,
+      "sourceLine": 167,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -89,6 +103,8 @@
         "get-full-organization"
       ],
       "test": "should allow listing members with membersLimit",
+      "sourceStart": 4600,
+      "sourceLine": 181,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -100,6 +116,8 @@
         "get-full-organization"
       ],
       "test": "should use default membershipLimit when no membersLimit is specified",
+      "sourceStart": 5528,
+      "sourceLine": 221,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -111,6 +129,8 @@
         "get-organization"
       ],
       "test": "should get organization metadata by organizationId",
+      "sourceStart": 7199,
+      "sourceLine": 294,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -122,6 +142,8 @@
         "get-organization"
       ],
       "test": "should get organization metadata by organizationSlug",
+      "sourceStart": 7926,
+      "sourceLine": 318,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -133,6 +155,8 @@
         "get-organization"
       ],
       "test": "should fall back to the active organization",
+      "sourceStart": 8415,
+      "sourceLine": 334,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -144,6 +168,8 @@
         "get-organization"
       ],
       "test": "should return null when no active organization and no query params",
+      "sourceStart": 8932,
+      "sourceLine": 352,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -155,6 +181,8 @@
         "get-organization"
       ],
       "test": "should throw FORBIDDEN when user is not a member of the organization",
+      "sourceStart": 9309,
+      "sourceLine": 368,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -166,6 +194,8 @@
         "get-organization"
       ],
       "test": "should throw BAD_REQUEST when organization doesn't exist",
+      "sourceStart": 9967,
+      "sourceLine": 394,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -177,6 +207,8 @@
         "get-organization"
       ],
       "test": "should not include members or invitations unlike getFullOrganization",
+      "sourceStart": 10361,
+      "sourceLine": 409,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -188,6 +220,8 @@
         "organization hooks"
       ],
       "test": "should apply beforeCreateOrganization hook",
+      "sourceStart": 11508,
+      "sourceLine": 448,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -199,6 +233,8 @@
         "organization hooks"
       ],
       "test": "should apply afterCreateOrganization hook",
+      "sourceStart": 12484,
+      "sourceLine": 492,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -210,6 +246,8 @@
         "organization hooks"
       ],
       "test": "should apply beforeAddMember hook",
+      "sourceStart": 13051,
+      "sourceLine": 516,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -221,6 +259,8 @@
         "organization hooks"
       ],
       "test": "should apply afterAddMember hook",
+      "sourceStart": 13775,
+      "sourceLine": 549,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -232,6 +272,8 @@
         "organization hooks"
       ],
       "test": "should apply beforeCreateTeam hook",
+      "sourceStart": 14297,
+      "sourceLine": 573,
       "selected": false,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -243,6 +285,8 @@
         "organization hooks"
       ],
       "test": "should apply afterCreateTeam hook",
+      "sourceStart": 15139,
+      "sourceLine": 612,
       "selected": false,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -254,6 +298,8 @@
         "organization hooks"
       ],
       "test": "should allow passing id through `beforeCreateTeam`",
+      "sourceStart": 15783,
+      "sourceLine": 642,
       "selected": false,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -265,6 +311,8 @@
         "organization hooks"
       ],
       "test": "should allow passing id through `beforeCreateInvitation`",
+      "sourceStart": 16562,
+      "sourceLine": 679,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -276,6 +324,8 @@
         "organization hooks"
       ],
       "test": "should allow internal organization creation when disabled for users",
+      "sourceStart": 17417,
+      "sourceLine": 716,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -287,6 +337,8 @@
         "updateOrganization"
       ],
       "test": "should clear the logo when passing null",
+      "sourceStart": 18277,
+      "sourceLine": 753,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -298,6 +350,8 @@
         "updateOrganization"
       ],
       "test": "should accept a null logo on create",
+      "sourceStart": 18888,
+      "sourceLine": 780,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,

@@ -12,6 +12,8 @@
         "redisStorage"
       ],
       "test": "uses GETDEL when it is supported",
+      "sourceStart": 139,
+      "sourceLine": 5,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "redisStorage"
       ],
       "test": "falls back to Lua when GETDEL is unavailable",
+      "sourceStart": 629,
+      "sourceLine": 23,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "redisStorage"
       ],
       "test": "rethrows GETDEL errors that are not unknown-command errors",
+      "sourceStart": 1512,
+      "sourceLine": 55,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "redisStorage"
       ],
       "test": "increments atomically and sets the ttl only on creation",
+      "sourceStart": 2004,
+      "sourceLine": 73,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "redisStorage"
       ],
       "test": "clears every prefixed key by paging through SCAN",
+      "sourceStart": 3047,
+      "sourceLine": 107,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "redisStorage"
       ],
       "test": "does not call DEL when clearing an empty store",
+      "sourceStart": 4094,
+      "sourceLine": 148,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "redisStorage"
       ],
       "test": "propagates a mid-iteration failure, leaving earlier pages deleted",
+      "sourceStart": 4745,
+      "sourceLine": 170,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "redisStorage"
       ],
       "test": "lists keys via SCAN, stripping the prefix and deduping across pages",
+      "sourceStart": 5708,
+      "sourceLine": 195,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "redisStorage"
       ],
       "test": "escapes glob metacharacters in the prefix so SCAN matches it literally",
+      "sourceStart": 6528,
+      "sourceLine": 218,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -102,6 +120,8 @@
         "redisStorage"
       ],
       "test": "only sets the ttl on the call that creates the key",
+      "sourceStart": 7061,
+      "sourceLine": 237,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +132,8 @@
         "redisStorage"
       ],
       "test": "rejects invalid ttl %s before mutating Redis",
+      "sourceStart": 7652,
+      "sourceLine": 253,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

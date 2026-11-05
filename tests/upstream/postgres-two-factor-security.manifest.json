@@ -12,6 +12,8 @@
         "two-factor security: sign-in does not leak session cookies (cookieCache enabled)"
       ],
       "test": "$path: response carries no valid signed session_token or session_data",
+      "sourceStart": 5248,
+      "sourceLine": 166,
       "selected": false,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -23,6 +25,8 @@
         "two-factor security: sign-in does not leak session cookies (cookieCache enabled)"
       ],
       "test": "$path: replaying captured cookies cannot authenticate or disable 2FA",
+      "sourceStart": 6065,
+      "sourceLine": 194,
       "selected": false,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -34,6 +38,8 @@
         "two-factor security: sign-in does not leak session cookies (cookieCache disabled)"
       ],
       "test": "response carries no valid signed session_token on 2FA-required sign-in",
+      "sourceStart": 7870,
+      "sourceLine": 254,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -45,6 +51,8 @@
         "two-factor security: sign-in does not leak session cookies (cookieCache disabled)"
       ],
       "test": "replaying any cookies captured from the response cannot authenticate",
+      "sourceStart": 8374,
+      "sourceLine": 270,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -56,6 +64,8 @@
         "two-factor security: chunked session_data is fully scrubbed on 2FA-required sign-in"
       ],
       "test": "test setup exercises chunked session_data cookies",
+      "sourceStart": 10915,
+      "sourceLine": 344,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -67,6 +77,8 @@
         "two-factor security: chunked session_data is fully scrubbed on 2FA-required sign-in"
       ],
       "test": "no session_data.N chunk leaks a non-empty value and replay cannot authenticate",
+      "sourceStart": 11083,
+      "sourceLine": 349,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -78,6 +90,8 @@
         "two-factor security: 2FA challenge is single-use and expiry-bounded"
       ],
       "test": "rejects an expired two-factor sign-in challenge even with a valid TOTP",
+      "sourceStart": 15535,
+      "sourceLine": 473,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -89,6 +103,8 @@
         "two-factor security: 2FA challenge is single-use and expiry-bounded"
       ],
       "test": "two concurrent verifications of the same challenge yield exactly one session",
+      "sourceStart": 17081,
+      "sourceLine": 518,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -100,6 +116,8 @@
         "two-factor security: OTP attempts are atomic under concurrency"
       ],
       "test": "counts wrong guesses up to the limit then locks out",
+      "sourceStart": 21942,
+      "sourceLine": 676,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -111,6 +129,8 @@
         "two-factor security: OTP attempts are atomic under concurrency"
       ],
       "test": "a concurrent burst of wrong guesses cannot exceed the attempt budget",
+      "sourceStart": 22697,
+      "sourceLine": 695,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,
@@ -122,6 +142,8 @@
         "two-factor security: OTP attempts are atomic under concurrency"
       ],
       "test": "concurrent correct codes mint at most one session",
+      "sourceStart": 23535,
+      "sourceLine": 718,
       "selected": true,
       "executionSurface": "native-postgres-uuid-mapped-physical-schema",
       "upstreamDisabled": false,

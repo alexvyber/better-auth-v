@@ -12,6 +12,8 @@
         "custom jwt.sign callback receives signing overrides"
       ],
       "test": "forwards signingKeyId and signingAlgorithm to the custom signer",
+      "sourceStart": 2073,
+      "sourceLine": 63,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "custom jwt.sign callback receives signing overrides"
       ],
       "test": "passes signingConfig with undefined fields when no overrides are set (back-compat)",
+      "sourceStart": 3237,
+      "sourceLine": 105,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "custom jwt.sign callback receives signing overrides"
       ],
       "test": "legacy single-arg signer implementations still work (extra args ignored)",
+      "sourceStart": 4266,
+      "sourceLine": 142,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "getLatestKeyByAlg legacy-row fallback"
       ],
       "test": "matches legacy rows (alg: null) against configured keyPairConfig.alg",
+      "sourceStart": 5911,
+      "sourceLine": 186,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "getLatestKeyByAlg legacy-row fallback"
       ],
       "test": "does NOT match legacy rows against a non-default alg",
+      "sourceStart": 6643,
+      "sourceLine": 207,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "getLatestKeyByAlg legacy-row fallback"
       ],
       "test": "matches legacy rows against a non-default configured alg",
+      "sourceStart": 7317,
+      "sourceLine": 225,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "getLatestKeyByAlg legacy-row fallback"
       ],
       "test": "explicit-alg rows still win over legacy fallback when both match",
+      "sourceStart": 8155,
+      "sourceLine": 254,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "getLatestKeyByAlg legacy-row fallback"
       ],
       "test": "signJWT honors legacy-row alg fallback end-to-end",
+      "sourceStart": 9072,
+      "sourceLine": 282,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "expired-key filtering inside adapter lookups"
       ],
       "test": "getLatestKey skips expired rows even when they are the newest",
+      "sourceStart": 10079,
+      "sourceLine": 311,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -102,6 +120,8 @@
         "expired-key filtering inside adapter lookups"
       ],
       "test": "getLatestKeyByAlg skips expired rows even when they are the newest",
+      "sourceStart": 10842,
+      "sourceLine": 335,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +132,8 @@
         "expired-key filtering inside adapter lookups"
       ],
       "test": "getLatestKeyByAlg returns undefined when all matches are expired",
+      "sourceStart": 11553,
+      "sourceLine": 358,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -122,6 +144,8 @@
         "pinned-kid + signingAlgorithm against legacy null-alg rows"
       ],
       "test": "accepts a legacy row when signingAlgorithm matches keyPairConfig.alg (default EdDSA)",
+      "sourceStart": 12433,
+      "sourceLine": 382,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -132,6 +156,8 @@
         "pinned-kid + signingAlgorithm against legacy null-alg rows"
       ],
       "test": "throws when pinned signingAlgorithm differs from the legacy row's effective alg",
+      "sourceStart": 13392,
+      "sourceLine": 409,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -142,6 +168,8 @@
         "jwks.alg / jwks.crv persistence after createJwk"
       ],
       "test": "persists alg and crv on a freshly-minted EdDSA key",
+      "sourceStart": 14616,
+      "sourceLine": 442,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -152,6 +180,8 @@
         "jwks.alg / jwks.crv persistence after createJwk"
       ],
       "test": "persists alg and crv on a freshly-minted ES256 key",
+      "sourceStart": 15650,
+      "sourceLine": 467,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -162,6 +192,8 @@
         "keyPairConfigs[] lazy-mint"
       ],
       "test": "lazy-mints a key the first time signingAlgorithm pins an alg declared in keyPairConfigs[]",
+      "sourceStart": 16679,
+      "sourceLine": 498,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -172,6 +204,8 @@
         "keyPairConfigs[] lazy-mint"
       ],
       "test": "sequential signJWT calls reuse the lazy-minted key (no double-mint within a single thread of execution)",
+      "sourceStart": 18152,
+      "sourceLine": 536,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -182,6 +216,8 @@
         "keyPairConfigs[] lazy-mint"
       ],
       "test": "throws enriched error naming keyPairConfig.alg + keyPairConfigs when the requested alg is not provisioned",
+      "sourceStart": 19619,
+      "sourceLine": 574,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -192,6 +228,8 @@
         "keyPairConfigs[] lazy-mint"
       ],
       "test": "declares 'none' for keyPairConfigs in the error message when none are configured",
+      "sourceStart": 20535,
+      "sourceLine": 601,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -202,6 +240,8 @@
         "primary-alg pin on an empty JWKS"
       ],
       "test": "lazy-mints when signingAlgorithm equals keyPairConfig.alg and no key exists",
+      "sourceStart": 21418,
+      "sourceLine": 628,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -212,6 +252,8 @@
         "primary-alg pin on an empty JWKS"
       ],
       "test": "lazy-mints primary alg even when keyPairConfigs is undefined",
+      "sourceStart": 22649,
+      "sourceLine": 663,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -222,6 +264,8 @@
         "unpinned tokens stay on keyPairConfig.alg after lazy-minting extras"
       ],
       "test": "ID token (unpinned) signs with primary alg even after a non-primary alg is lazy-minted",
+      "sourceStart": 23663,
+      "sourceLine": 691,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

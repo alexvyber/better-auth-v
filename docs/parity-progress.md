@@ -833,16 +833,23 @@ Each plugin must retain original upstream assertions and accurately report gaps.
   lockfile. These compiler/client probes are distinct from native runtime coverage;
   the fixture does not establish complete production constructor/client parity.
 
+- Corrected the source inventory to union complementary imports by AST source
+  position and verify every matching checksum. Repeated backend copies and duplicate
+  titles cannot inflate coverage. Six audit cases cover complementary selections,
+  repeats, ambiguous legacy records, stale checksums and invalid source metadata;
+  `make check` now includes them. Source bodies/assertions are unchanged. The inventory
+  identifies 1,165 preserved declarations, distinct from runtime/backend case counts.
+
 The latest full `make check` passes 2717 TypeScript cases across 139 files, all 114
 native V test functions across 37 files (including all 20,034 Unicode vectors),
 TypeScript checking and the real HTTP migration/auth/CSRF/restart smoke test.
-Formatting and `git diff --check` pass. Repeated backend runs do not increase unique
+The six source-inventory audit tests also pass. Formatting and `git diff --check` pass. Repeated backend runs do not increase unique
 upstream source coverage, and these results do not imply full upstream parity.
 
 The user resumed work and authorized incremental commits and pushes to
 `alexvyber/better-auth-v`, prioritizing missing Brand Map and Nabu capabilities.
-The objective remains incomplete. The corpus currently records 32 completely
-imported files, seventeen partial imports and 387 unported files; imported status describes source
+The objective remains incomplete. The corpus currently records 33 completely
+imported files, sixteen partial imports and 387 unported files; imported status describes source
 preservation, not broad feature completion.
 
 1. Complete hook and secondary-storage parity: partial-update payloads, precise

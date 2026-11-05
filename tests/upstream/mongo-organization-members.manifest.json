@@ -12,6 +12,8 @@
         "listMembers"
       ],
       "test": "should return all members",
+      "sourceStart": 1499,
+      "sourceLine": 61,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -23,6 +25,8 @@
         "listMembers"
       ],
       "test": "should return all members by organization slug",
+      "sourceStart": 1870,
+      "sourceLine": 77,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -34,6 +38,8 @@
         "listMembers"
       ],
       "test": "should limit the number of members",
+      "sourceStart": 2188,
+      "sourceLine": 90,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -45,6 +51,8 @@
         "listMembers"
       ],
       "test": "should offset the members",
+      "sourceStart": 2472,
+      "sourceLine": 103,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -56,6 +64,8 @@
         "listMembers"
       ],
       "test": "should filter the members",
+      "sourceStart": 2748,
+      "sourceLine": 116,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -67,6 +77,8 @@
         "listMembers"
       ],
       "test": "should filter the members verifying the operator functionality",
+      "sourceStart": 3158,
+      "sourceLine": 133,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -78,6 +90,8 @@
         "listMembers"
       ],
       "test": "should filter the members with 'in' operator",
+      "sourceStart": 3534,
+      "sourceLine": 148,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -89,6 +103,8 @@
         "listMembers"
       ],
       "test": "should filter the members with 'not_in' operator",
+      "sourceStart": 3904,
+      "sourceLine": 163,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -100,6 +116,8 @@
         "listMembers"
       ],
       "test": "should filter the members with 'starts_with' operator",
+      "sourceStart": 4272,
+      "sourceLine": 178,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -111,6 +129,8 @@
         "listMembers"
       ],
       "test": "should sort the members",
+      "sourceStart": 4646,
+      "sourceLine": 193,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -122,6 +142,8 @@
         "listMembers"
       ],
       "test": "should list members by organization id",
+      "sourceStart": 6423,
+      "sourceLine": 252,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -133,6 +155,8 @@
         "listMembers"
       ],
       "test": "should not list members if not a member",
+      "sourceStart": 6746,
+      "sourceLine": 265,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -144,6 +168,8 @@
         "listMembers with >100 members"
       ],
       "test": "should list all members when membershipLimit is above the adapter default",
+      "sourceStart": 8859,
+      "sourceLine": 351,
       "selected": false,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -155,6 +181,8 @@
         "updateMemberRole"
       ],
       "test": "should update the member role",
+      "sourceStart": 9581,
+      "sourceLine": 378,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -166,6 +194,8 @@
         "updateMemberRole"
       ],
       "test": "should not update the member role if the member updating is not a member",
+      "sourceStart": 10587,
+      "sourceLine": 427,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -177,6 +207,8 @@
         "updateMemberRole"
       ],
       "test": "should not allow a comma-delimited role string",
+      "sourceStart": 11996,
+      "sourceLine": 493,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -188,6 +220,8 @@
         "updateMemberRole"
       ],
       "test": "should reject updating a member to an unknown role",
+      "sourceStart": 13401,
+      "sourceLine": 553,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -199,6 +233,8 @@
         "updateMemberRole"
       ],
       "test": "should reject updating a member to an empty role list",
+      "sourceStart": 14510,
+      "sourceLine": 604,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -210,6 +246,8 @@
         "activeMemberRole"
       ],
       "test": "should return the active member role on active organization",
+      "sourceStart": 16748,
+      "sourceLine": 713,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -221,6 +259,8 @@
         "activeMemberRole"
       ],
       "test": "should return active member role on organization",
+      "sourceStart": 17128,
+      "sourceLine": 730,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -232,6 +272,8 @@
         "activeMemberRole"
       ],
       "test": "should clear active member role hook data after sign out",
+      "sourceStart": 17618,
+      "sourceLine": 753,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -243,6 +285,8 @@
         "inviteMember role validation"
       ],
       "test": "should fail when inviting with a non-existent role",
+      "sourceStart": 19841,
+      "sourceLine": 830,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,
@@ -254,6 +298,8 @@
         "inviteMember role validation"
       ],
       "test": "should succeed when inviting with a valid default role",
+      "sourceStart": 20766,
+      "sourceLine": 866,
       "selected": true,
       "executionSurface": "native-mongo-organization-members",
       "upstreamDisabled": false,

@@ -12,6 +12,8 @@
         "signPrivateKeyJwtClientAssertion"
       ],
       "test": "signs a valid JWT with RSA JWK",
+      "sourceStart": 433,
+      "sourceLine": 19,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "signPrivateKeyJwtClientAssertion"
       ],
       "test": "signs a valid JWT with EdDSA JWK",
+      "sourceStart": 1265,
+      "sourceLine": 47,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "signPrivateKeyJwtClientAssertion"
       ],
       "test": "includes kid in JWT header when provided",
+      "sourceStart": 1896,
+      "sourceLine": 70,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "signPrivateKeyJwtClientAssertion"
       ],
       "test": "produces unique jti on each call",
+      "sourceStart": 2401,
+      "sourceLine": 89,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "signPrivateKeyJwtClientAssertion"
       ],
       "test": "auto-extracts kid from JWK when not explicitly provided",
+      "sourceStart": 2932,
+      "sourceLine": 111,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "signPrivateKeyJwtClientAssertion"
       ],
       "test": "prefers explicit kid over JWK-embedded kid",
+      "sourceStart": 3395,
+      "sourceLine": 127,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "signPrivateKeyJwtClientAssertion"
       ],
       "test": "auto-extracts alg from JWK when not explicitly provided",
+      "sourceStart": 3874,
+      "sourceLine": 144,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "signPrivateKeyJwtClientAssertion"
       ],
       "test": "rejects a JWK whose embedded alg is not allowed for private_key_jwt",
+      "sourceStart": 4577,
+      "sourceLine": 167,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "signPrivateKeyJwtClientAssertion"
       ],
       "test": "rejects a JWK whose embedded alg conflicts with the explicit algorithm",
+      "sourceStart": 5034,
+      "sourceLine": 182,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -102,6 +120,8 @@
         "signPrivateKeyJwtClientAssertion"
       ],
       "test": "rejects a disallowed embedded alg even when an explicit algorithm is set",
+      "sourceStart": 5533,
+      "sourceLine": 200,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +132,8 @@
         "signPrivateKeyJwtClientAssertion"
       ],
       "test": "rejects a disallowed explicit algorithm passed by JavaScript callers",
+      "sourceStart": 6019,
+      "sourceLine": 216,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -122,6 +144,8 @@
         "signPrivateKeyJwtClientAssertion"
       ],
       "test": "createPrivateKeyJwtClientAssertionGetter throws eagerly on misconfiguration",
+      "sourceStart": 6551,
+      "sourceLine": 233,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -132,6 +156,8 @@
         "signPrivateKeyJwtClientAssertion"
       ],
       "test": "throws when neither JWK nor PEM is provided",
+      "sourceStart": 7146,
+      "sourceLine": 250,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -142,6 +168,8 @@
         "signPrivateKeyJwtClientAssertion"
       ],
       "test": "creates a private_key_jwt client assertion getter",
+      "sourceStart": 7394,
+      "sourceLine": 258,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

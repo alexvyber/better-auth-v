@@ -12,6 +12,8 @@
         "oauth2 - email verification on link"
       ],
       "test": "should reject implicit link when local user is unverified, even if provider email is verified",
+      "sourceStart": 3092,
+      "sourceLine": 122,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "oauth2 - email verification on link"
       ],
       "test": "should link account and preserve emailVerified when local user is already verified",
+      "sourceStart": 4604,
+      "sourceLine": 169,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "oauth2 - email verification on link"
       ],
       "test": "should not update emailVerified when provider reports unverified",
+      "sourceStart": 5612,
+      "sourceLine": 207,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "oauth2 - email verification on link"
       ],
       "test": "should not update emailVerified when email addresses don't match",
+      "sourceStart": 6308,
+      "sourceLine": 233,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "oauth2 - email verification on link"
       ],
       "test": "should handle already verified emails gracefully",
+      "sourceStart": 7289,
+      "sourceLine": 269,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "oauth2 - account linking with case insensitive email"
       ],
       "test": "should link account when email casing differs using callback",
+      "sourceStart": 8677,
+      "sourceLine": 329,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -72,6 +84,8 @@
         "oauth2 - account linking with case insensitive email"
       ],
       "test": "should link account when email casing differs using idToken",
+      "sourceStart": 11035,
+      "sourceLine": 416,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -82,6 +96,8 @@
         "oauth2 - account linking without trustedProviders"
       ],
       "test": "should deny account linking when provider is not trusted and email is not verified",
+      "sourceStart": 13020,
+      "sourceLine": 500,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "oauth2 - account linking without trustedProviders"
       ],
       "test": "should allow account linking when email is verified by provider and local user",
+      "sourceStart": 14807,
+      "sourceLine": 566,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -102,6 +120,8 @@
         "oauth2 - disableImplicitLinking"
       ],
       "test": "should block implicit linking on sign-in even for trusted providers",
+      "sourceStart": 17221,
+      "sourceLine": 662,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +132,8 @@
         "oauth2 - disableImplicitLinking"
       ],
       "test": "should allow new user sign-up even with disableImplicitLinking",
+      "sourceStart": 19008,
+      "sourceLine": 728,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -122,6 +144,8 @@
         "oauth2 - disableImplicitLinking"
       ],
       "test": "should allow explicit linkSocial when disableImplicitLinking is true",
+      "sourceStart": 20454,
+      "sourceLine": 781,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -132,6 +156,8 @@
         "oauth2 - updateUserInfoOnLink via callback"
       ],
       "test": "should update user name and image when linking via OAuth callback",
+      "sourceStart": 23021,
+      "sourceLine": 886,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -142,6 +168,8 @@
         "oauth2 - updateUserInfoOnLink via callback"
       ],
       "test": "should not update user info when updateUserInfoOnLink is not set",
+      "sourceStart": 25259,
+      "sourceLine": 972,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -152,6 +180,8 @@
         "oauth2 - updateUserInfoOnLink on implicit sign-in link"
       ],
       "test": "returns the freshly linked name and image in the new session",
+      "sourceStart": 30388,
+      "sourceLine": 1178,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -162,6 +192,8 @@
         "oauth2 - updateUserInfoOnLink on implicit sign-in link"
       ],
       "test": "syncs mapProfileToUser fields on link, not only name and image",
+      "sourceStart": 31151,
+      "sourceLine": 1197,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -172,6 +204,8 @@
         "oauth2 - updateUserInfoOnLink on implicit sign-in link"
       ],
       "test": "does not copy fields marked input: false from the provider on link",
+      "sourceStart": 32120,
+      "sourceLine": 1229,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -182,6 +216,8 @@
         "oauth2 - updateUserInfoOnLink on implicit sign-in link"
       ],
       "test": "continues linking when mapped profile fields fail validation",
+      "sourceStart": 32771,
+      "sourceLine": 1248,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -192,6 +228,8 @@
         "oauth2 - first sign-in provisioning applies user input rules"
       ],
       "test": "does not copy fields marked input: false from the provider on first sign-in",
+      "sourceStart": 34821,
+      "sourceLine": 1325,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -202,6 +240,8 @@
         "oauth2 - override user info on sign-in"
       ],
       "test": "should update user info when overrideUserInfo is enabled",
+      "sourceStart": 37367,
+      "sourceLine": 1424,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -212,6 +252,8 @@
         "oauth2 - override user info on sign-in"
       ],
       "test": "should preserve the resolved user when overrideUserInfo update returns null",
+      "sourceStart": 39111,
+      "sourceLine": 1492,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -222,6 +264,8 @@
         "oauth2 - override user info on sign-in"
       ],
       "test": "does not copy fields marked input: false from the provider when overriding",
+      "sourceStart": 40769,
+      "sourceLine": 1554,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -232,6 +276,8 @@
         "oauth2 - sign-up account creation rollback"
       ],
       "test": "rolls back the user row when the first OAuth account cannot be created",
+      "sourceStart": 43411,
+      "sourceLine": 1661,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -242,6 +288,8 @@
         "oauth2 - link-social uses issuer-scoped account lookup"
       ],
       "test": "does not match a different issuer with the same provider account id",
+      "sourceStart": 46916,
+      "sourceLine": 1786,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -252,6 +300,8 @@
         "oauth2 - ambiguous account identity"
       ],
       "test": "does not issue a session for an ambiguous provider key",
+      "sourceStart": 50285,
+      "sourceLine": 1889,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -262,6 +312,8 @@
         "oauth2 - orphaned account identity"
       ],
       "test": "does not fall back to email when a matching account has no user",
+      "sourceStart": 51746,
+      "sourceLine": 1942,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -273,6 +325,8 @@
         "with mapProfileToUser attempting to redefine provider identity"
       ],
       "test": "uses the verified raw profile subject instead of a mapped id",
+      "sourceStart": 56077,
+      "sourceLine": 2104,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -284,6 +338,8 @@
         "with mapProfileToUser creating a placeholder email"
       ],
       "test": "signs in a Discord phone-only user with a placeholder email",
+      "sourceStart": 58730,
+      "sourceLine": 2189,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -295,6 +351,8 @@
         "without mapProfileToUser"
       ],
       "test": "rejects sign-in with email_not_found when the provider returns a null email",
+      "sourceStart": 60463,
+      "sourceLine": 2249,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -305,6 +363,8 @@
         "oauth2 - accountLinking.requireLocalEmailVerified: false opt-out"
       ],
       "test": "links the account when local user is unverified and the option opts out",
+      "sourceStart": 63210,
+      "sourceLine": 2350,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -315,6 +375,8 @@
         "oauth2 - per-provider requireEmailVerification gate"
       ],
       "test": "blocks the session for a new user whose provider email is unverified",
+      "sourceStart": 66932,
+      "sourceLine": 2478,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -325,6 +387,8 @@
         "oauth2 - per-provider requireEmailVerification gate"
       ],
       "test": "creates a session for a new user whose provider email is verified",
+      "sourceStart": 67900,
+      "sourceLine": 2504,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -335,6 +399,8 @@
         "oauth2 - per-provider requireEmailVerification gate"
       ],
       "test": "re-sends and blocks a returning unverified user when sendOnSignIn is set",
+      "sourceStart": 68505,
+      "sourceLine": 2522,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -345,6 +411,8 @@
         "oauth2 - per-provider requireEmailVerification gate"
       ],
       "test": "does not gate social sign-in from emailAndPassword.requireEmailVerification",
+      "sourceStart": 69328,
+      "sourceLine": 2545,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -355,6 +423,8 @@
         "oauth2 - per-provider requireEmailVerification gate"
       ],
       "test": "lets a returning verified user through the gate without re-sending",
+      "sourceStart": 69948,
+      "sourceLine": 2562,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -365,6 +435,8 @@
         "oauth2 - per-provider requireEmailVerification gate"
       ],
       "test": "blocks a returning unverified user without re-sending when sendOnSignIn is unset",
+      "sourceStart": 70846,
+      "sourceLine": 2585,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -375,6 +447,8 @@
         "oauth2 - per-provider requireEmailVerification gate"
       ],
       "test": "blocks an unverified user even when no sendVerificationEmail is configured",
+      "sourceStart": 71525,
+      "sourceLine": 2604,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"
@@ -385,6 +459,8 @@
         "oauth2 - account-linking logs use the configured logger"
       ],
       "test": "forwards the failed-link error to the custom logger",
+      "sourceStart": 73692,
+      "sourceLine": 2685,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported explicit linking, remaining provider policies, account identity/security/schema cases; implicit-link policy suites selected"

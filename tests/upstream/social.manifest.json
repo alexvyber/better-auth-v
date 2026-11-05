@@ -12,6 +12,8 @@
         "Social Providers"
       ],
       "test": "should be able to add social providers",
+      "sourceStart": 5933,
+      "sourceLine": 231,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -22,6 +24,8 @@
         "Social Providers"
       ],
       "test": "should forward additionalParams to the authorization URL",
+      "sourceStart": 6328,
+      "sourceLine": 246,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -32,6 +36,8 @@
         "Social Providers"
       ],
       "test": "should reject additionalParams that collide with reserved OAuth params",
+      "sourceStart": 6765,
+      "sourceLine": 260,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -42,6 +48,8 @@
         "Social Providers"
       ],
       "test": "should be able to sign in with social providers",
+      "sourceStart": 7099,
+      "sourceLine": 271,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -52,6 +60,8 @@
         "Social Providers"
       ],
       "test": "redirects a built-in callback with no state to error=state_not_found",
+      "sourceStart": 8297,
+      "sourceLine": 309,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -62,6 +72,8 @@
         "Social Providers"
       ],
       "test": "redirects to the per-flow errorCallbackURL when state validation fails",
+      "sourceStart": 9206,
+      "sourceLine": 333,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -72,6 +84,8 @@
         "Social Providers"
       ],
       "test": "should be able to sign in with async social provider",
+      "sourceStart": 10192,
+      "sourceLine": 364,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -82,6 +96,8 @@
         "Social Providers"
       ],
       "test": "Should use callback URL if the user is already registered",
+      "sourceStart": 11112,
+      "sourceLine": 395,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -92,6 +108,8 @@
         "Social Providers"
       ],
       "test": "should be able to map profile to user",
+      "sourceStart": 12153,
+      "sourceLine": 431,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -102,6 +120,8 @@
         "Social Providers"
       ],
       "test": "should be protected from callback URL attacks",
+      "sourceStart": 13026,
+      "sourceLine": 469,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -112,6 +132,8 @@
         "Social Providers"
       ],
       "test": "should refresh the access token",
+      "sourceStart": 13605,
+      "sourceLine": 492,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -122,6 +144,8 @@
         "Redirect URI"
       ],
       "test": "should infer redirect uri",
+      "sourceStart": 15437,
+      "sourceLine": 555,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -132,6 +156,8 @@
         "Redirect URI"
       ],
       "test": "should respect custom redirect uri",
+      "sourceStart": 15995,
+      "sourceLine": 583,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -142,6 +168,8 @@
         "Disable implicit signup"
       ],
       "test": "Should not create user when implicit sign up is disabled",
+      "sourceStart": 16615,
+      "sourceLine": 613,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -152,6 +180,8 @@
         "Disable implicit signup"
       ],
       "test": "Should create user when implicit sign up is disabled but it is requested",
+      "sourceStart": 17755,
+      "sourceLine": 657,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -163,6 +193,8 @@
         "ID-token sign-in"
       ],
       "test": "rejects ID-token sign-in for a new user $scenario",
+      "sourceStart": 19853,
+      "sourceLine": 737,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -174,6 +206,8 @@
         "ID-token sign-in"
       ],
       "test": "allows an existing ID-token user to sign in when provider sign-up is disabled",
+      "sourceStart": 20828,
+      "sourceLine": 775,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -185,6 +219,8 @@
         "ID-token sign-in"
       ],
       "test": "keeps the top-level provider sign-up restriction for ID-token sign-in",
+      "sourceStart": 21706,
+      "sourceLine": 804,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -195,6 +231,8 @@
         "Disable signup"
       ],
       "test": "Should not create user when sign up is disabled",
+      "sourceStart": 22493,
+      "sourceLine": 834,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -205,6 +243,8 @@
         "signin"
       ],
       "test": "should allow user info override during sign in",
+      "sourceStart": 23831,
+      "sourceLine": 889,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -215,6 +255,8 @@
         "signin"
       ],
       "test": "should allow user info override during sign in",
+      "sourceStart": 24864,
+      "sourceLine": 937,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -225,6 +267,8 @@
         "signin"
       ],
       "test": "should allow additional data in oauth state",
+      "sourceStart": 26026,
+      "sourceLine": 992,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -235,6 +279,8 @@
         "signin"
       ],
       "test": "should not allow overriding oauth code verifier, expiresAt, callbackURL, errorURL, newUserURL, link, requestSignUp",
+      "sourceStart": 27545,
+      "sourceLine": 1057,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -245,6 +291,8 @@
         "updateAccountOnSignIn"
       ],
       "test": "should not update account on sign in",
+      "sourceStart": 30042,
+      "sourceLine": 1145,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -255,6 +303,8 @@
         "Google Provider — multiple client IDs"
       ],
       "test": "accepts an id token issued for the %s client",
+      "sourceStart": 33034,
+      "sourceLine": 1264,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -265,6 +315,8 @@
         "Google Provider — multiple client IDs"
       ],
       "test": "rejects an id token whose audience is not configured",
+      "sourceStart": 33791,
+      "sourceLine": 1293,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -275,6 +327,8 @@
         "Google Provider — multiple client IDs"
       ],
       "test": "returns 401 over HTTP when a verified profile resolves an invalid account subject",
+      "sourceStart": 34312,
+      "sourceLine": 1315,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -285,6 +339,8 @@
         "Google Provider — multiple client IDs"
       ],
       "test": "uses the first configured client id when building the authorization URL",
+      "sourceStart": 35283,
+      "sourceLine": 1351,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -295,6 +351,8 @@
         "Google Provider — multiple client IDs"
       ],
       "test": "rejects an empty clientId array at sign-in time",
+      "sourceStart": 35882,
+      "sourceLine": 1373,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -305,6 +363,8 @@
         "Google Provider — multiple client IDs"
       ],
       "test": "returns 403 EMAIL_NOT_VERIFIED for an unverified id token when the provider requires verification",
+      "sourceStart": 36297,
+      "sourceLine": 1394,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -315,6 +375,8 @@
         "Google Provider — hosted domain on id_token sign-in"
       ],
       "test": "accepts an id token whose hd claim matches the configured hosted domain",
+      "sourceStart": 39143,
+      "sourceLine": 1493,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -325,6 +387,8 @@
         "Google Provider — hosted domain on id_token sign-in"
       ],
       "test": "rejects an id token whose hd claim is a different hosted domain",
+      "sourceStart": 39635,
+      "sourceLine": 1508,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -335,6 +399,8 @@
         "Google Provider — hosted domain on id_token sign-in"
       ],
       "test": "rejects an id token with no hd claim when a hosted domain is configured",
+      "sourceStart": 39971,
+      "sourceLine": 1520,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -345,6 +411,8 @@
         "Multi-client ID support — other widened providers"
       ],
       "test": "%s uses the first entry of the clientId array for the auth URL",
+      "sourceStart": 40847,
+      "sourceLine": 1553,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -355,6 +423,8 @@
         "Multi-client ID support — other widened providers"
       ],
       "test": "%s rejects an empty clientId array",
+      "sourceStart": 41386,
+      "sourceLine": 1574,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -365,6 +435,8 @@
         "Apple Provider"
       ],
       "test": "should not use email as fallback for name when name is not provided",
+      "sourceStart": 41993,
+      "sourceLine": 1597,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -375,6 +447,8 @@
         "Apple Provider"
       ],
       "test": "should use firstName and lastName when provided in token.user",
+      "sourceStart": 43733,
+      "sourceLine": 1670,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -385,6 +459,8 @@
         "Apple Provider"
       ],
       "test": "should pass user name via idToken body for Apple sign-in",
+      "sourceStart": 45963,
+      "sourceLine": 1763,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -395,6 +471,8 @@
         "Apple Provider"
       ],
       "test": "should result in empty name when idToken body has no user field for Apple",
+      "sourceStart": 47552,
+      "sourceLine": 1821,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -405,6 +483,8 @@
         "Apple Provider"
       ],
       "test": "should pass request ctx to verifyIdToken for id-token sign-in",
+      "sourceStart": 48711,
+      "sourceLine": 1869,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -415,6 +495,8 @@
         "verifyIdToken request ctx — account linking"
       ],
       "test": "should pass request ctx to verifyIdToken for id-token account linking",
+      "sourceStart": 50346,
+      "sourceLine": 1931,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -425,6 +507,8 @@
         "Vercel Provider"
       ],
       "test": "should configure Vercel provider correctly",
+      "sourceStart": 56811,
+      "sourceLine": 2145,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -435,6 +519,8 @@
         "Vercel Provider"
       ],
       "test": "should initiate Vercel OAuth flow with PKCE",
+      "sourceStart": 57313,
+      "sourceLine": 2163,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -445,6 +531,8 @@
         "Vercel Provider"
       ],
       "test": "should complete Vercel OAuth flow and create user",
+      "sourceStart": 58073,
+      "sourceLine": 2188,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -455,6 +543,8 @@
         "Vercel Provider"
       ],
       "test": "should use preferred_username as fallback for name",
+      "sourceStart": 60028,
+      "sourceLine": 2260,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -465,6 +555,8 @@
         "Vercel Provider"
       ],
       "test": "should allow additional scopes",
+      "sourceStart": 61830,
+      "sourceLine": 2332,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -475,6 +567,8 @@
         "Vercel Provider"
       ],
       "test": "should support mapProfileToUser",
+      "sourceStart": 62555,
+      "sourceLine": 2358,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -485,6 +579,8 @@
         "Vercel Provider"
       ],
       "test": "should redirect existing Vercel users to callback URL",
+      "sourceStart": 63872,
+      "sourceLine": 2414,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -495,6 +591,8 @@
         "Microsoft Provider"
       ],
       "test": "should support verifyIdToken with custom function",
+      "sourceStart": 65771,
+      "sourceLine": 2484,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -505,6 +603,8 @@
         "Microsoft Provider"
       ],
       "test": "should verify id token using JWKS endpoint",
+      "sourceStart": 67591,
+      "sourceLine": 2560,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -515,6 +615,8 @@
         "Microsoft Provider"
       ],
       "test": "should support id token sign in",
+      "sourceStart": 70074,
+      "sourceLine": 2659,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -525,6 +627,8 @@
         "Microsoft Provider"
       ],
       "test": "should reject id token sign in when oid is missing",
+      "sourceStart": 71962,
+      "sourceLine": 2730,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -535,6 +639,8 @@
         "Microsoft Provider"
       ],
       "test": "should report id_token sign-in unsupported when disableIdTokenSignIn is true",
+      "sourceStart": 73571,
+      "sourceLine": 2793,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -545,6 +651,8 @@
         "Microsoft Provider"
       ],
       "test": "should verify issuer when specific tenant is configured",
+      "sourceStart": 75061,
+      "sourceLine": 2850,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -555,6 +663,8 @@
         "Microsoft Provider"
       ],
       "test": "builds an authorization URL without clientSecret (public client)",
+      "sourceStart": 77335,
+      "sourceLine": 2935,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -565,6 +675,8 @@
         "Cloudflare Provider"
       ],
       "test": "should configure Cloudflare provider correctly",
+      "sourceStart": 79496,
+      "sourceLine": 3017,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -575,6 +687,8 @@
         "Cloudflare Provider"
       ],
       "test": "should initiate Cloudflare OAuth flow with PKCE",
+      "sourceStart": 80050,
+      "sourceLine": 3037,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -585,6 +699,8 @@
         "Cloudflare Provider"
       ],
       "test": "should not send an empty scope parameter when default scopes are disabled",
+      "sourceStart": 80940,
+      "sourceLine": 3063,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -595,6 +711,8 @@
         "Cloudflare Provider"
       ],
       "test": "should include additional Cloudflare API scopes",
+      "sourceStart": 81553,
+      "sourceLine": 3085,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -605,6 +723,8 @@
         "Cloudflare Provider"
       ],
       "test": "should complete Cloudflare OAuth flow and create user",
+      "sourceStart": 82272,
+      "sourceLine": 3110,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -615,6 +735,8 @@
         "Cloudflare Provider"
       ],
       "test": "uses $name authentication",
+      "sourceStart": 84266,
+      "sourceLine": 3182,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -625,6 +747,8 @@
         "Cloudflare Provider"
       ],
       "test": "should support public clients",
+      "sourceStart": 86289,
+      "sourceLine": 3264,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -635,6 +759,8 @@
         "Cloudflare Provider"
       ],
       "test": "derives the profile from the Cloudflare API /user endpoint, not the OIDC userinfo endpoint",
+      "sourceStart": 88161,
+      "sourceLine": 3334,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -645,6 +771,8 @@
         "Railway Provider"
       ],
       "test": "should configure Railway provider correctly",
+      "sourceStart": 91003,
+      "sourceLine": 3439,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -655,6 +783,8 @@
         "Railway Provider"
       ],
       "test": "should initiate Railway OAuth flow with PKCE",
+      "sourceStart": 91516,
+      "sourceLine": 3457,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -665,6 +795,8 @@
         "Railway Provider"
       ],
       "test": "should complete Railway OAuth flow and create user",
+      "sourceStart": 92518,
+      "sourceLine": 3486,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -675,6 +807,8 @@
         "validateUserInfo callback"
       ],
       "test": "should allow sign-in when validateUserInfo returns void",
+      "sourceStart": 94603,
+      "sourceLine": 3562,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -685,6 +819,8 @@
         "validateUserInfo callback"
       ],
       "test": "should reject redirect sign-in with source metadata and raw profile",
+      "sourceStart": 95560,
+      "sourceLine": 3601,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -695,6 +831,8 @@
         "validateUserInfo callback"
       ],
       "test": "should work in stateless mode (no database)",
+      "sourceStart": 97629,
+      "sourceLine": 3677,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -705,6 +843,8 @@
         "validateUserInfo callback"
       ],
       "test": "should reject idToken sign-in when validateUserInfo returns error",
+      "sourceStart": 98875,
+      "sourceLine": 3724,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -715,6 +855,8 @@
         "validateUserInfo callback"
       ],
       "test": "fires create-user on first OAuth sign-in and sign-in on the return",
+      "sourceStart": 99783,
+      "sourceLine": 3765,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -725,6 +867,8 @@
         "validateUserInfo callback"
       ],
       "test": "re-validates a returning OAuth user against the fresh provider identity",
+      "sourceStart": 101097,
+      "sourceLine": 3812,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -735,6 +879,8 @@
         "validateUserInfo callback"
       ],
       "test": "re-validates a returning OAuth user on the id-token (API) surface",
+      "sourceStart": 104472,
+      "sourceLine": 3926,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -745,6 +891,8 @@
         "validateUserInfo callback"
       ],
       "test": "reports link-account for an implicit link and persists no orphaned link when rejected",
+      "sourceStart": 106014,
+      "sourceLine": 3982,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -755,6 +903,8 @@
         "Reddit Provider — profile email mapping"
       ],
       "test": "never uses oauth_client_id as the email and falls back to a unique per-user email",
+      "sourceStart": 109682,
+      "sourceLine": 4104,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -765,6 +915,8 @@
         "Reddit Provider — profile email mapping"
       ],
       "test": "uses the email supplied by mapProfileToUser and ignores oauth_client_id",
+      "sourceStart": 110500,
+      "sourceLine": 4125,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -775,6 +927,8 @@
         "account.scope path-dependent semantics"
       ],
       "test": "preserves stored scope on sign-in re-authentication when token claim is narrower",
+      "sourceStart": 113110,
+      "sourceLine": 4224,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -785,6 +939,8 @@
         "account.scope path-dependent semantics"
       ],
       "test": "unions stored scope with newly granted scopes on linkSocial incremental authorization",
+      "sourceStart": 114074,
+      "sourceLine": 4252,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -795,6 +951,8 @@
         "account.scope path-dependent semantics"
       ],
       "test": "preserves stored scope on /refresh-token when the refresh response is narrower",
+      "sourceStart": 115808,
+      "sourceLine": 4304,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -805,6 +963,8 @@
         "account.scope path-dependent semantics"
       ],
       "test": "does not write stale account cookie scope on /refresh-token",
+      "sourceStart": 117276,
+      "sourceLine": 4353,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Remaining social-provider, callback, account-linking, refresh, adapter and profile contracts are not yet implemented"
@@ -815,6 +975,8 @@
         "Google Provider - includeGrantedScopes"
       ],
       "test": "includes `include_granted_scopes=true` in the authorization URL by default",
+      "sourceStart": 118916,
+      "sourceLine": 4403,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -825,6 +987,8 @@
         "Google Provider - includeGrantedScopes"
       ],
       "test": "includes `include_granted_scopes=true` when explicitly enabled",
+      "sourceStart": 119446,
+      "sourceLine": 4425,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -835,6 +999,8 @@
         "Google Provider - includeGrantedScopes"
       ],
       "test": "lets additionalParams disable `include_granted_scopes` for a single flow",
+      "sourceStart": 119998,
+      "sourceLine": 4448,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -845,6 +1011,8 @@
         "Google Provider - includeGrantedScopes"
       ],
       "test": "omits `include_granted_scopes` from the authorization URL when disabled",
+      "sourceStart": 120593,
+      "sourceLine": 4473,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -855,6 +1023,8 @@
         "Google Provider - includeGrantedScopes"
       ],
       "test": "lets additionalParams re-enable `include_granted_scopes` for a single flow",
+      "sourceStart": 121387,
+      "sourceLine": 4501,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

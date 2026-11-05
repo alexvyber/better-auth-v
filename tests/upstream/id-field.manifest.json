@@ -12,6 +12,8 @@
         "defaultValue priority"
       ],
       "test": "should return undefined when disableIdGeneration is true",
+      "sourceStart": 950,
+      "sourceLine": 37,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "defaultValue priority"
       ],
       "test": "should return undefined when generateId is false",
+      "sourceStart": 1167,
+      "sourceLine": 45,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "defaultValue priority"
       ],
       "test": "should return undefined when generateId is 'serial'",
+      "sourceStart": 1394,
+      "sourceLine": 53,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "defaultValue priority"
       ],
       "test": "should use generateId function over 'uuid' and customIdGenerator",
+      "sourceStart": 1627,
+      "sourceLine": 61,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "defaultValue priority"
       ],
       "test": "should use 'uuid' over customIdGenerator",
+      "sourceStart": 1933,
+      "sourceLine": 72,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "defaultValue priority"
       ],
       "test": "should use customIdGenerator when generateId is not set",
+      "sourceStart": 2235,
+      "sourceLine": 83,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "defaultValue priority"
       ],
       "test": "should fall back to default id generation",
+      "sourceStart": 2470,
+      "sourceLine": 91,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "type and required"
       ],
       "test": "should have type 'number' when generateId is 'serial'",
+      "sourceStart": 2722,
+      "sourceLine": 99,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "type and required"
       ],
       "test": "should have type 'string' by default",
+      "sourceStart": 2982,
+      "sourceLine": 108,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -102,6 +120,8 @@
         "type and required"
       ],
       "test": "should not generate id when useUUIDs and supportsUUIDs",
+      "sourceStart": 3165,
+      "sourceLine": 114,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +132,8 @@
         "transform.input"
       ],
       "test": "should return undefined for falsy value",
+      "sourceStart": 3512,
+      "sourceLine": 128,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -122,6 +144,8 @@
         "transform.input"
       ],
       "test": "should return value as-is by default",
+      "sourceStart": 3792,
+      "sourceLine": 135,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -133,6 +157,8 @@
         "serial"
       ],
       "test": "should convert string to number",
+      "sourceStart": 3990,
+      "sourceLine": 141,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -144,6 +170,8 @@
         "serial"
       ],
       "test": "should return undefined for non-numeric string",
+      "sourceStart": 4208,
+      "sourceLine": 149,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -155,6 +183,8 @@
         "uuid"
       ],
       "test": "should return value as-is when shouldGenerateId and not forceAllowId",
+      "sourceStart": 4489,
+      "sourceLine": 159,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -166,6 +196,8 @@
         "uuid"
       ],
       "test": "should return undefined when supportsUUIDs (DB handles it)",
+      "sourceStart": 4824,
+      "sourceLine": 171,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -177,6 +209,8 @@
         "uuid"
       ],
       "test": "should accept valid UUID when forceAllowId is true",
+      "sourceStart": 5124,
+      "sourceLine": 182,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -188,6 +222,8 @@
         "uuid"
       ],
       "test": "should generate new UUID for non-string value when DB doesn't support UUIDs",
+      "sourceStart": 5469,
+      "sourceLine": 195,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -198,6 +234,8 @@
         "encodeDeterministicId"
       ],
       "test": "keeps the id under the %s strategy",
+      "sourceStart": 6129,
+      "sourceLine": 218,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -208,6 +246,8 @@
         "encodeDeterministicId"
       ],
       "test": "formats a uuid when ids are uuids",
+      "sourceStart": 6947,
+      "sourceLine": 244,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -218,6 +258,8 @@
         "encodeDeterministicId"
       ],
       "test": "warns once and keeps the base64url id when ids are database-generated numbers",
+      "sourceStart": 7140,
+      "sourceLine": 251,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -228,6 +270,8 @@
         "transform.output"
       ],
       "test": "should return undefined for falsy value",
+      "sourceStart": 7713,
+      "sourceLine": 268,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -238,6 +282,8 @@
         "transform.output"
       ],
       "test": "should convert value to string",
+      "sourceStart": 7996,
+      "sourceLine": 275,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

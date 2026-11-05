@@ -12,6 +12,8 @@
         "Origin Check"
       ],
       "test": "should allow trusted origins",
+      "sourceStart": 725,
+      "sourceLine": 26,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "Origin Check"
       ],
       "test": "should not allow untrusted origins",
+      "sourceStart": 1165,
+      "sourceLine": 44,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "Origin Check"
       ],
       "test": "should reject untrusted origin headers",
+      "sourceStart": 1592,
+      "sourceLine": 60,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "Origin Check"
       ],
       "test": "should reject untrusted origin even without cookies",
+      "sourceStart": 2011,
+      "sourceLine": 78,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "Origin Check"
       ],
       "test": "should reject untrusted redirectTo",
+      "sourceStart": 2431,
+      "sourceLine": 95,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "Origin Check"
       ],
       "test": "should work with list of trusted origins",
+      "sourceStart": 2839,
+      "sourceLine": 110,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "Origin Check"
       ],
       "test": "should work with wildcard trusted origins",
+      "sourceStart": 3507,
+      "sourceLine": 138,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "Origin Check"
       ],
       "test": "should work with GET requests",
+      "sourceStart": 3987,
+      "sourceLine": 156,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "Origin Check"
       ],
       "test": "should handle POST requests with proper origin validation",
+      "sourceStart": 4350,
+      "sourceLine": 171,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -102,6 +120,8 @@
         "Origin Check"
       ],
       "test": "should filter out null values from trustedOrigins callback",
+      "sourceStart": 5268,
+      "sourceLine": 207,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +132,8 @@
         "Fetch Metadata CSRF Protection"
       ],
       "test": "should block cross-site navigation on first-login (no session cookie)",
+      "sourceStart": 6670,
+      "sourceLine": 260,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -122,6 +144,8 @@
         "Fetch Metadata CSRF Protection"
       ],
       "test": "should allow same-origin navigation on first-login (no session cookie)",
+      "sourceStart": 7452,
+      "sourceLine": 287,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -132,6 +156,8 @@
         "Fetch Metadata CSRF Protection"
       ],
       "test": "should allow same-site navigation on first-login (no session cookie)",
+      "sourceStart": 8300,
+      "sourceLine": 317,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -142,6 +168,8 @@
         "Fetch Metadata CSRF Protection"
       ],
       "test": "should fallback to origin validation when Fetch Metadata is missing",
+      "sourceStart": 9146,
+      "sourceLine": 347,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -152,6 +180,8 @@
         "Fetch Metadata CSRF Protection"
       ],
       "test": "should reject an untrusted origin on first-login when Fetch Metadata is missing",
+      "sourceStart": 9681,
+      "sourceLine": 368,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -162,6 +192,8 @@
         "Fetch Metadata CSRF Protection"
       ],
       "test": "should reject an untrusted Referer on first-login when Fetch Metadata is missing",
+      "sourceStart": 10211,
+      "sourceLine": 389,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -172,6 +204,8 @@
         "Fetch Metadata CSRF Protection"
       ],
       "test": "should allow a first-login request that sends no cookies, Fetch Metadata, or origin",
+      "sourceStart": 10745,
+      "sourceLine": 410,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -182,6 +216,8 @@
         "Fetch Metadata CSRF Protection"
       ],
       "test": "should use existing origin validation when session cookie exists",
+      "sourceStart": 11248,
+      "sourceLine": 430,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -192,6 +228,8 @@
         "Fetch Metadata CSRF Protection"
       ],
       "test": "should block cross-site navigation for sign-up endpoint",
+      "sourceStart": 12346,
+      "sourceLine": 469,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -202,6 +240,8 @@
         "Fetch Metadata CSRF Protection"
       ],
       "test": "should allow cors mode requests (fetch/XHR)",
+      "sourceStart": 13137,
+      "sourceLine": 497,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -212,6 +252,8 @@
         "Fetch Metadata CSRF Protection"
       ],
       "test": "should allow requests with expired session cookie (cookie presence check)",
+      "sourceStart": 13941,
+      "sourceLine": 527,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -222,6 +264,8 @@
         "origin check middleware"
       ],
       "test": "should return invalid origin",
+      "sourceStart": 14891,
+      "sourceLine": 559,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -232,6 +276,8 @@
         "origin check middleware"
       ],
       "test": "should skip origin check for matched paths when skipOriginCheck is set to an array",
+      "sourceStart": 16089,
+      "sourceLine": 603,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -242,6 +288,8 @@
         "origin check middleware"
       ],
       "test": "should not skip origin check for a path that only shares a prefix with a skip path",
+      "sourceStart": 17416,
+      "sourceLine": 658,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -252,6 +300,8 @@
         "origin check middleware"
       ],
       "test": "should reject a non-string redirect parameter with 400, not 500",
+      "sourceStart": 18448,
+      "sourceLine": 699,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -262,6 +312,8 @@
         "trusted origins with baseURL inferred from request"
       ],
       "test": "should respect trustedOrigins array when baseURL is NOT in config",
+      "sourceStart": 19970,
+      "sourceLine": 752,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -272,6 +324,8 @@
         "trusted origins with baseURL inferred from request"
       ],
       "test": "should reject untrusted origins even when baseURL is inferred",
+      "sourceStart": 20748,
+      "sourceLine": 785,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -282,6 +336,8 @@
         "trusted origins with baseURL inferred from request"
       ],
       "test": "should respect BETTER_AUTH_TRUSTED_ORIGINS env when baseURL is NOT in config",
+      "sourceStart": 21467,
+      "sourceLine": 817,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -292,6 +348,8 @@
         "trusted origins with baseURL inferred from request"
       ],
       "test": "should allow requests from inferred baseURL origin",
+      "sourceStart": 22359,
+      "sourceLine": 855,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -302,6 +360,8 @@
         "trusted origins with baseURL inferred from request"
       ],
       "test": "should support both config array and env var together when baseURL is inferred",
+      "sourceStart": 23073,
+      "sourceLine": 887,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -312,6 +372,8 @@
         "disableCSRFCheck and disableOriginCheck separation"
       ],
       "test": "disableCSRFCheck should allow untrusted origins with cookies (CSRF bypass)",
+      "sourceStart": 24532,
+      "sourceLine": 945,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -322,6 +384,8 @@
         "disableCSRFCheck and disableOriginCheck separation"
       ],
       "test": "disableCSRFCheck should still validate callbackURL (origin check still active)",
+      "sourceStart": 25436,
+      "sourceLine": 979,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -332,6 +396,8 @@
         "disableCSRFCheck and disableOriginCheck separation"
       ],
       "test": "disableOriginCheck should allow untrusted callbackURL",
+      "sourceStart": 26327,
+      "sourceLine": 1013,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -342,6 +408,8 @@
         "disableCSRFCheck and disableOriginCheck separation"
       ],
       "test": "disableOriginCheck also disables CSRF for backward compatibility",
+      "sourceStart": 27133,
+      "sourceLine": 1046,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -352,6 +420,8 @@
         "disableCSRFCheck and disableOriginCheck separation"
       ],
       "test": "disableCSRFCheck should bypass Fetch Metadata CSRF protection",
+      "sourceStart": 28433,
+      "sourceLine": 1095,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -362,6 +432,8 @@
         "disableCSRFCheck and disableOriginCheck separation"
       ],
       "test": "both flags disabled should bypass all checks",
+      "sourceStart": 29398,
+      "sourceLine": 1131,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -372,6 +444,8 @@
         "request-scoped trusted origin isolation"
       ],
       "test": "does not let one request's trusted origins bleed into a concurrent request",
+      "sourceStart": 30242,
+      "sourceLine": 1166,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -382,6 +456,8 @@
         "inferred baseURL is not persisted across requests"
       ],
       "test": "does not reuse one request's host for a later request's token links",
+      "sourceStart": 32149,
+      "sourceLine": 1229,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

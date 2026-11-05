@@ -12,6 +12,8 @@
         "private_key_jwt OAuth2 helpers"
       ],
       "test": "signs authorization-code assertions with the request tokenEndpoint",
+      "sourceStart": 2137,
+      "sourceLine": 75,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "private_key_jwt OAuth2 helpers"
       ],
       "test": "passes request context to custom assertion getters",
+      "sourceStart": 2949,
+      "sourceLine": 103,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "private_key_jwt OAuth2 helpers"
       ],
       "test": "signs refresh-token assertions with the request tokenEndpoint",
+      "sourceStart": 3751,
+      "sourceLine": 131,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "private_key_jwt OAuth2 helpers"
       ],
       "test": "signs client-credentials assertions with the request tokenEndpoint",
+      "sourceStart": 4462,
+      "sourceLine": 157,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "private_key_jwt OAuth2 helpers"
       ],
       "test": "rejects private_key_jwt combined with a client secret",
+      "sourceStart": 5196,
+      "sourceLine": 183,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "private_key_jwt OAuth2 helpers"
       ],
       "test": "rejects manual client assertions when tokenEndpointAuth is configured",
+      "sourceStart": 5670,
+      "sourceLine": 200,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "private_key_jwt OAuth2 helpers"
       ],
       "test": "rejects private_key_jwt when no tokenEndpoint is available",
+      "sourceStart": 6398,
+      "sourceLine": 226,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "private_key_jwt OAuth2 helpers"
       ],
       "test": "supports explicit public-client token endpoint authentication",
+      "sourceStart": 6822,
+      "sourceLine": 241,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "private_key_jwt OAuth2 helpers"
       ],
       "test": "defaults to public-client token endpoint authentication without clientSecret",
+      "sourceStart": 7291,
+      "sourceLine": 257,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -102,6 +120,8 @@
         "private_key_jwt OAuth2 helpers"
       ],
       "test": "rejects public-client token endpoint authentication without clientId",
+      "sourceStart": 7733,
+      "sourceLine": 272,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +132,8 @@
         "private_key_jwt OAuth2 helpers"
       ],
       "test": "rejects public-client token endpoint authentication with client credentials",
+      "sourceStart": 8113,
+      "sourceLine": 284,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -122,6 +144,8 @@
         "private_key_jwt OAuth2 helpers"
       ],
       "test": "supports explicit client_secret_basic token endpoint authentication",
+      "sourceStart": 8500,
+      "sourceLine": 299,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -132,6 +156,8 @@
         "private_key_jwt OAuth2 helpers"
       ],
       "test": "form-url-encodes clientId and clientSecret for client_secret_basic per RFC 6749 §2.3.1",
+      "sourceStart": 9099,
+      "sourceLine": 320,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -142,6 +168,8 @@
         "private_key_jwt OAuth2 helpers"
       ],
       "test": "rejects %s token endpoint authentication without clientId",
+      "sourceStart": 10230,
+      "sourceLine": 348,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -152,6 +180,8 @@
         "private_key_jwt OAuth2 helpers"
       ],
       "test": "customizes token endpoint request authentication",
+      "sourceStart": 10734,
+      "sourceLine": 367,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -162,6 +192,8 @@
         "private_key_jwt OAuth2 helpers"
       ],
       "test": "rejects custom authentication with only %s",
+      "sourceStart": 11422,
+      "sourceLine": 391,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -172,6 +204,8 @@
         "private_key_jwt OAuth2 helpers"
       ],
       "test": "uses configured clientId over additional token client_id parameters",
+      "sourceStart": 11981,
+      "sourceLine": 413,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

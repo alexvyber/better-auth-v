@@ -24,6 +24,8 @@
         "open-api"
       ],
       "test": "should generate OpenAPI schema",
+      "sourceStart": 8071,
+      "sourceLine": 344,
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -35,6 +37,8 @@
         "open-api"
       ],
       "test": "should mark model id fields as required and read-only",
+      "sourceStart": 8269,
+      "sourceLine": 350,
       "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -46,6 +50,8 @@
         "open-api"
       ],
       "test": "should include additionalFields in the User schema",
+      "sourceStart": 8993,
+      "sourceLine": 374,
       "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -57,6 +63,8 @@
         "open-api"
       ],
       "test": "should map array additionalFields to OpenAPI array schemas",
+      "sourceStart": 9528,
+      "sourceLine": 393,
       "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -68,6 +76,8 @@
         "open-api"
       ],
       "test": "should allow every JSON value in additional field request bodies",
+      "sourceStart": 10484,
+      "sourceLine": 433,
       "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -79,6 +89,8 @@
         "open-api"
       ],
       "test": "should include additionalFields on sign-up and update-user request bodies",
+      "sourceStart": 11263,
+      "sourceLine": 461,
       "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -90,6 +102,8 @@
         "open-api"
       ],
       "test": "should mark explicitly required additionalFields as required on sign-up",
+      "sourceStart": 12484,
+      "sourceLine": 491,
       "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -101,6 +115,8 @@
         "open-api"
       ],
       "test": "should include username plugin fields on sign-up and update-user request bodies",
+      "sourceStart": 13601,
+      "sourceLine": 531,
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -112,6 +128,8 @@
         "open-api"
       ],
       "test": "should omit runtime-generated defaults from model schemas",
+      "sourceStart": 14826,
+      "sourceLine": 562,
       "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -123,6 +141,8 @@
         "open-api"
       ],
       "test": "should properly handle nested objects in request body schema",
+      "sourceStart": 15285,
+      "sourceLine": 574,
       "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -134,6 +154,8 @@
         "open-api"
       ],
       "test": "should keep optional primitive types non-nullable",
+      "sourceStart": 16737,
+      "sourceLine": 610,
       "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -145,6 +167,8 @@
         "open-api"
       ],
       "test": "should use OpenAPI 3.1 nullable format for get-session response",
+      "sourceStart": 17541,
+      "sourceLine": 636,
       "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -156,6 +180,8 @@
         "open-api"
       ],
       "test": "should emit unique operationIds across multi-method endpoints",
+      "sourceStart": 18149,
+      "sourceLine": 653,
       "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -167,6 +193,8 @@
         "open-api"
       ],
       "test": "should infer path parameters for routes with dynamic segments",
+      "sourceStart": 18777,
+      "sourceLine": 671,
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -178,6 +206,8 @@
         "open-api"
       ],
       "test": "should not share operation parameter or response objects across methods",
+      "sourceStart": 19298,
+      "sourceLine": 693,
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -189,6 +219,8 @@
         "open-api"
       ],
       "test": "should serialize the generated schema without circular response refs",
+      "sourceStart": 19910,
+      "sourceLine": 711,
       "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -200,6 +232,8 @@
         "open-api"
       ],
       "test": "should keep optional object types non-nullable",
+      "sourceStart": 20454,
+      "sourceLine": 726,
       "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -211,6 +245,8 @@
         "open-api"
       ],
       "test": "should generate OpenAPI 3.1 compliant schemas from Zod types",
+      "sourceStart": 21224,
+      "sourceLine": 749,
       "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -222,6 +258,8 @@
         "open-api"
       ],
       "test": "should not require token/user in /sign-in/social response and allow redirect to be true or false",
+      "sourceStart": 22223,
+      "sourceLine": 785,
       "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -233,6 +271,8 @@
         "open-api"
       ],
       "test": "should correctly unwrap ZodDefault and infer inner type",
+      "sourceStart": 23051,
+      "sourceLine": 805,
       "selected": true,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -244,6 +284,8 @@
         "open-api"
       ],
       "test": "should include request bodies for all email OTP POST endpoints",
+      "sourceStart": 24930,
+      "sourceLine": 857,
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -255,6 +297,8 @@
         "open-api"
       ],
       "test": "should merge object and record intersections for email OTP sign-in request bodies",
+      "sourceStart": 25588,
+      "sourceLine": 877,
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -266,6 +310,8 @@
         "open-api"
       ],
       "test": "emits a request body for %s",
+      "sourceStart": 26516,
+      "sourceLine": 896,
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -277,6 +323,8 @@
         "open-api"
       ],
       "test": "emits the phone-number verification request body",
+      "sourceStart": 26973,
+      "sourceLine": 911,
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -288,6 +336,8 @@
         "open-api"
       ],
       "test": "should keep plain email OTP request bodies as object schemas",
+      "sourceStart": 27782,
+      "sourceLine": 937,
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -299,6 +349,8 @@
         "open-api"
       ],
       "test": "should preserve nullable object intersections when merging schemas",
+      "sourceStart": 28432,
+      "sourceLine": 952,
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -310,6 +362,8 @@
         "open-api"
       ],
       "test": "should mark default-wrapped request bodies as optional",
+      "sourceStart": 29117,
+      "sourceLine": 967,
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -321,6 +375,8 @@
         "open-api"
       ],
       "test": "should represent object intersections with union branches",
+      "sourceStart": 29688,
+      "sourceLine": 980,
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -332,6 +388,8 @@
         "open-api"
       ],
       "test": "should preserve record key schemas when merging object intersections",
+      "sourceStart": 30685,
+      "sourceLine": 1021,
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -343,6 +401,8 @@
         "open-api"
       ],
       "test": "should preserve string length constraints for wrapped query parameters",
+      "sourceStart": 31514,
+      "sourceLine": 1043,
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -354,6 +414,8 @@
         "open-api"
       ],
       "test": "should not evaluate request body default factories",
+      "sourceStart": 32279,
+      "sourceLine": 1068,
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,
@@ -365,6 +427,8 @@
         "open-api"
       ],
       "test": "should compute required fields through Zod wrapper schemas",
+      "sourceStart": 32895,
+      "sourceLine": 1082,
       "selected": false,
       "executionSurface": "native-api-model-and-core-route-documentation",
       "upstreamDisabled": false,

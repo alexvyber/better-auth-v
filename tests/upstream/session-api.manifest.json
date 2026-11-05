@@ -12,6 +12,8 @@
         "session"
       ],
       "test": "should set cookies correctly on sign in",
+      "sourceStart": 1254,
+      "sourceLine": 44,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "session"
       ],
       "test": "should return null when not authenticated",
+      "sourceStart": 2170,
+      "sourceLine": 80,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "session"
       ],
       "test": "should keep the store failure as a server-only cause",
+      "sourceStart": 2396,
+      "sourceLine": 88,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "session"
       ],
       "test": "should require a fresh session based on session creation time",
+      "sourceStart": 3444,
+      "sourceLine": 120,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "session"
       ],
       "test": "should require a fresh session to list sessions",
+      "sourceStart": 4736,
+      "sourceLine": 176,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -63,6 +73,8 @@
         "session refresh and expiration"
       ],
       "test": "returns the expected session expiration after $elapsedSeconds seconds",
+      "sourceStart": 5901,
+      "sourceLine": 230,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -74,6 +86,8 @@
         "session refresh and expiration"
       ],
       "test": "persists successive session refreshes beyond the original expiration",
+      "sourceStart": 7188,
+      "sourceLine": 269,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -85,6 +99,8 @@
         "session refresh and expiration"
       ],
       "test": "clears an expired session without refreshing it",
+      "sourceStart": 8833,
+      "sourceLine": 325,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -95,6 +111,8 @@
         "session"
       ],
       "test": "should update the session every time when set to 0",
+      "sourceStart": 9551,
+      "sourceLine": 354,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -105,6 +123,8 @@
         "session"
       ],
       "test": "should handle 'don't remember me' option",
+      "sourceStart": 10244,
+      "sourceLine": 377,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -115,6 +135,8 @@
         "session"
       ],
       "test": "should set cookies correctly on sign in after changing config",
+      "sourceStart": 11176,
+      "sourceLine": 417,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -125,6 +147,8 @@
         "session"
       ],
       "test": "should clear session on sign out",
+      "sourceStart": 12159,
+      "sourceLine": 456,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -135,6 +159,8 @@
         "session"
       ],
       "test": "should list sessions",
+      "sourceStart": 12723,
+      "sourceLine": 488,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -145,6 +171,8 @@
         "session"
       ],
       "test": "should revoke session",
+      "sourceStart": 13104,
+      "sourceLine": 509,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -155,6 +183,8 @@
         "session"
       ],
       "test": "should return session headers",
+      "sourceStart": 14036,
+      "sourceLine": 552,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -165,6 +195,8 @@
         "session"
       ],
       "test": "should not exceed the 400-day browser Max-Age ceiling on session refresh",
+      "sourceStart": 15696,
+      "sourceLine": 610,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -175,6 +207,8 @@
         "session storage"
       ],
       "test": "should store session in secondary storage",
+      "sourceStart": 17407,
+      "sourceLine": 682,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -185,6 +219,8 @@
         "session storage"
       ],
       "test": "should list sessions",
+      "sourceStart": 18277,
+      "sourceLine": 710,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -195,6 +231,8 @@
         "session storage"
       ],
       "test": "revoke session and list sessions",
+      "sourceStart": 18510,
+      "sourceLine": 718,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -205,6 +243,8 @@
         "session storage"
       ],
       "test": "should revoke session",
+      "sourceStart": 19212,
+      "sourceLine": 737,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -215,6 +255,8 @@
         "cookie cache"
       ],
       "test": "serves cached sessions without querying the database",
+      "sourceStart": 20603,
+      "sourceLine": 792,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -225,6 +267,8 @@
         "cookie cache"
       ],
       "test": "reads fresh user data when cookie caching is bypassed",
+      "sourceStart": 20977,
+      "sourceLine": 802,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -235,6 +279,8 @@
         "cookie cache"
       ],
       "test": "refreshes expired cache and reuses the replacement cookie",
+      "sourceStart": 21699,
+      "sourceLine": 825,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -245,6 +291,8 @@
         "cookie cache with JWT strategy"
       ],
       "test": "should cache cookies with JWT strategy",
+      "sourceStart": 22947,
+      "sourceLine": 873,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -255,6 +303,8 @@
         "cookie cache with JWT strategy"
       ],
       "test": "should not allow tampering with the cookie",
+      "sourceStart": 23712,
+      "sourceLine": 902,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -265,6 +315,8 @@
         "cookie cache with JWT strategy"
       ],
       "test": "should have max age expiry",
+      "sourceStart": 25113,
+      "sourceLine": 950,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -275,6 +327,8 @@
         "cookie cache with JWT strategy"
       ],
       "test": "should handle multiple concurrent requests with JWT cache",
+      "sourceStart": 25722,
+      "sourceLine": 974,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -285,6 +339,8 @@
         "cookie cache with JWT strategy backed by JWKS"
       ],
       "test": "should cache cookies with JWKS-backed JWT strategy",
+      "sourceStart": 26989,
+      "sourceLine": 1034,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -295,6 +351,8 @@
         "cookie cache with JWT strategy backed by JWKS"
       ],
       "test": "should ignore a JWKS cookie cache from a different session token",
+      "sourceStart": 28351,
+      "sourceLine": 1081,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -305,6 +363,8 @@
         "cookie cache with JWT strategy backed by JWKS"
       ],
       "test": "should not allow tampering with the cookie in JWKS mode",
+      "sourceStart": 29910,
+      "sourceLine": 1144,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -315,6 +375,8 @@
         "cookie cache with JWT strategy backed by JWKS"
       ],
       "test": "should reject a secret-signed cookie cache and fall back to the database",
+      "sourceStart": 31367,
+      "sourceLine": 1206,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -325,6 +387,8 @@
         "cookie cache with JWT strategy backed by JWKS"
       ],
       "test": "should verify existing cookie-cache JWTs across JWKS rotation grace period",
+      "sourceStart": 33240,
+      "sourceLine": 1274,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -335,6 +399,8 @@
         "cookie cache with JWE strategy"
       ],
       "test": "serves cached sessions without querying the database",
+      "sourceStart": 35370,
+      "sourceLine": 1368,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -345,6 +411,8 @@
         "cookie cache with JWE strategy"
       ],
       "test": "reads fresh user data when cookie caching is bypassed",
+      "sourceStart": 35744,
+      "sourceLine": 1378,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -355,6 +423,8 @@
         "cookie cache with JWE strategy"
       ],
       "test": "refreshes expired cache and reuses the replacement cookie",
+      "sourceStart": 36466,
+      "sourceLine": 1401,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -365,6 +435,8 @@
         "cookie cache with JWE strategy"
       ],
       "test": "serves concurrent requests from the cache",
+      "sourceStart": 37169,
+      "sourceLine": 1422,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -375,6 +447,8 @@
         "cookie cache refreshCache"
       ],
       "test": "uses cached data before the refresh threshold",
+      "sourceStart": 38381,
+      "sourceLine": 1469,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -385,6 +459,8 @@
         "cookie cache refreshCache"
       ],
       "test": "does not perform stateless refresh when a database is configured",
+      "sourceStart": 38905,
+      "sourceLine": 1488,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -395,6 +471,8 @@
         "cookie cache refreshCache"
       ],
       "test": "should not refresh cache when refreshCache is disabled (false)",
+      "sourceStart": 39496,
+      "sourceLine": 1510,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -405,6 +483,8 @@
         "cookie cache refreshCache"
       ],
       "test": "should work without database (session stored in cookie only)",
+      "sourceStart": 40751,
+      "sourceLine": 1563,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -415,6 +495,8 @@
         "cookie cache refreshCache"
       ],
       "test": "should preserve session expiry when refreshing stateless cookie cache",
+      "sourceStart": 42332,
+      "sourceLine": 1624,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -425,6 +507,8 @@
         "cookie cache refreshCache"
       ],
       "test": "should work without database when refreshCache threshold is reached",
+      "sourceStart": 44921,
+      "sourceLine": 1713,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -435,6 +519,8 @@
         "cookie cache refreshCache"
       ],
       "test": "should forward cookie cache headers from getSessionFromCtx",
+      "sourceStart": 46597,
+      "sourceLine": 1776,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -445,6 +531,8 @@
         "cookie cache refreshCache"
       ],
       "test": "should extend session_token cookie expiry when refreshCache threshold is reached",
+      "sourceStart": 48305,
+      "sourceLine": 1841,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -455,6 +543,8 @@
         "cookie cache versioning"
       ],
       "test": "should invalidate cookie cache when version changes (string version)",
+      "sourceStart": 50057,
+      "sourceLine": 1909,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -465,6 +555,8 @@
         "cookie cache versioning"
       ],
       "test": "should work with function-based version",
+      "sourceStart": 51454,
+      "sourceLine": 1967,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -475,6 +567,8 @@
         "cookie cache versioning"
       ],
       "test": "should work with async function-based version",
+      "sourceStart": 52300,
+      "sourceLine": 2003,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -485,6 +579,8 @@
         "cookie cache versioning"
       ],
       "test": "should work with compact strategy",
+      "sourceStart": 53203,
+      "sourceLine": 2040,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -495,6 +591,8 @@
         "cookie cache versioning"
       ],
       "test": "should work with jwt strategy",
+      "sourceStart": 53870,
+      "sourceLine": 2072,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -505,6 +603,8 @@
         "cookie cache versioning"
       ],
       "test": "should default to version '1' when not specified",
+      "sourceStart": 54525,
+      "sourceLine": 2104,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -515,6 +615,8 @@
         "cookie cache versioning"
       ],
       "test": "should include additionalFields when retrieving from cookie cache",
+      "sourceStart": 55228,
+      "sourceLine": 2136,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -525,6 +627,8 @@
         "deferSessionRefresh"
       ],
       "test": "should return needsRefresh flag on GET when enabled",
+      "sourceStart": 57140,
+      "sourceLine": 2212,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -535,6 +639,8 @@
         "deferSessionRefresh"
       ],
       "test": "should return needsRefresh: false when session is fresh",
+      "sourceStart": 57850,
+      "sourceLine": 2243,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -545,6 +651,8 @@
         "deferSessionRefresh"
       ],
       "test": "should not update session on GET when deferSessionRefresh is enabled",
+      "sourceStart": 58487,
+      "sourceLine": 2269,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -555,6 +663,8 @@
         "deferSessionRefresh"
       ],
       "test": "should update session on POST when deferSessionRefresh is enabled",
+      "sourceStart": 59248,
+      "sourceLine": 2301,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -565,6 +675,8 @@
         "deferSessionRefresh"
       ],
       "test": "should reject POST when deferSessionRefresh is not enabled",
+      "sourceStart": 60137,
+      "sourceLine": 2336,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -575,6 +687,8 @@
         "deferSessionRefresh"
       ],
       "test": "should not delete expired session on GET when deferSessionRefresh is enabled",
+      "sourceStart": 60691,
+      "sourceLine": 2357,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -585,6 +699,8 @@
         "deferSessionRefresh"
       ],
       "test": "should delete expired session on POST when deferSessionRefresh is enabled",
+      "sourceStart": 61518,
+      "sourceLine": 2390,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -595,6 +711,8 @@
         "deferSessionRefresh"
       ],
       "test": "should still update session on GET when deferSessionRefresh is not enabled (default behavior)",
+      "sourceStart": 62357,
+      "sourceLine": 2424,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -605,6 +723,8 @@
         "deferSessionRefresh"
       ],
       "test": "should respect disableSessionRefresh config when deferSessionRefresh is enabled",
+      "sourceStart": 63224,
+      "sourceLine": 2457,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -615,6 +735,8 @@
         "date field type consistency"
       ],
       "test": "should have consistent date types between cookie cache and refresh paths",
+      "sourceStart": 64101,
+      "sourceLine": 2495,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -625,6 +747,8 @@
         "updateSession"
       ],
       "test": "should update a custom additional field on a session",
+      "sourceStart": 65729,
+      "sourceLine": 2561,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -635,6 +759,8 @@
         "updateSession"
       ],
       "test": "should ignore core session fields",
+      "sourceStart": 66348,
+      "sourceLine": 2579,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -645,6 +771,8 @@
         "updateSession"
       ],
       "test": "should ignore core field userId",
+      "sourceStart": 66695,
+      "sourceLine": 2590,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -655,6 +783,8 @@
         "updateSession"
       ],
       "test": "should reject input: false fields",
+      "sourceStart": 67038,
+      "sourceLine": 2601,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -665,6 +795,8 @@
         "updateSession"
       ],
       "test": "should return error when no fields to update",
+      "sourceStart": 67324,
+      "sourceLine": 2611,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -675,6 +807,8 @@
         "updateSession"
       ],
       "test": "should update session cookie after mutation",
+      "sourceStart": 67679,
+      "sourceLine": 2622,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -685,6 +819,8 @@
         "updateSession plugin authority fields"
       ],
       "test": "should reject forging the %s session field",
+      "sourceStart": 68585,
+      "sourceLine": 2645,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -695,6 +831,8 @@
         "update-session cookie cache revocation"
       ],
       "test": "fails closed when the backing session is revoked in a stateful deployment",
+      "sourceStart": 69031,
+      "sourceLine": 2660,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -705,6 +843,8 @@
         "update-session cookie cache revocation"
       ],
       "test": "still refreshes the cookie in a DB-less deployment when no row exists",
+      "sourceStart": 70316,
+      "sourceLine": 2700,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -715,6 +855,8 @@
         "forced strict session validation"
       ],
       "test": "a request cannot re-enable the cookie cache on a route that forces it off",
+      "sourceStart": 71557,
+      "sourceLine": 2737,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -725,6 +867,8 @@
         "forced strict session validation"
       ],
       "test": "uses the signed cookie as the authoritative session record without a server store",
+      "sourceStart": 72684,
+      "sourceLine": 2769,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -735,6 +879,8 @@
         "get-session cache headers"
       ],
       "test": "sets Cache-Control: no-store on authenticated GET /get-session responses",
+      "sourceStart": 73950,
+      "sourceLine": 2812,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -745,6 +891,8 @@
         "get-session cache headers"
       ],
       "test": "sets Cache-Control: no-store on unauthenticated GET /get-session responses",
+      "sourceStart": 74742,
+      "sourceLine": 2836,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -755,6 +903,8 @@
         "get-session cache headers"
       ],
       "test": "does not set Cache-Control: no-store on session-gated endpoints",
+      "sourceStart": 75201,
+      "sourceLine": 2851,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

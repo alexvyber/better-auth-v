@@ -12,6 +12,8 @@
         "signJWT — signing key overrides"
       ],
       "test": "uses the latest key when neither signingKeyId nor signingAlgorithm is set",
+      "sourceStart": 2381,
+      "sourceLine": 66,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "signJWT — signing key overrides"
       ],
       "test": "signingKeyId routes through getKeyById and overrides latest-key selection",
+      "sourceStart": 2887,
+      "sourceLine": 80,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "signJWT — signing key overrides"
       ],
       "test": "signingAlgorithm picks the most recent key with that alg",
+      "sourceStart": 3594,
+      "sourceLine": 98,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -42,6 +48,8 @@
         "signJWT — signing key overrides"
       ],
       "test": "signingKeyId pointing at a missing key throws (does not silently fall back)",
+      "sourceStart": 4333,
+      "sourceLine": 117,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -52,6 +60,8 @@
         "signJWT — signing key overrides"
       ],
       "test": "signingAlgorithm with no matching key throws (does not auto-mint)",
+      "sourceStart": 4781,
+      "sourceLine": 131,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -62,6 +72,8 @@
         "signJWT — signing key overrides"
       ],
       "test": "signingKeyId + mismatched signingAlgorithm throws to surface the conflict",
+      "sourceStart": 5213,
+      "sourceLine": 145,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -72,6 +84,8 @@
         "signJWT — signing key overrides"
       ],
       "test": "signingKeyId + matching signingAlgorithm succeeds",
+      "sourceStart": 5703,
+      "sourceLine": 160,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -82,6 +96,8 @@
         "JWKS adapter helpers"
       ],
       "test": "getKeyById finds a provisioned key",
+      "sourceStart": 6230,
+      "sourceLine": 177,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -92,6 +108,8 @@
         "JWKS adapter helpers"
       ],
       "test": "getKeyById returns undefined for an unknown id",
+      "sourceStart": 6563,
+      "sourceLine": 187,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -102,6 +120,8 @@
         "JWKS adapter helpers"
       ],
       "test": "getLatestKeyByAlg returns the most recent key matching the algorithm",
+      "sourceStart": 6908,
+      "sourceLine": 197,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -112,6 +132,8 @@
         "JWKS adapter helpers"
       ],
       "test": "getLatestKeyByAlg returns undefined when no matching key exists",
+      "sourceStart": 7485,
+      "sourceLine": 211,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

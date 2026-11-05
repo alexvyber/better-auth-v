@@ -1,6 +1,6 @@
 {
   "commit": "0e75ddcf36489aa3a191ea902a82d1892034dc74",
-  "methodology": "Static AST inventory of test/spec files across the entire pinned repository, including demos, tooling, and type-only files. Declarations are not runtime case counts: parameterization, loops, conditions, and helper registration can change case counts. Imported indicates preserved test source, not a passing test result.",
+  "methodology": "Static AST inventory of test/spec files across the entire pinned repository, including demos, tooling, and type-only files. Declarations are not runtime case counts: parameterization, loops, conditions, and helper registration can change case counts. Selections are unioned across checksum-matched manifests by AST source position; backend repeats do not increase unique declaration coverage. Imported indicates preserved test source, not a passing test result.",
   "totals": {
     "files": 436,
     "declarations": 6817
@@ -48,6 +48,8 @@
       "sha256": "019cd21d10f5d9c46e2fb1aef3984c94fff84e34696f8c8f2bc75f8cbc4b8685",
       "group": "examples",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -75,6 +77,8 @@
       "sha256": "96043bdff12dba68bad22977a2eee3053c5a5570bf772231857bb9ae55be3b36",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -129,6 +133,8 @@
       "sha256": "28dca69e6139d077cfdf4ff6320546ed879e9f3d101e4435cd157db200cfcbfa",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -156,6 +162,8 @@
       "sha256": "00d2e77343be11fef5f9e4fca34a7a4418227748d43071afc6c919e4102c6340",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 7,
       "kind": "runtime",
       "declarations": [
         {
@@ -228,6 +236,8 @@
       "sha256": "05d80f2a3775393d20bc44e357e4bf4de354b29fcc6f06195937ffa702dd8128",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -264,6 +274,8 @@
       "sha256": "bdba46c57e31e79d0f28f5e11aa355e4a81bdee94618cd9312bb6916ccff2c19",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 12,
       "kind": "runtime",
       "declarations": [
         {
@@ -381,6 +393,8 @@
       "sha256": "15115fdd54556a5e8dd548b0340eacf98a77fa31859d8f6f842eabbfc4eab6c8",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 11,
       "kind": "runtime",
       "declarations": [
         {
@@ -489,6 +503,8 @@
       "sha256": "8778bfd60413a36423a7dddfccf4245bf0175d1535dd20e475a535e2fddf6cf0",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -525,6 +541,8 @@
       "sha256": "263b6c5274583400605dd5bf53afd64f3df5c7fe25cf9c368d2dbf08e1d30539",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -552,6 +570,8 @@
       "sha256": "ff3b2047908d3a3be077e3440b2bbf8a18af1dde3ddb8d3ad02be63277c5ac95",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 48,
       "kind": "runtime",
       "declarations": [
         {
@@ -1074,6 +1094,8 @@
       "sha256": "a5aadcd3130570f9bf81e7f17bf79ac3d8d6dd62a46b4b8533be53cef96bb79f",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -1137,6 +1159,8 @@
       "sha256": "b465120e8e43e3461086ecc0184d7db06d26a67d064e101cdc80e70f46309653",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -1145,6 +1169,8 @@
       "sha256": "a2ea5b56169d711b02007c1de4f95f9be7fc81e3c71d82755603b206904736f4",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -1199,6 +1225,8 @@
       "sha256": "7844e1c97d69622207b03baaafdeea207df405d3f6a50da27cee2c03fe4cfe20",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -1207,6 +1235,8 @@
       "sha256": "2a243c93511067a03dc7fc64e9ecd1c76267db1e72784a93d0574745bc48cfa3",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -1234,6 +1264,8 @@
       "sha256": "68288ba194a02fe628c5efd494fe45218b1de5d98152d9ba56817a4f3b0b0b94",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -1242,6 +1274,8 @@
       "sha256": "af3b0fad4d102a503dfbdffff6193e4241f5cc02c42d246b6ad2a1e2ba9ce42d",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -1260,6 +1294,8 @@
       "sha256": "7a77d95062d43c9e513caaf4d0bc951d3b2d15e5df205352557f83957fac2a31",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -1314,6 +1350,8 @@
       "sha256": "175d779fab6fd73578cb3a87e4180ee7d6d5f02f5fe4b9d924012e9ce9317057",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -1341,6 +1379,8 @@
       "sha256": "18a5ad6536dcc18160f066b9feac78ccba09dcec2dc35fa841cc356caedc5903",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -1368,6 +1408,8 @@
       "sha256": "25a24a7ab410b3605346112f89fa5d761460801aa0251eca283bf39ba3dfc291",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -1404,6 +1446,8 @@
       "sha256": "baa648ff561ba69aceeae1d4c6e87bfc349972860e24a670bcb6565d645ab78c",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -1440,6 +1484,8 @@
       "sha256": "b65e6d46e8142472dfb3a0496c1ddf1d2f5945432c4fc590c6af61774b398bde",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -1476,6 +1522,8 @@
       "sha256": "206b841063ea21c0529511e503d4140a5cb01b9b88e17349b7e3d1435aea4dac",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -1512,6 +1560,8 @@
       "sha256": "0c71db2c91aefc95244f72841b5243e10f277a989507c484947a8fe0ff8aebd1",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -1566,6 +1616,8 @@
       "sha256": "cd554d7967c1774e50de7f21a53ad4bd2d376e06e9b1c97aefc49e38709082c7",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -1584,6 +1636,8 @@
       "sha256": "bf21e3add737f7689bfd894d84cbac4306675995d7b1bc4fdc39ba5c6a36b26e",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -1592,6 +1646,8 @@
       "sha256": "5532190355cd6bb2078b0ebce1086150985104446ab3653cfd4c071b33ef0e8a",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -1637,6 +1693,8 @@
       "sha256": "a121f33918ac97bf3649bdf8e2c18b57533d251364d7d5d8b39af6865e7f8ae7",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -1691,6 +1749,8 @@
       "sha256": "07e3bab79a44519772ea7def9797263406fd7d92f26e38f49a6ffe0c273a3087",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -1699,6 +1759,8 @@
       "sha256": "3a935204ed791ecf6a25dead6064d61b389d5756f0affaaa64cec694ff060697",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -1715,6 +1777,8 @@
       "sha256": "c99f0744524bde9cf4ee87fd2c858a0858955c2404dafb2ce4e034653db85158",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -1769,6 +1833,8 @@
       "sha256": "39377d388b3b7477bd6c40027679a490a0d9dd8d423b33cf831637b2068967f4",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -1796,6 +1862,8 @@
       "sha256": "7926208cb42a3ee2f5add01294d903f40c788e31e25e815b21230667b51cc338",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -1850,6 +1918,8 @@
       "sha256": "01bc98631f6dc80301f9a604ad1bebc2ff42631e075d353dee954ec8aa91260c",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -1858,6 +1928,8 @@
       "sha256": "d083c5f6364a77f0dabb261f5e1e76efc8516a47efb25f25ad53a46bd0905314",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -1885,6 +1957,8 @@
       "sha256": "75bf12b72d4d084fd4518bca42315b76bcffe30fccbdb8000b3c0f992a6e14dd",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -1893,6 +1967,8 @@
       "sha256": "23ae0b3101c41c1b49555f575ec6aa6595edd8115d94f30222e7d122306ccb13",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -1938,6 +2014,8 @@
       "sha256": "dc39e9dcf965d6d394423e7b1bd40974bc825bfbd1f1f710d6dacb3ebd68eded",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -1946,6 +2024,8 @@
       "sha256": "f020bfff428071a706a7789cac118df4f029d872e90f17248922928b04b8fad5",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -1954,6 +2034,8 @@
       "sha256": "33b7cd77ac5b085d351b565bdd1347e6283e0677ad877a9da9f12f2bee8d17ba",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -1962,6 +2044,8 @@
       "sha256": "4060f41d546132406c5915aee1a6d0362fffdb37de8b8561e1d38bf7207e43fe",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -1970,6 +2054,8 @@
       "sha256": "3f22e24ba81587cdb98c1652b157c41c5aae0f62550f80f8d6982cf881c6959c",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -1978,6 +2064,8 @@
       "sha256": "39b375fcac014962bb9ee46bb57247dc1daf6bf2393243d0f51ebbb99673a5c5",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -1986,6 +2074,8 @@
       "sha256": "da12b3c2b84216fe5c127318ffa6ecabb184c8a8bb4d1e4a2e9d0484134664e8",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -1994,6 +2084,8 @@
       "sha256": "6a95dc638336757a382077178a646ab632460d1c0b7b728f7042ed2354668fb0",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -2002,6 +2094,8 @@
       "sha256": "8ac94e0315e69ab15f72c3267642f7aef02d52b8fc233f1cd4e2b03afb2b14b2",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -2010,6 +2104,8 @@
       "sha256": "410217563fec799f678035489527cf56f9f03112abd6077cc393c5c31ed9ad4b",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -2018,6 +2114,8 @@
       "sha256": "51cca8e5a0f352abf2910750338fa736258739482edf7dca269e3083ba94c368",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2034,6 +2132,8 @@
       "sha256": "b349271e7588dc0faa8303afeaeab406104cc592bd56d2a1b865035132ba3885",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2050,6 +2150,8 @@
       "sha256": "a25364d1f074c18f01e0e0bc4ab38eeafa449fc686bf53dc2632ede92541240a",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "type-only",
       "declarations": []
     },
@@ -2058,6 +2160,8 @@
       "sha256": "dac8de9e58925b638e5b2abc6e3232a0e7f9b48792c6906ac638e9238c2ba25c",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2074,6 +2178,8 @@
       "sha256": "b04962912646c932b55dfdfac75cdb029e57924658b24ccce7b542b642efc3e2",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -2104,6 +2210,8 @@
       "sha256": "b3a748486ff990b0370e5b537d30351780882fa32700cf3d94ebb94d4c50a22f",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2120,6 +2228,8 @@
       "sha256": "b03d3feb61d0615e7a3ab64065a7ab42273ea58d5aadd11389861229bf61cd02",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2136,6 +2246,8 @@
       "sha256": "a988834e8302f33c4a803b46d75dc5b94247094de227097a0665ea056046fa69",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2152,6 +2264,8 @@
       "sha256": "d33c7049f416efb406830dbad878196bc2882b1f3ae4eae2c9133f759f974231",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2168,6 +2282,8 @@
       "sha256": "4fa68d8fab76ea824e4d9c094a78136b44319864693375d33b7be60f5f1fe9f9",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2184,6 +2300,8 @@
       "sha256": "309d218cc53d3440f88dd17f5dededf61ca05aa3c13574fda1ac2a252baddde5",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2200,6 +2318,8 @@
       "sha256": "c74ec3c0838bbe48e5684d2c9f3616b2359f380cab1c46a90838237f689e040d",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2218,6 +2338,8 @@
       "sha256": "f986c66ba6bcc80d5042800e12288e5cfffc1a8e583fd87ed3898ec27a476539",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2236,6 +2358,8 @@
       "sha256": "183f03cf2f2b667a48683c82d499c1c547c55864946d52d3ed24fd3972bb9d46",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -2263,6 +2387,8 @@
       "sha256": "0a3b2fc85621120a679959ab645bf135cbe9bf2a84388468fc4f71c951716dac",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2281,6 +2407,8 @@
       "sha256": "7bd63e674eb1ca7a7366668cf00a446416609125af0150c2d642abe763e53565",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2299,6 +2427,8 @@
       "sha256": "f50f7352fd301f88a13e61bf7ec424d1b1e49d98f3c7c4fe104782fc1e9aeb88",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2317,6 +2447,8 @@
       "sha256": "060c87ccae5b269beefc642b6c7f7bb943cc67485177209bd0c5216ce23ff5d3",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2335,6 +2467,8 @@
       "sha256": "64b646c47265930f134e16109223e731c7007b116fd469dd459aed0aad0865c6",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -2372,6 +2506,8 @@
       "sha256": "c8d97c07166dca0f83d3fa9469a52a33f5502e0864a4e7a6a4f7f676b747f1f8",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2388,6 +2524,8 @@
       "sha256": "76e280a809b6352c60575a70e2ba5d400c5502e8c6690c9eb643a29578fbd864",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2406,6 +2544,8 @@
       "sha256": "3edb0359e23101478ac16973f74ac27e15790b2b17b96810839a52331adef231",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -2460,6 +2600,8 @@
       "sha256": "2a9219ae9862b26e495cec8ea3647b57eda9ac529a6f2edddac93cf457f0c964",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2476,6 +2618,8 @@
       "sha256": "a6ea5916ef44b0823b36c8d40c32a99539c17cf6d3903af85b84efbdc210502e",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2492,6 +2636,8 @@
       "sha256": "259da89f4eeb018c3c07dbc6373bd229deae287f69f72a42fa9f01ba8f8e2463",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -2515,6 +2661,8 @@
       "sha256": "a4e962ec511363d294aeb9a876c756fce1971d84ca4b152187f5a659053e0e97",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -2551,6 +2699,8 @@
       "sha256": "0bb985c2cde004feab6aaf59fbd6099686024a6152f2af847e1516f3f15f0907",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2569,6 +2719,8 @@
       "sha256": "6195ce1c12d05b6a98a149864fc66371ec6ffd20651829432482bca79e69235e",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2585,6 +2737,8 @@
       "sha256": "2dea48f4172c50fa6a9fce536dc6746585fa444c3ce96d949cc63053a327e308",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -2621,6 +2775,8 @@
       "sha256": "6d843862443d6757eb0092754329c84265206936346274cf74b5dd00475d0cf1",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2639,6 +2795,8 @@
       "sha256": "f02709103d842b1ab308e186fac1a67d66e248d6709a1f9190e20653d8262dca",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -2662,6 +2820,8 @@
       "sha256": "3d792707f13af457957fbf65efcbd6df57addb173cb9dec83bb5f7ea1a07e951",
       "group": "e2e",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -2680,6 +2840,8 @@
       "sha256": "408247eb334a10eb14e82792b4eb19cebaaadeeeafa0d815d6293f97095d8f86",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 187,
       "kind": "runtime",
       "declarations": [
         {
@@ -4468,6 +4630,8 @@
       "sha256": "e807bd03cfbc3cd31d631f72cb1c7500c515982310c5c378a66e3f337e647f53",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 10,
       "kind": "runtime",
       "declarations": [
         {
@@ -4577,6 +4741,8 @@
       "sha256": "0f05507b6cb840c45ef8823878797026f8fed9f52c80cd4ac74cf83c7ce8b30a",
       "group": "core-api",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 13,
       "kind": "runtime",
       "declarations": [
         {
@@ -4703,6 +4869,8 @@
       "sha256": "2b2b055203603dd300216601bcf2f8de06817408ba07736b31bfc288fb0b1d39",
       "group": "core-api",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 11,
       "kind": "runtime",
       "declarations": [
         {
@@ -4811,6 +4979,8 @@
       "sha256": "ae9666b7412e39888577cfbfae192ee04365f7cbddb1abeb24888b4e7b4f19c4",
       "group": "core-api",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -4829,6 +4999,8 @@
       "sha256": "fdaa7a06461b3588f1a6189622ae258ecdbda0160406444916e3fea15d5417bc",
       "group": "core-api",
       "status": "imported-complete-file",
+      "importedDeclarations": 38,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -5180,6 +5352,8 @@
       "sha256": "57bc38a610e86879d66e4ada35c208076b5f88c84528f95f933114aefd4ceb4a",
       "group": "core-api",
       "status": "imported-partial-file",
+      "importedDeclarations": 13,
+      "unportedDeclarations": 18,
       "kind": "runtime",
       "declarations": [
         {
@@ -5471,6 +5645,8 @@
       "sha256": "73215a1f0aa07fdc63424dbcc20cd7a1b33a1dabcd420ecad5d8a5c1dc5a8a1f",
       "group": "core-api",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 48,
       "kind": "runtime",
       "declarations": [
         {
@@ -5912,6 +6088,8 @@
       "sha256": "5aa3b8c8fb3e34413289cdb65e198d79401d8f40633dc1f02fd014c91bf78d68",
       "group": "core-api",
       "status": "imported-complete-file",
+      "importedDeclarations": 9,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -6002,6 +6180,8 @@
       "sha256": "ca6f4fd2c94472bfa1e64a17f84e55d62dec3289b84cd6a98854b0837a61bdb5",
       "group": "core-api",
       "status": "imported-complete-file",
+      "importedDeclarations": 25,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -6236,6 +6416,8 @@
       "sha256": "ee5c02cf86a152c40bdf57824ed96ecfd6ccd91f31bd59bcf64386b4543bef02",
       "group": "core-api",
       "status": "imported-complete-file",
+      "importedDeclarations": 2,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -6263,6 +6445,8 @@
       "sha256": "4462acbbdf6b2542d4745c3aafad8e1ffb2a03cceaba6cb60bf0d400e48daa8c",
       "group": "core-api",
       "status": "imported-complete-file",
+      "importedDeclarations": 25,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -6502,7 +6686,9 @@
       "path": "packages/better-auth/src/api/routes/session-api.test.ts",
       "sha256": "c2f561f44e3ca0c87b0fe18a40bcf30d63307dcedfaf3175fec4e9b32e25a6fc",
       "group": "core-api",
-      "status": "imported-complete-file",
+      "status": "imported-partial-file",
+      "importedDeclarations": 75,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -7197,6 +7383,8 @@
       "sha256": "e3a95758b155f436a34a1192149c273c751c7765e16da78e03bcdbcee4191df1",
       "group": "core-api",
       "status": "imported-complete-file",
+      "importedDeclarations": 26,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -7440,6 +7628,8 @@
       "sha256": "57191fc7868eaf4f06e16e90dc6983049d021e045ae2819d31c01ef97e0d6fea",
       "group": "core-api",
       "status": "imported-complete-file",
+      "importedDeclarations": 9,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -7530,6 +7720,8 @@
       "sha256": "ea89ea0816820740c06d8415bd0307246f9ad320566c2b545840785282fffc36",
       "group": "core-api",
       "status": "imported-complete-file",
+      "importedDeclarations": 37,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -7872,6 +8064,8 @@
       "sha256": "672be15b9def852b5c0f39222da716f1bfde9bd74c21181a1496a7c00564f502",
       "group": "core-api",
       "status": "imported-complete-file",
+      "importedDeclarations": 34,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -8192,6 +8386,8 @@
       "sha256": "4b48a7986995819eaeb94216666b9d5c84b601f7750191ef3fd70af9a8e7a18f",
       "group": "core-api",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -8237,6 +8433,8 @@
       "sha256": "83d2772347c6cfa06412f65adcc1c318c273465263f6caa7df8d0d8478655572",
       "group": "core-api",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 60,
       "kind": "runtime",
       "declarations": [
         {
@@ -8802,6 +9000,8 @@
       "sha256": "e8856f7bd98bb76970d759014690c9cd2a983bc0b1e0d24a73769034d69d89f3",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 15,
       "kind": "runtime",
       "declarations": [
         {
@@ -8946,6 +9146,8 @@
       "sha256": "8ad7c1a4d26afe5c976649aadf1259dd9f23f816ce7acb8e1699216902f87bbc",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -9009,6 +9211,8 @@
       "sha256": "b8ff6103609e8c2b49b25404df87b82ea1a02cb759f1d49073f9027b97c6e6af",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 10,
       "kind": "runtime",
       "declarations": [
         {
@@ -9108,6 +9312,8 @@
       "sha256": "e1efc5fa768006b88dbaec4de255bd659f189adf400b85dd3df1445a9824c0c3",
       "group": "utilities-and-tooling",
       "status": "imported-complete-file",
+      "importedDeclarations": 38,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -9496,6 +9702,8 @@
       "sha256": "d37624cf215f967127f6709177a0e82847de9cef521b9c42c8bc2b0ce27d9e57",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 20,
       "kind": "runtime",
       "declarations": [
         {
@@ -9685,6 +9893,8 @@
       "sha256": "b46983a922e08b69a52e563b88532bd0f111ec5d724a1ca3f4e860c5e88be34b",
       "group": "client",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -9703,6 +9913,8 @@
       "sha256": "024e8e213763515023bf3b09903c41c9a3bcf3eba98b0016713cc04ffe8c65de",
       "group": "client",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -9747,6 +9959,8 @@
       "sha256": "2057e7a0bad243cfd668dff0beb757863f64fdc2c0afd0b204b027060d4050f3",
       "group": "client",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 39,
       "kind": "runtime",
       "declarations": [
         {
@@ -10112,6 +10326,8 @@
       "sha256": "e9669637ea5c551665ec86ae7b36decb09d44a215059f5b5c67dc5935b09efc7",
       "group": "client",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 17,
       "kind": "runtime",
       "declarations": [
         {
@@ -10274,6 +10490,8 @@
       "sha256": "9bac052fd9959ab4c1fddbe15693d1012fe31be3e2387be76450dbaff14ec6ce",
       "group": "client",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 8,
       "kind": "runtime",
       "declarations": [
         {
@@ -10355,6 +10573,8 @@
       "sha256": "c8a9674e6eef95b08d4961510016414c6bd80b897a053e17d21cf10052158acf",
       "group": "client",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -10400,6 +10620,8 @@
       "sha256": "ecccf54bc9fd4787f35c2c2f0c7c159db855ed91918af9861f6d0bc94d8ec721",
       "group": "client",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 22,
       "kind": "runtime",
       "declarations": [
         {
@@ -10607,6 +10829,8 @@
       "sha256": "d494e9ee91fbc6354a1cd7efc4b9f1e4eceec538d84c5a7f677024e0712dceef",
       "group": "client",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -10661,6 +10885,8 @@
       "sha256": "fabdd9c1bf60272c10d96bcdb6c3b2c856e79179c80fdc402b5a28e431456a08",
       "group": "client",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 13,
       "kind": "runtime",
       "declarations": [
         {
@@ -10787,6 +11013,8 @@
       "sha256": "d0fb80b17d9462ebe73ae14d37adb6262145dc5ef1c930e83f45a256fae0b6ab",
       "group": "client",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -10832,6 +11060,8 @@
       "sha256": "27136ed7d5d05921bdb112579391a247cd8a0179ea0b2f374263fbd053774638",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 120,
       "kind": "runtime",
       "declarations": [
         {
@@ -12029,6 +12259,8 @@
       "sha256": "41651c5a01a7df171a1aa3e7721f4e6a28fab7acaaf2b600e0c526cc903b4756",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -12083,6 +12315,8 @@
       "sha256": "34a930d3755ff91f46cd6574305165e20df645b3bb8b5ab2cc85298d9d1dc07a",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -12146,6 +12380,8 @@
       "sha256": "b7e9b4646b6b95d201789c79742896545dfa09c6d80b73b44a27140a3b4b0bb0",
       "group": "utilities-and-tooling",
       "status": "imported-complete-file",
+      "importedDeclarations": 97,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -13031,6 +13267,8 @@
       "sha256": "d4e0e35b10d9e90e1ce2c1b37eb8d87d7b93bcd6fab9945ba8116d5a78d40779",
       "group": "utilities-and-tooling",
       "status": "imported-complete-file",
+      "importedDeclarations": 12,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -13148,6 +13386,8 @@
       "sha256": "6cc1122396373264586b2832112d60bf62cbb3761f2c370929773d765471d6ec",
       "group": "utilities-and-tooling",
       "status": "imported-complete-file",
+      "importedDeclarations": 3,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -13184,6 +13424,8 @@
       "sha256": "474daab13f7fffb24356f28fb4e868fac0dda6fcb93b33e1ff0f0fa01d9c229d",
       "group": "utilities-and-tooling",
       "status": "imported-complete-file",
+      "importedDeclarations": 40,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -13614,6 +13856,8 @@
       "sha256": "53b4a077494e9090820ae66b5cb37d175926456369af709c532482693f4f0a26",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 11,
       "kind": "runtime",
       "declarations": [
         {
@@ -13722,6 +13966,8 @@
       "sha256": "2e0ec7731898714253e49abef76368bb6b99a415f22675c5388b52f2ed09dbaf",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -13785,6 +14031,8 @@
       "sha256": "2f3db56295429c985f0dd86bcd7a70f50e5320cbe08326477c97f94afb667245",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 22,
       "kind": "runtime",
       "declarations": [
         {
@@ -13992,6 +14240,8 @@
       "sha256": "8fd25ec3b489c4b578aef9a7048ab30901038d2c19c016f081caefac38ef2545",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -14019,6 +14269,8 @@
       "sha256": "7d0d1128d1122d98c06d5796d1898e1aff61d4a10a132c312a365cf3ef0501ba",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 31,
       "kind": "runtime",
       "declarations": [
         {
@@ -14305,6 +14557,8 @@
       "sha256": "e4d05e4c04ec7bc6402f0ddee41599a74cdff3eb097e0d14d825cdc7980951be",
       "group": "utilities-and-tooling",
       "status": "imported-partial-file",
+      "importedDeclarations": 22,
+      "unportedDeclarations": 48,
       "kind": "runtime",
       "declarations": [
         {
@@ -14983,6 +15237,8 @@
       "sha256": "afc826ea7915d174cf0d36d882b60463499ab8d8d915bb8997e25db7f2fd18ec",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 16,
       "kind": "runtime",
       "declarations": [
         {
@@ -15139,6 +15395,8 @@
       "sha256": "7153ad7cf0b9a7178bba0ca52d18cbf6f1d91a32ecf5eff57080b44692c1a8ad",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 8,
       "kind": "runtime",
       "declarations": [
         {
@@ -15227,6 +15485,8 @@
       "sha256": "54ec10a5df8c9aa3eb32cc804de0035b9d5b32277451ed0c57433a011b8041d2",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 7,
       "kind": "runtime",
       "declarations": [
         {
@@ -15299,6 +15559,8 @@
       "sha256": "9d55939094f131dcadeb1e42e29a5d3f6e8f293d55f73d88a1757082036c1f37",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 9,
       "kind": "runtime",
       "declarations": [
         {
@@ -15389,6 +15651,8 @@
       "sha256": "63004306267809b3587874d35c981baca63848a57bc1784793c3bb59ac686ba9",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 8,
       "kind": "runtime",
       "declarations": [
         {
@@ -15472,6 +15736,8 @@
       "sha256": "29915b443ba90a545dd98f84f6624cfb66ccbe77e9cbfe64e720f85d50b6c49e",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -15526,6 +15792,8 @@
       "sha256": "8ba83ad570824fc654b967c80ca1c24a7ed7772a44df7d894c939da547e7b1ac",
       "group": "utilities-and-tooling",
       "status": "imported-partial-file",
+      "importedDeclarations": 15,
+      "unportedDeclarations": 23,
       "kind": "runtime",
       "declarations": [
         {
@@ -15880,6 +16148,8 @@
       "sha256": "abde730546a311f93a476c244d1370c78b7f8aa07272f0a41766d7632b5fac54",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -15943,6 +16213,8 @@
       "sha256": "7db6836af664300fe53e5a1920889ed3d19c553c0ae6364f2d7f8e4c7412a855",
       "group": "utilities-and-tooling",
       "status": "imported-complete-file",
+      "importedDeclarations": 13,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -16069,6 +16341,8 @@
       "sha256": "1d059cd620751e6690cfe668f4ebe658104e6868241b89f1c16da33a7cbcc2e3",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -16105,6 +16379,8 @@
       "sha256": "ea581b3a2e2a14a0c10853aa3aa0c0104753c2ad0af8d55421ea26e12f0894c3",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 18,
       "kind": "runtime",
       "declarations": [
         {
@@ -16275,7 +16551,9 @@
       "path": "packages/better-auth/src/plugins/additional-fields/additional-fields.test.ts",
       "sha256": "81a8731fb7e462ce0f2672a297f9aa5698d380555d1ed069a84299c7e089703e",
       "group": "plugins",
-      "status": "imported-partial-file",
+      "status": "imported-complete-file",
+      "importedDeclarations": 11,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -16384,6 +16662,8 @@
       "sha256": "ca811c9aa98f49ddc93658ee7cfccb0a88d792cc0fec33b14a74d8d75551d611",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -16438,6 +16718,8 @@
       "sha256": "9dc3f3bceeaf847a2285ebcadda4805387d4d2fee846771aa3609854ce4839de",
       "group": "plugins",
       "status": "imported-partial-file",
+      "importedDeclarations": 90,
+      "unportedDeclarations": 8,
       "kind": "runtime",
       "declarations": [
         {
@@ -17329,6 +17611,8 @@
       "sha256": "64f0d7665e4b5c115c67d2527bc4b4703f6a26cb0d0c7d1f8dd26ed8bf83f003",
       "group": "plugins",
       "status": "imported-partial-file",
+      "importedDeclarations": 16,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -17502,6 +17786,8 @@
       "sha256": "4ab76478e42b6d30b57e91b68e95da10b43ba43204e71515f1203bf744b21409",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 7,
       "kind": "runtime",
       "declarations": [
         {
@@ -17574,6 +17860,8 @@
       "sha256": "83689e217d042f00d6f4548a946f77e7acbc7fbd4e8836951f59811f7a187adc",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 44,
       "kind": "runtime",
       "declarations": [
         {
@@ -18019,6 +18307,8 @@
       "sha256": "4d9db61ce57ff64305380e8854aeccd8999de46cd9e954957668efc400780755",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 15,
       "kind": "runtime",
       "declarations": [
         {
@@ -18163,6 +18453,8 @@
       "sha256": "21a4b9781be113ef729cb250a642f3d0a605beb9bf57efd8bc0a8aa4be9ce5c6",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 63,
       "kind": "runtime",
       "declarations": [
         {
@@ -18762,6 +19054,8 @@
       "sha256": "46365cdb58f0455fe97cb4b497711dd08ce4234cfa8916e1213f3162d0f3fcee",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 7,
       "kind": "runtime",
       "declarations": [
         {
@@ -18834,6 +19128,8 @@
       "sha256": "a6e69a7e68dd46ae7c32e738c00aa4b92674a6634d3912072b3abdab822874b9",
       "group": "plugins",
       "status": "imported-complete-file",
+      "importedDeclarations": 88,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -19672,6 +19968,8 @@
       "sha256": "24e339e801fb7dcbe70245cae104169ae132609df41bac8276f75803f29980d4",
       "group": "plugins",
       "status": "imported-partial-file",
+      "importedDeclarations": 18,
+      "unportedDeclarations": 105,
       "kind": "runtime",
       "declarations": [
         {
@@ -20852,6 +21150,8 @@
       "sha256": "67007b74c2917fdd0037252409f7d9287fe159f75a1d386618fe9591d4c2b224",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 16,
       "kind": "runtime",
       "declarations": [
         {
@@ -21010,6 +21310,8 @@
       "sha256": "de3adb46f1ee4e1b143ad26919622f23a0065c2184508d45093182d324bf8d29",
       "group": "plugins",
       "status": "imported-complete-file",
+      "importedDeclarations": 41,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -21395,6 +21697,8 @@
       "sha256": "3337b7b6fcbc87e3557553cfe921a36d79a104321d92343bc7841b70226a877b",
       "group": "plugins",
       "status": "imported-complete-file",
+      "importedDeclarations": 22,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -21602,6 +21906,8 @@
       "sha256": "d2a563edc10da0958d3809976a1d2a1c07906a31f3f00ccb4a546ee2955fde10",
       "group": "plugins",
       "status": "imported-complete-file",
+      "importedDeclarations": 2,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -21629,6 +21935,8 @@
       "sha256": "6cc94e2adac31a9673feeaca39f32c9848e441a5824ac0fcc18dfe3988abb995",
       "group": "plugins",
       "status": "imported-complete-file",
+      "importedDeclarations": 11,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -21737,6 +22045,8 @@
       "sha256": "1a8a0c4850ef56dcd37cb1b41dfb3b11f72aa21edaf168ea73d023003c231d19",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 9,
       "kind": "runtime",
       "declarations": [
         {
@@ -21836,6 +22146,8 @@
       "sha256": "a59530ee13cb0140b78be2787fbb751944166654e3f9ff7799f0eb00569757b7",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 36,
       "kind": "runtime",
       "declarations": [
         {
@@ -22188,6 +22500,8 @@
       "sha256": "7b331570d386527dca9b2f86901481bdd85250df6734bc8e360beace97e6fbe8",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 26,
       "kind": "runtime",
       "declarations": [
         {
@@ -22431,6 +22745,8 @@
       "sha256": "a7a5c8bd9d25a6c57d0fa9c771723730ebc0fa44e1b9f3d36dc397d37a15f2b2",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 8,
       "kind": "runtime",
       "declarations": [
         {
@@ -22512,6 +22828,8 @@
       "sha256": "2be4cb23920ba88a7c7c34fe025bd5e3f02811f74b1625760af1fe2480b45654",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 13,
       "kind": "runtime",
       "declarations": [
         {
@@ -22638,6 +22956,8 @@
       "sha256": "91c299be8d872e79606d426cb48d4ed83059f9d0cb5682f6b19cfa67c9a6cba2",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -22692,6 +23012,8 @@
       "sha256": "02ed3716080388336ade36d4dbb46d6aef4a39597f199e6528cd1bcb5d23dd75",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 10,
       "kind": "runtime",
       "declarations": [
         {
@@ -22791,6 +23113,8 @@
       "sha256": "8f9c878ef3d3a2f52086138618b22cf4c74652722b49efb87fae4c46c50dfc31",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 41,
       "kind": "runtime",
       "declarations": [
         {
@@ -23193,6 +23517,8 @@
       "sha256": "4fbeac8c81edea3de83daf93e381347f734e219b6903a56e42b2048a2b3b674f",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 34,
       "kind": "runtime",
       "declarations": [
         {
@@ -23508,6 +23834,8 @@
       "sha256": "d733a31cdaf794335b94e69691862acc62e37754e15fc54615ca9b19c9d41c6e",
       "group": "plugins",
       "status": "imported-complete-file",
+      "importedDeclarations": 14,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -23654,6 +23982,8 @@
       "sha256": "09359c742cd3dd86dff4c1b503f45f29834b5910534f409383658226244be0d2",
       "group": "plugins",
       "status": "imported-partial-file",
+      "importedDeclarations": 16,
+      "unportedDeclarations": 16,
       "kind": "runtime",
       "declarations": [
         {
@@ -23951,6 +24281,8 @@
       "sha256": "2e79a3ca989832c99ff3c0de54299953035625e4e19336db15a292c5b980421a",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -23985,6 +24317,8 @@
       "sha256": "f00005e2ddc56a86742abf32271dbb369e4e44eecbda9680b9581ef88ebfb412",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -24012,6 +24346,8 @@
       "sha256": "2b9f83ea02196549bef4becb479482f7f07d98f7c1fb447aa7e4f2c437879028",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -24057,6 +24393,8 @@
       "sha256": "52869dfcdfd4403ff3ecc71104898d8ba51a17210da6baf80b8288ca7b2c2501",
       "group": "plugins",
       "status": "imported-partial-file",
+      "importedDeclarations": 12,
+      "unportedDeclarations": 88,
       "kind": "runtime",
       "declarations": [
         {
@@ -24968,6 +25306,8 @@
       "sha256": "434a87ab891bff64bc748f9c9a321b264e1c3429bbaecc6fde93fed209125fb3",
       "group": "plugins",
       "status": "imported-partial-file",
+      "importedDeclarations": 24,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -25202,6 +25542,8 @@
       "sha256": "c20c7b64aac086dcd221a567df9de4532fb87897aebe07c961205aeea9098890",
       "group": "plugins",
       "status": "imported-partial-file",
+      "importedDeclarations": 8,
+      "unportedDeclarations": 9,
       "kind": "runtime",
       "declarations": [
         {
@@ -25364,6 +25706,8 @@
       "sha256": "6cf2cdf33b5747b469237269c53c09bad31cb80e4074eeffd26fed9830d59173",
       "group": "plugins",
       "status": "imported-partial-file",
+      "importedDeclarations": 22,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -25580,6 +25924,8 @@
       "sha256": "7ea5f22620ba4ea5550a3e1cd4ead88c596b2d7d9187bf9d7219604c336d7469",
       "group": "plugins",
       "status": "imported-partial-file",
+      "importedDeclarations": 24,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -25832,6 +26178,8 @@
       "sha256": "9c8cfe98bf89eb6970e08f3eb667a49695a273b0e40fbe0615188cf443b520ae",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 51,
       "kind": "runtime",
       "declarations": [
         {
@@ -26300,6 +26648,8 @@
       "sha256": "41895bc8e2d18aaca30c46c328e27090a5bf10e2db50cf3216903351a46bb464",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 46,
       "kind": "runtime",
       "declarations": [
         {
@@ -26726,6 +27076,8 @@
       "sha256": "416e75eba1b94d82c301cb2a20d4149154db27bea8f28825a68f0155f8d6fd77",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 34,
       "kind": "runtime",
       "declarations": [
         {
@@ -27047,6 +27399,8 @@
       "sha256": "4dd1162261ad07e9daaf3e5557c3630331f8bd0ce5066bc46ef1533b2615fb37",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 21,
       "kind": "runtime",
       "declarations": [
         {
@@ -27266,6 +27620,8 @@
       "sha256": "06f852ca7c9b30202dc30a680aeadeaa15b71400733fb9a4a788730ac048040c",
       "group": "plugins",
       "status": "imported-partial-file",
+      "importedDeclarations": 7,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -27373,7 +27729,9 @@
       "path": "packages/better-auth/src/plugins/two-factor/two-factor.attempt-cap.test.ts",
       "sha256": "82a88b99e7f8d60faa57f1ff127ef5d1372bff51c6eeb5d6d1ca24ac5bf0c55d",
       "group": "plugins",
-      "status": "imported-partial-file",
+      "status": "imported-complete-file",
+      "importedDeclarations": 4,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -27419,6 +27777,8 @@
       "sha256": "c810bfb5cf925ac689e9c02027e1ae1b42129bcd3fa00186eb9207c16d504289",
       "group": "plugins",
       "status": "imported-partial-file",
+      "importedDeclarations": 9,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -27527,6 +27887,8 @@
       "sha256": "8a98de0460dfb27477155bebb12589f5056240efc02a5689125d56f192d061dc",
       "group": "plugins",
       "status": "imported-complete-file",
+      "importedDeclarations": 66,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -28140,6 +28502,8 @@
       "sha256": "ae7bd2adf375db2960208f4d58800920e8922a106a6c3d68857366c4d78f312b",
       "group": "plugins",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 53,
       "kind": "runtime",
       "declarations": [
         {
@@ -28626,6 +28990,8 @@
       "sha256": "541df252e14d98020e8fead14d84f267d44b4ea4ea34179932957f7f1deb7c09",
       "group": "utilities-and-tooling",
       "status": "imported-partial-file",
+      "importedDeclarations": 5,
+      "unportedDeclarations": 80,
       "kind": "runtime",
       "declarations": [
         {
@@ -29403,6 +29769,8 @@
       "sha256": "451d2c02cc62b7a97227cac6bcce443722707135df6464e6edca2e45212b8c8a",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -29430,6 +29798,8 @@
       "sha256": "3f6369c64f2cdaeb6874ce247cb833acad9998298a89aac5cc5c473d5d81f1f4",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 25,
       "kind": "runtime",
       "declarations": [
         {
@@ -29664,6 +30034,8 @@
       "sha256": "4064481c36ddaa550a9a395fe7b5d60d803906f03b7b7c085749ab3f87fdc1b0",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -29682,6 +30054,8 @@
       "sha256": "bc265caa3431027f94428e21f038601d2c1aa8cd20f2a6477284e5f52f4e50d9",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 57,
       "kind": "runtime",
       "declarations": [
         {
@@ -30234,6 +30608,8 @@
       "sha256": "e16620868f06e56b979877f20e883a6044b7541090c6d1d200555af9bee7c62d",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 16,
       "kind": "runtime",
       "declarations": [
         {
@@ -30387,6 +30763,8 @@
       "sha256": "b594f6510fbdfbccf5108b8e523d986d2e9062a6e9809bc96e6e1fcf83933938",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 10,
       "kind": "runtime",
       "declarations": [
         {
@@ -30486,6 +30864,8 @@
       "sha256": "6ee428aebc12b6cb4d285a6e90446b7d945e29e8cafa8a0761189ff3c02ed55c",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -30531,6 +30911,8 @@
       "sha256": "ea83af5bfb5ef04d698a025b2a08699d1ccf6b4268c0d50cfa2033ebaf07d22b",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 14,
       "kind": "runtime",
       "declarations": [
         {
@@ -30666,6 +31048,8 @@
       "sha256": "6dbcc93b61aa2c914d25420bf982143bab888c831b2aa8e332492b985ad1a5d5",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 10,
       "kind": "runtime",
       "declarations": [
         {
@@ -30765,6 +31149,8 @@
       "sha256": "2ec83b20a93fcbcd0bc1936eecf0947006b6fdb9a332771f4a8dd65b96234705",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -30828,6 +31214,8 @@
       "sha256": "df5c6d2ac86a39a07e789016212ef6bc20567d14d9d697a3e7df098c4a7995cf",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 10,
       "kind": "runtime",
       "declarations": [
         {
@@ -30929,6 +31317,8 @@
       "sha256": "344db3e049ad304f23345a636d3bd27e1184eb056c4e0667e9c048a992c1e3b1",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -30956,6 +31346,8 @@
       "sha256": "25ec6110aa0edacd1824eccbc4b3894b1dc77cbedf1d110757ebbeb5caee44dd",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 93,
       "kind": "runtime",
       "declarations": [
         {
@@ -31802,6 +32194,8 @@
       "sha256": "ac4fae43784dfc32a59684561ecf01ed1b7326e04a17ea7eec3f0618f8cb5042",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 8,
       "kind": "runtime",
       "declarations": [
         {
@@ -31883,6 +32277,8 @@
       "sha256": "e1c6a2ba2763e204f4d1329d72de124138beeeaa23d46efd3866e71e73a26bfe",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -31928,6 +32324,8 @@
       "sha256": "38765bb8b579051275db8ac4680436383b14976140a073b17a5bea11ef50a2f3",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 11,
       "kind": "runtime",
       "declarations": [
         {
@@ -32047,6 +32445,8 @@
       "sha256": "05f913b499d9d92d8f8518982b5560b2115b7bed23ed833100f3f6a769816851",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -32116,6 +32516,8 @@
       "sha256": "63dfa46a251459210d902988f2f300ff290b1e4a002657ca12af34b0f795ac86",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -32145,6 +32547,8 @@
       "sha256": "7245627ad953957c5e4b25464e4345605859b6259295adfda5eaead0e912599a",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 10,
       "kind": "runtime",
       "declarations": [
         {
@@ -32244,6 +32648,8 @@
       "sha256": "4b65f202ed71e4838da76d2a11f22ae659dfc971dad2267c2d68ec8c82d821e8",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 66,
       "kind": "runtime",
       "declarations": [
         {
@@ -32932,6 +33338,8 @@
       "sha256": "b0f25da7501d8898756e8e0a67e415ebad039df257476969aec892b2a51fb7bc",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -32986,6 +33394,8 @@
       "sha256": "5b13771a52a16fa3fb9b1eef361e94c40aae24abd58a6e964c4adfd9dfdfc4b0",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -32994,6 +33404,8 @@
       "sha256": "c913d99c4133eeb43952c95a2f052640ca76a201105516278f07ca37c2084808",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -33021,6 +33433,8 @@
       "sha256": "0702e2052b4c8044447d64f2b2fbe6bb87bec54a382e8c4e0fd3f4ef7ed758cc",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 7,
       "kind": "runtime",
       "declarations": [
         {
@@ -33093,6 +33507,8 @@
       "sha256": "9a082bff944490ba04fab860621064e06a34358273aac102fc0fd1267f8984d7",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 12,
       "kind": "runtime",
       "declarations": [
         {
@@ -33210,6 +33626,8 @@
       "sha256": "2a3dd2686e94492af567c8fa472e4c6b503448bf2c1e4a917eadceeb48df9dd5",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 81,
       "kind": "runtime",
       "declarations": [
         {
@@ -33952,6 +34370,8 @@
       "sha256": "f812cd8d3a190e406145e79fc76c94a9f89e4a087fe9283b5067c8485f60d6b9",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 47,
       "kind": "runtime",
       "declarations": [
         {
@@ -34384,6 +34804,8 @@
       "sha256": "7791e487107879c8d5c6233a24c0c4385de9a86b7f9e7e8a2eefb836ff8572af",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 10,
       "kind": "runtime",
       "declarations": [
         {
@@ -34483,6 +34905,8 @@
       "sha256": "4770a512981fec0f6bec6ea6b9b49f189606443466171c4b756e20a1d3f9011b",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -34491,6 +34915,8 @@
       "sha256": "ce53df89c50252fb10292edc507384cdcf4849db9d210d6168c96869f4979ebd",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": []
     },
@@ -34499,6 +34925,8 @@
       "sha256": "4102377733823177fa894bf3ed4a9c5807a21f15255de7d19bf5b6e90d74a981",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -34535,6 +34963,8 @@
       "sha256": "281210fdec9c3132e66b82651336395c30d4370772f061cd33ece75621509460",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -34562,6 +34992,8 @@
       "sha256": "ec09ddcd2035b37ef9a0f93a0a18251235c4082e1ab72f4dab8f35995a9d7b18",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -34598,6 +35030,8 @@
       "sha256": "2f29136c73b3eeaf1d95801cca8af95bf814c8af5fcee5b03e6f1ea41014da2a",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -34625,6 +35059,8 @@
       "sha256": "ea76342fb2b0a08d4f518fb8a4b23d126c517a7f12da22dcd90054506bf255ed",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -34688,6 +35124,8 @@
       "sha256": "1e53f3acf6b843bdb1ecf611a5af60f6bdefaf8d6060e5a7c10b9ed90c144c63",
       "group": "core-api",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -34724,6 +35162,8 @@
       "sha256": "37d2fccaa7ba2782faee6000140352bc1c6ad811a9533f418f5dbc976852b29c",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 10,
       "kind": "runtime",
       "declarations": [
         {
@@ -34832,6 +35272,8 @@
       "sha256": "bd6159a9d3948d6e38514d839d981f85377e4bda254d9ae7a4cf94c189c98a8b",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -34877,6 +35319,8 @@
       "sha256": "f8c3e11a439e2ba18f5d23a8cbd2e0da6b436f7275d094941eea04c63909a784",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -34913,6 +35357,8 @@
       "sha256": "88b3c014023b7fb0ab0b4250be01ac1f6cc00fde21c2109a82af2f7b93ab96fa",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 8,
       "kind": "runtime",
       "declarations": [
         {
@@ -35002,6 +35448,8 @@
       "sha256": "74ac920ec7cdd0a40121f341477f3f183a1c1e2033b295bf334e3ff1e8117cd3",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 15,
       "kind": "runtime",
       "declarations": [
         {
@@ -35150,6 +35598,8 @@
       "sha256": "3e69d3c1347a994651dbde5b7cd4e461e93e74a909e0bc712e3c74847962b09e",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 33,
       "kind": "runtime",
       "declarations": [
         {
@@ -35456,6 +35906,8 @@
       "sha256": "8d5776f031c44ec63310a638f05567846a5873fc103db00b4f7c68fe57e38594",
       "group": "utilities-and-tooling",
       "status": "imported-complete-file",
+      "importedDeclarations": 23,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -35678,6 +36130,8 @@
       "sha256": "d894f6ef791d38e86d0082d3faed9dd253bdfa704d401f472e08864599b2791c",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 9,
       "kind": "runtime",
       "declarations": [
         {
@@ -35768,6 +36222,8 @@
       "sha256": "06a80ca58aae96085a8f1471cc1411c349ba4419671fa397f4696ae50916f9eb",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -35804,6 +36260,8 @@
       "sha256": "60bb2fb487774a037c82adbb10546a5d8866218a99fcc4f2dfe0579d1c6a621e",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 12,
       "kind": "runtime",
       "declarations": [
         {
@@ -35921,6 +36379,8 @@
       "sha256": "b962c8a670f0af7d831d144727983aff7761596ca73225afe0150ee07c95404a",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 13,
       "kind": "runtime",
       "declarations": [
         {
@@ -36047,6 +36507,8 @@
       "sha256": "143c9bd6464f624e71becce57e459e9aecf057d923760fd237850525cdd7f588",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 7,
       "kind": "runtime",
       "declarations": [
         {
@@ -36122,6 +36584,8 @@
       "sha256": "c22c0b7019dd5e3140a0b1d0e392881b86109d2c49408406e15f18a1619fac3b",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 17,
       "kind": "runtime",
       "declarations": [
         {
@@ -36286,6 +36750,8 @@
       "sha256": "159c2ae59155e1cc290728129c71a08c38976059710585d40fc0aa87ee2f50be",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -36304,6 +36770,8 @@
       "sha256": "2538bd9b3fc339f6a5b9e48cf75756be4fc3a1ae7bf6648a439a82e239db271e",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -36349,6 +36817,8 @@
       "sha256": "daf18d954db62c2d53ab1f1a58ea1b2ba7d5b1cab5a05d522f6fae5da89fd86c",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -36403,6 +36873,8 @@
       "sha256": "66be6c673cb3f078e89811a06e2f2a7f6ea5e6b549e16668967d90f338262dae",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -36430,6 +36902,8 @@
       "sha256": "fe007811c61eccb25f5c1dcfe56bb5bdc294283c99b3589327eba581d89f6b57",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -36457,6 +36931,8 @@
       "sha256": "df0a8be02ed40b0c39878499259d1875621bbd704adb91791b9134333c6d28aa",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 13,
       "kind": "runtime",
       "declarations": [
         {
@@ -36583,6 +37059,8 @@
       "sha256": "b0157c61ee601afe5af0307cd25663ebdb3dd1bee34ec4dc6dd479d5feb44415",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -36628,6 +37106,8 @@
       "sha256": "67d38260bbe878be68319b90590e573a740e707e53c70386ec836ac307bdae67",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 7,
       "kind": "runtime",
       "declarations": [
         {
@@ -36700,6 +37180,8 @@
       "sha256": "9f202118cd9a6e85f5133624e2b226ad2ba42593de5ac688516d7d70dd026ecb",
       "group": "utilities-and-tooling",
       "status": "imported-complete-file",
+      "importedDeclarations": 13,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -36826,6 +37308,8 @@
       "sha256": "d527b5b3ad93fc4febaba847835e1abf82c6a2e02712d59d18e64b3c352d9e45",
       "group": "utilities-and-tooling",
       "status": "imported-complete-file",
+      "importedDeclarations": 14,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -36961,6 +37445,8 @@
       "sha256": "1d21a61afd56d6b64b400cd71a7a1de66040c6305bab27ddac6b6876681955f8",
       "group": "utilities-and-tooling",
       "status": "imported-complete-file",
+      "importedDeclarations": 4,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -37006,6 +37492,8 @@
       "sha256": "299abb3b08507ec6cbb8d85bf17595952efbb2188b1c413790951153841c86cd",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 17,
       "kind": "runtime",
       "declarations": [
         {
@@ -37168,6 +37656,8 @@
       "sha256": "ccd83783ce4ef55483ae5959f30174b11fb768d48e70ef9a207164564553d658",
       "group": "utilities-and-tooling",
       "status": "imported-complete-file",
+      "importedDeclarations": 17,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -37330,6 +37820,8 @@
       "sha256": "320674f90d8f920f3baf8d556d7e805b37afd00d2aecc846bfbbe8b9abcc0f19",
       "group": "utilities-and-tooling",
       "status": "imported-complete-file",
+      "importedDeclarations": 8,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -37411,6 +37903,8 @@
       "sha256": "b3ca72c094963dc38b0e6374b1b9a81067ac3d7770c9896ed71913f3bc117ad5",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -37447,6 +37941,8 @@
       "sha256": "eac9a542ce79315c9b4ccc56f91edda3197af83b9a5caefd1ad72b79261901df",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -37501,6 +37997,8 @@
       "sha256": "0522fd03106df3b2ec1b8ea3516b7ebb954f10d63782ce4507f661fd366c24bd",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -37546,6 +38044,8 @@
       "sha256": "1fa934572c5984056c06afe46fcdff7eff140203bfb80fb6284d0d5f8670316d",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 18,
       "kind": "runtime",
       "declarations": [
         {
@@ -37722,6 +38222,8 @@
       "sha256": "7bc35efa507023ad93574da542f909f4a2603d0def5dc09b6a90adc78d13a6bf",
       "group": "utilities-and-tooling",
       "status": "imported-complete-file",
+      "importedDeclarations": 17,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -37889,6 +38391,8 @@
       "sha256": "7e75f783870a7303ac2f0f5533108d189408baa7333ddcbeec8e04e9f5780a4f",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 45,
       "kind": "runtime",
       "declarations": [
         {
@@ -38315,6 +38819,8 @@
       "sha256": "de190550e0bee26cb911a4b767a3f82c10b39daa0dc6338d0fcc18cdea81d57e",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -38378,6 +38884,8 @@
       "sha256": "3bd7b0a2468c42931f353a35c24279414428583594b927153ac2c0d90b172cd6",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -38439,6 +38947,8 @@
       "sha256": "04924c8957ea41dd564604632aca8b2bf2bbc3369d9711ccce87923fd6ee3c40",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 9,
       "kind": "runtime",
       "declarations": [
         {
@@ -38529,6 +39039,8 @@
       "sha256": "3a1c7c2e607253faff49259f4ba25d83a4125f1318a671ab40ec43f74721db5b",
       "group": "utilities-and-tooling",
       "status": "imported-complete-file",
+      "importedDeclarations": 15,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -38685,6 +39197,8 @@
       "sha256": "38a029cd6f26999050f7481432be0d26ed6c0a5457f884ee8214ed1bd5660908",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 15,
       "kind": "runtime",
       "declarations": [
         {
@@ -38829,6 +39343,8 @@
       "sha256": "f3536bb014e460989e14596ad712e99d8137b5eb88e980308bb29fd51b5e6239",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -38847,6 +39363,8 @@
       "sha256": "5d75572152cee021a7b0f296703707e8d668c84cb22280d3d264d6d74e04198f",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -38910,6 +39428,8 @@
       "sha256": "8d30252a34b533004b20f3d249957b21656994217bf39bb1729a3ac8e09b9192",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -38964,6 +39484,8 @@
       "sha256": "f93645447999f8c5af873ae546942b827f4b291d0625f62c363c0fcbe5834109",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -38982,6 +39504,8 @@
       "sha256": "cca6c0a29b859186343f1b5e07d4c9ecf25e550ea2c11f113854b682abc79f4f",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 25,
       "kind": "runtime",
       "declarations": [
         {
@@ -39216,6 +39740,8 @@
       "sha256": "85f794924f4a4218ada64a6851f559024f9d318a6a9732ef4c0d8441dc1d858a",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -39252,6 +39778,8 @@
       "sha256": "16fadb38c5b3657aedbe5e8516b7828db6ff9e4f3cbbfe9e6772b5aa364f6e35",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -39270,6 +39798,8 @@
       "sha256": "212ac163a5a9e00d49d66270e07b92d74c55bed08610a83d1d54fb0ce2985764",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -39297,6 +39827,8 @@
       "sha256": "18f14733fe54a0542f42e74f6c6d6a71c4cd7ba9e68e580ab97fe7bad8d38aff",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 7,
       "kind": "runtime",
       "declarations": [
         {
@@ -39369,6 +39901,8 @@
       "sha256": "c9676c0eba57cf821b78efa080c7d7bfe871910047e6844d43248f296dfe0e05",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -39414,6 +39948,8 @@
       "sha256": "c0a6224c4619ee1f27094a42a27dc77b3662cce6fa68c949d333ccee2975dcb3",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -39432,6 +39968,8 @@
       "sha256": "9580ef69e122782a93f39f3a856e3fd78a4d0424d1615dec65e1b8487fa1e94b",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 12,
       "kind": "runtime",
       "declarations": [
         {
@@ -39549,6 +40087,8 @@
       "sha256": "1fa3df4904cd41e16d97bab4ef827e405775604b5204270154c9c887687da151",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -39603,6 +40143,8 @@
       "sha256": "85f5bbb76fc77fa6f18232f05fce3a9efd9e43f0b7f50d0ca93f621a61202ada",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -39639,6 +40181,8 @@
       "sha256": "c565ac62e564df3b9f21ca8ec05df22dc7dc6b012c5ac03cd708a54c9834d3bf",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -39675,6 +40219,8 @@
       "sha256": "8dd56e91c6cc2ca035d1636dccd9a28582acd243209afad6986a3f6bcc7656a3",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 77,
       "kind": "runtime",
       "declarations": [
         {
@@ -40464,6 +41010,8 @@
       "sha256": "b3142a1c4a398bbc1d084e74c8d7ff3df14aab3abadd9b40453d781068fb95b9",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 40,
       "kind": "runtime",
       "declarations": [
         {
@@ -40873,6 +41421,8 @@
       "sha256": "f23847aabff976b2dfc6b8c33d6faadca2636705abbd3f23069830415305e4d1",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -40927,6 +41477,8 @@
       "sha256": "be0d139c945a63e4407da304cf2059c4558c64ff23c1f17a889d6dc200a50936",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 23,
       "kind": "runtime",
       "declarations": [
         {
@@ -41143,6 +41695,8 @@
       "sha256": "d44a0bcc38a060fd6441e709c4cfd480e7c3a6bc5ff8426f560daf95a3795330",
       "group": "adapters",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -41206,6 +41760,8 @@
       "sha256": "948a99afdca0ac4d93de993b7815c00daf7f5d64cf7efd4e87fc384a4d6d212e",
       "group": "adapters",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 18,
       "kind": "runtime",
       "declarations": [
         {
@@ -41393,6 +41949,8 @@
       "sha256": "d22963fb00d538bb6866ec4d655fadcf143aba131e7966da288983bf7fcb69d2",
       "group": "adapters",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 9,
       "kind": "runtime",
       "declarations": [
         {
@@ -41483,6 +42041,8 @@
       "sha256": "a9f6ce71eb01d7708c683e9ac2abbf4732b8bfd33c3d36af73b19e26db9c0f5d",
       "group": "adapters",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 14,
       "kind": "runtime",
       "declarations": [
         {
@@ -41627,6 +42187,8 @@
       "sha256": "edf49342da6d497206b270e8ec36f86f4b16b10fbec2665ff52b47a8c68e2130",
       "group": "adapters",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 9,
       "kind": "runtime",
       "declarations": [
         {
@@ -41717,6 +42279,8 @@
       "sha256": "ebee45f6d20cab05690ecd9e20d77c5a9a8fff726bf7382f656347f2c39d6635",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 79,
       "kind": "runtime",
       "declarations": [
         {
@@ -42480,6 +43044,8 @@
       "sha256": "c05aae3e6e3572579471009379facb1289fea7868d53d03ab08e34830e2dd937",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 37,
       "kind": "runtime",
       "declarations": [
         {
@@ -42811,6 +43377,8 @@
       "sha256": "f6219681f610adbe23d7e7ca08ef1d44bad450566123f8aa6d57efe0b72d6985",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 48,
       "kind": "runtime",
       "declarations": [
         {
@@ -43254,6 +43822,8 @@
       "sha256": "ff1786a6fec7f6adcd092cc00296300e38421cda228a9881106a88761be0d4e8",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -43290,6 +43860,8 @@
       "sha256": "d8f0abe4a508878758b079dfd8f57c4b4e652cf3fce7dd42a3d634c5dbe77fb8",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 18,
       "kind": "runtime",
       "declarations": [
         {
@@ -43479,6 +44051,8 @@
       "sha256": "744456f6c348c93c31a4afc728710f043ae4b7732256211333d65548f5243080",
       "group": "adapters",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 13,
       "kind": "runtime",
       "declarations": [
         {
@@ -43605,6 +44179,8 @@
       "sha256": "99f645c7035779a538d6470308e79087d677454397ae107222230327b05473ce",
       "group": "adapters",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -43650,6 +44226,8 @@
       "sha256": "33f71ce296e961e51e9e34cfdb5c348cf9c4534b88d62971dd5b3117b984d34f",
       "group": "adapters",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -43695,6 +44273,8 @@
       "sha256": "2755335eca24ebca58e9e83163de84b7a2ced6ef7a19a5aadbf73baed0df8035",
       "group": "adapters",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 11,
       "kind": "runtime",
       "declarations": [
         {
@@ -43799,6 +44379,8 @@
       "sha256": "c81b51f1dc1283e65a9b47d6b26d423f020d317adbf8dd693ae5fb4cfc7b8562",
       "group": "adapters",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -43844,6 +44426,8 @@
       "sha256": "441424eaddcef44a1c9c19e6918d36039961e0a91a8cb5c1a09f9194a6c2801e",
       "group": "adapters",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 7,
       "kind": "runtime",
       "declarations": [
         {
@@ -43916,6 +44500,8 @@
       "sha256": "6a4120f2ffe54f65535b83531c69c5950ed09dd96bd0d3253307c1aa6ae8f633",
       "group": "adapters",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -43979,6 +44565,8 @@
       "sha256": "14eb64e5cc43afd65f4daf3b9ad06cc311ebd149aa0b2ddc4a5184604ab85b45",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 10,
       "kind": "runtime",
       "declarations": [
         {
@@ -44078,6 +44666,8 @@
       "sha256": "df80334214e09b13dd24a8d97c9a22a463821c52171120aaa4f3513aa114e99e",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 11,
       "kind": "runtime",
       "declarations": [
         {
@@ -44186,6 +44776,8 @@
       "sha256": "6f2d5b62daa651b7389b94c25cde7bf0b0230a3e64c7688506fb02e9e541e528",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 20,
       "kind": "runtime",
       "declarations": [
         {
@@ -44390,6 +44982,8 @@
       "sha256": "684db0fc4333866b08a48e0c3ee2fcdef8bbcd2cb8c7368df16577884cb28c39",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -44417,6 +45011,8 @@
       "sha256": "2da7392e65e3b7873ab1bcad97896bf173082ac2e4238a777059bce8cae6b72b",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 16,
       "kind": "runtime",
       "declarations": [
         {
@@ -44570,6 +45166,8 @@
       "sha256": "05a35abef5a3611277360e168acc1e9c835b771468e063969259c80edb7a2016",
       "group": "adapters",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 17,
       "kind": "runtime",
       "declarations": [
         {
@@ -44730,6 +45328,8 @@
       "sha256": "cff384b343ded48a94624aee9604571fcb09e37737ccf6f6bd35d0d9a0d95334",
       "group": "adapters",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 23,
       "kind": "runtime",
       "declarations": [
         {
@@ -44946,6 +45546,8 @@
       "sha256": "ce5742221977830094a4c101227e22d2f82db320cb88b81d3a51e0c8d3e80224",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -44991,6 +45593,8 @@
       "sha256": "da7227e211e67a56dbca862bb0030f71bf5c5e44e3ccd91f4a6d44b159e0584d",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 58,
       "kind": "runtime",
       "declarations": [
         {
@@ -45529,6 +46133,8 @@
       "sha256": "e3d307401a78f6ea765894bd1283dffcc25af1a851ba54424679adbaec3f17d1",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 12,
       "kind": "runtime",
       "declarations": [
         {
@@ -45646,6 +46252,8 @@
       "sha256": "c01404d42e7b42c973305a31be255729123caec294daecb17f857f512cfad556",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 12,
       "kind": "runtime",
       "declarations": [
         {
@@ -45763,6 +46371,8 @@
       "sha256": "067eb7d2e0c62f4267fccfa727215fca4ddf6e5d8f7f4d0fee3c361e1ea67d95",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -45826,6 +46436,8 @@
       "sha256": "cfaa7e5b4a01aeae398756ec733a1abf92a6aa7c3ac18ace71be51577aa9ed88",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -45862,6 +46474,8 @@
       "sha256": "8827dbe24f2fd554ea90095b637f02de108213a52e7e350cf90f94ef0e9e7d00",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -45878,6 +46492,8 @@
       "sha256": "4b271b64cc0e1f660bb6653545ba83e5a2e8683a8ddf0e9ea41e2a1098649949",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 49,
       "kind": "runtime",
       "declarations": [
         {
@@ -46328,6 +46944,8 @@
       "sha256": "cc32640e31efd69f9cc482f954991eb32e52963e640e7379b383a223feed5647",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 31,
       "kind": "runtime",
       "declarations": [
         {
@@ -46616,6 +47234,8 @@
       "sha256": "6bc1bab0586587431015b9f00a61a11fdf2b027ee0898a87f68c74e41437ef76",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 22,
       "kind": "runtime",
       "declarations": [
         {
@@ -46823,6 +47443,8 @@
       "sha256": "28a4d090fb1efc2b87183b1d8d48e0447a26479689495f599c3eee7175a5accc",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 14,
       "kind": "runtime",
       "declarations": [
         {
@@ -46958,6 +47580,8 @@
       "sha256": "c5b360f9f3e293df0d55fd24a45939d2eeb28cc61abeb821a952688c3381e596",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 30,
       "kind": "runtime",
       "declarations": [
         {
@@ -47237,6 +47861,8 @@
       "sha256": "a287671693f346eb7591ea184cd6c3a8e31261e9e95ff6bb8164964e86034d7a",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 26,
       "kind": "runtime",
       "declarations": [
         {
@@ -47480,6 +48106,8 @@
       "sha256": "5cb37eb5ed3beb2b7edcac03fb46622b7cdf7e7b085c8abfda586d4ef110046c",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -47525,6 +48153,8 @@
       "sha256": "0a5b2ef3a824915e2f76e432bd3d5afcb9f160283790b5c736025acd9592aae6",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 21,
       "kind": "runtime",
       "declarations": [
         {
@@ -47743,6 +48373,8 @@
       "sha256": "0d0e368717a7d8eb59db37ba57d0d39f0ebe512784149452becdfcc23ad2c431",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 11,
       "kind": "runtime",
       "declarations": [
         {
@@ -47851,6 +48483,8 @@
       "sha256": "8e27d6d2871546f6d48e5e80dd2b7c4c17a650112f10f956e4a19e0261f0924e",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 47,
       "kind": "runtime",
       "declarations": [
         {
@@ -48283,6 +48917,8 @@
       "sha256": "271d5469a54ab78ed1abc07c43e7037de5ea62eb6b4ead78d32c57f06bcc8176",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 27,
       "kind": "runtime",
       "declarations": [
         {
@@ -48535,6 +49171,8 @@
       "sha256": "a3323d10345a45aa43179439926491bad3c8eae87fb6b81212ea3766b3fab067",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 13,
       "kind": "runtime",
       "declarations": [
         {
@@ -48657,6 +49295,8 @@
       "sha256": "33eeab28ec8b048a68884b0459551b23dcfa6ce7db1a2054bb081846c57c89de",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 23,
       "kind": "runtime",
       "declarations": [
         {
@@ -48873,6 +49513,8 @@
       "sha256": "e1d867df8c99a072710347847116863b2106a6217a9e77b82fcb4dae96bfbb1b",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 7,
       "kind": "runtime",
       "declarations": [
         {
@@ -48945,6 +49587,8 @@
       "sha256": "d69cf4774bfa00aa3087ede80be330d14619128539798437b8ba3c832754e631",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 27,
       "kind": "runtime",
       "declarations": [
         {
@@ -49197,6 +49841,8 @@
       "sha256": "bf40807c8e84f2206fe7cf2b44d397c773151b7892fff49bc1c5ba15b0499760",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -49224,6 +49870,8 @@
       "sha256": "019cbd71a2d81e0cd98ab48bf1e676b0ea892c8ec2970fdd7e24179b0192bb3d",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 21,
       "kind": "runtime",
       "declarations": [
         {
@@ -49422,6 +50070,8 @@
       "sha256": "6acaa2f09f48fb5715fb818959a56dc22dc3069da60559e7667ea2da4b1d4f3f",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 16,
       "kind": "runtime",
       "declarations": [
         {
@@ -49575,6 +50225,8 @@
       "sha256": "9c49469d73245fb78fc7290ef3b712f9be244e3d1e9885e54ba060004b47de9e",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -49638,6 +50290,8 @@
       "sha256": "73e5c4cc92a2836e5f1a0ff526bf5529e70d0c8af1d656610c92c1108b497093",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -49665,6 +50319,8 @@
       "sha256": "ad0a900c1237f043f63157428d96ce685543bd22ab6e5edc57766a886eec1335",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 36,
       "kind": "runtime",
       "declarations": [
         {
@@ -50000,6 +50656,8 @@
       "sha256": "1abc27599d4244d30b0bf7d4f5851e4e3e12ebf058f1f3a3b016959ddf905315",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -50027,6 +50685,8 @@
       "sha256": "6aa974911b6b679483c1dcf5d291241d9e0082bc33e54fe91e3c53b988a35dd7",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 82,
       "kind": "runtime",
       "declarations": [
         {
@@ -50777,6 +51437,8 @@
       "sha256": "f816c1579cb1aa4f0860380dbeef09d6a8fdeb37d6b3ea03e1e65c912af666e0",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -50831,6 +51493,8 @@
       "sha256": "58971024f7d9c44c18b0e0fe2cb8e1be89901e73406a9bd27f4eca1a193e9dc8",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 12,
       "kind": "runtime",
       "declarations": [
         {
@@ -50948,6 +51612,8 @@
       "sha256": "c52213f62a639a3f872eaa61c7c4ef00cb4575b7474bbace6518e9de1c036f49",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 31,
       "kind": "runtime",
       "declarations": [
         {
@@ -51236,6 +51902,8 @@
       "sha256": "b604a976035d6c56b2bd71fcf537b05de812958b1cecb4c1bdfc9ba6dacda463",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -51299,6 +51967,8 @@
       "sha256": "3362c47fa71e0c1c6ae761354769cb7d072e2affaccfafd462488664f8bb48e3",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 28,
       "kind": "runtime",
       "declarations": [
         {
@@ -51560,6 +52230,8 @@
       "sha256": "4579c786865ab2369b7b1c13c2ee64a908326361479d7cb3529edde26a321f88",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 13,
       "kind": "runtime",
       "declarations": [
         {
@@ -51686,6 +52358,8 @@
       "sha256": "34eaca93a9713139687b2a78669cf926362655d72ec3214f8f681e47069df34a",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 11,
       "kind": "runtime",
       "declarations": [
         {
@@ -51794,6 +52468,8 @@
       "sha256": "6bd9bde57363d2ab69324139f0bc34a659f75f4da1448e58b484d1092dfc003d",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -51848,6 +52524,8 @@
       "sha256": "aa0462beeb810d5ae2af2fc50feccb7bb33d64ff7dd11d697a41ff94a092de68",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -51884,6 +52562,8 @@
       "sha256": "227087b43b9303d670792ee023dceeb06e9040e110e58ab56d2b86c29b164f62",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 104,
       "kind": "runtime",
       "declarations": [
         {
@@ -52839,6 +53519,8 @@
       "sha256": "4f55e3fc1636295aa3f42971d565ef3112b7a1445e3119966544c785e15f51c1",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 22,
       "kind": "runtime",
       "declarations": [
         {
@@ -53062,6 +53744,8 @@
       "sha256": "f83ae65197d8346baf1c6f22d768fecb29dc5dc18d9796c0f3133ae2c2e2752a",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 20,
       "kind": "runtime",
       "declarations": [
         {
@@ -53251,6 +53935,8 @@
       "sha256": "3dd6d3af428a7b657de3494c9b0eb675ae968f77e37e4aad0c28979748dd12ba",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 17,
       "kind": "runtime",
       "declarations": [
         {
@@ -53413,6 +54099,8 @@
       "sha256": "7af4247555e5c3fae78a74c8741729db82d50798bbdcb43b23e06f195104a7db",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -53476,6 +54164,8 @@
       "sha256": "f975c8b69f1b01db36f43c00093aa7cc7933fb1ebd4597dc49831e5b18d7f346",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 27,
       "kind": "runtime",
       "declarations": [
         {
@@ -53728,6 +54418,8 @@
       "sha256": "23b96a191fa42c366267498fbf55f70db0972c0ea13fd6fe7fb2355a4de91aeb",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 7,
       "kind": "runtime",
       "declarations": [
         {
@@ -53800,6 +54492,8 @@
       "sha256": "b197419a0a4a2838bbb5816d614f279612647aa339cd66ec0671084d54a152d4",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -53854,6 +54548,8 @@
       "sha256": "96bfa90b511a9e5b7f74af696b31728504eefcb87ade2d05c2f4dae3389d5370",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -53890,6 +54586,8 @@
       "sha256": "0e94b6de48f535bd2c5337d5ad332f87f7a543e0115d77b243ae98f127800138",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 35,
       "kind": "runtime",
       "declarations": [
         {
@@ -54214,6 +54912,8 @@
       "sha256": "531627ab70979944a5499acae41fdc46a64b7c6d2038512890ec6d58085980af",
       "group": "adapters",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 17,
       "kind": "runtime",
       "declarations": [
         {
@@ -54376,6 +55076,8 @@
       "sha256": "38486d188357cfdf86f5cdd01648d12a2f2309900e6adc6298343c1167e6495c",
       "group": "adapters",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 10,
       "kind": "runtime",
       "declarations": [
         {
@@ -54477,6 +55179,8 @@
       "sha256": "e47b2a53bce396a69f8364ddd6a63a1c523e00dfdb1166fbb06188b16cccd131",
       "group": "utilities-and-tooling",
       "status": "imported-complete-file",
+      "importedDeclarations": 11,
+      "unportedDeclarations": 0,
       "kind": "runtime",
       "declarations": [
         {
@@ -54585,6 +55289,8 @@
       "sha256": "d13b556d3d7447c610058329823c312a90141afb402c339bc74933f946242a5a",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -54603,6 +55309,8 @@
       "sha256": "f441bcf33556ead642267664b3124483e8a0785bf35e18b3cdb3d57f00a85ca2",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -54666,6 +55374,8 @@
       "sha256": "4db89213ab4801b14c4ff4ee726e8a107141834600c0190f450d203c53b5040d",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -54684,6 +55394,8 @@
       "sha256": "bc233fcbdb11d7607419dd01688f9ec5d4d78b2a555a9803a5cd0e8706e13647",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 8,
       "kind": "runtime",
       "declarations": [
         {
@@ -54765,6 +55477,8 @@
       "sha256": "7b572f2f805d560f9040b79e77505e51d73dfc71e6b31b49f09a15969786e53b",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -54792,6 +55506,8 @@
       "sha256": "9016c491d03cfed755cc5d418136567e0910cd3502f5e7c966bf64404ed2eebf",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -54819,6 +55535,8 @@
       "sha256": "986e8352a85dd318ce0fd40ccf60c209e1f09215f7ed50314240879eab4fb828",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -54873,6 +55591,8 @@
       "sha256": "59a4e135bb6a7967f8b6f3d73c619dc95d65f1ae7d053362fcabe6b6026452fb",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -54927,6 +55647,8 @@
       "sha256": "cb85093bdb27a63b8b0f64cafac172a6ca8e8643e10e685bf9785b59d83ff590",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 19,
       "kind": "runtime",
       "declarations": [
         {
@@ -55107,6 +55829,8 @@
       "sha256": "54261feedc4037506ab8f776421da0909affe793ee0fa56a5b7bb89fb44e9890",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 16,
       "kind": "runtime",
       "declarations": [
         {
@@ -55260,6 +55984,8 @@
       "sha256": "cdab8738935aa69816045245d601263247bcf104cb2729619492ef424b205ca2",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 15,
       "kind": "runtime",
       "declarations": [
         {
@@ -55404,6 +56130,8 @@
       "sha256": "3f803e00811b21e57561d454d2412982860967b8b6b04a242bb62095fd0adc73",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 8,
       "kind": "runtime",
       "declarations": [
         {
@@ -55485,6 +56213,8 @@
       "sha256": "692a37433bc152e71b4b82438b33eee17ead0ea08c8bc7bdb7819cce1709450b",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 39,
       "kind": "runtime",
       "declarations": [
         {
@@ -55845,6 +56575,8 @@
       "sha256": "187627a6d887ca9a67518f50ded3fb3f00bcc6bc91215108ef1991c39adc9009",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 17,
       "kind": "runtime",
       "declarations": [
         {
@@ -56007,6 +56739,8 @@
       "sha256": "1428d64b29a326bd929e51927f0c007b1774145a33d9625bbb916c3e631afce0",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -56043,6 +56777,8 @@
       "sha256": "2d7f8f0cf9ec755f3fe5380e8d82574f6831a2e3ded06a760c659d3c5855af83",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 9,
       "kind": "runtime",
       "declarations": [
         {
@@ -56133,6 +56869,8 @@
       "sha256": "6a6d7270590c3bd08dabdc8291170a5ab8f38b0b3ed25183e98b6c39419c2555",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -56169,6 +56907,8 @@
       "sha256": "fdef62ae63187c0a1deb3a43007f06fb9721b8c26a35de5f954e5f512810d6d8",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 8,
       "kind": "runtime",
       "declarations": [
         {
@@ -56250,6 +56990,8 @@
       "sha256": "5c22a48a0c5b3eddd77cdf167b342c94afbca9c1eec2b3c9326d0051971d90b1",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 22,
       "kind": "runtime",
       "declarations": [
         {
@@ -56457,6 +57199,8 @@
       "sha256": "c2e668615234bda09e4f325f257f725e4e06097bb48965da434964158c006dfb",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 8,
       "kind": "runtime",
       "declarations": [
         {
@@ -56538,6 +57282,8 @@
       "sha256": "a8c7224a26120883b98687baefdbb3f75474b52b0d7efea8b3825b1e395e5850",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -56601,6 +57347,8 @@
       "sha256": "ef750d19f7378b08acabd81548eec6cd5d76057b987ff49d7e15b31717ea7e64",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 10,
       "kind": "runtime",
       "declarations": [
         {
@@ -56700,6 +57448,8 @@
       "sha256": "2e8c8969748706eed47b14f65eb841e8942adafe23733878060d6b84ca281d67",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 12,
       "kind": "runtime",
       "declarations": [
         {
@@ -56817,6 +57567,8 @@
       "sha256": "9cacf4e38f62f0d22cea1a51daf24f225ba0d17467826754ada5b2582d668e0e",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 15,
       "kind": "runtime",
       "declarations": [
         {
@@ -56961,6 +57713,8 @@
       "sha256": "001613af1eb93a5ef41e4b725146fe0f0d5a44924235b9bc615d9b01c460e1b8",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 14,
       "kind": "runtime",
       "declarations": [
         {
@@ -57096,6 +57850,8 @@
       "sha256": "8ecf23290b5a154286fdb4c22ad812228a521e8513456eda77b563958c41b408",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 7,
       "kind": "runtime",
       "declarations": [
         {
@@ -57168,6 +57924,8 @@
       "sha256": "bbde46d4103f6f864bac4d58531bc5d0cb776a75d8477338334ad9507a23ab1f",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -57213,6 +57971,8 @@
       "sha256": "5d2063a05c869cdd8873e095e2935ab470de31076c3fbdaa77ee08a6f30dd123",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -57272,6 +58032,8 @@
       "sha256": "2d71671f0859d0fb58fc215939c619622c7fbcb64205d66cf4524ddf6dc7c843",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -57326,6 +58088,8 @@
       "sha256": "d1c559bc5a791ef93b04f330685b665fd124437fa6d07166687603a62af49141",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -57353,6 +58117,8 @@
       "sha256": "931ba02211ee0250e092e4f95a93c127870b43c299efff52daade0682614e570",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -57407,6 +58173,8 @@
       "sha256": "d3f391180857a0b24a1d6fbefb8d21650ba09cb9244eeda97cfdfff990e2b5ff",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 13,
       "kind": "runtime",
       "declarations": [
         {
@@ -57533,6 +58301,8 @@
       "sha256": "9fa1f8e656b0756778498d7342f26dae831ffa136948cc05ed19003382f6749a",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 18,
       "kind": "runtime",
       "declarations": [
         {
@@ -57704,6 +58474,8 @@
       "sha256": "f467f2c7fa987d227652f3b2932d14f263fc8e35f7490b97b130f57bfb676679",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -57731,6 +58503,8 @@
       "sha256": "10a4f886d92c13a85593331990802b883f997d63234d9bb0c2d24654f1922e07",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 21,
       "kind": "runtime",
       "declarations": [
         {
@@ -57929,6 +58703,8 @@
       "sha256": "8195d899f4312439078ab88c0815ac9b8c163b541c0532307a932ae36f183431",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 14,
       "kind": "runtime",
       "declarations": [
         {
@@ -58064,6 +58840,8 @@
       "sha256": "7fd3e72cc7f19bfa4108fbb5f3fce0d25b4690330b20e9c1c80623e6bf18487e",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 17,
       "kind": "runtime",
       "declarations": [
         {
@@ -58226,6 +59004,8 @@
       "sha256": "8a106288925543b1a1a5544d579667b3e894d0156a2c2dbf6a2066a5276884fc",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 15,
       "kind": "runtime",
       "declarations": [
         {
@@ -58370,6 +59150,8 @@
       "sha256": "99c9bb50e2be6500173435330eab95505ff9868912aa262ca462851dbbc8908c",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -58388,6 +59170,8 @@
       "sha256": "b1e8f1454dc78b3fa9ff4dc440f2ca7974f477b5e8200f22f5c8c624a383c431",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 12,
       "kind": "runtime",
       "declarations": [
         {
@@ -58503,6 +59287,8 @@
       "sha256": "4d144a538f47a3f7ecc5becad68b0d5371e3fe421b352da3530bf0f107934c6a",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -58530,6 +59316,8 @@
       "sha256": "7c7650e26c3a830b30d564b18f45da63fa45f390cc68ecf1157c2eeac04dcb15",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -58566,6 +59354,8 @@
       "sha256": "da04a267b30b109d60b61eb2a3d25c3ee3c6180d237c7ba55fe9c46f0287caac",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -58584,6 +59374,8 @@
       "sha256": "87f6ed7cdc2cd935c50820956cd0a8bcbe11d76b3f92d53465d5002826bbfe0e",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -58602,6 +59394,8 @@
       "sha256": "6bd70d744e24659eb3344c658ed042adfbd9fab1727c3c84500ad0e3014c01be",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 8,
       "kind": "runtime",
       "declarations": [
         {
@@ -58683,6 +59477,8 @@
       "sha256": "c616ad902739fb0a47d7157700c3c95155c78845a492073b5eab6696f8f87b91",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -58701,6 +59497,8 @@
       "sha256": "f03c02fd0aae9077673570d9262988f880bc6e6d89eb84faed4c664e7899f211",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 17,
       "kind": "runtime",
       "declarations": [
         {
@@ -58863,6 +59661,8 @@
       "sha256": "a9901a11705edb871cd3aebbf5ff13b9025091ab5711cebdc2b4160dc28efb6d",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -58926,6 +59726,8 @@
       "sha256": "7778bb40de9c5266b23d706466bfc67b36e155f8615fb6086bd14a0054e7ed9d",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 25,
       "kind": "runtime",
       "declarations": [
         {
@@ -59185,6 +59987,8 @@
       "sha256": "79ea19d6b83c4bf8b7642e06ca84613bc512e0b434cd595738658997295c1bf8",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -59239,6 +60043,8 @@
       "sha256": "06eadea805d68c4f82d8bf37400039383513769aae46434accb7574ceda92379",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 19,
       "kind": "runtime",
       "declarations": [
         {
@@ -59419,6 +60225,8 @@
       "sha256": "4a386042ad3aec744864c58d10d78027e914013962cbecd7d27af699a32a8f05",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 88,
       "kind": "runtime",
       "declarations": [
         {
@@ -60301,6 +61109,8 @@
       "sha256": "b0616e20a2e2e1da4d8cac234666553ca71e69323cf78320eefcc5bbe60a37b2",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -60355,6 +61165,8 @@
       "sha256": "37343eecf09015e112f3064a940dc4effe8bd511cc475e0a89f7e748425c1f71",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 11,
       "kind": "runtime",
       "declarations": [
         {
@@ -60463,6 +61275,8 @@
       "sha256": "41822dabe8369d1770bd39b71eb515d87534b240bcc1c9e84b363d813b2107fa",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 48,
       "kind": "runtime",
       "declarations": [
         {
@@ -60914,6 +61728,8 @@
       "sha256": "5565359edeac9236db40ee1c1d6514142eb459b771661dc326297a62814f2b41",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -60950,6 +61766,8 @@
       "sha256": "10fe95d31ba08aede92114d437ac4436101d249a6e1d3abe8cedf179bc565aa0",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -60995,6 +61813,8 @@
       "sha256": "94608c499e486a18f04c1b4ab08689c29726abd419886049430d5abbf32cc26d",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 97,
       "kind": "runtime",
       "declarations": [
         {
@@ -61967,6 +62787,8 @@
       "sha256": "c0311abd9a0825e5593a03973659ead0e46596a0d4646525a56ebd01d80f742d",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 15,
       "kind": "runtime",
       "declarations": [
         {
@@ -62111,6 +62933,8 @@
       "sha256": "34c80f10ead1b365c31625462d1dc5c4cd919fe97db3f56bac83df88439a9169",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 38,
       "kind": "runtime",
       "declarations": [
         {
@@ -62498,6 +63322,8 @@
       "sha256": "f82ef6a5aa370218ffae2ff2da06195dd2486c7bf386fe811faefb73098a95d6",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 24,
       "kind": "runtime",
       "declarations": [
         {
@@ -62736,6 +63562,8 @@
       "sha256": "9d2ef9a0e98187ddfda040354f049bc48c67326f184e8dc30a033244b026d215",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 17,
       "kind": "runtime",
       "declarations": [
         {
@@ -62898,6 +63726,8 @@
       "sha256": "f1fe56774434337cdff20780e8bc476c35e10b30f3713cb4f9f2dfbadd619c97",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 154,
       "kind": "runtime",
       "declarations": [
         {
@@ -64350,6 +65180,8 @@
       "sha256": "a35ce50be75e0cf7e689b21cdec94f8ca1223201179245832224bebabced9b78",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 5,
       "kind": "runtime",
       "declarations": [
         {
@@ -64404,6 +65236,8 @@
       "sha256": "f409be6a1fc7b50ba6057529a96c72513c0b2d5356e35842b86f4c6a7d443371",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 28,
       "kind": "runtime",
       "declarations": [
         {
@@ -64682,6 +65516,8 @@
       "sha256": "36b4fd02aa394c5baa630cc9668f419da9e1321d5da20d8470f0d3dfa07dc4fc",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 26,
       "kind": "runtime",
       "declarations": [
         {
@@ -64953,6 +65789,8 @@
       "sha256": "daa2f6b671530124c31c2c62cb5387527d28c26f2e731c05a30747c2e7a3402a",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 16,
       "kind": "runtime",
       "declarations": [
         {
@@ -65119,6 +65957,8 @@
       "sha256": "df0598f5c414c32b4d2145092cf65fffa67023e4945d5b97e9948eb32d3753d2",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 8,
       "kind": "runtime",
       "declarations": [
         {
@@ -65200,6 +66040,8 @@
       "sha256": "3ffd0c8b8bfa5ebde0355a3228a6fc9076a8520ee41c84ed7c26b48242619061",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 10,
       "kind": "runtime",
       "declarations": [
         {
@@ -65309,6 +66151,8 @@
       "sha256": "9695424230874358e519cdf59356bcdad09853dd2feaa6bd80f6e45620722331",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 4,
       "kind": "runtime",
       "declarations": [
         {
@@ -65354,6 +66198,8 @@
       "sha256": "f2984ff1bdce9688a3b609ce8ba6b8f5493099b651e82648fd330454fe4709ef",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 15,
       "kind": "runtime",
       "declarations": [
         {
@@ -65513,6 +66359,8 @@
       "sha256": "54cb0047762540db7fdca6f74cb2f73bc628b8a4f7d6754ea4c5b2cc036a06ad",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 20,
       "kind": "runtime",
       "declarations": [
         {
@@ -65702,6 +66550,8 @@
       "sha256": "314391ae907579f83748e51df55e760c7ce58a4bc411b508bcd66807d3dc5d7b",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 36,
       "kind": "runtime",
       "declarations": [
         {
@@ -66049,6 +66899,8 @@
       "sha256": "2646ee89a241f3bc75bfee9ddceb073f335e4b2173cddd09ba7a3938ead7a129",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 10,
       "kind": "runtime",
       "declarations": [
         {
@@ -66148,6 +67000,8 @@
       "sha256": "38c4bdf8780d65206a1803d07eaa0111ca0cdd430e47a6138e50c48c3108f49d",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 28,
       "kind": "runtime",
       "declarations": [
         {
@@ -66423,6 +67277,8 @@
       "sha256": "5afb422855442269742c1a757741d47270f8fac758a55aa2732cb7311bc6fd8e",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -66486,6 +67342,8 @@
       "sha256": "b57c37c19be37513db2f26413433768f3d298839fe0f56a24b2c9b59654fa71a",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 3,
       "kind": "runtime",
       "declarations": [
         {
@@ -66522,6 +67380,8 @@
       "sha256": "e6e274f98f121b3893008aa9f76dee33c4dae187f799d7677549233b4c2a05f0",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 6,
       "kind": "runtime",
       "declarations": [
         {
@@ -66585,6 +67445,8 @@
       "sha256": "c86f3fae236699c72abf9e5a06f7b731ecafd28dc7f6455e0af9d29438d6b578",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -66603,6 +67465,8 @@
       "sha256": "df6a72857449db4af85c5fd1a32d82281a0ed4970406611f1bf17fdc99ab8d67",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 1,
       "kind": "runtime",
       "declarations": [
         {
@@ -66621,6 +67485,8 @@
       "sha256": "2875e11be4bae00e4c41a1495f25513e82ee49bdcb1d03bd38081f9914489f40",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {
@@ -66648,6 +67514,8 @@
       "sha256": "169bff96ad3a655c4ffc440e1d5d07a92bbf024650d1da580fe333368f685e87",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 10,
       "kind": "runtime",
       "declarations": [
         {
@@ -66727,6 +67595,8 @@
       "sha256": "1998ca831a2d4eb4ec20aba1c47a447997071811e71315e58e50af5f5729e2a1",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 14,
       "kind": "runtime",
       "declarations": [
         {
@@ -66862,6 +67732,8 @@
       "sha256": "4d759b6d82f4cd7587c574b3ac86b00bae0e5be6ea0c6f3f1d962f01a6d8502e",
       "group": "utilities-and-tooling",
       "status": "unported",
+      "importedDeclarations": 0,
+      "unportedDeclarations": 2,
       "kind": "runtime",
       "declarations": [
         {

@@ -12,6 +12,8 @@
         "OAuth encryption purposes"
       ],
       "test": "decrypts %s only for its own purpose",
+      "sourceStart": 546,
+      "sourceLine": 18,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -22,6 +24,8 @@
         "OAuth encryption purposes"
       ],
       "test": "decrypts bare %s ciphertext with its purpose-derived legacy key",
+      "sourceStart": 1278,
+      "sourceLine": 43,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -32,6 +36,8 @@
         "OAuth encryption purposes"
       ],
       "test": "preserves %s rotation without accepting the shared key",
+      "sourceStart": 2227,
+      "sourceLine": 77,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null

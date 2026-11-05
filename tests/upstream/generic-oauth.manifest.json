@@ -12,6 +12,8 @@
         "oauth2"
       ],
       "test": "should discover end_session_endpoint for provider logout",
+      "sourceStart": 4489,
+      "sourceLine": 171,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -22,6 +24,8 @@
         "oauth2"
       ],
       "test": "should delete state cookie with path attribute",
+      "sourceStart": 5989,
+      "sourceLine": 225,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -32,6 +36,8 @@
         "oauth2"
       ],
       "test": "should complete full sign-in flow and return correct session data",
+      "sourceStart": 6591,
+      "sourceLine": 247,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -42,6 +48,8 @@
         "oauth2"
       ],
       "test": "should redirect to the provider and handle the response for a new user",
+      "sourceStart": 7868,
+      "sourceLine": 286,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -52,6 +60,8 @@
         "oauth2"
       ],
       "test": "encodes callbackURL in the verify-email link for a new unverified OAuth user",
+      "sourceStart": 9722,
+      "sourceLine": 346,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -62,6 +72,8 @@
         "oauth2"
       ],
       "test": "should resolve getAccessToken after first-time generic-oauth sign-in (storeAccountCookie + JWE)",
+      "sourceStart": 11280,
+      "sourceLine": 404,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -72,6 +84,8 @@
         "oauth2"
       ],
       "test": "keeps implicit links usable across stateless instances",
+      "sourceStart": 14025,
+      "sourceLine": 504,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -82,6 +96,8 @@
         "oauth2"
       ],
       "test": "refreshes once the accessTokenExpiresIn window passes when the provider omits expires_in",
+      "sourceStart": 17879,
+      "sourceLine": 622,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -92,6 +108,8 @@
         "oauth2"
       ],
       "test": "does not refresh a provider that omits expires_in when accessTokenExpiresIn is unset",
+      "sourceStart": 20928,
+      "sourceLine": 719,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -102,6 +120,8 @@
         "oauth2"
       ],
       "test": "applies accessTokenExpiresIn to a custom getToken result",
+      "sourceStart": 23575,
+      "sourceLine": 806,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -112,6 +132,8 @@
         "oauth2"
       ],
       "test": "forwards refreshTokenParams (incl. dynamic + ctx + protected keys) to the token endpoint on refresh",
+      "sourceStart": 26968,
+      "sourceLine": 907,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -122,6 +144,8 @@
         "oauth2"
       ],
       "test": "should redirect to the provider and handle the response after linked",
+      "sourceStart": 34900,
+      "sourceLine": 1147,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -132,6 +156,8 @@
         "oauth2"
       ],
       "test": "should handle invalid provider ID",
+      "sourceStart": 35429,
+      "sourceLine": 1164,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -142,6 +168,8 @@
         "oauth2"
       ],
       "test": "should handle server error during OAuth flow",
+      "sourceStart": 35723,
+      "sourceLine": 1173,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -152,6 +180,8 @@
         "oauth2"
       ],
       "test": "should work with custom redirect uri",
+      "sourceStart": 36848,
+      "sourceLine": 1216,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -162,6 +192,8 @@
         "oauth2"
       ],
       "test": "should not create user when sign ups are disabled",
+      "sourceStart": 38013,
+      "sourceLine": 1259,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -172,6 +204,8 @@
         "oauth2"
       ],
       "test": "blocks the session with error=email_not_verified when requireEmailVerification is set",
+      "sourceStart": 39566,
+      "sourceLine": 1316,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -182,6 +216,8 @@
         "oauth2"
       ],
       "test": "should create user when sign ups are disabled and sign up is requested",
+      "sourceStart": 41015,
+      "sourceLine": 1368,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -192,6 +228,8 @@
         "oauth2"
       ],
       "test": "should redirect to cross-origin errorCallbackURL when a session hook throws APIError",
+      "sourceStart": 42630,
+      "sourceLine": 1425,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -202,6 +240,8 @@
         "oauth2"
       ],
       "test": "should pass authorization headers in oAuth2Callback",
+      "sourceStart": 44718,
+      "sourceLine": 1500,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -212,6 +252,8 @@
         "oauth2"
       ],
       "test": "should delete oauth user with verification flow without password",
+      "sourceStart": 46164,
+      "sourceLine": 1551,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -222,6 +264,8 @@
         "oauth2"
       ],
       "test": "should handle numeric account IDs correctly and prevent duplicate accounts",
+      "sourceStart": 48130,
+      "sourceLine": 1639,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -232,6 +276,8 @@
         "oauth2"
       ],
       "test": "rejects sign-in when the provider omits an account id, preventing account collisions",
+      "sourceStart": 51221,
+      "sourceLine": 1750,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -242,6 +288,8 @@
         "oauth2"
       ],
       "test": "rejects sign-in when a custom getUserInfo returns an empty id",
+      "sourceStart": 54469,
+      "sourceLine": 1849,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -252,6 +300,8 @@
         "oauth2"
       ],
       "test": "does not switch a plain OAuth account from id to sub",
+      "sourceStart": 56261,
+      "sourceLine": 1914,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -262,6 +312,8 @@
         "oauth2"
       ],
       "test": "completes sign-in when accountSubject derives identity from a non-standard profile field",
+      "sourceStart": 57946,
+      "sourceLine": 1977,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -272,6 +324,8 @@
         "oauth2"
       ],
       "test": "uses the OIDC sub when the userinfo id field is empty",
+      "sourceStart": 60029,
+      "sourceLine": 2053,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -282,6 +336,8 @@
         "oauth2"
       ],
       "test": "uses the OIDC sub when the userinfo id field is null",
+      "sourceStart": 61823,
+      "sourceLine": 2122,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -292,6 +348,8 @@
         "oauth2"
       ],
       "test": "uses the OIDC sub as the account subject when userinfo also has an id field",
+      "sourceStart": 63629,
+      "sourceLine": 2191,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -302,6 +360,8 @@
         "oauth2"
       ],
       "test": "links provider aliases as separate accounts of one user when mutable profile fields change",
+      "sourceStart": 65435,
+      "sourceLine": 2260,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -312,6 +372,8 @@
         "oauth2"
       ],
       "test": "keeps different OIDC subjects separate when a mutable id field is reused",
+      "sourceStart": 67766,
+      "sourceLine": 2345,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -322,6 +384,8 @@
         "oauth2"
       ],
       "test": "should handle custom getUserInfo returning numeric ID",
+      "sourceStart": 69775,
+      "sourceLine": 2414,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -332,6 +396,8 @@
         "oauth2"
       ],
       "test": "should handle accountSubject returning a numeric subject",
+      "sourceStart": 71441,
+      "sourceLine": 2479,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -342,6 +408,8 @@
         "oauth2"
       ],
       "test": "should handle Strava OAuth with custom mapProfileToUser",
+      "sourceStart": 73460,
+      "sourceLine": 2554,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -352,6 +420,8 @@
         "oauth2"
       ],
       "test": "redirects with email_not_found when both the provider and mapProfileToUser omit email",
+      "sourceStart": 76183,
+      "sourceLine": 2651,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -362,6 +432,8 @@
         "oauth2"
       ],
       "test": "should work with cookie-based state storage",
+      "sourceStart": 77392,
+      "sourceLine": 2698,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -372,6 +444,8 @@
         "oauth2"
       ],
       "test": "should reject cookie-backed OAuth when callback state does not match the issued state",
+      "sourceStart": 79275,
+      "sourceLine": 2768,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -382,6 +456,8 @@
         "oauth2"
       ],
       "test": "should redirect to the error page when a GET callback arrives without state",
+      "sourceStart": 80865,
+      "sourceLine": 2829,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -392,6 +468,8 @@
         "oauth2"
       ],
       "test": "should await async mapProfileToUser",
+      "sourceStart": 81236,
+      "sourceLine": 2842,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -402,6 +480,8 @@
         "oauth2"
       ],
       "test": "keeps provider sub in raw data when the plain OAuth id is empty",
+      "sourceStart": 82219,
+      "sourceLine": 2883,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -413,6 +493,8 @@
         "Okta Provider Helper"
       ],
       "test": "should return correct GenericOAuthConfig",
+      "sourceStart": 83177,
+      "sourceLine": 2921,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -424,6 +506,8 @@
         "Okta Provider Helper"
       ],
       "test": "should handle issuer with trailing slash",
+      "sourceStart": 83822,
+      "sourceLine": 2938,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -435,6 +519,8 @@
         "Okta Provider Helper"
       ],
       "test": "should allow overriding scopes",
+      "sourceStart": 84182,
+      "sourceLine": 2950,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -446,6 +532,8 @@
         "Okta Provider Helper"
       ],
       "test": "should allow overriding other options",
+      "sourceStart": 84498,
+      "sourceLine": 2961,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -457,6 +545,8 @@
         "Auth0 Provider Helper"
       ],
       "test": "should return correct GenericOAuthConfig",
+      "sourceStart": 84917,
+      "sourceLine": 2976,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -468,6 +558,8 @@
         "Auth0 Provider Helper"
       ],
       "test": "normalizes an Auth0 domain supplied as %s",
+      "sourceStart": 85541,
+      "sourceLine": 2993,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -479,6 +571,8 @@
         "Auth0 Provider Helper"
       ],
       "test": "should allow overriding scopes",
+      "sourceStart": 86031,
+      "sourceLine": 3009,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -490,6 +584,8 @@
         "Auth0 Provider Helper"
       ],
       "test": "should allow overriding other options",
+      "sourceStart": 86331,
+      "sourceLine": 3020,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -501,6 +597,8 @@
         "Microsoft Entra ID Provider Helper"
       ],
       "test": "should return correct GenericOAuthConfig",
+      "sourceStart": 86808,
+      "sourceLine": 3037,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -512,6 +610,8 @@
         "Microsoft Entra ID Provider Helper"
       ],
       "test": "should handle tenant ID as GUID",
+      "sourceStart": 87916,
+      "sourceLine": 3065,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -523,6 +623,8 @@
         "Microsoft Entra ID Provider Helper"
       ],
       "test": "should allow overriding scopes",
+      "sourceStart": 88224,
+      "sourceLine": 3077,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -534,6 +636,8 @@
         "Microsoft Entra ID Provider Helper"
       ],
       "test": "should allow overriding other options",
+      "sourceStart": 88501,
+      "sourceLine": 3088,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -545,6 +649,8 @@
         "Microsoft Entra ID Provider Helper"
       ],
       "test": "skips the Microsoft provider when discovery is unavailable",
+      "sourceStart": 88831,
+      "sourceLine": 3101,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -556,6 +662,8 @@
         "Microsoft Entra ID Provider Helper"
       ],
       "test": "rejects the multi-tenant %s endpoint because it cannot provide a stable issuer",
+      "sourceStart": 89565,
+      "sourceLine": 3131,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -567,6 +675,8 @@
         "Microsoft Entra ID Provider Helper"
       ],
       "test": "rejects a missing tenant ID from an untyped runtime configuration",
+      "sourceStart": 89938,
+      "sourceLine": 3144,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -578,6 +688,8 @@
         "Microsoft Entra ID Provider Helper"
       ],
       "test": "should use oid from the ID token as the account id instead of sub",
+      "sourceStart": 90366,
+      "sourceLine": 3157,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -589,6 +701,8 @@
         "Microsoft Entra ID Provider Helper"
       ],
       "test": "should ignore Graph userinfo when its subject %s",
+      "sourceStart": 91570,
+      "sourceLine": 3202,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -600,6 +714,8 @@
         "Microsoft Entra ID Provider Helper"
       ],
       "test": "keeps the placeholder unverified for an unexpected null Graph email claim",
+      "sourceStart": 92745,
+      "sourceLine": 3246,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -611,6 +727,8 @@
         "Microsoft Entra ID Provider Helper"
       ],
       "test": "should normalize personal Microsoft account givenname and familyname claims",
+      "sourceStart": 93627,
+      "sourceLine": 3280,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -622,6 +740,8 @@
         "Microsoft Entra ID Provider Helper"
       ],
       "test": "should fall back to ID token claims when Graph userinfo fails",
+      "sourceStart": 94381,
+      "sourceLine": 3309,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -633,6 +753,8 @@
         "Microsoft Entra ID Provider Helper"
       ],
       "test": "should return token claims without fetching Graph when accessToken is missing",
+      "sourceStart": 95436,
+      "sourceLine": 3348,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -644,6 +766,8 @@
         "Microsoft Entra ID Provider Helper"
       ],
       "test": "rejects an ID token whose oid is %s",
+      "sourceStart": 96454,
+      "sourceLine": 3386,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -655,6 +779,8 @@
         "Slack Provider Helper"
       ],
       "test": "should return correct GenericOAuthConfig",
+      "sourceStart": 97373,
+      "sourceLine": 3425,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -666,6 +792,8 @@
         "Slack Provider Helper"
       ],
       "test": "should allow overriding scopes",
+      "sourceStart": 98198,
+      "sourceLine": 3448,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -677,6 +805,8 @@
         "Slack Provider Helper"
       ],
       "test": "should allow overriding other options",
+      "sourceStart": 98462,
+      "sourceLine": 3458,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -688,6 +818,8 @@
         "Yandex Provider Helper"
       ],
       "test": "should return correct GenericOAuthConfig",
+      "sourceStart": 98831,
+      "sourceLine": 3472,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -699,6 +831,8 @@
         "Yandex Provider Helper"
       ],
       "test": "returns null when Yandex does not return an email",
+      "sourceStart": 100074,
+      "sourceLine": 3507,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -710,6 +844,8 @@
         "HubSpot Provider Helper"
       ],
       "test": "sends the access token as a single path segment encoded once",
+      "sourceStart": 100913,
+      "sourceLine": 3544,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -721,6 +857,8 @@
         "HubSpot Provider Helper"
       ],
       "test": "returns null without calling HubSpot when the access token is missing",
+      "sourceStart": 101729,
+      "sourceLine": 3571,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -732,6 +870,8 @@
         "Keycloak Provider Helper"
       ],
       "test": "should return correct GenericOAuthConfig",
+      "sourceStart": 102355,
+      "sourceLine": 3592,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -743,6 +883,8 @@
         "Keycloak Provider Helper"
       ],
       "test": "should handle issuer with trailing slash",
+      "sourceStart": 103042,
+      "sourceLine": 3609,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -754,6 +896,8 @@
         "Keycloak Provider Helper"
       ],
       "test": "should allow overriding scopes",
+      "sourceStart": 103412,
+      "sourceLine": 3621,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -765,6 +909,8 @@
         "Keycloak Provider Helper"
       ],
       "test": "should allow overriding other options",
+      "sourceStart": 103743,
+      "sourceLine": 3632,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -775,6 +921,8 @@
         "oauth2"
       ],
       "test": "should integrate okta provider helper with genericOAuth",
+      "sourceStart": 104137,
+      "sourceLine": 3646,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -785,6 +933,8 @@
         "oauth2"
       ],
       "test": "should integrate auth0 provider helper with genericOAuth",
+      "sourceStart": 104545,
+      "sourceLine": 3664,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -795,6 +945,8 @@
         "oauth2"
       ],
       "test": "should integrate microsoftEntraId provider helper with genericOAuth",
+      "sourceStart": 104936,
+      "sourceLine": 3682,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -805,6 +957,8 @@
         "oauth2"
       ],
       "test": "should integrate slack provider helper with genericOAuth",
+      "sourceStart": 105852,
+      "sourceLine": 3714,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -815,6 +969,8 @@
         "oauth2"
       ],
       "test": "should integrate keycloak provider helper with genericOAuth",
+      "sourceStart": 106204,
+      "sourceLine": 3731,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -825,6 +981,8 @@
         "oauth2"
       ],
       "test": "should support custom getToken for non-standard providers",
+      "sourceStart": 106623,
+      "sourceLine": 3749,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -835,6 +993,8 @@
         "oauth2"
       ],
       "test": "should handle errors in custom getToken",
+      "sourceStart": 109559,
+      "sourceLine": 3847,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -845,6 +1005,8 @@
         "oauth2"
       ],
       "test": "should support GET-based token endpoints for non-standard providers",
+      "sourceStart": 111202,
+      "sourceLine": 3909,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -856,6 +1018,8 @@
         "Duplicate Provider ID Detection"
       ],
       "test": "should warn when duplicate provider IDs are detected",
+      "sourceStart": 114798,
+      "sourceLine": 4026,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -867,6 +1031,8 @@
         "Duplicate Provider ID Detection"
       ],
       "test": "should warn about multiple duplicate provider IDs",
+      "sourceStart": 115594,
+      "sourceLine": 4056,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -878,6 +1044,8 @@
         "Duplicate Provider ID Detection"
       ],
       "test": "should not warn when all provider IDs are unique",
+      "sourceStart": 116931,
+      "sourceLine": 4101,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -889,6 +1057,8 @@
         "Duplicate Provider ID Detection"
       ],
       "test": "should not warn when only one provider is configured",
+      "sourceStart": 117661,
+      "sourceLine": 4129,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -900,6 +1070,8 @@
         "Duplicate Provider ID Detection"
       ],
       "test": "should warn when provider ID appears more than twice",
+      "sourceStart": 118204,
+      "sourceLine": 4151,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -911,6 +1083,8 @@
         "storeIdentifier: hashed"
       ],
       "test": "should complete oauth flow when verification identifiers are hashed",
+      "sourceStart": 119244,
+      "sourceLine": 4189,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -921,6 +1095,8 @@
         "oauth2"
       ],
       "test": "should merge client-requested scopes with config scopes",
+      "sourceStart": 120734,
+      "sourceLine": 4248,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -931,6 +1107,8 @@
         "oauth2"
       ],
       "test": "should warn when generic provider ID shadows a built-in social provider",
+      "sourceStart": 121929,
+      "sourceLine": 4291,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -941,6 +1119,8 @@
         "oauth2"
       ],
       "test": "should pass discovered issuer to the provider for RFC 9207 validation",
+      "sourceStart": 122707,
+      "sourceLine": 4319,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -952,6 +1132,8 @@
         "tokenEndpointAuth"
       ],
       "test": "should send client_assertion instead of client_secret at the token endpoint",
+      "sourceStart": 123365,
+      "sourceLine": 4342,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -963,6 +1145,8 @@
         "tokenEndpointAuth"
       ],
       "test": "should reject secretless token endpoint auth combined with clientSecret",
+      "sourceStart": 125398,
+      "sourceLine": 4411,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -974,6 +1158,8 @@
         "tokenEndpointAuth"
       ],
       "test": "should reject %s token endpoint auth without clientSecret",
+      "sourceStart": 126180,
+      "sourceLine": 4439,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -984,6 +1170,8 @@
         "oauth2"
       ],
       "test": "should use custom name when provided in config",
+      "sourceStart": 126895,
+      "sourceLine": 4467,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -995,6 +1183,8 @@
         "IDP-initiated bounce (allowIdpInitiated)"
       ],
       "test": "should bounce a stateless callback to the provider's authorize endpoint when the provider opts in",
+      "sourceStart": 127618,
+      "sourceLine": 4492,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -1006,6 +1196,8 @@
         "IDP-initiated bounce (allowIdpInitiated)"
       ],
       "test": "should redirect to the error page when a stateless callback arrives for a provider without the flag",
+      "sourceStart": 128930,
+      "sourceLine": 4529,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -1017,6 +1209,8 @@
         "IDP-initiated bounce (allowIdpInitiated)"
       ],
       "test": "should not bounce on an empty `state=` parameter, only on truly stateless callbacks",
+      "sourceStart": 129641,
+      "sourceLine": 4554,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -1028,6 +1222,8 @@
         "IDP-initiated bounce (allowIdpInitiated)"
       ],
       "test": "should not bounce when state is present even if allowIdpInitiated is on",
+      "sourceStart": 130523,
+      "sourceLine": 4582,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -1039,6 +1235,8 @@
         "validateUserInfo callback"
       ],
       "test": "should reject sign-in with provider metadata and raw profile",
+      "sourceStart": 131508,
+      "sourceLine": 4613,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -1050,6 +1248,8 @@
         "validateUserInfo callback"
       ],
       "test": "should work in stateless mode (no database)",
+      "sourceStart": 133531,
+      "sourceLine": 4686,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -1061,6 +1261,8 @@
         "id_token verification"
       ],
       "test": "should reject an id_token not signed by the discovery JWKS",
+      "sourceStart": 135906,
+      "sourceLine": 4773,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -1072,6 +1274,8 @@
         "id_token verification"
       ],
       "test": "should use claims from an id_token verified against the discovery JWKS",
+      "sourceStart": 137038,
+      "sourceLine": 4813,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -1083,6 +1287,8 @@
         "id_token verification"
       ],
       "test": "should bind a discovery id_token to the authorization request nonce",
+      "sourceStart": 138214,
+      "sourceLine": 4845,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -1094,6 +1300,8 @@
         "id_token verification"
       ],
       "test": "should reject a discovery id_token with a mismatched nonce",
+      "sourceStart": 140319,
+      "sourceLine": 4912,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -1105,6 +1313,8 @@
         "id_token verification"
       ],
       "test": "should reject a discovery id_token that omits the nonce claim",
+      "sourceStart": 142024,
+      "sourceLine": 4971,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -1116,6 +1326,8 @@
         "id_token verification"
       ],
       "test": "should not bind a nonce when id_token nonce binding is disabled",
+      "sourceStart": 143611,
+      "sourceLine": 5026,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -1127,6 +1339,8 @@
         "id_token verification"
       ],
       "test": "should drop a configured nonce param for providers without nonce binding",
+      "sourceStart": 145448,
+      "sourceLine": 5085,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -1138,6 +1352,8 @@
         "id_token verification"
       ],
       "test": "should reject a discovery id_token when state carries no expected nonce",
+      "sourceStart": 146518,
+      "sourceLine": 5120,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -1149,6 +1365,8 @@
         "id_token verification"
       ],
       "test": "should sign in with a client-submitted id_token for a discovery provider",
+      "sourceStart": 148460,
+      "sourceLine": 5179,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -1160,6 +1378,8 @@
         "id_token verification"
       ],
       "test": "should keep the decode posture for providers without discovery",
+      "sourceStart": 149066,
+      "sourceLine": 5199,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -1171,6 +1391,8 @@
         "id_token verification"
       ],
       "test": "skips a provider when required ID token verification metadata is unavailable",
+      "sourceStart": 150494,
+      "sourceLine": 5245,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -1182,6 +1404,8 @@
         "id_token verification"
       ],
       "test": "skips a provider when discovery returns a malformed jwks_uri",
+      "sourceStart": 151977,
+      "sourceLine": 5291,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -1192,6 +1416,8 @@
         "oauth2"
       ],
       "test": "skips discovery missing %s endpoints",
+      "sourceStart": 153505,
+      "sourceLine": 5341,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -1202,6 +1428,8 @@
         "oauth2"
       ],
       "test": "keeps explicit token exchange with incomplete discovery (custom=%s)",
+      "sourceStart": 154542,
+      "sourceLine": 5385,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -1212,6 +1440,8 @@
         "oauth2"
       ],
       "test": "does not take down the auth API when one provider's discovery is unreachable",
+      "sourceStart": 155625,
+      "sourceLine": 5427,
       "selected": true,
       "upstreamDisabled": false,
       "reason": null
@@ -1223,6 +1453,8 @@
         "retrying discovery that failed at startup"
       ],
       "test": "recovers a provider once the IdP is reachable",
+      "sourceStart": 157798,
+      "sourceLine": 5503,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -1234,6 +1466,8 @@
         "retrying discovery that failed at startup"
       ],
       "test": "recovers a provider requested through the popup start endpoint",
+      "sourceStart": 158617,
+      "sourceLine": 5528,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -1245,6 +1479,8 @@
         "retrying discovery that failed at startup"
       ],
       "test": "recovers a provider after a later plugin replaces the provider list",
+      "sourceStart": 159334,
+      "sourceLine": 5547,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -1256,6 +1492,8 @@
         "retrying discovery that failed at startup"
       ],
       "test": "recovers the provider in every auth instance that shares one plugin object and adapter",
+      "sourceStart": 160048,
+      "sourceLine": 5573,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -1266,6 +1504,8 @@
         "redirect_uri composition under dynamic baseURL"
       ],
       "test": "composes an absolute redirect_uri for a generic-oauth provider at the default basePath",
+      "sourceStart": 162394,
+      "sourceLine": 5649,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -1276,6 +1516,8 @@
         "redirect_uri composition under dynamic baseURL"
       ],
       "test": "composes an absolute redirect_uri for a generic-oauth provider at a custom basePath",
+      "sourceStart": 163146,
+      "sourceLine": 5678,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -1286,6 +1528,8 @@
         "redirect_uri composition under dynamic baseURL"
       ],
       "test": "composes an absolute redirect_uri for a built-in social provider",
+      "sourceStart": 163909,
+      "sourceLine": 5708,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
@@ -1296,6 +1540,8 @@
         "redirect_uri composition under dynamic baseURL"
       ],
       "test": "normalizes custom callbackPath values without a leading slash",
+      "sourceStart": 164439,
+      "sourceLine": 5729,
       "selected": false,
       "upstreamDisabled": false,
       "reason": "Unported generic provider helpers, refresh/linking/popup/retry/options and dynamic-baseURL integration; ID-token verification suite selected"
